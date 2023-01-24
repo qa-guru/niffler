@@ -36,21 +36,21 @@ function App() {
             <ToastContainer/>
             <BrowserRouter>
                 <UserContext.Provider value={value}>
-                    <Routes>
-                           <Route path="/redirect" element={<Redirect />} exact={false}/>
-                           <Route path="/authorized" element={<Redirect />} exact={false}/>
-                           <Route path="/profile" element={
-                               <ProtectedRoute>
-                                   <Profile showSuccess={showSuccessMessage} showFail={showFailMessage}/>
-                               </ProtectedRoute>
-                           }/>
-                           <Route path="/main" element={
-                               <ProtectedRoute>
-                                   <MainLayout showSuccess={showSuccessMessage} />
-                               </ProtectedRoute>
-                           }/>
-                           <Route path="*" element={<LoginPage/>}/>
-                    </Routes>
+                        <Routes>
+                               <Route path="/redirect" element={<Redirect />} exact={false}/>
+                               <Route path="/authorized" element={<Redirect />} exact={false}/>
+                               <Route path="/profile" element={
+                                   <ProtectedRoute>
+                                       <Profile showSuccess={showSuccessMessage} showFail={showFailMessage}/>
+                                   </ProtectedRoute>
+                               }/>
+                               <Route path="/main" element={
+                                   <ProtectedRoute>
+                                       <MainLayout showSuccess={showSuccessMessage} />
+                                   </ProtectedRoute>
+                               }/>
+                               <Route path="*" element={<LoginPage/>}/>
+                        </Routes>
                 </UserContext.Provider>
             </BrowserRouter>
         </div>

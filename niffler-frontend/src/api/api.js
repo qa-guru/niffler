@@ -10,9 +10,9 @@ const apiClient = (token) => axios.create({
     }
 });
 
-const getData = ({path, onSuccess, onFail}) => {
+const getData = ({path, onSuccess, onFail, params}) => {
     const token = sessionStorage.getItem('id_token');
-    apiClient(token).get(`${path}`)
+    apiClient(token).get(`${path}`, { params })
         .then(res => {
             return res.data;
         })

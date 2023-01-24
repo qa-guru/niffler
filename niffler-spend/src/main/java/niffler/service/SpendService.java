@@ -153,7 +153,6 @@ public class SpendService {
         if (filter != null) {
             return switch (filter) {
                 case TODAY -> currentDate;
-                case YESTERDAY -> addDaysToDate(currentDate, Calendar.DAY_OF_WEEK, -1);
                 case WEEK -> addDaysToDate(currentDate, Calendar.WEEK_OF_MONTH, -1);
                 case MONTH -> addDaysToDate(currentDate, Calendar.MONTH, -1);
                 case ALL -> null;

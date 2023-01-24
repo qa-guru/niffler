@@ -50,7 +50,7 @@ public class RestSpendClient {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         Optional.ofNullable(filter).ifPresent(dfv -> params.add("filter", filter.name()));
-        Optional.ofNullable(filter).ifPresent(dfv -> params.add("currency", currency.name()));
+        Optional.ofNullable(currency).ifPresent(dfv -> params.add("currency", currency.name()));
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/spends").queryParams(params).build().toUri();
 
         return webClient.get()

@@ -80,7 +80,7 @@ export const Profile = ({showSuccess, showError}) => {
                                                }
                                     }
                                     />
-                                    <div style={{width: "100%"}}>
+                                    <div style={{width: 350}}>
                                         <FormSelect options={currencies}
                                                     placeholder="Select currency"
                                                     value={userData?.currency}
