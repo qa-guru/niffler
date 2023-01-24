@@ -105,7 +105,7 @@ Dmitriis-MacBook-Pro niffler % vi /etc/hosts
 #### 10. Запустить фронтенд
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler-frontend
-Dmitriis-MacBook-Pro niffler-auth % npm start
+Dmitriis-MacBook-Pro niffler-frontend % npm start
 ```
 
 # Запуск Niffler локально:
