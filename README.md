@@ -59,7 +59,7 @@ docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata
 #### 5. Установить одну из программ для визуальной работы с Postgres
 Например, DBeaver или Datagrip. Мы рекоменуем бесплатную PgAdmin 4.
 
-#### 6. Подключиться к БД postgres (host: localhost, port; 5432, user: postgres, pass: secret, database%the: postgres) из PgAdmin и создать пустые БД микросервисов
+#### 6. Подключиться к БД postgres (host: localhost, port: 5432, user: postgres, pass: secret, database name: postgres) из PgAdmin и создать пустые БД микросервисов
 ```sql
 create database "niffler-userdata" with owner postgres;
 create database "niffler-spend" with owner postgres;
