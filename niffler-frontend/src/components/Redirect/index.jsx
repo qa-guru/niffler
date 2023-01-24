@@ -39,7 +39,6 @@ export const Redirect = ({}) => {
                             navigate("/main");
                         },
                         onFail: (err) => {
-                            debugger;
                             console.log(err);
                             navigate("/login");
                         }
