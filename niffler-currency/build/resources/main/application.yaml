@@ -1,0 +1,46 @@
+server:
+  port: 8091
+  error:
+    include:
+      message: true
+
+grpc:
+  server:
+    port: 8092
+
+spring:
+  application:
+    name: niffler-cyrrency
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/niffler-currency'
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 10
+      maximum-pool-size: 30
+      idle-timeout: 10000
+      max-lifetime: 1000
+      auto-commit: true
+    username: postgres
+    password: secret
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+#    org.springframework.boot.autoconfigure: DEBUG

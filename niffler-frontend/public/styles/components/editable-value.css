@@ -1,0 +1,8 @@
+.editable__input {
+    font-family: "PTRootUIWeb";
+    border: none;
+    border-bottom: 2px solid black;
+    background: transparent;
+    display: block;
+    margin-top: 3px;
+}

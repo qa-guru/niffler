@@ -1,0 +1,8 @@
+rootProject.name = 'niffler'
+include 'niffler-gateway'
+include 'niffler-auth'
+include 'niffler-currency'
+include 'niffler-userdata'
+include 'niffler-spend'
+include 'niffler-grpc-common'
+include 'niffler-e-2-e-tests'

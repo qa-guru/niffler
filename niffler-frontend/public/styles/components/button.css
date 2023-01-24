@@ -1,0 +1,53 @@
+.button {
+    font-family: "PTRootUIWeb", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    display: block;
+    box-sizing: border-box;
+    max-width: 350px;
+    width: 100%;
+    padding: 15px 30px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    border-radius: 3px;
+    border: 2px solid black;
+    opacity: 0.6;
+    background-color: white;
+    color: black;
+    font-weight: 700;
+}
+
+.button_type_small {
+    width: fit-content;
+    padding: 10px 15px;
+
+}
+
+.button:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.button-icon {
+    width: 20px;
+    height: 20px;
+    border: none;
+    background-size: contain;
+    background-color: transparent;
+}
+
+.button-icon:hover {
+    cursor: pointer;
+}
+
+.button-icon_type_close {
+    background-image: url("./../../images/close.svg");
+}
+
+.button-icon_type_edit {
+    background-image: url("./../../images/edit.svg");
+}
+
+.button-icon_type_logout {
+    background-image: url("./../../images/logout.svg");
+}

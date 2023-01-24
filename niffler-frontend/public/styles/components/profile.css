@@ -1,0 +1,19 @@
+.profile__avatar-edit {
+    border: none;
+    background: transparent;
+    margin-top: 13px;
+}
+
+.profile__avatar-edit:hover {
+    cursor: pointer;
+}
+
+.profile__avatar {
+    margin: 10px;
+}
+
+.profile__info-container {
+    display: grid;
+    grid-gap: 10px;
+    margin-bottom: 20px;
+}

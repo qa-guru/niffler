@@ -1,0 +1,22 @@
+.calendar-wrapper,
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+    width: 100%;
+}
+
+.react-datepicker__input-container input {
+    font-family: "PTRootUIWeb";
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+
+    box-sizing: border-box;
+    font-size: 14px;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 3px;
+    font-weight: normal;
+    opacity: 0.5;
+    background-color: white;
+    color: black;
+}

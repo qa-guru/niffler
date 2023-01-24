@@ -1,0 +1,52 @@
+.avatar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.edit-avatar__container {
+    position: relative;
+    margin: 10px;
+    box-shadow: 0 0 10px 10px black;
+    width: 200px;
+    height: 200px;
+    z-index: 1;
+}
+
+.edit-avatar__header {
+    margin-bottom: 30px;
+}
+
+.edit-avatar__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.edit-avatar__close {
+    position: absolute;
+    right: -40px;
+    top: -15px;
+}
+
+.edit-avatar__button-container {
+    align-self: center;
+    margin-top: 30px;
+}
+
+
+input[type=file]::file-selector-button {
+    font-family: PTRootUIWeb;
+    border: 2px solid black;
+    opacity: 0.5;
+    padding: .2em .4em;
+    border-radius: 3px;
+    background-color: white;
+    transition: 1s;
+}
+
+input[type=file]::file-selector-button:hover {
+    background-color: saddlebrown;
+    border: 2px solid white;
+    cursor: pointer;
+}

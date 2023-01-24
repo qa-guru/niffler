@@ -1,0 +1,118 @@
+/*global styles, should be imported first*/
+@import url("./components/global.css");
+/* big blocks styles*/
+@import url("./components/header.css");
+@import url("./components/footer.css");
+@import url("./components/main-page.css");
+/*other components styles*/
+@import url("./components/avatar.css");
+@import url("./components/button.css");
+@import url("./components/editable-value.css");
+@import url("./components/form.css");
+@import url("./components/form-input.css");
+@import url("./components/profile.css");
+@import url("./components/react-calendar.css");
+@import url("./components/select.css");
+@import url("./components/table.css");
+
+.main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.main-content {
+    margin: 160px 20px 100px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 35px;
+    grid-template-areas:
+    "add stats stats"
+    "history history history";
+}
+
+.profile-content {
+    margin: 160px 20px 100px;
+    display: grid;
+    grid-template-columns: 1fr;
+
+}
+
+
+.value-form {
+    display: flex;
+    align-items: flex-end;
+}
+
+.value-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.main-content__section {
+    text-align: center;
+    width: 100%;
+    box-shadow: 0 0 20px 20px black;
+    background-color: peru;
+    background-image: url("./../images/old-paper-background-texture-37.jpg");
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.main-content__section-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.main-content__section-add-spending {
+    grid-area: add;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-content__section-stats {
+    grid-area: stats;
+}
+
+.main-content__section-history {
+    grid-area: history;
+}
+
+.spendings__content {
+    margin: 10px;
+}
+
+.spendings__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.spendings__buttons {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 20px 20px 10px;
+}
+
+.spendings__img {
+    box-shadow: 0 0 10px 10px black;
+}
+
+.cite {
+    margin: 0;
+    padding: 0;
+    font-style: italic;
+}
