@@ -3,6 +3,7 @@ package niffler.service.api;
 import jakarta.annotation.Nullable;
 import niffler.model.CategoryJson;
 import niffler.model.CurrencyValues;
+import niffler.model.DataFilterValues;
 import niffler.model.SpendJson;
 import niffler.model.StatisticJson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,10 @@ public class RestSpendClient {
                 .block();
     }
 
-    public List<SpendJson> getSpends(String username) {
+    public List<SpendJson> getSpends(String username, @Nullable DataFilterValues filter) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
+        Optional.ofNullable(filter).ifPresent(dfv -> params.add("filter", filter.name()));
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/spends").queryParams(params).build().toUri();
 
         return webClient.get()

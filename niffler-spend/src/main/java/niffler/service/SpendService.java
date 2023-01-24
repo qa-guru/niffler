@@ -6,6 +6,7 @@ import niffler.data.SpendEntity;
 import niffler.data.repository.CategoryRepository;
 import niffler.data.repository.SpendRepository;
 import niffler.model.CurrencyValues;
+import niffler.model.DataFilterValues;
 import niffler.model.SpendJson;
 import niffler.model.StatisticByCategoryJson;
 import niffler.model.StatisticJson;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -54,9 +56,13 @@ public class SpendService {
         return SpendJson.fromEntity(spendRepository.save(spendEntity));
     }
 
-    public List<SpendJson> getSpendsForUser(String username) {
-        return spendRepository.findAllByUsername(username)
-                .stream()
+    public List<SpendJson> getSpendsForUser(String username, @Nullable DataFilterValues filter) {
+        Date filterDate = filterDate(filter);
+        List<SpendEntity> spends = filterDate == null
+                ? spendRepository.findAllByUsername(username)
+                : spendRepository.findAllByUsernameAndSpendDateGreaterThanEqual(username, filterDate);
+
+        return spends.stream()
                 .map(SpendJson::fromEntity)
                 .collect(Collectors.toList());
     }
@@ -138,5 +144,27 @@ public class SpendService {
             result.add(statistic);
         }
         return result;
+    }
+
+    private @Nullable
+    Date filterDate(@Nullable DataFilterValues filter) {
+        Date currentDate = new Date();
+        if (filter != null) {
+            return switch (filter) {
+                case TODAY -> currentDate;
+                case YESTERDAY -> addDaysToDate(currentDate, Calendar.DAY_OF_WEEK, -1);
+                case WEEK -> addDaysToDate(currentDate, Calendar.WEEK_OF_MONTH, -1);
+                case MONTH -> addDaysToDate(currentDate, Calendar.MONTH, -1);
+                case ALL -> null;
+            };
+        }
+        return null;
+    }
+
+    private Date addDaysToDate(Date date, int selector, int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(selector, days);
+        return cal.getTime();
     }
 }

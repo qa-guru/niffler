@@ -1,6 +1,7 @@
 package niffler.controller;
 
 import niffler.model.CurrencyValues;
+import niffler.model.DataFilterValues;
 import niffler.model.SpendJson;
 import niffler.model.StatisticJson;
 import niffler.service.SpendService;
@@ -27,8 +28,8 @@ public class SpendController {
     }
 
     @GetMapping("/spends")
-    public List<SpendJson> getSpends(@RequestParam String username) {
-        return spendService.getSpendsForUser(username);
+    public List<SpendJson> getSpends(@RequestParam String username, @RequestParam(required = false) DataFilterValues filter) {
+        return spendService.getSpendsForUser(username, filter);
     }
 
     @GetMapping("/statistic")

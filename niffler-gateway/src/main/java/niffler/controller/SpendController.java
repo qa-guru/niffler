@@ -2,6 +2,7 @@ package niffler.controller;
 
 import jakarta.validation.Valid;
 import niffler.model.CurrencyValues;
+import niffler.model.DataFilterValues;
 import niffler.model.SpendJson;
 import niffler.model.StatisticJson;
 import niffler.service.api.RestSpendClient;
@@ -33,9 +34,10 @@ public class SpendController {
     }
 
     @GetMapping("/spends")
-    public List<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal) {
+    public List<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal,
+                                     @RequestParam(required = false) DataFilterValues filter) {
         String username = principal.getClaim("sub");
-        return restSpendClient.getSpends(username);
+        return restSpendClient.getSpends(username, filter);
     }
 
     @PostMapping("/addSpend")
