@@ -83,7 +83,7 @@ OpenJDK Runtime Environment Homebrew (build 19.0.1)
 Если у вас несколько версий Java одновременно - то хотя бы одна из них должна быть 17+
 Если java не установлена вовсе, то рекомендую установить OpenJDK (например, из https://adoptium.net/en-GB/)
 
-#### 8. Установить пакетый менеджер для сборки fronend npm
+#### 8. Установить пакетый менеджер для сборки front-end npm
 [Инструкция](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 Рекомендованная версия Node.js - 18.13.0 (LTS)
 
