@@ -56,13 +56,14 @@ public class SpendService {
         return SpendJson.fromEntity(spendRepository.save(spendEntity));
     }
 
-    public List<SpendJson> getSpendsForUser(String username, @Nullable DataFilterValues filter) {
+    public List<SpendJson> getSpendsForUser(String username, @Nullable DataFilterValues filter, @Nullable CurrencyValues currency) {
         Date filterDate = filterDate(filter);
         List<SpendEntity> spends = filterDate == null
                 ? spendRepository.findAllByUsername(username)
                 : spendRepository.findAllByUsernameAndSpendDateGreaterThanEqual(username, filterDate);
 
         return spends.stream()
+                .filter(se -> currency == null || se.getCurrency() == currency)
                 .map(SpendJson::fromEntity)
                 .collect(Collectors.toList());
     }

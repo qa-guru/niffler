@@ -28,8 +28,10 @@ public class SpendController {
     }
 
     @GetMapping("/spends")
-    public List<SpendJson> getSpends(@RequestParam String username, @RequestParam(required = false) DataFilterValues filter) {
-        return spendService.getSpendsForUser(username, filter);
+    public List<SpendJson> getSpends(@RequestParam String username,
+                                     @RequestParam(required = false) DataFilterValues filter,
+                                     @RequestParam(required = false) CurrencyValues currency) {
+        return spendService.getSpendsForUser(username, filter, currency);
     }
 
     @GetMapping("/statistic")

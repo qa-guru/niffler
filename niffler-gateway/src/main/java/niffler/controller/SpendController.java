@@ -35,9 +35,10 @@ public class SpendController {
 
     @GetMapping("/spends")
     public List<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal,
-                                     @RequestParam(required = false) DataFilterValues filter) {
+                                     @RequestParam(required = false) DataFilterValues filter,
+                                     @RequestParam(required = false) CurrencyValues currency) {
         String username = principal.getClaim("sub");
-        return restSpendClient.getSpends(username, filter);
+        return restSpendClient.getSpends(username, filter, currency);
     }
 
     @PostMapping("/addSpend")
