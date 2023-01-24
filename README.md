@@ -53,7 +53,7 @@ docker volume create pgdata
 ```
 #### 4. Запустить БД командой 
 ```posh
-docker run --name niffler-all -p 5433:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -d postgres:15.1
+docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -d postgres:15.1
 ```
 
 #### 5. Установить одну из программ для визуальной работы с Postgres
