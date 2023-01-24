@@ -102,9 +102,10 @@ Dmitriis-MacBook-Pro niffler % vi /etc/hosts
 127.0.0.1       auth-server
 ```
 
-#### 10. Запустить фронтенд
+#### 10. Запустить фронтенд (сначала обновить зависимости)
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler-frontend
+Dmitriis-MacBook-Pro niffler-frontend % npm i
 Dmitriis-MacBook-Pro niffler-frontend % npm start
 ```
 
