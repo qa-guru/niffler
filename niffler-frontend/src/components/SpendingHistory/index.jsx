@@ -34,10 +34,12 @@ export const SpendingHistory = ({spendings, currencies}) => {
                                                 setSelectedCurrency(currency)}}
                                 />
                             </div>
-                            <ButtonIcon iconType={"close"} onClick={() => {
-                                setFilter(null);
-                                setSelectedCurrency({value: "ALL", label: "ALL"});
-                            }}/>
+                            {(filter !== null || selectedCurrency.value !== "ALL") &&
+                                (<ButtonIcon iconType={"close"} onClick={() => {
+                                    setFilter(null);
+                                    setSelectedCurrency({value: "ALL", label: "ALL"});
+                                }}/>)
+                            }
                         </div>
                     </div>
                     <img className={"spendings__img"} src="/images/gringotts2.jpeg" width={250} alt={"Image of Gringotts"}></img>
