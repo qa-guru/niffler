@@ -1,6 +1,6 @@
 HELP.md
 .gradle
-build/
+build/**
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
 !**/src/main/**/build/
@@ -38,4 +38,4 @@ out/
 .vscode/
 
 ### gRPC generated files ###
-/niffler-grpc-common/src/generated/
+/niffler-grpc-common/src/generated/**
