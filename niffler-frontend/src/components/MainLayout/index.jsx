@@ -103,7 +103,7 @@ export const MainLayout = ({showSuccess}) => {
                     <FilterContext.Provider value={value}>
                         <CurrencyContext.Provider value={curContext}>
                             <AddSpending addSpendingCallback={addNewSpendingInTableCallback} categories={categories} />
-                            <SpendingStatistics currency={user?.currency} statistic={statistic} spendings={spendings}/>
+                            <SpendingStatistics statistic={statistic} defaultCurrency={user?.currency} />
                             <SpendingHistory spendings={spendings} currencies={currencies}/>
                         </CurrencyContext.Provider>
                     </FilterContext.Provider>
