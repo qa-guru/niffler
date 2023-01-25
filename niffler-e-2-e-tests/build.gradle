@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '2.9.6'
+    id "io.freefair.lombok" version "6.4.2"
 }
 
 group 'guru.qa'
@@ -9,9 +11,37 @@ repositories {
     mavenCentral()
 }
 
+def allureVersion = "2.17.3",
+        junitVersion = "5.9.2",
+        aspectjWeaverVersion = "1.9.19",
+        selenideVersion = "6.11.1",
+        restAssuredVersion = "5.3.0",
+        ownerVersion = "1.0.12"
+
+allure {
+    report {
+        version.set(allureVersion)
+    }
+    adapter {
+        aspectjWeaver.set(true)
+        frameworks {
+            junit5 {
+                adapterVersion.set(allureVersion)
+            }
+        }
+    }
+}
+
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
-    testImplementation 'com.codeborne:selenide:6.11.1'
+    testImplementation (
+            "org.aspectj:aspectjweaver:$aspectjWeaverVersion",
+            "org.junit.jupiter:junit-jupiter:$junitVersion",
+            "com.codeborne:selenide:$selenideVersion",
+            "io.rest-assured:rest-assured:$restAssuredVersion",
+            "org.aeonbits.owner:owner:$ownerVersion",
+            "io.qameta.allure:allure-selenide:$allureVersion",
+            "io.qameta.allure:allure-rest-assured:$allureVersion"
+    )
 }
 
 test {
