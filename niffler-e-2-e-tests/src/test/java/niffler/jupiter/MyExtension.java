@@ -1,7 +1,7 @@
 package niffler.jupiter;
 
 import io.restassured.http.ContentType;
-import niffler.dto.TableSpend;
+import niffler.dto.DTOSpend;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
@@ -12,7 +12,7 @@ public class MyExtension implements BeforeEachCallback {
     public void beforeEach(ExtensionContext context) throws Exception {
 
         System.out.println("Тест пройден");
-        TableSpend spends = new TableSpend();
+        DTOSpend spends = new DTOSpend();
 
         spends.setSpendDate("2023-01-25T06:01:27.144Z");
         spends.setCategory("Каток");

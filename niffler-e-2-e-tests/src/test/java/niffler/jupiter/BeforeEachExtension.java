@@ -1,7 +1,5 @@
 package niffler.jupiter;
 
-import io.restassured.http.ContentType;
-import niffler.dto.TableSpend;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 

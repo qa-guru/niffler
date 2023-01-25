@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 
-public class TableSpend {
+public class DTOSpend {
 
     @JsonProperty("spendDate")
     private String spendDate;
