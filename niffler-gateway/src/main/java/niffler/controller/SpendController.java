@@ -5,6 +5,7 @@ import niffler.model.CurrencyValues;
 import niffler.model.DataFilterValues;
 import niffler.model.SpendJson;
 import niffler.model.StatisticJson;
+import niffler.service.StatisticAggregator;
 import niffler.service.api.RestSpendClient;
 import niffler.service.api.RestUserDataClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,13 @@ public class SpendController {
 
     private final RestSpendClient restSpendClient;
     private final RestUserDataClient restUserDataClient;
+    private final StatisticAggregator statisticAggregator;
 
     @Autowired
-    public SpendController(RestSpendClient restSpendClient, RestUserDataClient restUserDataClient) {
+    public SpendController(RestSpendClient restSpendClient, RestUserDataClient restUserDataClient, StatisticAggregator statisticAggregator) {
         this.restSpendClient = restSpendClient;
         this.restUserDataClient = restUserDataClient;
+        this.statisticAggregator = statisticAggregator;
     }
 
     @GetMapping("/spends")
@@ -59,6 +62,6 @@ public class SpendController {
                                                  @RequestParam(required = false) Date from,
                                                  @RequestParam(required = false) Date to) {
         String username = principal.getClaim("sub");
-        return restSpendClient.statistic(username, currency, from, to);
+        return statisticAggregator.enrichStatisticRequest(username, currency, from, to);
     }
 }

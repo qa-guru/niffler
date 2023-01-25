@@ -5,6 +5,7 @@ import niffler.data.CategoryEntity;
 import niffler.data.SpendEntity;
 import niffler.data.repository.CategoryRepository;
 import niffler.data.repository.SpendRepository;
+import niffler.model.CurrencyJson;
 import niffler.model.CurrencyValues;
 import niffler.model.DataFilterValues;
 import niffler.model.SpendJson;
@@ -69,9 +70,11 @@ public class SpendService {
     }
 
     public List<StatisticJson> getStatistic(String username,
-                                            @Nullable CurrencyValues currency,
+                                            CurrencyValues userCurrency,
+                                            @Nullable CurrencyValues filterCurrency,
                                             @Nullable Date dateFrom,
-                                            @Nullable Date dateTo) {
+                                            @Nullable Date dateTo,
+                                            List<CurrencyJson> currencyRates) {
         if (dateTo == null) {
             dateTo = new Date();
         }
@@ -91,13 +94,25 @@ public class SpendService {
             );
         }
 
-        CurrencyValues[] desiredCurrenciesInResponse = currency != null ? new CurrencyValues[]{currency} : CurrencyValues.values();
+        CurrencyValues[] desiredCurrenciesInResponse = filterCurrency != null
+                ? new CurrencyValues[]{filterCurrency}
+                : CurrencyValues.values();
 
         for (CurrencyValues value : desiredCurrenciesInResponse) {
+            BigDecimal course = BigDecimal.valueOf(
+                    currencyRates.stream()
+                            .filter(cr -> cr.getCurrency() == value)
+                            .findFirst()
+                            .orElseThrow()
+                            .getCurrencyRate()
+            );
+
             StatisticJson statistic = new StatisticJson();
             statistic.setDateTo(dateTo);
             statistic.setCurrency(value);
+            statistic.setUserDefaultCurrency(userCurrency);
             statistic.setTotal(0.0);
+            statistic.setTotalInUserDefaultCurrency(0.0);
 
             Map<String, List<SpendJson>> spendsByCategory = spendEntities.stream()
                     .filter(se -> se.getCurrency() == value)
@@ -107,9 +122,20 @@ public class SpendService {
                             statistic.setDateFrom(se.getSpendDate());
                         }
                     })
-                    .peek(se -> statistic.setTotal(BigDecimal.valueOf(statistic.getTotal())
-                            .add(BigDecimal.valueOf(se.getAmount()))
-                            .doubleValue())
+                    .peek(se ->
+                            statistic.setTotal(BigDecimal.valueOf(statistic.getTotal())
+                                    .add(BigDecimal.valueOf(se.getAmount()))
+                                    .doubleValue())
+                    )
+                    .peek(se -> {
+                                if (userCurrency != value) {
+                                    statistic.setTotalInUserDefaultCurrency(BigDecimal.valueOf(statistic.getTotalInUserDefaultCurrency())
+                                            .add(BigDecimal.valueOf(se.getAmount()).multiply(course))
+                                            .doubleValue());
+                                } else {
+                                    statistic.setTotalInUserDefaultCurrency(statistic.getTotal());
+                                }
+                            }
                     )
                     .map(SpendJson::fromEntity)
                     .collect(Collectors.groupingBy(
