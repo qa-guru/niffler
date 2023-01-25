@@ -1,5 +1,6 @@
 package guru.qa.nifflerauth.service.cors;
 
+import jakarta.annotation.Nonnull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
@@ -10,7 +11,7 @@ import java.util.List;
 @Component
 public class CorsCustomizer {
 
-    public void corsCustomizer(HttpSecurity http) throws Exception {
+    public void corsCustomizer(@Nonnull HttpSecurity http) throws Exception {
         http.cors(c -> {
             CorsConfigurationSource source = s -> {
                 CorsConfiguration cc = new CorsConfiguration();

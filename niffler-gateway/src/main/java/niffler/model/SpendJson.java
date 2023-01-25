@@ -7,8 +7,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class SpendJson {
+    @JsonProperty("id")
+    private UUID id;
     @JsonProperty("spendDate")
     @NotNull(message = "Spend date can not be null")
     @PastOrPresent(message = "Spend date must not be future")
@@ -29,6 +32,14 @@ public class SpendJson {
     private String username;
 
     public SpendJson() {
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public Date getSpendDate() {

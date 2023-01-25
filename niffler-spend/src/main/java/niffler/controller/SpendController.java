@@ -5,6 +5,7 @@ import niffler.model.SpendJson;
 import niffler.model.StatisticJson;
 import niffler.service.SpendService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,16 +28,20 @@ public class SpendController {
     }
 
     @GetMapping("/spends")
-    public List<SpendJson> getSpends(@RequestParam String username) {
-        return spendService.getSpendsForUser(username);
+    public List<SpendJson> getSpends(@RequestParam String username,
+                                     @RequestParam(required = false) CurrencyValues filterCurrency,
+                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) {
+        return spendService.getSpendsForUser(username, filterCurrency, from, to);
     }
 
     @GetMapping("/statistic")
     public List<StatisticJson> getStatistic(@RequestParam String username,
-                                            @RequestParam(required = false) CurrencyValues currency,
-                                            @RequestParam(required = false) Date from,
-                                            @RequestParam(required = false) Date to) {
-        return spendService.getStatistic(username, currency, from, to);
+                                            @RequestParam CurrencyValues userCurrency,
+                                            @RequestParam(required = false) CurrencyValues filterCurrency,
+                                            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) {
+        return spendService.getStatistic(username, userCurrency, filterCurrency, from, to);
     }
 
     @PostMapping("/addSpend")

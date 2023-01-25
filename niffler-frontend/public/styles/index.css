@@ -100,12 +100,20 @@
     margin: 20px;
 }
 
-.spendings__buttons {
+.spendings__filters {
     display: flex;
     width: 100%;
     align-items: center;
     justify-content: space-between;
-    margin: 20px 20px 20px 10px;
+}
+
+.spendings__buttons{
+    display: flex;
+    width: 100%;
+}
+
+.spendings__buttons button {
+    margin-right: 20px;
 }
 
 .spendings__img {

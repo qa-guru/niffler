@@ -14,6 +14,10 @@ public class StatisticJson {
     private CurrencyValues currency;
     @JsonProperty("total")
     private Double total;
+    @JsonProperty("userDefaultCurrency")
+    private CurrencyValues userDefaultCurrency;
+    @JsonProperty("totalInUserDefaultCurrency")
+    private Double totalInUserDefaultCurrency;
     @JsonProperty("categoryStatistics")
     private List<StatisticByCategoryJson> categoryStatistics;
 
@@ -47,6 +51,22 @@ public class StatisticJson {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public CurrencyValues getUserDefaultCurrency() {
+        return userDefaultCurrency;
+    }
+
+    public void setUserDefaultCurrency(CurrencyValues userDefaultCurrency) {
+        this.userDefaultCurrency = userDefaultCurrency;
+    }
+
+    public Double getTotalInUserDefaultCurrency() {
+        return totalInUserDefaultCurrency;
+    }
+
+    public void setTotalInUserDefaultCurrency(Double totalInUserDefaultCurrency) {
+        this.totalInUserDefaultCurrency = totalInUserDefaultCurrency;
     }
 
     public List<StatisticByCategoryJson> getCategoryStatistics() {

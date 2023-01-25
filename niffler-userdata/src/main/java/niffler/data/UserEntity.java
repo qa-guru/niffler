@@ -24,14 +24,14 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, unique = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CurrencyValues currency;
 
-    @Column(nullable = true, unique = false)
+    @Column(nullable = true)
     private String firstname;
 
-    @Column(nullable = true, unique = false)
+    @Column(nullable = true)
     private String surname;
 
     @Column(name = "photo", columnDefinition = "bytea")

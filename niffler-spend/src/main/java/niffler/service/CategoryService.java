@@ -1,5 +1,7 @@
 package niffler.service;
 
+import jakarta.annotation.Nonnull;
+import niffler.data.CategoryEntity;
 import niffler.data.repository.CategoryRepository;
 import niffler.model.CategoryJson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,18 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<CategoryJson> getAllCategories() {
+    public @Nonnull
+    List<CategoryJson> getAllCategories() {
         return categoryRepository.findAll()
                 .stream()
                 .map(CategoryJson::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public @Nonnull
+    CategoryJson addCategory(@Nonnull CategoryJson category) {
+        CategoryEntity ce = new CategoryEntity();
+        ce.setDescription(category.getDescription());
+        return CategoryJson.fromEntity(categoryRepository.save(ce));
     }
 }

@@ -1,18 +1,28 @@
 import {getData} from "../../api/api";
 import {useLoadedData} from "../../api/hooks";
+import {CurrencyContext} from "../../contexts/CurrencyContext";
+import {FilterContext} from "../../contexts/FilterContext";
 import {UserContext} from "../../contexts/UserContext";
 import {AddSpending} from "../AddSpending";
 import {Header} from "../Header";
 import {SpendingHistory} from "../SpendingHistory";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {SpendingStatistics} from "../SpendingStatistics";
 
 export const MainLayout = ({showSuccess}) => {
     const [spendings, setSpendings] = useState([]);
     const [categories, setCategories] = useState({});
     const [statistic, setStatistic] = useState([]);
-
     const { user, setUser } = useContext(UserContext);
+
+    const [filter, setFilter] = useState(null);
+    const value = { filter, setFilter };
+
+    const [currencies, setCurrencies] = useState([]);
+
+    const [selectedCurrency, setSelectedCurrency] = useState({value: "ALL", label: "ALL"});
+    const curContext = { selectedCurrency, setSelectedCurrency };
+
 
     useLoadedData({
             path: "/categories",
@@ -26,27 +36,52 @@ export const MainLayout = ({showSuccess}) => {
             },
         }
     );
+
     useLoadedData({
-            path: "/spends",
+        path: "/allCurrencies",
+        onSuccess: (data) => {
+            const currencies = Array.from(data.map((v) => {
+                return {value: v?.currency, label: v?.currency}
+            }));
+            currencies.push({value: "ALL", label: "ALL"});
+            setCurrencies(currencies);
+        },
+        onFail: (err) => {
+            console.log(err);
+        }
+    });
+
+    useEffect(() => {
+        getData({
+            path:`/spends`,
+            params: {
+                filterPeriod: filter === "ALL" ? null : filter,
+                filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
+            },
             onSuccess: (data) => {
                 setSpendings(data);
             },
             onFail: (error) => {
                 console.log(error);
             },
-        }
-    );
+        });
+    }, [filter, selectedCurrency]);
 
-    useLoadedData({
+    useEffect(() => {
+        getData({
             path: "/statistic",
+            params: {
+                filterPeriod: filter === "ALL" ? null : filter,
+                filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
+            },
             onSuccess: (data) => {
                 setStatistic(data);
             },
             onFail: (error) => {
                 console.log(error);
             },
-        }
-    );
+        });
+    }, [filter, selectedCurrency]);
 
 
     const addNewSpendingInTableCallback = (data) => {
@@ -70,9 +105,13 @@ export const MainLayout = ({showSuccess}) => {
             <Header />
             <main className={"main"}>
                 <div className={"main-content"}>
-                    <AddSpending addSpendingCallback={addNewSpendingInTableCallback} categories={categories} />
-                    <SpendingStatistics currency={user?.currency} statistic={statistic} spendings={spendings}/>
-                    <SpendingHistory spendings={spendings}/>
+                    <FilterContext.Provider value={value}>
+                        <CurrencyContext.Provider value={curContext}>
+                            <AddSpending addSpendingCallback={addNewSpendingInTableCallback} categories={categories} />
+                            <SpendingStatistics statistic={statistic} defaultCurrency={user?.currency} />
+                            <SpendingHistory spendings={spendings} currencies={currencies}/>
+                        </CurrencyContext.Provider>
+                    </FilterContext.Provider>
                 </div>
             </main>
             <footer className={"footer"}>

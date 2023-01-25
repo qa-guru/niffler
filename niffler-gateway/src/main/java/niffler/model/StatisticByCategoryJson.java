@@ -9,6 +9,8 @@ public class StatisticByCategoryJson {
     private String category;
     @JsonProperty("total")
     private Double total;
+    @JsonProperty("totalInUserDefaultCurrency")
+    private Double totalInUserDefaultCurrency;
     @JsonProperty("spends")
     private List<SpendJson> spends;
 
@@ -26,6 +28,14 @@ public class StatisticByCategoryJson {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public Double getTotalInUserDefaultCurrency() {
+        return totalInUserDefaultCurrency;
+    }
+
+    public void setTotalInUserDefaultCurrency(Double totalInUserDefaultCurrency) {
+        this.totalInUserDefaultCurrency = totalInUserDefaultCurrency;
     }
 
     public List<SpendJson> getSpends() {

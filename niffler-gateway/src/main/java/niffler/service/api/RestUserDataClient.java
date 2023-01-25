@@ -1,5 +1,6 @@
 package niffler.service.api;
 
+import jakarta.annotation.Nonnull;
 import niffler.model.UserJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +26,8 @@ public class RestUserDataClient {
         this.nifflerUserdataBaseUri = nifflerUserdataBaseUri;
     }
 
-    public UserJson updateUserInfo(UserJson user) {
+    public @Nonnull
+    UserJson updateUserInfo(@Nonnull UserJson user) {
         return webClient.post()
                 .uri(nifflerUserdataBaseUri + "/updateUserInfo")
                 .body(Mono.just(user), UserJson.class)
@@ -34,7 +36,8 @@ public class RestUserDataClient {
                 .block();
     }
 
-    public UserJson currentUser(String username) {
+    public @Nonnull
+    UserJson currentUser(@Nonnull String username) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/currentUser").queryParams(params).build().toUri();

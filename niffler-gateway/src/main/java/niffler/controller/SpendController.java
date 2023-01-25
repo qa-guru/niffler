@@ -2,8 +2,10 @@ package niffler.controller;
 
 import jakarta.validation.Valid;
 import niffler.model.CurrencyValues;
+import niffler.model.DataFilterValues;
 import niffler.model.SpendJson;
 import niffler.model.StatisticJson;
+import niffler.service.StatisticAggregator;
 import niffler.service.api.RestSpendClient;
 import niffler.service.api.RestUserDataClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -25,17 +26,21 @@ public class SpendController {
 
     private final RestSpendClient restSpendClient;
     private final RestUserDataClient restUserDataClient;
+    private final StatisticAggregator statisticAggregator;
 
     @Autowired
-    public SpendController(RestSpendClient restSpendClient, RestUserDataClient restUserDataClient) {
+    public SpendController(RestSpendClient restSpendClient, RestUserDataClient restUserDataClient, StatisticAggregator statisticAggregator) {
         this.restSpendClient = restSpendClient;
         this.restUserDataClient = restUserDataClient;
+        this.statisticAggregator = statisticAggregator;
     }
 
     @GetMapping("/spends")
-    public List<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal) {
+    public List<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal,
+                                     @RequestParam(required = false) DataFilterValues filterPeriod,
+                                     @RequestParam(required = false) CurrencyValues filterCurrency) {
         String username = principal.getClaim("sub");
-        return restSpendClient.getSpends(username);
+        return restSpendClient.getSpends(username, filterPeriod, filterCurrency);
     }
 
     @PostMapping("/addSpend")
@@ -52,10 +57,9 @@ public class SpendController {
 
     @GetMapping("/statistic")
     public List<StatisticJson> getTotalStatistic(@AuthenticationPrincipal Jwt principal,
-                                                 @RequestParam(required = false) CurrencyValues currency,
-                                                 @RequestParam(required = false) Date from,
-                                                 @RequestParam(required = false) Date to) {
+                                                 @RequestParam(required = false) CurrencyValues filterCurrency,
+                                                 @RequestParam(required = false) DataFilterValues filterPeriod) {
         String username = principal.getClaim("sub");
-        return restSpendClient.statistic(username, currency, from, to);
+        return statisticAggregator.enrichStatisticRequest(username, filterCurrency, filterPeriod);
     }
 }

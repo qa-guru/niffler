@@ -1,8 +1,10 @@
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Bar} from "react-chartjs-2";
+import {CurrencyContext} from "../../contexts/CurrencyContext";
 
-export const SpendingStatistics = ({currency, statistic}) => {
+export const SpendingStatistics = ({ statistic, defaultCurrency}) => {
+    const {selectedCurrency, setSelectedCurrency} = useContext(CurrencyContext);
 
     ChartJS.register(
         CategoryScale,
@@ -26,11 +28,42 @@ export const SpendingStatistics = ({currency, statistic}) => {
         },
     };
 
+    const getLabels = () => {
+        if (selectedCurrency.value !== "ALL") {
+            return statistic.find(v => (v.currency === selectedCurrency.value))?.categoryStatistics?.map(v => v.category);
+        }
+        return statistic.find(v => (v.currency === defaultCurrency))?.categoryStatistics?.map(v => v.category);
+    }
+
+
+    const getData = () => {
+        const allCategories = getLabels();
+        const map = new Map();
+            if(allCategories !== undefined) {
+                for(let c of allCategories) {
+                    let total;
+                    if (selectedCurrency.value !== "ALL") {
+                        total = statistic
+                            .filter(st => st.currency === selectedCurrency.value)
+                            .flatMap(st => st?.categoryStatistics)
+                            .find(cat => cat?.category === c)?.total;
+                    } else {
+                        total = statistic
+                            .flatMap(st => st?.categoryStatistics)
+                            .filter(cat => cat?.category === c)
+                            .reduce((sum, cat) => sum + cat.totalInUserDefaultCurrency, 0);
+                    }
+                    map.set(c, total);
+                }
+            }
+        return map;
+    };
+    const data = getData();
 
     const [chartData, setChartData] = useState({
-        labels: statistic.find(v => (v.currency === currency))?.categoryStatistics?.map(v => v.category),
+        labels: Array.from(data.keys()),
         datasets:[{
-            data: statistic.find(v => (v.currency === currency))?.categoryStatistics?.map(v => v.total),
+            data: Array.from(data.values()),
             backgroundColor: [
                 "rgba(90, 34, 139, 0.5)",
                 "rgba(213, 184, 255, 0.5)",
@@ -44,10 +77,11 @@ export const SpendingStatistics = ({currency, statistic}) => {
     });
 
     useEffect(() => {
+        const newData = getData();
         setChartData({
-            labels:statistic.find(v => (v.currency === currency))?.categoryStatistics?.map(v => v.category),
+            labels: Array.from(newData.keys()),
             datasets:[{
-                data: statistic.find(v => (v.currency === currency))?.categoryStatistics?.map(v => v.total),
+                data: Array.from(newData.values()),
                 backgroundColor: [
                     "rgba(90, 34, 139, 0.5)",
                     "rgba(213, 184, 255, 0.5)",
@@ -60,7 +94,7 @@ export const SpendingStatistics = ({currency, statistic}) => {
             }]
         })
 
-    }, [statistic]);
+    }, [statistic, selectedCurrency]);
 
     return (
         <section className={"main-content__section main-content__section-stats"}>
