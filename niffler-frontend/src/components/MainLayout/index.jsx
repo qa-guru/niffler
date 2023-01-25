@@ -67,7 +67,8 @@ export const MainLayout = ({showSuccess}) => {
         });
     }, [filter, selectedCurrency]);
 
-    useLoadedData({
+    useEffect(() => {
+        getData({
             path: "/statistic",
             params: {
                 filterPeriod: filter,
@@ -79,8 +80,8 @@ export const MainLayout = ({showSuccess}) => {
             onFail: (error) => {
                 console.log(error);
             },
-        }
-    );
+        });
+    }, [filter, selectedCurrency]);
 
 
     const addNewSpendingInTableCallback = (data) => {
