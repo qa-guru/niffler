@@ -168,6 +168,7 @@ public class SpendService {
                         sbcj.setCategory(c.getDescription());
                         sbcj.setSpends(Collections.EMPTY_LIST);
                         sbcj.setTotal(0.0);
+                        sbcj.setTotalInUserDefaultCurrency(0.0);
                         return sbcj;
                     })
                     .forEach(sbcjResult::add);
