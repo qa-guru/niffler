@@ -99,14 +99,6 @@ public class SpendService {
                 : CurrencyValues.values();
 
         for (CurrencyValues value : desiredCurrenciesInResponse) {
-            BigDecimal course = BigDecimal.valueOf(
-                    currencyRates.stream()
-                            .filter(cr -> cr.getCurrency() == value)
-                            .findFirst()
-                            .orElseThrow()
-                            .getCurrencyRate()
-            );
-
             StatisticJson statistic = new StatisticJson();
             statistic.setDateTo(dateTo);
             statistic.setCurrency(value);
@@ -129,9 +121,14 @@ public class SpendService {
                     )
                     .peek(se -> {
                                 if (userCurrency != value) {
-                                    statistic.setTotalInUserDefaultCurrency(BigDecimal.valueOf(statistic.getTotalInUserDefaultCurrency())
-                                            .add(BigDecimal.valueOf(se.getAmount()).multiply(course))
-                                            .doubleValue());
+                                    statistic
+                                            .setTotalInUserDefaultCurrency(BigDecimal.valueOf(statistic.getTotalInUserDefaultCurrency())
+                                            .add(convertSpendTo(
+                                                    se.getAmount(),
+                                                    se.getCurrency(),
+                                                    userCurrency,
+                                                    currencyRates
+                                            )).doubleValue());
                                 } else {
                                     statistic.setTotalInUserDefaultCurrency(statistic.getTotal());
                                 }
@@ -171,6 +168,27 @@ public class SpendService {
             result.add(statistic);
         }
         return result;
+    }
+
+    private BigDecimal convertSpendTo(double spend,
+                                      CurrencyValues spendCurrency,
+                                      CurrencyValues desiredCurrency,
+                                      List<CurrencyJson> currencyRates) {
+        BigDecimal spendInUsd = spendCurrency == CurrencyValues.USD
+                ? BigDecimal.valueOf(spend)
+                : BigDecimal.valueOf(spend).multiply(courseForCurrency(spendCurrency, currencyRates));
+
+        return spendInUsd.divide(courseForCurrency(desiredCurrency, currencyRates));
+    }
+
+    private BigDecimal courseForCurrency(CurrencyValues currency, List<CurrencyJson> currencyRates) {
+        return BigDecimal.valueOf(
+                currencyRates.stream()
+                        .filter(cr -> cr.getCurrency() == currency)
+                        .findFirst()
+                        .orElseThrow()
+                        .getCurrencyRate()
+        );
     }
 
     private @Nullable
