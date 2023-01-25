@@ -59,17 +59,12 @@ docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata
 #### 5. Установить одну из программ для визуальной работы с Postgres
 Например, DBeaver или Datagrip. Мы рекоменуем бесплатную PgAdmin 4.
 
-#### 6. Подключиться к БД postgres (user: postgres, pass: secret) из PgAdmin и создать пустые БД микросервисов
+#### 6. Подключиться к БД postgres (host: localhost, port: 5432, user: postgres, pass: secret, database name: postgres) из PgAdmin и создать пустые БД микросервисов
 ```sql
 create database "niffler-userdata" with owner postgres;
 create database "niffler-spend" with owner postgres;
 create database "niffler-currency" with owner postgres;
 create database "niffler-auth" with owner postgres;
-```
-
-
-```posh
-docker run --name niffler-all -p 5433:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -d postgres:15.1
 ```
 
 #### 7. Установить Java версии 17 или новее. Это необходимо, т.к. проект не поддерживает версии <17

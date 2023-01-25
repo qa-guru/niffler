@@ -1,7 +1,6 @@
 import {useContext, useEffect} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {Buffer} from "buffer";
-import {getData} from "../../api/api";
+import {authClient, getData} from "../../api/api";
 import {UserContext} from "../../contexts/UserContext";
 
 
@@ -15,23 +14,20 @@ export const Redirect = ({}) => {
             const code = searchParams?.get('code');
             const client = 'client';
             const secret = 'secret';
-            const headers = new Headers();
-            headers.append('Content-type', 'application/json');
-            headers.append('Authorization', `Basic ${Buffer.from(`${client}:${secret}`).toString('base64')}`);
 
             const verifier = sessionStorage.getItem('codeVerifier');
 
-            const initialUrl = 'http://auth-server:9000/oauth2/token?client_id=client&redirect_uri=http://127.0.0.1:3000/authorized&grant_type=authorization_code';
+            const initialUrl = '/oauth2/token?client_id=client&redirect_uri=http://127.0.0.1:3000/authorized&grant_type=authorization_code';
             const url = `${initialUrl}&code=${code}&code_verifier=${verifier}`;
 
-            fetch(url, {
-                method: 'POST',
-                mode: 'cors',
-                headers
-            }).then(async (response) => {
-                const token = await response.json();
-                if (token?.id_token) {
-                    sessionStorage.setItem('id_token', token.id_token);
+            authClient({client, secret})
+                .post(url)
+                .then(res => {
+                    return res.data;
+                })
+                .then( (data) => {
+                if (data?.id_token) {
+                    sessionStorage.setItem('id_token', data.id_token);
                     getData({
                         path: "/currentUser",
                         onSuccess: (data) => {
@@ -57,5 +53,6 @@ export const Redirect = ({}) => {
         }
     }, []);
 
-    return <p>Redirecting ...</p>
+    return <div className="loader"></div>
+
 }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import {Buffer} from "buffer";
 
 const apiClient = (token) => axios.create({
     baseURL: "http://127.0.0.1:8090",
@@ -7,6 +8,15 @@ const apiClient = (token) => axios.create({
         'Accept': 'application/json',
         'Content-type': 'application/json',
         'Authorization': `Bearer ${token}`,
+    }
+});
+
+const authClient = ({client, secret}) => axios.create({
+    baseURL: "http://auth-server:9000",
+    mode: "cors",
+    headers: {
+        'Content-type': 'application/json',
+        'Authorization': `Basic ${Buffer.from(`${client}:${secret}`).toString('base64')}`,
     }
 });
 
@@ -34,4 +44,4 @@ const postData = ({path, data, onSuccess, onFail }) => {
         });
 };
 
-export {apiClient, getData, postData};
+export {apiClient, authClient, getData, postData};
