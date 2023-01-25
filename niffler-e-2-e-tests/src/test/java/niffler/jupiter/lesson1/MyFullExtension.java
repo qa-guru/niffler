@@ -1,12 +1,11 @@
-package niffler.jupiter;
+package niffler.jupiter.lesson1;
 
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import io.restassured.http.ContentType;
+
+import niffler.dto.TableSpend;
+import org.junit.jupiter.api.extension.*;
+
+import static io.restassured.RestAssured.given;
 
 public class MyFullExtension implements AfterAllCallback,
         AfterEachCallback,
@@ -27,7 +26,25 @@ public class MyFullExtension implements AfterAllCallback,
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
-        System.out.println("### BeforeAllCallback");
+            System.out.println("        ###beforeAll");
+
+        TableSpend spends = new TableSpend();
+
+        spends.setSpendDate("2023-01-25T06:01:27.144Z");
+        spends.setCategory("Каток");
+        spends.setAmount("44");
+        spends.setDescription("Покатушки");
+        spends.setCurrency("RUB");
+        spends.setUsername("artem");
+
+
+        given().header("Content-Type", ContentType.JSON)
+                .and()
+                .body(spends)
+                .when()
+                .post("http://127.0.0.1:8093/addSpend")
+                .then()
+                .statusCode(201);
     }
 
     @Override

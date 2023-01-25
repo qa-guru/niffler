@@ -1,11 +1,12 @@
-package niffler.jupiter;
+package niffler.jupiter.lesson1;
 
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 public interface AroundAllTestsExtension extends BeforeAllCallback {
 
-    default void beforeAllTests(ExtensionContext context) {
+    default void beforeAllTests() {
+
     }
 
     default void afterAllTests() {
@@ -16,7 +17,7 @@ public interface AroundAllTestsExtension extends BeforeAllCallback {
         context.getRoot().getStore(ExtensionContext.Namespace.GLOBAL).
                 getOrComputeIfAbsent(this.getClass(),
                         k -> {
-                            beforeAllTests(context);
+                            beforeAllTests();
                             return (ExtensionContext.Store.CloseableResource) this::afterAllTests;
                         }
                 );

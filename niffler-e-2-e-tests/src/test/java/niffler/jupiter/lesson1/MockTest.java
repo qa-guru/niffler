@@ -1,6 +1,5 @@
-package niffler;
+package niffler.jupiter.lesson1;
 
-import niffler.jupiter.MyFullExtension;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -8,9 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith({
-        MyFullExtension.class,
-})
+import static io.restassured.RestAssured.given;
+
+@ExtendWith(MyFullExtension.class)
 public class MockTest extends BaseTest {
 
     @BeforeAll
@@ -35,6 +34,8 @@ public class MockTest extends BaseTest {
 
     @Test
     public void test() {
+
+
         System.out.println("                        ### TEST! ###");
     }
 

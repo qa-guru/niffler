@@ -12,6 +12,16 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testImplementation 'com.codeborne:selenide:6.11.1'
+
+    implementation group: 'org.springframework', name: 'spring-jdbc', version: '6.0.3'
+    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.3.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.14.1'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.4.3'
+    testImplementation 'org.projectlombok:lombok:1.18.22'
+   
+
+
+
 }
 
 test {
