@@ -13,7 +13,7 @@ import static niffler.models.Category.*;
 
 class HistoryOfSpendingTest extends BaseTest {
 
-    @WithSpend(category = RESTAURANTS, amount = 2_500.0, username = "sashkir7")
+    @WithSpend(amount = 2_500.0, username = "sashkir7")
     private SpendDto restaurantSpend;
 
     @WithSpend(category = PRODUCTS, amount = 1_000.0, description = "Ашан", username = "sashkir7")

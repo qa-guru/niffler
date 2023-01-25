@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface WithSpend {
-    Category category();
+    Category category() default Category.OTHER;
     Currency currency() default Currency.RUB;
     double amount();
     String description() default "Опять хрень купил...";

@@ -10,7 +10,9 @@ public enum Category {
     @SerializedName("Продукты")
     PRODUCTS("Продукты"),
     @SerializedName("Обучение")
-    EDUCATION("Обучение");
+    EDUCATION("Обучение"),
+    @SerializedName("Прочее")
+    OTHER("Прочее");
 
     private final String description;
 
