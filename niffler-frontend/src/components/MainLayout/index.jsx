@@ -55,7 +55,7 @@ export const MainLayout = ({showSuccess}) => {
         getData({
             path:`/spends`,
             params: {
-                filterPeriod: filter,
+                filterPeriod: filter === "ALL" ? null : filter,
                 filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
             },
             onSuccess: (data) => {
@@ -71,7 +71,7 @@ export const MainLayout = ({showSuccess}) => {
         getData({
             path: "/statistic",
             params: {
-                filterPeriod: filter,
+                filterPeriod: filter === "ALL" ? null : filter,
                 filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
             },
             onSuccess: (data) => {

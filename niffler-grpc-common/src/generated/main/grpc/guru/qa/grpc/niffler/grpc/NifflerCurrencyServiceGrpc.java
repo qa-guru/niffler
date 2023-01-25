@@ -46,6 +46,37 @@ public final class NifflerCurrencyServiceGrpc {
     return getGetAllCurrenciesMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<guru.qa.grpc.niffler.grpc.CalculateRequest,
+      guru.qa.grpc.niffler.grpc.CalculateResponse> getCalculateRateMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "CalculateRate",
+      requestType = guru.qa.grpc.niffler.grpc.CalculateRequest.class,
+      responseType = guru.qa.grpc.niffler.grpc.CalculateResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<guru.qa.grpc.niffler.grpc.CalculateRequest,
+      guru.qa.grpc.niffler.grpc.CalculateResponse> getCalculateRateMethod() {
+    io.grpc.MethodDescriptor<guru.qa.grpc.niffler.grpc.CalculateRequest, guru.qa.grpc.niffler.grpc.CalculateResponse> getCalculateRateMethod;
+    if ((getCalculateRateMethod = NifflerCurrencyServiceGrpc.getCalculateRateMethod) == null) {
+      synchronized (NifflerCurrencyServiceGrpc.class) {
+        if ((getCalculateRateMethod = NifflerCurrencyServiceGrpc.getCalculateRateMethod) == null) {
+          NifflerCurrencyServiceGrpc.getCalculateRateMethod = getCalculateRateMethod =
+              io.grpc.MethodDescriptor.<guru.qa.grpc.niffler.grpc.CalculateRequest, guru.qa.grpc.niffler.grpc.CalculateResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CalculateRate"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  guru.qa.grpc.niffler.grpc.CalculateRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  guru.qa.grpc.niffler.grpc.CalculateResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new NifflerCurrencyServiceMethodDescriptorSupplier("CalculateRate"))
+              .build();
+        }
+      }
+    }
+    return getCalculateRateMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -101,6 +132,13 @@ public final class NifflerCurrencyServiceGrpc {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAllCurrenciesMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void calculateRate(guru.qa.grpc.niffler.grpc.CalculateRequest request,
+        io.grpc.stub.StreamObserver<guru.qa.grpc.niffler.grpc.CalculateResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCalculateRateMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -110,6 +148,13 @@ public final class NifflerCurrencyServiceGrpc {
                 com.google.protobuf.Empty,
                 guru.qa.grpc.niffler.grpc.CurrencyResponse>(
                   this, METHODID_GET_ALL_CURRENCIES)))
+          .addMethod(
+            getCalculateRateMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                guru.qa.grpc.niffler.grpc.CalculateRequest,
+                guru.qa.grpc.niffler.grpc.CalculateResponse>(
+                  this, METHODID_CALCULATE_RATE)))
           .build();
     }
   }
@@ -135,6 +180,14 @@ public final class NifflerCurrencyServiceGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetAllCurrenciesMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void calculateRate(guru.qa.grpc.niffler.grpc.CalculateRequest request,
+        io.grpc.stub.StreamObserver<guru.qa.grpc.niffler.grpc.CalculateResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getCalculateRateMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -156,6 +209,13 @@ public final class NifflerCurrencyServiceGrpc {
     public guru.qa.grpc.niffler.grpc.CurrencyResponse getAllCurrencies(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetAllCurrenciesMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public guru.qa.grpc.niffler.grpc.CalculateResponse calculateRate(guru.qa.grpc.niffler.grpc.CalculateRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCalculateRateMethod(), getCallOptions(), request);
     }
   }
 
@@ -180,9 +240,18 @@ public final class NifflerCurrencyServiceGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetAllCurrenciesMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<guru.qa.grpc.niffler.grpc.CalculateResponse> calculateRate(
+        guru.qa.grpc.niffler.grpc.CalculateRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getCalculateRateMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_GET_ALL_CURRENCIES = 0;
+  private static final int METHODID_CALCULATE_RATE = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -204,6 +273,10 @@ public final class NifflerCurrencyServiceGrpc {
         case METHODID_GET_ALL_CURRENCIES:
           serviceImpl.getAllCurrencies((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<guru.qa.grpc.niffler.grpc.CurrencyResponse>) responseObserver);
+          break;
+        case METHODID_CALCULATE_RATE:
+          serviceImpl.calculateRate((guru.qa.grpc.niffler.grpc.CalculateRequest) request,
+              (io.grpc.stub.StreamObserver<guru.qa.grpc.niffler.grpc.CalculateResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -267,6 +340,7 @@ public final class NifflerCurrencyServiceGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new NifflerCurrencyServiceFileDescriptorSupplier())
               .addMethod(getGetAllCurrenciesMethod())
+              .addMethod(getCalculateRateMethod())
               .build();
         }
       }

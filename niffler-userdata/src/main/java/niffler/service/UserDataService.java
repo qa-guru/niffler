@@ -1,5 +1,6 @@
 package niffler.service;
 
+import jakarta.annotation.Nonnull;
 import niffler.data.CurrencyValues;
 import niffler.data.UserEntity;
 import niffler.data.repository.UserRepository;
@@ -18,7 +19,8 @@ public class UserDataService {
         this.userRepository = userRepository;
     }
 
-    public UserJson update(UserJson user) {
+    public @Nonnull
+    UserJson update(@Nonnull UserJson user) {
         UserEntity userEntity = userRepository.findByUsername(user.getUserName());
         userEntity.setFirstname(user.getFirstname());
         userEntity.setSurname(user.getSurname());
@@ -29,7 +31,8 @@ public class UserDataService {
         return UserJson.fromEntity(saved);
     }
 
-    public UserJson getCurrentUserOrCreateIfAbsent(String username) {
+    public @Nonnull
+    UserJson getCurrentUserOrCreateIfAbsent(@Nonnull String username) {
         UserEntity userDataEntity = userRepository.findByUsername(username);
         if (userDataEntity == null) {
             userDataEntity = new UserEntity();

@@ -3,12 +3,20 @@ package niffler.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import niffler.data.CategoryEntity;
 
+import java.util.UUID;
+
 public class CategoryJson {
+    @JsonProperty("id")
+    private UUID id;
     @JsonProperty("description")
     private String description;
 
-    public CategoryJson(String description) {
-        this.description = description;
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -20,6 +28,9 @@ public class CategoryJson {
     }
 
     public static CategoryJson fromEntity(CategoryEntity entity) {
-        return new CategoryJson(entity.getDescription());
+        CategoryJson categoryJson = new CategoryJson();
+        categoryJson.setId(entity.getId());
+        categoryJson.setDescription(entity.getDescription());
+        return categoryJson;
     }
 }

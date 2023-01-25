@@ -9,18 +9,27 @@ option java_package = "guru.qa.grpc.niffler.grpc";
 option java_outer_classname = "NifflerCurrencyProto";
 
 service NifflerCurrencyService {
-  rpc GetAllCurrencies (google.protobuf.Empty) returns (CurrencyResponse) {
-  }
+  rpc GetAllCurrencies (google.protobuf.Empty) returns (CurrencyResponse) {}
+  rpc CalculateRate (CalculateRequest) returns (CalculateResponse) {}
 }
 
 message CurrencyResponse {
   repeated Currency allCurrencies = 1;
-
 }
 
 message Currency {
   CurrencyValues currency = 1;
   double currencyRate = 2;
+}
+
+message CalculateRequest {
+  CurrencyValues spendCurrency = 1;
+  CurrencyValues desiredCurrency = 2;
+  double amount = 3;
+}
+
+message CalculateResponse {
+  double calculatedAmount = 1;
 }
 
 enum CurrencyValues {

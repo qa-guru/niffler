@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -38,10 +37,10 @@ public class SpendController {
 
     @GetMapping("/spends")
     public List<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal,
-                                     @RequestParam(required = false) DataFilterValues filter,
-                                     @RequestParam(required = false) CurrencyValues currency) {
+                                     @RequestParam(required = false) DataFilterValues filterPeriod,
+                                     @RequestParam(required = false) CurrencyValues filterCurrency) {
         String username = principal.getClaim("sub");
-        return restSpendClient.getSpends(username, filter, currency);
+        return restSpendClient.getSpends(username, filterPeriod, filterCurrency);
     }
 
     @PostMapping("/addSpend")
@@ -58,10 +57,9 @@ public class SpendController {
 
     @GetMapping("/statistic")
     public List<StatisticJson> getTotalStatistic(@AuthenticationPrincipal Jwt principal,
-                                                 @RequestParam(required = false) CurrencyValues currency,
-                                                 @RequestParam(required = false) Date from,
-                                                 @RequestParam(required = false) Date to) {
+                                                 @RequestParam(required = false) CurrencyValues filterCurrency,
+                                                 @RequestParam(required = false) DataFilterValues filterPeriod) {
         String username = principal.getClaim("sub");
-        return statisticAggregator.enrichStatisticRequest(username, currency, from, to);
+        return statisticAggregator.enrichStatisticRequest(username, filterCurrency, filterPeriod);
     }
 }

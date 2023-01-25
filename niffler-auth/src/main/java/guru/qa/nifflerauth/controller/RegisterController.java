@@ -2,6 +2,7 @@ package guru.qa.nifflerauth.controller;
 
 import guru.qa.nifflerauth.model.RegistrationModel;
 import guru.qa.nifflerauth.service.UserService;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,10 @@ public class RegisterController {
         return REGISTRATION_VIEW_NAME;
     }
 
-    private void addErrorToRegistrationModel(RegistrationModel registrationModel, Model model, String fieldName, String error) {
+    private void addErrorToRegistrationModel(@Nonnull RegistrationModel registrationModel,
+                                             @Nonnull Model model,
+                                             @Nonnull String fieldName,
+                                             @Nonnull String error) {
         BeanPropertyBindingResult errorResult = (BeanPropertyBindingResult) model.getAttribute(REG_MODEL_ERROR_BEAN_NAME);
         if (errorResult == null) {
             errorResult = new BeanPropertyBindingResult(registrationModel, "registrationModel");

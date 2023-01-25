@@ -1,6 +1,7 @@
 package guru.qa.nifflerauth.config.keys;
 
 import com.nimbusds.jose.jwk.RSAKey;
+import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Component;
 
 import java.security.KeyPair;
@@ -13,7 +14,8 @@ import java.util.UUID;
 @Component
 public class KeyManager {
 
-    public RSAKey rsaKey() throws NoSuchAlgorithmException {
+    public @Nonnull
+    RSAKey rsaKey() throws NoSuchAlgorithmException {
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
         generator.initialize(2048);
         KeyPair keyPair = generator.generateKeyPair();

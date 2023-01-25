@@ -24,6 +24,16 @@ public final class NifflerCurrencyProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_guru_qa_grpc_niffler_Currency_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_guru_qa_grpc_niffler_CalculateRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_guru_qa_grpc_niffler_CalculateRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_guru_qa_grpc_niffler_CalculateResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_guru_qa_grpc_niffler_CalculateResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -39,12 +49,20 @@ public final class NifflerCurrencyProto {
       ".guru.qa.grpc.niffler.Currency\"X\n\010Curren" +
       "cy\0226\n\010currency\030\001 \001(\0162$.guru.qa.grpc.niff" +
       "ler.CurrencyValues\022\024\n\014currencyRate\030\002 \001(\001" +
-      "*4\n\016CurrencyValues\022\007\n\003RUB\020\000\022\007\n\003USD\020\001\022\007\n\003" +
-      "EUR\020\002\022\007\n\003KZT\020\0032n\n\026NifflerCurrencyService" +
-      "\022T\n\020GetAllCurrencies\022\026.google.protobuf.E" +
-      "mpty\032&.guru.qa.grpc.niffler.CurrencyResp" +
-      "onse\"\000B3\n\031guru.qa.grpc.niffler.grpcB\024Nif" +
-      "flerCurrencyProtoP\001b\006proto3"
+      "\"\236\001\n\020CalculateRequest\022;\n\rspendCurrency\030\001" +
+      " \001(\0162$.guru.qa.grpc.niffler.CurrencyValu" +
+      "es\022=\n\017desiredCurrency\030\002 \001(\0162$.guru.qa.gr" +
+      "pc.niffler.CurrencyValues\022\016\n\006amount\030\003 \001(" +
+      "\001\"-\n\021CalculateResponse\022\030\n\020calculatedAmou" +
+      "nt\030\001 \001(\001*4\n\016CurrencyValues\022\007\n\003RUB\020\000\022\007\n\003U" +
+      "SD\020\001\022\007\n\003EUR\020\002\022\007\n\003KZT\020\0032\322\001\n\026NifflerCurren" +
+      "cyService\022T\n\020GetAllCurrencies\022\026.google.p" +
+      "rotobuf.Empty\032&.guru.qa.grpc.niffler.Cur" +
+      "rencyResponse\"\000\022b\n\rCalculateRate\022&.guru." +
+      "qa.grpc.niffler.CalculateRequest\032\'.guru." +
+      "qa.grpc.niffler.CalculateResponse\"\000B3\n\031g" +
+      "uru.qa.grpc.niffler.grpcB\024NifflerCurrenc" +
+      "yProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -63,6 +81,18 @@ public final class NifflerCurrencyProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_guru_qa_grpc_niffler_Currency_descriptor,
         new java.lang.String[] { "Currency", "CurrencyRate", });
+    internal_static_guru_qa_grpc_niffler_CalculateRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_guru_qa_grpc_niffler_CalculateRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_guru_qa_grpc_niffler_CalculateRequest_descriptor,
+        new java.lang.String[] { "SpendCurrency", "DesiredCurrency", "Amount", });
+    internal_static_guru_qa_grpc_niffler_CalculateResponse_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_guru_qa_grpc_niffler_CalculateResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_guru_qa_grpc_niffler_CalculateResponse_descriptor,
+        new java.lang.String[] { "CalculatedAmount", });
     com.google.protobuf.EmptyProto.getDescriptor();
   }
 

@@ -5,8 +5,11 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.UUID;
 
 public class UserJson {
+    @JsonProperty("id")
+    private UUID id;
     @JsonProperty("username")
     private String userName;
     @JsonProperty("firstname")
@@ -21,6 +24,14 @@ public class UserJson {
     private byte[] photo;
 
     public UserJson() {
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getUserName() {
@@ -67,13 +78,13 @@ public class UserJson {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserJson user = (UserJson) o;
-        return Objects.equals(userName, user.userName) && Objects.equals(firstname, user.firstname) && Objects.equals(surname, user.surname) && currency == user.currency && Arrays.equals(photo, user.photo);
+        UserJson userJson = (UserJson) o;
+        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Arrays.equals(photo, userJson.photo);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(userName, firstname, surname, currency);
+        int result = Objects.hash(id, userName, firstname, surname, currency);
         result = 31 * result + Arrays.hashCode(photo);
         return result;
     }

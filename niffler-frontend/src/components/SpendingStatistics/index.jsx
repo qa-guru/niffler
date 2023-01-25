@@ -42,13 +42,11 @@ export const SpendingStatistics = ({ statistic, defaultCurrency}) => {
             if(allCategories !== undefined) {
                 for(let c of allCategories) {
                     let total;
-                    console.log(selectedCurrency.value);
                     if (selectedCurrency.value !== "ALL") {
                         total = statistic
                             .filter(st => st.currency === selectedCurrency.value)
                             .flatMap(st => st?.categoryStatistics)
                             .find(cat => cat?.category === c)?.total;
-                        console.log(total);
                     } else {
                         total = statistic
                             .flatMap(st => st?.categoryStatistics)

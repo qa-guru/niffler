@@ -1,5 +1,6 @@
 package niffler.data.repository;
 
+import jakarta.annotation.Nonnull;
 import niffler.data.SpendEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,11 +10,19 @@ import java.util.UUID;
 
 public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
 
-    List<SpendEntity> findAllByUsername(String username);
+    @Nonnull
+    List<SpendEntity> findAllByUsername(@Nonnull String username);
 
-    List<SpendEntity> findAllByUsernameAndSpendDateGreaterThanEqual(String username, Date dateFrom);
+    @Nonnull
+    List<SpendEntity> findAllByUsernameAndSpendDateGreaterThanEqual(@Nonnull String username,
+                                                                    @Nonnull Date dateFrom);
 
-    List<SpendEntity> findAllByUsernameAndSpendDateLessThanEqual(String username, Date dateTo);
+    @Nonnull
+    List<SpendEntity> findAllByUsernameAndSpendDateLessThanEqual(@Nonnull String username,
+                                                                 @Nonnull Date dateTo);
 
-    List<SpendEntity> findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(String username, Date dateFrom, Date dateTo);
+    @Nonnull
+    List<SpendEntity> findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(@Nonnull String username,
+                                                                                             @Nonnull Date dateFrom,
+                                                                                             @Nonnull Date dateTo);
 }

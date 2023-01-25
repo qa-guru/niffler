@@ -1,13 +1,12 @@
 package niffler.service;
 
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import niffler.data.CategoryEntity;
 import niffler.data.SpendEntity;
 import niffler.data.repository.CategoryRepository;
 import niffler.data.repository.SpendRepository;
-import niffler.model.CurrencyJson;
 import niffler.model.CurrencyValues;
-import niffler.model.DataFilterValues;
 import niffler.model.SpendJson;
 import niffler.model.StatisticByCategoryJson;
 import niffler.model.StatisticJson;
@@ -18,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -26,20 +24,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class SpendService {
 
     private final SpendRepository spendRepository;
     private final CategoryRepository categoryRepository;
+    private final GrpcCurrencyClient grpcCurrencyClient;
 
     @Autowired
-    public SpendService(SpendRepository spendRepository, CategoryRepository categoryRepository) {
+    public SpendService(SpendRepository spendRepository, CategoryRepository categoryRepository, GrpcCurrencyClient grpcCurrencyClient) {
         this.spendRepository = spendRepository;
         this.categoryRepository = categoryRepository;
+        this.grpcCurrencyClient = grpcCurrencyClient;
     }
 
-    public SpendJson saveSpendForUser(SpendJson spend) {
+    public @Nonnull
+    SpendJson saveSpendForUser(@Nonnull SpendJson spend) {
         SpendEntity spendEntity = new SpendEntity();
         spendEntity.setUsername(spend.getUsername());
         spendEntity.setSpendDate(spend.getSpendDate());
@@ -57,43 +59,24 @@ public class SpendService {
         return SpendJson.fromEntity(spendRepository.save(spendEntity));
     }
 
-    public List<SpendJson> getSpendsForUser(String username, @Nullable DataFilterValues filter, @Nullable CurrencyValues currency) {
-        Date filterDate = filterDate(filter);
-        List<SpendEntity> spends = filterDate == null
-                ? spendRepository.findAllByUsername(username)
-                : spendRepository.findAllByUsernameAndSpendDateGreaterThanEqual(username, filterDate);
-
-        return spends.stream()
-                .filter(se -> currency == null || se.getCurrency() == currency)
+    public @Nonnull
+    List<SpendJson> getSpendsForUser(@Nonnull String username,
+                                     @Nullable CurrencyValues filterCurrency,
+                                     @Nullable Date dateFrom,
+                                     @Nullable Date dateTo) {
+        return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo)
                 .map(SpendJson::fromEntity)
                 .collect(Collectors.toList());
     }
 
-    public List<StatisticJson> getStatistic(String username,
-                                            CurrencyValues userCurrency,
-                                            @Nullable CurrencyValues filterCurrency,
-                                            @Nullable Date dateFrom,
-                                            @Nullable Date dateTo,
-                                            List<CurrencyJson> currencyRates) {
-        if (dateTo == null) {
-            dateTo = new Date();
-        }
-        List<SpendEntity> spendEntities;
+    public @Nonnull
+    List<StatisticJson> getStatistic(@Nonnull String username,
+                                     @Nonnull CurrencyValues userCurrency,
+                                     @Nullable CurrencyValues filterCurrency,
+                                     @Nullable Date dateFrom,
+                                     @Nullable Date dateTo) {
+        List<SpendEntity> spendEntities = getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo).toList();
         List<StatisticJson> result = new ArrayList<>();
-
-        if (dateFrom == null) {
-            spendEntities = spendRepository.findAllByUsernameAndSpendDateLessThanEqual(
-                    username,
-                    dateTo
-            );
-        } else {
-            spendEntities = spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(
-                    username,
-                    dateFrom,
-                    dateTo
-            );
-        }
-
         CurrencyValues[] desiredCurrenciesInResponse = filterCurrency != null
                 ? new CurrencyValues[]{filterCurrency}
                 : CurrencyValues.values();
@@ -123,12 +106,11 @@ public class SpendService {
                                 if (userCurrency != value) {
                                     statistic
                                             .setTotalInUserDefaultCurrency(BigDecimal.valueOf(statistic.getTotalInUserDefaultCurrency())
-                                            .add(convertSpendTo(
-                                                    se.getAmount(),
-                                                    se.getCurrency(),
-                                                    userCurrency,
-                                                    currencyRates
-                                            )).doubleValue());
+                                                    .add(grpcCurrencyClient.calculate(
+                                                            se.getAmount(),
+                                                            se.getCurrency(),
+                                                            userCurrency
+                                                    )).doubleValue());
                                 } else {
                                     statistic.setTotalInUserDefaultCurrency(statistic.getTotal());
                                 }
@@ -151,11 +133,10 @@ public class SpendService {
                         .map(BigDecimal::valueOf)
                         .reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue());
                 sbcj.setTotalInUserDefaultCurrency(
-                        convertSpendTo(
+                        grpcCurrencyClient.calculate(
                                 sbcj.getTotal(),
                                 value,
-                                userCurrency,
-                                currencyRates
+                                userCurrency
                         ).doubleValue()
                 );
                 sbcjResult.add(sbcj);
@@ -166,58 +147,32 @@ public class SpendService {
                     .map(c -> {
                         StatisticByCategoryJson sbcj = new StatisticByCategoryJson();
                         sbcj.setCategory(c.getDescription());
-                        sbcj.setSpends(Collections.EMPTY_LIST);
+                        sbcj.setSpends(Collections.emptyList());
                         sbcj.setTotal(0.0);
                         sbcj.setTotalInUserDefaultCurrency(0.0);
                         return sbcj;
                     })
                     .forEach(sbcjResult::add);
 
+            sbcjResult.sort(Comparator.comparing(StatisticByCategoryJson::getCategory));
             statistic.setCategoryStatistics(sbcjResult);
             result.add(statistic);
         }
         return result;
     }
 
-    private BigDecimal convertSpendTo(double spend,
-                                      CurrencyValues spendCurrency,
-                                      CurrencyValues desiredCurrency,
-                                      List<CurrencyJson> currencyRates) {
-        BigDecimal spendInUsd = spendCurrency == CurrencyValues.USD
-                ? BigDecimal.valueOf(spend)
-                : BigDecimal.valueOf(spend).multiply(courseForCurrency(spendCurrency, currencyRates));
+    public @Nonnull
+    Stream<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
+                                               @Nullable CurrencyValues filterCurrency,
+                                               @Nullable Date dateFrom,
+                                               @Nullable Date dateTo) {
+        dateTo = dateTo == null ? new Date() : dateTo;
 
-        return spendInUsd.divide(courseForCurrency(desiredCurrency, currencyRates));
-    }
+        List<SpendEntity> spends = dateFrom == null
+                ? spendRepository.findAllByUsernameAndSpendDateLessThanEqual(username, dateTo)
+                : spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(username, dateFrom, dateTo);
 
-    private BigDecimal courseForCurrency(CurrencyValues currency, List<CurrencyJson> currencyRates) {
-        return BigDecimal.valueOf(
-                currencyRates.stream()
-                        .filter(cr -> cr.getCurrency() == currency)
-                        .findFirst()
-                        .orElseThrow()
-                        .getCurrencyRate()
-        );
-    }
-
-    private @Nullable
-    Date filterDate(@Nullable DataFilterValues filter) {
-        Date currentDate = new Date();
-        if (filter != null) {
-            return switch (filter) {
-                case TODAY -> currentDate;
-                case WEEK -> addDaysToDate(currentDate, Calendar.WEEK_OF_MONTH, -1);
-                case MONTH -> addDaysToDate(currentDate, Calendar.MONTH, -1);
-                case ALL -> null;
-            };
-        }
-        return null;
-    }
-
-    private Date addDaysToDate(Date date, int selector, int days) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(selector, days);
-        return cal.getTime();
+        return spends.stream()
+                .filter(se -> filterCurrency == null || se.getCurrency() == filterCurrency);
     }
 }

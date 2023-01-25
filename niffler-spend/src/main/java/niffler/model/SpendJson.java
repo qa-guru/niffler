@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import niffler.data.SpendEntity;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class SpendJson {
+    @JsonProperty("id")
+    private UUID id;
     @JsonProperty("spendDate")
     private Date spendDate;
     @JsonProperty("category")
@@ -20,6 +23,14 @@ public class SpendJson {
     private String username;
 
     public SpendJson() {
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public Date getSpendDate() {
@@ -72,6 +83,7 @@ public class SpendJson {
 
     public static SpendJson fromEntity(SpendEntity entity) {
         SpendJson spend = new SpendJson();
+        spend.setId(entity.getId());
         spend.setSpendDate(entity.getSpendDate());
         spend.setCategory(entity.getCategory().getDescription());
         spend.setCurrency(entity.getCurrency());
