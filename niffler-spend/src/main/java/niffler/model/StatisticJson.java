@@ -16,7 +16,7 @@ public class StatisticJson {
     private Double total;
     @JsonProperty("userDefaultCurrency")
     private CurrencyValues userDefaultCurrency;
-    @JsonProperty("total")
+    @JsonProperty("totalInUserDefaultCurrency")
     private Double totalInUserDefaultCurrency;
     @JsonProperty("categoryStatistics")
     private List<StatisticByCategoryJson> categoryStatistics;

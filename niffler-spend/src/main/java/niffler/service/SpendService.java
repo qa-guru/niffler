@@ -150,6 +150,14 @@ public class SpendService {
                         .map(SpendJson::getAmount)
                         .map(BigDecimal::valueOf)
                         .reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue());
+                sbcj.setTotalInUserDefaultCurrency(
+                        convertSpendTo(
+                                sbcj.getTotal(),
+                                value,
+                                userCurrency,
+                                currencyRates
+                        ).doubleValue()
+                );
                 sbcjResult.add(sbcj);
             }
 
