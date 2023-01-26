@@ -49,13 +49,14 @@ public class SpendService {
         spendEntity.setDescription(spend.getDescription());
         spendEntity.setAmount(spend.getAmount());
 
-        CategoryEntity categoryEntity = categoryRepository.findByDescription(spend.getCategory());
-        if (categoryEntity == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Can`t find category by given name: " + spend.getCategory());
-        }
-        spendEntity.setCategory(categoryEntity);
+        CategoryEntity categoryEntity = categoryRepository.findAllByUsername(spend.getUsername())
+                .stream()
+                .filter(c -> c.getDescription().equals(spend.getCategory()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Can`t find category by given name: " + spend.getCategory()));
 
+        spendEntity.setCategory(categoryEntity);
         return SpendJson.fromEntity(spendRepository.save(spendEntity));
     }
 
