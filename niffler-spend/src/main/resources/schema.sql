@@ -4,8 +4,9 @@ create extension if not exists "uuid-ossp";
 
 create table if not exists categories
 (
-    id          UUID unique  not null default uuid_generate_v1() primary key,
-    description varchar(255) not null
+    id          UUID unique         not null default uuid_generate_v1() primary key,
+    description varchar(255) unique not null,
+    username    varchar(50)  not null
 );
 
 alter table categories

@@ -39,12 +39,27 @@ public class RestSpendClient {
         this.nifflerSpendUri = nifflerSpendUri;
     }
 
-    public List<CategoryJson> getCategories() {
+    public @Nonnull
+    List<CategoryJson> getCategories(@Nonnull String username) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("username", username);
+        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/categories").queryParams(params).build().toUri();
+
         return webClient.get()
-                .uri(nifflerSpendUri + "/categories")
+                .uri(uri)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<CategoryJson>>() {
                 })
+                .block();
+    }
+
+    public @Nonnull
+    CategoryJson addCategory(CategoryJson category) {
+        return webClient.post()
+                .uri(nifflerSpendUri + "/category")
+                .body(Mono.just(category), CategoryJson.class)
+                .retrieve()
+                .bodyToMono(CategoryJson.class)
                 .block();
     }
 

@@ -10,6 +10,8 @@ public class CategoryJson {
     private UUID id;
     @JsonProperty("description")
     private String description;
+    @JsonProperty("username")
+    private String username;
 
     public UUID getId() {
         return id;
@@ -27,9 +29,18 @@ public class CategoryJson {
         this.description = description;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public static CategoryJson fromEntity(CategoryEntity entity) {
         CategoryJson categoryJson = new CategoryJson();
         categoryJson.setId(entity.getId());
+        categoryJson.setUsername(entity.getUsername());
         categoryJson.setDescription(entity.getDescription());
         return categoryJson;
     }
