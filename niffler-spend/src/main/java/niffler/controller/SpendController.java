@@ -7,6 +7,7 @@ import niffler.service.SpendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,5 +49,12 @@ public class SpendController {
     @ResponseStatus(HttpStatus.CREATED)
     public SpendJson addSpend(@RequestBody SpendJson spend) {
         return spendService.saveSpendForUser(spend);
+    }
+
+    @DeleteMapping("/deleteSpends")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteSpends(@RequestParam String username,
+                             @RequestParam List<String> ids) {
+        spendService.deleteSpends(username, ids);
     }
 }

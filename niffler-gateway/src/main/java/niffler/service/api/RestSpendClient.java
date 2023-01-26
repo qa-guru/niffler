@@ -10,6 +10,7 @@ import niffler.model.StatisticJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -99,6 +100,18 @@ public class RestSpendClient {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<StatisticJson>>() {
                 })
+                .block();
+    }
+
+    public HttpStatusCode deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("username", username);
+        params.add("ids", String.join(",", ids));
+        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/deleteSpends").queryParams(params).build().toUri();
+
+        return webClient.delete()
+                .uri(uri)
+                .exchangeToMono(response -> Mono.just(response.statusCode()))
                 .block();
     }
 

@@ -69,6 +69,16 @@ public class SpendService {
                 .collect(Collectors.toList());
     }
 
+    public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
+        Stream<SpendEntity> spendsEntityForUser = getSpendsEntityForUser(username, null, null, null);
+        for (String id : ids) {
+            spendRepository.delete(spendsEntityForUser
+                    .filter(se -> se.getId().toString().equals(id))
+                    .findFirst()
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Spend not found by given id: " + id)));
+        }
+    }
+
     public @Nonnull
     List<StatisticJson> getStatistic(@Nonnull String username,
                                      @Nonnull CurrencyValues userCurrency,
@@ -161,7 +171,7 @@ public class SpendService {
         return result;
     }
 
-    public @Nonnull
+    private @Nonnull
     Stream<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
                                                @Nullable CurrencyValues filterCurrency,
                                                @Nullable Date dateFrom,
