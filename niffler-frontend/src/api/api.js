@@ -32,6 +32,18 @@ const getData = ({path, onSuccess, onFail, params}) => {
         });
 };
 
+const deleteData = ({path, onSuccess, onFail, params}) => {
+    const token = sessionStorage.getItem('id_token');
+    apiClient(token).delete(`${path}`, { params })
+        .then(res => {
+            return res.data;
+        })
+        .then(data => onSuccess(data))
+        .catch((err) =>{
+            onFail(err);
+        });
+};
+
 const postData = ({path, data, onSuccess, onFail }) => {
     const token = sessionStorage.getItem('id_token');
     apiClient(token).post(`${path}`, data)
@@ -44,4 +56,4 @@ const postData = ({path, data, onSuccess, onFail }) => {
         });
 };
 
-export {apiClient, authClient, getData, postData};
+export {apiClient, authClient, getData, postData, deleteData};

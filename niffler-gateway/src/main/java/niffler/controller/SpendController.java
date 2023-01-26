@@ -10,8 +10,10 @@ import niffler.service.api.RestSpendClient;
 import niffler.service.api.RestUserDataClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,5 +63,12 @@ public class SpendController {
                                                  @RequestParam(required = false) DataFilterValues filterPeriod) {
         String username = principal.getClaim("sub");
         return statisticAggregator.enrichStatisticRequest(username, filterCurrency, filterPeriod);
+    }
+
+    @DeleteMapping("/deleteSpends")
+    public ResponseEntity<Void> deleteSpends(@AuthenticationPrincipal Jwt principal,
+                                             @RequestParam List<String> ids) {
+        String username = principal.getClaim("sub");
+        return new ResponseEntity<>(restSpendClient.deleteSpends(username, ids));
     }
 }
