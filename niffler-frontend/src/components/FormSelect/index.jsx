@@ -7,6 +7,10 @@ export const FormSelect = ({label, placeholder, options, value, defaultValue, on
                 <Select
                     isMulti={false}
                     styles={{
+                        input: (baseStyles, state) => ({
+                            ...baseStyles,
+                            padding: "4.5px"
+                        }),
                         control: (baseStyles, state) => ({
                             ...baseStyles,
                             borderStyle: "solid",

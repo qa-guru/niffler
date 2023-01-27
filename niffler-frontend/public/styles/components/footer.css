@@ -9,4 +9,5 @@
     background-image: url("./../../images/old-paper-background-texture-37.jpg");
     align-items: center;
     justify-content: flex-end;
+    box-shadow: 0 0 5px 5px #040E20;
 }
