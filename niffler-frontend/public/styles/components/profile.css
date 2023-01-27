@@ -1,3 +1,9 @@
+.profile-content {
+    margin: 160px 20px 100px;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
 .profile__avatar-edit {
     border: none;
     background: transparent;

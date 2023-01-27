@@ -85,7 +85,7 @@ public class SpendJson {
         SpendJson spend = new SpendJson();
         spend.setId(entity.getId());
         spend.setSpendDate(entity.getSpendDate());
-        spend.setCategory(entity.getCategory().getDescription());
+        spend.setCategory(entity.getCategory().getCategory());
         spend.setCurrency(entity.getCurrency());
         spend.setAmount(entity.getAmount());
         spend.setDescription(entity.getDescription());

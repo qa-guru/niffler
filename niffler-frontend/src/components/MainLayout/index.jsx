@@ -1,4 +1,4 @@
-import {getData} from "../../api/api";
+import {deleteData, getData} from "../../api/api";
 import {useLoadedData} from "../../api/hooks";
 import {CurrencyContext} from "../../contexts/CurrencyContext";
 import {FilterContext} from "../../contexts/FilterContext";
@@ -23,12 +23,42 @@ export const MainLayout = ({showSuccess}) => {
     const [selectedCurrency, setSelectedCurrency] = useState({value: "ALL", label: "ALL"});
     const curContext = { selectedCurrency, setSelectedCurrency };
 
+    const getStatistics = () => getData({
+        path: "/statistic",
+        params: {
+            filterPeriod: filter === "ALL" ? null : filter,
+            filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
+        },
+        onSuccess: (data) => {
+            setStatistic(data);
+        },
+        onFail: (error) => {
+            console.log(error);
+        },
+    });
+
+    const getSpends = () => {
+        getData({
+            path:`/spends`,
+            params: {
+                filterPeriod: filter === "ALL" ? null : filter,
+                filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
+            },
+            onSuccess: (data) => {
+                setSpendings(data);
+            },
+            onFail: (error) => {
+                console.log(error);
+            },
+        });
+    }
+
 
     useLoadedData({
             path: "/categories",
             onSuccess: (data) => {
                 setCategories(Array.from(data.map((v) => {
-                    return {value: v?.description, label: v?.description}
+                    return {value: v?.category, label: v?.category}
                 })));
             },
             onFail: (error) => {
@@ -52,35 +82,11 @@ export const MainLayout = ({showSuccess}) => {
     });
 
     useEffect(() => {
-        getData({
-            path:`/spends`,
-            params: {
-                filterPeriod: filter === "ALL" ? null : filter,
-                filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
-            },
-            onSuccess: (data) => {
-                setSpendings(data);
-            },
-            onFail: (error) => {
-                console.log(error);
-            },
-        });
+        getSpends();
     }, [filter, selectedCurrency]);
 
     useEffect(() => {
-        getData({
-            path: "/statistic",
-            params: {
-                filterPeriod: filter === "ALL" ? null : filter,
-                filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
-            },
-            onSuccess: (data) => {
-                setStatistic(data);
-            },
-            onFail: (error) => {
-                console.log(error);
-            },
-        });
+        getStatistics();
     }, [filter, selectedCurrency]);
 
 
@@ -100,6 +106,20 @@ export const MainLayout = ({showSuccess}) => {
         });
     }
 
+    const handleDeleteItems = (ids) => {
+        deleteData({
+            path: "/deleteSpends",
+            params: {
+                ids: ids.join(",")
+            },
+            onSuccess: () => {
+                showSuccess("Spendings deleted");
+                getSpends();
+                getStatistics();
+            }
+        })
+    }
+
     return (
         <div className={"main-container"}>
             <Header />
@@ -109,7 +129,7 @@ export const MainLayout = ({showSuccess}) => {
                         <CurrencyContext.Provider value={curContext}>
                             <AddSpending addSpendingCallback={addNewSpendingInTableCallback} categories={categories} />
                             <SpendingStatistics statistic={statistic} defaultCurrency={user?.currency} />
-                            <SpendingHistory spendings={spendings} currencies={currencies}/>
+                            <SpendingHistory spendings={spendings} currencies={currencies} handleDeleteItems={handleDeleteItems}/>
                         </CurrencyContext.Provider>
                     </FilterContext.Provider>
                 </div>

@@ -1,7 +1,7 @@
 .header {
     margin: 0 0 30px;
     position: fixed;
-    padding: 20px;
+    padding: 5px;
     width: 100%;
     box-sizing: border-box;
     display: flex;
@@ -9,20 +9,24 @@
     align-items: center;
     justify-content: space-between;
     z-index: 3;
+    box-shadow: 0 0 5px 5px #040E20;
 }
 
 .header__group {
     display: flex;
     align-items: center;
+    margin-left: 40px;
 }
 
 .header__logo {
     margin-right: 20px;
+    width: 70px;
+    height: 70px;
 }
 
 .header__navigation ul{
     width: 100%;
-    max-width: 250px;
+    max-width: 260px;
     padding: 0;
     margin: 0;
     display: flex;
@@ -34,6 +38,7 @@
 .header__navigation-item {
     padding: 0;
     margin: 0;
+    font-size: 20px;
 }
 
 .header__link,
@@ -49,14 +54,16 @@
 }
 
 .header__avatar {
-    margin: 20px;
+    margin: 10px;
     box-shadow: 0 0 3px 3px black;
 }
 
 .header__username {
-    margin: 0;
+    margin-left: 20px;
+    font-size: 20px;
 }
+
 .header__logout {
     margin-left: 20px;
-    margin-right: 70px;
+    margin-right: 40px;
 }

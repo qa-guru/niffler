@@ -26,23 +26,23 @@ public class SpendEntity {
     @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CurrencyValues currency;
 
-    @Column(name = "spend_date", nullable = false, unique = true)
+    @Column(name = "spend_date", nullable = false)
     private Date spendDate;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Double amount;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String description;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private CategoryEntity category;
 

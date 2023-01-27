@@ -1,0 +1,45 @@
+.spendings__content {
+    margin: 10px;
+}
+
+.spendings__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.spendings__table-controls {
+    display: flex;
+    flex-direction: column;
+}
+
+.spendings__filters {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.spendings__controls-header {
+    margin-right: 10px;
+}
+
+.spendings__buttons{
+    display: flex;
+    width: 100%;
+}
+
+.spendings__buttons button {
+    margin-right: 20px;
+}
+
+.spendings__bulk-actions {
+    display: flex;
+    align-items: center;
+}
+
+
+.spendings__img {
+    box-shadow: 0 0 10px 10px black;
+}

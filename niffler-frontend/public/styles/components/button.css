@@ -15,12 +15,12 @@
     background-color: white;
     color: black;
     font-weight: 700;
+    font-size: 15px;
 }
 
 .button_type_small {
     width: fit-content;
     padding: 10px 15px;
-
 }
 
 .button:hover {
@@ -28,12 +28,25 @@
     opacity: 0.8;
 }
 
+.button:disabled,
+.button:disabled:hover{
+    cursor: not-allowed;
+    opacity: 0.2;
+}
+
 .button-icon {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     border: none;
     background-size: contain;
     background-color: transparent;
+    position: relative;
+}
+
+.button-icon__text {
+    position: absolute;
+    left: 20px;
+    top: 10px;
 }
 
 .button-icon:hover {
@@ -50,4 +63,5 @@
 
 .button-icon_type_logout {
     background-image: url("./../../images/logout.svg");
+    margin-top: 7px;
 }
