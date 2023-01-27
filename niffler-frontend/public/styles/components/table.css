@@ -3,12 +3,14 @@
     display: grid;
     border-collapse: collapse;
     min-width: 100%;
+    font-size: 14px;
     grid-template-columns:
-    minmax(150px, 1fr)
-    minmax(150px, 1.67fr)
-    minmax(150px, 1.67fr)
-    minmax(150px, 1.67fr)
-    minmax(150px, 3.33fr)
+    minmax(50px, 0.2fr)
+    minmax(100px, 0.7fr)
+    minmax(100px, 0.7fr)
+    minmax(120px, 0.9fr)
+    minmax(150px, 2fr)
+    minmax(150px, 4fr)
 }
 
 thead,
