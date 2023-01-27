@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "io.freefair.lombok" version "6.0.0-m2"
 }
 
 group 'guru.qa'
@@ -9,9 +10,36 @@ repositories {
     mavenCentral()
 }
 
+def junitVersion = "5.8.2",
+    selenideVersion = '6.11.2',
+    slf4jVersion = "1.7.36",
+    ownerVersion = "1.0.12",
+    assertjVersion = "3.22.0",
+    javaFaker = "1.0.2",
+    restAssuredVersion = "5.3.0",
+    jsonPathVersion = "2.7.0"
+
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
-    testImplementation 'com.codeborne:selenide:6.11.1'
+    testImplementation(
+            "com.codeborne:selenide:$selenideVersion",
+            'io.qameta.allure:allure-junit5:2.20.1',
+            "org.junit.jupiter:junit-jupiter:$junitVersion",
+            "org.aeonbits.owner:owner:$ownerVersion",
+            "org.assertj:assertj-core:$assertjVersion",
+            "io.rest-assured:rest-assured:$restAssuredVersion",
+            "com.github.javafaker:javafaker:$javaFaker",
+            "io.rest-assured:json-schema-validator:$restAssuredVersion",
+            "com.jayway.jsonpath:json-path:$jsonPathVersion"
+
+    )
+    testRuntimeOnly(
+            "org.junit.jupiter:junit-jupiter-engine:$junitVersion",
+            "org.slf4j:slf4j-simple:$slf4jVersion")
+}
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 test {
