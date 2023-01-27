@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 export const FormCalendar = ({label, value, onChange}) => {
     return (
-        <label className="form__label">
+        <label className="form__label">{label}:
             <div className={"calendar-wrapper"}>
                 <DatePicker
                     selected={value}

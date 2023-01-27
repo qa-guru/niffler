@@ -15,6 +15,7 @@
     background-color: white;
     color: black;
     font-weight: 700;
+    font-size: 15px;
 }
 
 .button_type_small {
@@ -34,8 +35,8 @@
 }
 
 .button-icon {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     border: none;
     background-size: contain;
     background-color: transparent;
@@ -62,4 +63,5 @@
 
 .button-icon_type_logout {
     background-image: url("./../../images/logout.svg");
+    margin-top: 7px;
 }

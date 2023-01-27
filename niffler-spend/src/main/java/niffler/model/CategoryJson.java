@@ -8,8 +8,10 @@ import java.util.UUID;
 public class CategoryJson {
     @JsonProperty("id")
     private UUID id;
-    @JsonProperty("description")
-    private String description;
+    @JsonProperty("category")
+    private String category;
+    @JsonProperty("username")
+    private String username;
 
     public UUID getId() {
         return id;
@@ -19,18 +21,27 @@ public class CategoryJson {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getCategory() {
+        return category;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public static CategoryJson fromEntity(CategoryEntity entity) {
         CategoryJson categoryJson = new CategoryJson();
         categoryJson.setId(entity.getId());
-        categoryJson.setDescription(entity.getDescription());
+        categoryJson.setUsername(entity.getUsername());
+        categoryJson.setCategory(entity.getCategory());
         return categoryJson;
     }
 }
