@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface CategoryRepository extends JpaRepository<CategoryEntity, UUID> {
 
     @Nullable
-    CategoryEntity findByUsernameAndDescription(@Nonnull String username, @Nonnull String description);
+    CategoryEntity findByUsernameAndCategory(@Nonnull String username, @Nonnull String category);
 
     @Nonnull
     List<CategoryEntity> findAllByUsername(@Nonnull String username);

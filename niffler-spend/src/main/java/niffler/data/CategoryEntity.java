@@ -19,7 +19,7 @@ public class CategoryEntity {
     private UUID id;
 
     @Column(nullable = false, unique = true)
-    private String description;
+    private String category;
 
     @Column(nullable = false)
     private String username;
@@ -32,12 +32,12 @@ public class CategoryEntity {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getCategory() {
+        return category;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getUsername() {
@@ -53,11 +53,11 @@ public class CategoryEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CategoryEntity that = (CategoryEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(username, that.username);
+        return Objects.equals(id, that.id) && Objects.equals(category, that.category) && Objects.equals(username, that.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, username);
+        return Objects.hash(id, category, username);
     }
 }

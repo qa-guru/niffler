@@ -42,19 +42,22 @@ public class SpendService {
 
     public @Nonnull
     SpendJson saveSpendForUser(@Nonnull SpendJson spend) {
+        final String username = spend.getUsername();
+        final String category = spend.getCategory();
+
         SpendEntity spendEntity = new SpendEntity();
-        spendEntity.setUsername(spend.getUsername());
+        spendEntity.setUsername(username);
         spendEntity.setSpendDate(spend.getSpendDate());
         spendEntity.setCurrency(spend.getCurrency());
         spendEntity.setDescription(spend.getDescription());
         spendEntity.setAmount(spend.getAmount());
 
-        CategoryEntity categoryEntity = categoryRepository.findAllByUsername(spend.getUsername())
+        CategoryEntity categoryEntity = categoryRepository.findAllByUsername(username)
                 .stream()
-                .filter(c -> c.getDescription().equals(spend.getCategory()))
+                .filter(c -> c.getCategory().equals(category))
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Can`t find category by given name: " + spend.getCategory()));
+                        HttpStatus.BAD_REQUEST, "Can`t find category by given name: " + category));
 
         spendEntity.setCategory(categoryEntity);
         return SpendJson.fromEntity(spendRepository.save(spendEntity));
@@ -144,10 +147,10 @@ public class SpendService {
             }
 
             categoryRepository.findAll().stream()
-                    .filter(c -> !spendsByCategory.containsKey(c.getDescription()))
+                    .filter(c -> !spendsByCategory.containsKey(c.getCategory()))
                     .map(c -> {
                         StatisticByCategoryJson sbcj = new StatisticByCategoryJson();
-                        sbcj.setCategory(c.getDescription());
+                        sbcj.setCategory(c.getCategory());
                         sbcj.setSpends(Collections.emptyList());
                         sbcj.setTotal(0.0);
                         sbcj.setTotalInUserDefaultCurrency(0.0);

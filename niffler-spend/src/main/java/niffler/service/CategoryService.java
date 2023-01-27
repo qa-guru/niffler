@@ -37,21 +37,24 @@ public class CategoryService {
 
     public @Nonnull
     CategoryJson addCategory(@Nonnull CategoryJson category) {
-        if (categoryRepository.findAllByUsername(category.getUsername()).size() > MAX_CATEGORIES_SIZE) {
-            LOG.error("### Can`t add over than 7 categories for user: " + category.getUsername());
+        final String username = category.getUsername();
+        final String categoryName = category.getCategory();
+
+        if (categoryRepository.findAllByUsername(username).size() > MAX_CATEGORIES_SIZE) {
+            LOG.error("### Can`t add over than 7 categories for user: " + username);
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                    "Can`t add over than 7 categories for user: '" + category.getUsername());
+                    "Can`t add over than 7 categories for user: '" + username);
         }
 
         CategoryEntity ce = new CategoryEntity();
-        ce.setDescription(category.getDescription());
-        ce.setUsername(category.getUsername());
+        ce.setCategory(categoryName);
+        ce.setUsername(username);
         try {
             return CategoryJson.fromEntity(categoryRepository.save(ce));
         } catch (DataIntegrityViolationException e) {
             LOG.error("### Error while creating category: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Category with name '" + category.getDescription() + "' already exists", e);
+                    "Category with name '" + categoryName + "' already exists", e);
         }
     }
 }

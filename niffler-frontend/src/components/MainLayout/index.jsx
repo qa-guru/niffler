@@ -28,7 +28,7 @@ export const MainLayout = ({showSuccess}) => {
             path: "/categories",
             onSuccess: (data) => {
                 setCategories(Array.from(data.map((v) => {
-                    return {value: v?.description, label: v?.description}
+                    return {value: v?.category, label: v?.category}
                 })));
             },
             onFail: (error) => {
