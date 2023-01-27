@@ -69,6 +69,8 @@
 }
 
 .main-content__section-add-spending {
+    max-height: 480px;
+    width: 450px;
     grid-area: add;
     display: flex;
     flex-direction: column;
@@ -76,6 +78,7 @@
 }
 
 .main-content__section-stats {
+    max-height: 480px;
     grid-area: stats;
 }
 
