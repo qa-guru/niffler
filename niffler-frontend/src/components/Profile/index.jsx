@@ -75,16 +75,13 @@ export const Profile = ({showSuccess, showError}) => {
                                                value={userData.surname}
                                                placeholder={"Set your surname"}
                                                max={50}
-                                               handleChangeValue={(data) => {
-                                                   setUserData({...userData, surname: data.target.value})
-                                               }
-                                    }
+                                               handleChangeValue={(data) => setUserData({...userData, surname: data.target.value})}
                                     />
                                     <div style={{width: 350}}>
                                         <FormSelect options={currencies}
                                                     placeholder="Select currency"
                                                     value={userData?.currency}
-                                                    label="Currency"
+                                                    label="Currency:"
                                                     onChange={(currency) => {
                                                         setUserData({...userData, currency})}}
                                         />

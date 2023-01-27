@@ -69,7 +69,7 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    padding: 20px;
+    padding: 50px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -90,14 +90,14 @@
 }
 
 .spendings__content {
-    margin: 10px;
+    margin: 20px;
 }
 
 .spendings__controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 20px;
+    margin: 20px 20px 20px 0;
 }
 
 .spendings__filters {
@@ -116,8 +116,13 @@
     margin-right: 20px;
 }
 
+.add-spending__form {
+    width: 350px;
+}
+
 .spendings__img {
-    box-shadow: 0 0 10px 10px black;
+    box-shadow: 0 0 5px 5px black;
+    margin: 2px 0 20px 20px;
 }
 
 .cite {

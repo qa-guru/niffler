@@ -167,7 +167,9 @@ public class SpendService {
                                                @Nullable CurrencyValues filterCurrency,
                                                @Nullable Date dateFrom,
                                                @Nullable Date dateTo) {
-        dateTo = dateTo == null ? new Date() : dateTo;
+        dateTo = dateTo == null
+                ? new Date()
+                : dateTo;
 
         List<SpendEntity> spends = dateFrom == null
                 ? spendRepository.findAllByUsernameAndSpendDateLessThanEqual(username, dateTo)

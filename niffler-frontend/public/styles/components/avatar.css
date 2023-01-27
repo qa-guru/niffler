@@ -7,7 +7,7 @@
 .edit-avatar__container {
     position: relative;
     margin: 10px;
-    box-shadow: 0 0 10px 10px black;
+    box-shadow: 0 0 5px 5px black;
     width: 200px;
     height: 200px;
     z-index: 1;

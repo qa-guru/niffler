@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CategoryService.class);
+    private static final int MAX_CATEGORIES_SIZE = 7;
     private final CategoryRepository categoryRepository;
 
     @Autowired
@@ -36,7 +37,7 @@ public class CategoryService {
 
     public @Nonnull
     CategoryJson addCategory(@Nonnull CategoryJson category) {
-        if (categoryRepository.findAllByUsername(category.getUsername()).size() > 7) {
+        if (categoryRepository.findAllByUsername(category.getUsername()).size() > MAX_CATEGORIES_SIZE) {
             LOG.error("### Can`t add over than 7 categories for user: " + category.getUsername());
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
                     "Can`t add over than 7 categories for user: '" + category.getUsername());
