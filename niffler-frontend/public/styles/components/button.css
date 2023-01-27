@@ -20,12 +20,17 @@
 .button_type_small {
     width: fit-content;
     padding: 10px 15px;
-
 }
 
 .button:hover {
     cursor: pointer;
     opacity: 0.8;
+}
+
+.button:disabled,
+.button:disabled:hover{
+    cursor: not-allowed;
+    opacity: 0.2;
 }
 
 .button-icon {
@@ -34,6 +39,13 @@
     border: none;
     background-size: contain;
     background-color: transparent;
+    position: relative;
+}
+
+.button-icon__text {
+    position: absolute;
+    left: 20px;
+    top: 10px;
 }
 
 .button-icon:hover {

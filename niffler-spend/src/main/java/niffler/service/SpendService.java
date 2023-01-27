@@ -70,9 +70,8 @@ public class SpendService {
     }
 
     public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
-        Stream<SpendEntity> spendsEntityForUser = getSpendsEntityForUser(username, null, null, null);
         for (String id : ids) {
-            spendRepository.delete(spendsEntityForUser
+            spendRepository.delete(getSpendsEntityForUser(username, null, null, null)
                     .filter(se -> se.getId().toString().equals(id))
                     .findFirst()
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Spend not found by given id: " + id)));

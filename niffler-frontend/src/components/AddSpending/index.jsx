@@ -45,7 +45,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
                                type="number"
                                value={data.amount}
                                handleChangeValue={(evt) => setData({...data, amount: evt.target.value})}/>
-                    <FormCalendar value={data.spendDate} onChange={(spendDate) => setData({...data, spendDate})}/>
+                    <FormCalendar value={data.spendDate} onChange={(spendDate) => setData({...data, spendDate})} label={"Date"}/>
                     <FormInput placeholder={"Spending description"}
                                label={"Description"}
                                type="text"

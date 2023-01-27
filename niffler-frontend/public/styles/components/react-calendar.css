@@ -1,3 +1,7 @@
+.calendar-wrapper {
+    margin-top: 15px;
+}
+
 .calendar-wrapper,
 .react-datepicker-wrapper,
 .react-datepicker__input-container {
