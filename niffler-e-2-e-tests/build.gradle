@@ -16,6 +16,11 @@ allure {
 }
 
 dependencies {
+    implementation 'org.projectlombok:lombok:1.18.16'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.10.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.10.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testImplementation 'com.squareup.retrofit2:retrofit:2.9.0'
     testImplementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
@@ -25,6 +30,17 @@ dependencies {
         exclude group: "org.junit.jupiter"
     }
     testImplementation 'com.codeborne:selenide:6.11.1'
+    implementation 'io.rest-assured:json-path:5.3.0'
+    implementation 'io.rest-assured:rest-assured:5.3.0'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
+    // https://mavenlibs.com/maven/dependency/net.javacrumbs.json-unit/json-unit-core
+    implementation group: 'net.javacrumbs.json-unit', name: 'json-unit-core', version: '2.36.0'
+    implementation 'io.qameta.allure:allure-jsonunit:2.20.1'
+
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 test {

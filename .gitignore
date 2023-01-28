@@ -38,4 +38,5 @@ out/
 .vscode/
 
 ### gRPC generated files ###
+/niffler-e-2-e-tests/allure-results/
 /niffler-grpc-common/src/generated/**
