@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,8 @@ public class SpendDto {
     private String spendDate;
     @JsonProperty("category")
     private String category;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String id;
     @JsonProperty("currency")
     private String currency;
     @JsonProperty("amount")

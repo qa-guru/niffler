@@ -28,6 +28,6 @@ public class SpendTest extends BaseTest {
                 .jsonPath()
                 .getList(".", SpendDto.class);
         SpendDto actual = actualList.stream().filter(s -> s.getDescription().equals(expected.getDescription())).findFirst().orElse(null);
-        AssertUtil.assertEquals(actual, expected, "spendDate");
+        AssertUtil.assertEquals(actual, expected, "spendDate", "id");
     }
 }
