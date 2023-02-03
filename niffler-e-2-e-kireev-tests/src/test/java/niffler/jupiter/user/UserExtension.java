@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.extension.ExtensionContext.*;
 
 final class UserExtension implements BeforeTestExecutionCallback, ParameterResolver, AfterTestExecutionCallback {
 
-    public static final Namespace MAIN_NAMESPACE = Namespace.create(UserExtension.class),
-            TEMP_NAMESPACE = Namespace.create(UserExtension.class, "TEMP");
+    public static final Namespace MAIN_NAMESPACE = Namespace.create(UserExtension.class);
+    private static final Namespace TEMP_NAMESPACE = Namespace.create(UserExtension.class, "TEMP");
 
     private static final UsersQueue USERS_QUEUE = UsersQueue.instance();
 
