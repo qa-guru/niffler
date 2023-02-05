@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.1'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.palantir.docker' version '0.34.0'
 }
 
 group 'guru.qa'
@@ -22,6 +23,22 @@ dependencies {
     implementation "org.springframework:spring-webflux"
     implementation "io.projectreactor.netty:reactor-netty"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+docker {
+    dependsOn build
+    name "dtuchs/niffler-gateway:${project.version}"
+    tag 'latest', 'dtuchs/niffler-gateway:latest'
+    files bootJar.archiveFile
+    buildArgs([
+            APP_VER: project.version
+    ])
+    noCache true
+}
+
+task dockerRmi(type: Exec) {
+    workingDir "${buildDir}"
+    commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'niffler')\n"
 }
 
 tasks.named('test') {

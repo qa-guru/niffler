@@ -8,7 +8,6 @@ spring:
   application:
     name: niffler-userdata
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/niffler-userdata'
     hikari:
       connection-timeout: 20000
       minimum-idle: 10
@@ -40,3 +39,19 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
 #    org.springframework.boot.autoconfigure: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/niffler-userdata'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  datasource:
+    url: 'jdbc:postgresql://niffler-all-db:5432/niffler-userdata'
+---

@@ -1,0 +1,86 @@
+version: '3'
+
+services:
+  niffler-all-db:
+    container_name: niffler-all-db
+    image: postgres:15.1
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-auth:
+    container_name: niffler-auth
+    image: dtuchs/niffler-auth:latest
+    ports:
+      - 9000:9000
+    restart: always
+    depends_on:
+      - niffler-all-db
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-currency:
+    container_name: niffler-currency
+    image: dtuchs/niffler-currency:latest
+    ports:
+      - 8091:8091
+      - 8092:8092
+    restart: always
+    depends_on:
+      - niffler-all-db
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-gateway:
+    container_name: niffler-gateway
+    image: dtuchs/niffler-gateway:latest
+    ports:
+      - 8090:8090
+    restart: always
+    depends_on:
+      - niffler-auth
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-spend:
+    container_name: niffler-spend
+    image: dtuchs/niffler-spend:latest
+    ports:
+      - 8093:8093
+    restart: always
+    depends_on:
+      - niffler-all-db
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-userdata:
+    container_name: niffler-userdata
+    image: dtuchs/niffler-userdata:latest
+    ports:
+      - 8089:8089
+    restart: always
+    depends_on:
+      - niffler-all-db
+    networks:
+      - niffler-network
+    dns_search: .
+
+volumes:
+  pgdata:
+    external: true
+
+networks:
+  niffler-network:
+    driver: bridge
