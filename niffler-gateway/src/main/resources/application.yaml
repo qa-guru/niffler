@@ -25,7 +25,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: 'http://auth-server:9000'
+          issuer-uri: 'http://127.0.0.1:9000'
 
 grpc:
   client:
@@ -66,5 +66,5 @@ niffler-userdata:
 niffler-spend:
   base-uri: 'http://niffler-spend:8093'
 niffler-front:
-  base-uri: 'http://127.0.0.1:3000'
+  base-uri: 'http://127.0.0.1'
 ---

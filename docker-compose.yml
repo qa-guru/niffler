@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 
 services:
   niffler-all-db:
@@ -7,8 +7,13 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=secret
-    ports:
-      - 5432:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    expose:
+      - "5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: always
@@ -20,10 +25,16 @@ services:
     container_name: niffler-auth
     image: dtuchs/niffler-auth:latest
     ports:
-      - 9000:9000
+      - "9000:9000"
+    healthcheck:
+      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
     restart: always
     depends_on:
-      - niffler-all-db
+      niffler-all-db:
+        condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
@@ -31,12 +42,13 @@ services:
   niffler-currency:
     container_name: niffler-currency
     image: dtuchs/niffler-currency:latest
-    ports:
-      - 8091:8091
-      - 8092:8092
+    expose:
+      - "8091"
+      - "8092"
     restart: always
     depends_on:
-      - niffler-all-db
+      niffler-all-db:
+        condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
@@ -45,7 +57,12 @@ services:
     container_name: niffler-gateway
     image: dtuchs/niffler-gateway:latest
     ports:
-      - 8090:8090
+      - "8090:8090"
+    healthcheck:
+      test: "wget --spider http://localhost:8090/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
     restart: always
     depends_on:
       - niffler-auth
@@ -56,11 +73,12 @@ services:
   niffler-spend:
     container_name: niffler-spend
     image: dtuchs/niffler-spend:latest
-    ports:
-      - 8093:8093
+    expose:
+      - "8093"
     restart: always
     depends_on:
-      - niffler-all-db
+      niffler-all-db:
+        condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
@@ -68,11 +86,25 @@ services:
   niffler-userdata:
     container_name: niffler-userdata
     image: dtuchs/niffler-userdata:latest
-    ports:
-      - 8089:8089
+    expose:
+      - "8089"
     restart: always
     depends_on:
-      - niffler-all-db
+      niffler-all-db:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-frontend:
+    container_name: niffler-frontend
+    image: dtuchs/niffler-frontend:latest
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      niffler-gateway:
+        condition: service_healthy
     networks:
       - niffler-network
     dns_search: .

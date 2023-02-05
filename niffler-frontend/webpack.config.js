@@ -1,5 +1,14 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
+const dotenv = require('dotenv').config({ path: `./.env.${process.env.REACT_APP_ENV}`});
+
+const env = dotenv.parsed;
+
+const envKeys = Object.keys(env).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(env[next]);
+    return prev;
+}, {});
 
 module.exports = {
     entry: './src/index.jsx',
@@ -11,6 +20,7 @@ module.exports = {
     },
     devtool: 'source-map',
     plugins: [
+        new webpack.DefinePlugin(envKeys),
         new CopyPlugin({
             patterns: [{from: 'public'}],
         }),

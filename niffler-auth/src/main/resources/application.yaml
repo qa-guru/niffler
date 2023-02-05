@@ -55,7 +55,7 @@ spring:
 niffler-front:
   base-uri: 'http://127.0.0.1:3000'
 niffler-auth:
-  base-uri: 'http://auth-server:9000'
+  base-uri: 'http://127.0.0.1:9000'
 ---
 spring:
   config:
@@ -64,7 +64,7 @@ spring:
   datasource:
     url: 'jdbc:postgresql://niffler-all-db:5432/niffler-auth'
 niffler-front:
-  base-uri: 'http://127.0.0.1:3000'
+  base-uri: 'http://127.0.0.1'
 niffler-auth:
   base-uri: 'http://niffler-auth:9000'
 ---

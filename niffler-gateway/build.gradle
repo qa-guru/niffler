@@ -19,6 +19,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation 'net.devh:grpc-client-spring-boot-starter:2.14.0.RELEASE'
     implementation "org.springframework:spring-webflux"
     implementation "io.projectreactor.netty:reactor-netty"

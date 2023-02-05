@@ -82,27 +82,16 @@ OpenJDK Runtime Environment Homebrew (build 19.0.1)
 [Инструкция](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 Рекомендованная версия Node.js - 18.13.0 (LTS)
 
-#### 9. Прописать в etc/hosts элиас auth-server 127.0.0.1
-```posh
-Dmitriis-MacBook-Pro niffler % vi /etc/hosts
-```
-```posh
-##
-# Host Database
-#
-# localhost is used to configure the loopback interface
-# when the system is booting.  Do not change this entry.
-##
-127.0.0.1       localhost
-127.0.0.1       auth-server
-```
-
-#### 10. Запустить фронтенд (сначала обновить зависимости)
+#### 9. Запустить фронтенд (сначала обновить зависимости)
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler-frontend
 Dmitriis-MacBook-Pro niffler-frontend % npm i
-Dmitriis-MacBook-Pro niffler-frontend % npm start
+Dmitriis-MacBook-Pro niffler-frontend % npm run build:dev
 ```
+
+#### 10. Прописать run конфигурацию для всех сервисов niffler-* - Active profiles local
+Для этого зайти в меню Run -> Edit Configurations -> выбрать main класс -> указать Active profiles: local
+[Инструкция](https://stackoverflow.com/questions/39738901/how-do-i-activate-a-spring-boot-profile-when-running-from-intellij).
 
 # Запуск Niffler локально:
 - Запустить сервис auth
@@ -113,6 +102,82 @@ Dmitriis-MacBook-Pro niffler-auth % gradle bootRun
 или просто перейдя к main-классу приложения NifflerAuthApplication выбрать run в IDEA
 - Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
 
+# Запуск Niffler в докере:
+#### 1. Создать бесплатную учетную запись на https://hub.docker.com/ (если отсутствует)
+
+#### 2. Создать в настройках своей учетной записи access_token
+[Инструкция](https://docs.docker.com/docker-hub/access-tokens/).
+
+#### 3. Выполнить docker login с созданным access_token (в инструкции это описано)
+
+#### 4. Перейти в корневой каталог проекта
+```posh
+Dmitriis-MacBook-Pro niffler % cd niffler
+```
+#### 5.  Спуллить все контейнеры актуальных версий
+```posh
+Dmitriis-MacBook-Pro  niffler % docker-compose pull
+```
+
+#### 6.  Запустить все сервисы 
+```posh
+Dmitriis-MacBook-Pro  niffler % docker-compose up -d
+```
+
+Niffler при запуске в докере будет работать для вас на порту 80, этот порт можно не указывать в браузере, таким образом переходить напрямую по ссылке http://127.0.0.1/
+*ВАЖНО!* из docker-network Вам будут доступны только следующие порты:
+- порт 80 (все запросы с него перенаправляются nginx-ом на фронтенд)
+- порт 9000 (сервис niffler-auth)
+- порт 8090 (сервис niffler-gateway)
+
+# Создание своего docker repository для форка Niffler и сборка своих докер контейнеров
+#### 1. Войти в свою УЗ на https://hub.docker.com/ и последовательно создать публичные репозитории
+- niffler-frontend
+- niffler-userdata
+- niffler-spend
+- niffler-gateway
+- niffler-currency
+- niffler-auth
+
+Допустим, что ваш username на https://hub.docker.com - *foobazz*
+
+#### 2. заменить в проекте все имена image dtuchs/niffler на foobazz/niffler
+- где foobazz - ваш юзернэйм на https://hub.docker.com/
+
+!К замене надо отнестись внимательно, вот список мест на текущий момент:!
+- build.gradle всех сервисов Spring
+- docker-compose.yaml в корне проекта
+- docker.properties в модуле niffler-frontend
+
+#### 3. Перейти в корневой каталог проекта
+```posh
+Dmitriis-MacBook-Pro niffler % cd niffler
+```
+
+#### 3. Собрать весь java проект (можно скипнуть тесты, т.к. наши e-2-e все равно не запустятся без полностью развернутого Niffler)
+```posh
+Dmitriis-MacBook-Pro niffler % gradle clean build -x test
+```
+
+#### 4. Собрать докер images back-end
+```posh
+Dmitriis-MacBook-Pro niffler % gradle dockerTag
+```
+
+#### 5. Запушить докер images back-end (у вас должен быть выполнен предварительно docker login)
+```posh
+Dmitriis-MacBook-Pro niffler % gradle dockerPush
+```
+
+#### 6. Собрать и запушить front-end (выполняется одним действием)
+```posh
+Dmitriis-MacBook-Pro niffler % cd niffler-frontend
+Dmitriis-MacBook-Pro niffler-frontend % bash build-docker.sh
+```
+
+#### 7.  Запустить все сервисы
+```posh
+Dmitriis-MacBook-Pro  niffler % docker-compose up -d
+```
 
 ![Enjoy the Niffler](/niffler-frontend/public/images/niffler-logo.png)
-

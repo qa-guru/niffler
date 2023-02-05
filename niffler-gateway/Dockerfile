@@ -5,9 +5,5 @@ ENV JAVA_OPTS=""
 WORKDIR /application
 COPY niffler-gateway-$VER.jar ./
 
-ENV JPDA_ADDRESS=8787
-ENV JPDA_TRANSPORT=dt_socket
-
-EXPOSE 8787
 EXPOSE 8090
-CMD java -jar -Dspring.profiles.active=docker $JAVA_OPTS niffler-gateway-$VER.jar jpda
+CMD java -jar -Dspring.profiles.active=docker $JAVA_OPTS niffler-gateway-$VER.jar

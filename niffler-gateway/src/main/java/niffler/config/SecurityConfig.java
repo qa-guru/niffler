@@ -21,7 +21,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         corsCustomizer.corsCustomizer(http);
 
-        http.authorizeHttpRequests().anyRequest()
+        http.authorizeHttpRequests()
+                .requestMatchers("/actuator/health").permitAll()
+                .anyRequest()
                 .authenticated().and()
                 .oauth2ResourceServer()
                 .jwt();
