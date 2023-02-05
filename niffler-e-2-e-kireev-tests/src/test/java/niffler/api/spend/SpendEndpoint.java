@@ -1,4 +1,4 @@
-package niffler.api.spend.endpoint;
+package niffler.api.spend;
 
 public class SpendEndpoint {
 

@@ -4,7 +4,6 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import niffler.api.base.BaseApi;
 import niffler.api.spend.dto.SpendDto;
-import niffler.api.spend.endpoint.SpendEndpoint;
 
 import java.util.List;
 import java.util.UUID;
