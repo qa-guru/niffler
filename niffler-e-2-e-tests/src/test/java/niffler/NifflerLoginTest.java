@@ -14,7 +14,7 @@ public class NifflerLoginTest {
     void mainPageShouldBeDisplayedAfterSuccessLogin() {
         Selenide.open("http://127.0.0.1:3000/");
         $("a[href*='redirect']").click();
-        $("input[name='username']").setValue("dima");
+        $("input[name='username']").setValue("olga");
         $("input[name='password']").setValue("12345");
         $("button[type='submit']").click();
         $(".header__title").shouldBe(Condition.visible)

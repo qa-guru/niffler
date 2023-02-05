@@ -1,2 +1,4 @@
-package niffler.pages.components;public class BaseComponent {
+package niffler.pages.components;
+
+public abstract class BaseComponent {
 }

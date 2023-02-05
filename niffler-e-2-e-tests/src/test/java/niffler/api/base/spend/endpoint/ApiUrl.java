@@ -1,6 +1,6 @@
 package niffler.api.base.spend.endpoint;
 
-public class SpendEndpoint {
+public class ApiUrl {
 
     public static final String ADD_SPEND = "/addSpend";
 }
