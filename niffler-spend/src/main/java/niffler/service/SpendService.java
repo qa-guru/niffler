@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,6 +62,29 @@ public class SpendService {
 
         spendEntity.setCategory(categoryEntity);
         return SpendJson.fromEntity(spendRepository.save(spendEntity));
+    }
+
+    public @Nonnull
+    SpendJson editSpendForUser(@Nonnull SpendJson spend) {
+        Optional<SpendEntity> spendById = spendRepository.findById(spend.getId());
+        if (spendById.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can`t find spend by given id: " + spend.getId());
+        } else {
+            final String category = spend.getCategory();
+            CategoryEntity categoryEntity = categoryRepository.findAllByUsername(spend.getUsername())
+                    .stream()
+                    .filter(c -> c.getCategory().equals(category))
+                    .findFirst()
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Can`t find category by given name: " + category));
+
+            SpendEntity spendEntity = spendById.get();
+            spendEntity.setSpendDate(spend.getSpendDate());
+            spendEntity.setCategory(categoryEntity);
+            spendEntity.setAmount(spend.getAmount());
+            spendEntity.setDescription(spend.getDescription());
+            return SpendJson.fromEntity(spendRepository.save(spendEntity));
+        }
     }
 
     public @Nonnull
