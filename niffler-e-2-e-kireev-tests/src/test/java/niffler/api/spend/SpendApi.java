@@ -2,8 +2,10 @@ package niffler.api.spend;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
+import io.restassured.specification.RequestSpecification;
 import niffler.api.base.BaseApi;
 import niffler.api.spend.dto.SpendDto;
+import niffler.config.AppProperties;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,10 +14,13 @@ import static io.restassured.RestAssured.given;
 
 public final class SpendApi extends BaseApi {
 
+    private final static RequestSpecification REQUEST_SPEC = DEFAULT_REQUEST_SPEC
+            .baseUri(AppProperties.SPEND_APP_URI);
+
     @Step("Spend api: add new spend")
     public static SpendDto add(SpendDto spendDto) {
         Allure.addAttachment("New spend", spendDto.toString());
-        return given().spec(SPEND_APP_REQUEST_SPEC)
+        return given().spec(REQUEST_SPEC)
                     .body(spendDto.toJson())
                 .when()
                     .post(SpendEndpoint.ADD)
@@ -26,7 +31,7 @@ public final class SpendApi extends BaseApi {
 
     @Step("Spend api: delete spends")
     public static void delete(String username, UUID... ids) {
-        given().spec(SPEND_APP_REQUEST_SPEC)
+        given().spec(REQUEST_SPEC)
                     .param("username", username)
                     .param("ids", List.of(ids))
                 .when()

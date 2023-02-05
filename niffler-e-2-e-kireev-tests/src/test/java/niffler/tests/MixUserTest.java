@@ -11,7 +11,7 @@ import static com.codeborne.selenide.Selenide.sleep;
 import static niffler.models.user.UserRole.*;
 import static niffler.models.user.UserRole.ADMIN;
 
-class MixUserTest {
+class MixUserTest extends BaseTest {
 
     private final Random random = new Random();
 
