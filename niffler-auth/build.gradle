@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.1'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.palantir.docker' version '0.34.0'
 }
 
 group = 'guru.qa'
@@ -17,9 +18,26 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.0.0'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+docker {
+    dependsOn build
+    name "dtuchs/niffler-auth:${project.version}"
+    tag 'latest', 'dtuchs/niffler-auth:latest'
+    files bootJar.archiveFile
+    buildArgs([
+            APP_VER: project.version
+    ])
+    noCache true
+}
+
+task dockerRmi(type: Exec) {
+    workingDir "${buildDir}"
+    commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'niffler')\n"
 }
 
 tasks.named('test') {

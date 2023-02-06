@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.1'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.palantir.docker' version '0.34.0'
 }
 
 group 'guru.qa'
@@ -19,6 +20,22 @@ dependencies {
     implementation 'net.devh:grpc-server-spring-boot-starter:2.14.0.RELEASE'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+docker {
+    dependsOn build
+    name "dtuchs/niffler-currency:${project.version}"
+    tag 'latest', 'dtuchs/niffler-currency:latest'
+    files bootJar.archiveFile
+    buildArgs([
+            APP_VER: project.version
+    ])
+    noCache true
+}
+
+task dockerRmi(type: Exec) {
+    workingDir "${buildDir}"
+    commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'niffler')\n"
 }
 
 tasks.named('test') {

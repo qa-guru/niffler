@@ -1,6 +1,7 @@
 package guru.qa.nifflerauth.service.cors;
 
 import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
@@ -11,12 +12,18 @@ import java.util.List;
 @Component
 public class CorsCustomizer {
 
+    private final String nifflerFrontUri;
+
+    public CorsCustomizer(@Value("${niffler-front.base-uri}") String nifflerFrontUri) {
+        this.nifflerFrontUri = nifflerFrontUri;
+    }
+
     public void corsCustomizer(@Nonnull HttpSecurity http) throws Exception {
         http.cors(c -> {
             CorsConfigurationSource source = s -> {
                 CorsConfiguration cc = new CorsConfiguration();
                 cc.setAllowCredentials(true);
-                cc.setAllowedOrigins(List.of("http://127.0.0.1:3000"));
+                cc.setAllowedOrigins(List.of(nifflerFrontUri));
                 cc.setAllowedHeaders(List.of("*"));
                 cc.setAllowedMethods(List.of("*"));
                 return cc;

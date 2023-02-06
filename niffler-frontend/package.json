@@ -17,8 +17,9 @@
     "react-toastify": "^9.1.1"
   },
   "scripts": {
-    "build": "webpack --mode production",
-    "start": "webpack serve --mode development --open"
+    "build": "sh -ac '. ./.env.${REACT_APP_ENV}; webpack build'",
+    "build:docker": "REACT_APP_ENV=docker webpack --mode development",
+    "build:dev": "REACT_APP_ENV=dev webpack serve --mode development"
   },
   "proxy": "http://localhost:8080",
   "devDependencies": {
@@ -28,6 +29,7 @@
     "babel-loader": "^9.1.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.2",
+    "dotenv": "^16.0.3",
     "style-loader": "^3.3.1",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.0",

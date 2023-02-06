@@ -2,7 +2,7 @@ import axios from "axios";
 import {Buffer} from "buffer";
 
 const apiClient = (token) => axios.create({
-    baseURL: "http://127.0.0.1:8090",
+    baseURL: process.env.REACT_APP_GATEWAY_URL,
     withCredentials: true,
     headers: {
         'Accept': 'application/json',
@@ -12,7 +12,7 @@ const apiClient = (token) => axios.create({
 });
 
 const authClient = ({client, secret}) => axios.create({
-    baseURL: "http://auth-server:9000",
+    baseURL: process.env.REACT_APP_AUTH_URL,
     mode: "cors",
     headers: {
         'Content-type': 'application/json',

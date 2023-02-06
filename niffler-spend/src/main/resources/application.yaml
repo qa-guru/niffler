@@ -8,7 +8,6 @@ spring:
   application:
     name: niffler-spend
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/niffler-spend'
     hikari:
       connection-timeout: 20000
       minimum-idle: 10
@@ -33,6 +32,21 @@ spring:
     init:
       mode: always
 
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+#    org.springframework.boot.autoconfigure: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/niffler-spend'
 grpc:
   client:
     grpcCurrencyClient:
@@ -43,11 +57,21 @@ niffler-currency:
   base-uri: 'http://127.0.0.1:8091'
 niffler-userdata:
   base-uri: 'http://127.0.0.1:8089'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  datasource:
+    url: 'jdbc:postgresql://niffler-all-db:5432/niffler-spend'
+grpc:
+  client:
+    grpcCurrencyClient:
+      address: 'static://niffler-currency:8092'
+      negotiationType: PLAINTEXT
 
-logging:
-  level:
-    root: INFO
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-#    org.springframework.boot.autoconfigure: DEBUG
+niffler-currency:
+  base-uri: 'http://niffler-currency:8091'
+niffler-userdata:
+  base-uri: 'http://niffler-userdata:8089'
+---
