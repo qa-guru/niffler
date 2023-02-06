@@ -56,7 +56,6 @@ public class RegisterController {
                         registrationModel.getPassword()
                 );
                 model.addAttribute(MODEL_USERNAME_ATTR, registeredUserName);
-                model.addAttribute(MODEL_FRONT_URI_ATTR, nifflerFrontUri);
             } catch (DataIntegrityViolationException e) {
                 LOG.error("### Error while registration user: " + e.getMessage());
                 addErrorToRegistrationModel(
@@ -66,6 +65,7 @@ public class RegisterController {
                 );
             }
         }
+        model.addAttribute(MODEL_FRONT_URI_ATTR, nifflerFrontUri);
         return REGISTRATION_VIEW_NAME;
     }
 

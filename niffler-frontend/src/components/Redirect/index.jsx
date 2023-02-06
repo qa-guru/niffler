@@ -16,8 +16,7 @@ export const Redirect = ({}) => {
             const secret = 'secret';
 
             const verifier = sessionStorage.getItem('codeVerifier');
-
-            const initialUrl = '/oauth2/token?client_id=client&redirect_uri=' + process.env.REACT_APP_FRONT_URL + '/authorized&grant_type=authorization_code';
+            const initialUrl = `/oauth2/token?client_id=client&redirect_uri=${process.env.REACT_APP_FRONT_URL}/authorized&grant_type=authorization_code`;
             const url = `${initialUrl}&code=${code}&code_verifier=${verifier}`;
 
             authClient({client, secret})
@@ -48,11 +47,7 @@ export const Redirect = ({}) => {
     useEffect(() => {
         if (!searchParams?.get('code')) {
             const codeChallenge = sessionStorage.getItem('codeChallenge');
-            const link =
-                process.env.REACT_APP_AUTH_URL +
-                `/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=` +
-                process.env.REACT_APP_FRONT_URL +
-                `/authorized&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+            const link = `${process.env.REACT_APP_AUTH_URL}/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=${process.env.REACT_APP_FRONT_URL}/authorized&code_challenge=${codeChallenge}&code_challenge_method=S256`;
             window.location.href = link;
         }
     }, []);

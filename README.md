@@ -57,7 +57,7 @@ docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata
 ```
 
 #### 5. Установить одну из программ для визуальной работы с Postgres
-Например, DBeaver или Datagrip. Мы рекоменуем бесплатную PgAdmin 4.
+Например, DBeaver или Datagrip. Мы рекомендуем бесплатную PgAdmin 4.
 
 #### 6. Подключиться к БД postgres (host: localhost, port: 5432, user: postgres, pass: secret, database name: postgres) из PgAdmin и создать пустые БД микросервисов
 ```sql
@@ -82,25 +82,28 @@ OpenJDK Runtime Environment Homebrew (build 19.0.1)
 [Инструкция](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 Рекомендованная версия Node.js - 18.13.0 (LTS)
 
-#### 9. Запустить фронтенд (сначала обновить зависимости)
+# Запуск Niffler локальное в IDE:
+
+#### 1. Запустить фронтенд (сначала обновить зависимости)
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler-frontend
 Dmitriis-MacBook-Pro niffler-frontend % npm i
 Dmitriis-MacBook-Pro niffler-frontend % npm run build:dev
 ```
 
-#### 10. Прописать run конфигурацию для всех сервисов niffler-* - Active profiles local
+#### 2. Прописать run конфигурацию для всех сервисов niffler-* - Active profiles local
 Для этого зайти в меню Run -> Edit Configurations -> выбрать main класс -> указать Active profiles: local
 [Инструкция](https://stackoverflow.com/questions/39738901/how-do-i-activate-a-spring-boot-profile-when-running-from-intellij).
 
-# Запуск Niffler локально:
+#### 3 Запустить сервис Niffler-auth c помощью gradle или командой Run в IDE:
 - Запустить сервис auth
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler-auth
-Dmitriis-MacBook-Pro niffler-auth % gradle bootRun
+Dmitriis-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.active=local'
 ```
-или просто перейдя к main-классу приложения NifflerAuthApplication выбрать run в IDEA
-- Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
+Или просто перейдя к main-классу приложения NifflerAuthApplication выбрать run в IDEA (предварительно удостовериться что выполнен предыдущий пункт)
+#### 4  Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
+
 
 # Запуск Niffler в докере:
 #### 1. Создать бесплатную учетную запись на https://hub.docker.com/ (если отсутствует)
@@ -118,7 +121,6 @@ Dmitriis-MacBook-Pro niffler % cd niffler
 ```posh
 Dmitriis-MacBook-Pro  niffler % docker-compose pull
 ```
-
 #### 6.  Запустить все сервисы 
 ```posh
 Dmitriis-MacBook-Pro  niffler % docker-compose up -d
@@ -126,7 +128,7 @@ Dmitriis-MacBook-Pro  niffler % docker-compose up -d
 
 Niffler при запуске в докере будет работать для вас на порту 80, этот порт можно не указывать в браузере, таким образом переходить напрямую по ссылке http://127.0.0.1/
 *ВАЖНО!* из docker-network Вам будут доступны только следующие порты:
-- порт 80 (все запросы с него перенаправляются nginx-ом на фронтенд)
+- порт 80 (все запросы с него перенаправляются nginx-ом на frontend)
 - порт 9000 (сервис niffler-auth)
 - порт 8090 (сервис niffler-gateway)
 
