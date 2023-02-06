@@ -96,6 +96,16 @@ public class RestSpendClient {
     }
 
     public @Nonnull
+    SpendJson editSpend(@Nonnull SpendJson spend) {
+        return webClient.patch()
+                .uri(nifflerSpendUri + "/editSpend")
+                .body(Mono.just(spend), SpendJson.class)
+                .retrieve()
+                .bodyToMono(SpendJson.class)
+                .block();
+    }
+
+    public @Nonnull
     List<StatisticJson> statistic(@Nonnull String username,
                                   @Nonnull CurrencyValues userCurrency,
                                   @Nullable CurrencyValues filterCurrency,
