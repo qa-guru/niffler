@@ -1,7 +1,8 @@
 package niffler.jupiter;
 
-import niffler.data.PostgresJdbcUsersDAO;
-import niffler.data.PostgresSpringJdbcUsersDAO;
+import niffler.data.jpa.query.PostgresHibernateFriends;
+import niffler.data.jpa.query.PostgresHibernateUsers;
+import niffler.data.jpa.query.PostgresSpringJdbcUsers;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
@@ -19,10 +20,21 @@ public class DAOResolver implements TestInstancePostProcessor {
                 .peek(field -> field.setAccessible(true))
                 .collect(Collectors.toList());
 
+
         for (Field field : fields) {
-            field.set(testInstance, System.getProperty("dao", "jdbc").equals("jdbc")
-                    ? new PostgresJdbcUsersDAO()
-                    : new PostgresSpringJdbcUsersDAO());
+            if (field.getName().contains("users")) {
+
+                field.set(testInstance, System.getProperty("dao", "jpa").equals("jpa")
+                        ? new PostgresHibernateUsers()
+                        : new PostgresSpringJdbcUsers());
+            } else {
+
+                field.set(testInstance, System.getProperty("dao", "jpa").equals("jpa")
+                        ? new PostgresHibernateFriends()
+                        : new PostgresSpringJdbcUsers());
+
+            }
         }
+
     }
 }

@@ -1,8 +1,10 @@
 package niffler.test;
 
-import niffler.jupiter.BeforeSuiteExtension;
+import niffler.jupiter.JpaExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(BeforeSuiteExtension.class)
+@ExtendWith(JpaExtension.class)
 public abstract class BaseTest {
+
+
 }
