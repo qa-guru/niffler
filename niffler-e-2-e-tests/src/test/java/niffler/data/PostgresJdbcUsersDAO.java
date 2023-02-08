@@ -1,6 +1,6 @@
 package niffler.data;
 
-import niffler.data.model.Users;
+import niffler.data.model.UsersEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 
-import static niffler.data.DataSourceContext.DataBase.USERDATA;
+import static niffler.data.DataBase.USERDATA;
 
 public class PostgresJdbcUsersDAO implements UsersDAO {
 
@@ -19,7 +19,7 @@ public class PostgresJdbcUsersDAO implements UsersDAO {
     private final DataSource ds = DataSourceContext.INSTANCE.getDatatSource(USERDATA);
 
     @Override
-    public int addUser(Users users) {
+    public int addUser(UsersEntity users) {
         try (Connection con = ds.getConnection();
              Statement st = con.createStatement()) {
             String sql = "INSERT INTO users (username, currency, firstname, surname, photo) VALUES (" +
@@ -27,7 +27,7 @@ public class PostgresJdbcUsersDAO implements UsersDAO {
                     users.getCurrency() +
                     users.getFirstname() +
                     users.getSurname() +
-                    new String(users.getPhoto())+
+                    new String(users.getPhoto()) +
                     ");";
             return st.executeUpdate(sql);
         } catch (SQLException e) {
@@ -37,10 +37,10 @@ public class PostgresJdbcUsersDAO implements UsersDAO {
     }
 
     @Override
-    public void updateUser(Users user) {
+    public void updateUser(UsersEntity user) {
         try (Connection con = ds.getConnection();
              Statement st = con.createStatement()) {
-            String sql = "UPDATE users SET currency = '" + user.getCurrency() + "' WHERE username = '" + user.getUsername()+"';";
+            String sql = "UPDATE users SET currency = '" + user.getCurrency() + "' WHERE username = '" + user.getUsername() + "';";
             st.executeUpdate(sql);
         } catch (SQLException e) {
             LOG.error("Error while database operation", e);
@@ -49,18 +49,18 @@ public class PostgresJdbcUsersDAO implements UsersDAO {
     }
 
     @Override
-    public void remove(Users user) {
+    public void remove(UsersEntity user) {
 
     }
 
     @Override
-    public Users getByUsername(String username) {
+    public UsersEntity getByUsername(String username) {
         try (Connection con = ds.getConnection();
              Statement st = con.createStatement()) {
-            String sql = "SELECT * FROM users WHERE username = '" + username+"';";
+            String sql = "SELECT * FROM users WHERE username = '" + username + "';";
             ResultSet resultSet = st.executeQuery(sql);
             if (resultSet.next()) {
-                Users result = new Users();
+                UsersEntity result = new UsersEntity();
                 result.setId(UUID.fromString(resultSet.getString(1)));
                 result.setUsername(resultSet.getString(2));
                 result.setCurrency(resultSet.getString(3));

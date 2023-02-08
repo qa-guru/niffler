@@ -1,16 +1,16 @@
 package niffler.data;
 
-import niffler.data.model.Users;
+import niffler.data.model.UsersEntity;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class UsersRowMapper implements RowMapper<Users> {
+public class UsersRowMapper implements RowMapper<UsersEntity> {
     @Override
-    public Users mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Users result = new Users();
+    public UsersEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+        UsersEntity result = new UsersEntity();
         result.setId(UUID.fromString(rs.getString(1)));
         result.setUsername(rs.getString(2));
         result.setCurrency(rs.getString(3));

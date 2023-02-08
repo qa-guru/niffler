@@ -2,10 +2,8 @@ package niffler.test;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
-import niffler.data.PostgresJdbcUsersDAO;
-import niffler.data.PostgresSpringJdbcUsersDAO;
 import niffler.data.UsersDAO;
-import niffler.data.model.Users;
+import niffler.data.model.UsersEntity;
 import niffler.jupiter.DAO;
 import niffler.jupiter.DAOResolver;
 import org.junit.jupiter.api.AfterEach;
@@ -17,8 +15,8 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 
-@ExtendWith(DAOResolver.class)
-public class UserDataTest {
+@ExtendWith({DAOResolver.class})
+public class UserDataTest extends BaseTest {
 
     @DAO
     private UsersDAO usersDAO;
@@ -28,7 +26,7 @@ public class UserDataTest {
 
     @BeforeEach
     void addUserDataBeforeTest() {
-        Users dima = usersDAO.getByUsername("dima");
+        UsersEntity dima = usersDAO.getByUsername("dima");
         originalCurrency = dima.getCurrency();
         dima.setCurrency(testedCurrency);
         usersDAO.updateUser(dima);
@@ -44,7 +42,7 @@ public class UserDataTest {
 
     @AfterEach
     void restoreUser() {
-        Users dima = usersDAO.getByUsername("dima");
+        UsersEntity dima = usersDAO.getByUsername("dima");
         dima.setCurrency(originalCurrency);
         usersDAO.updateUser(dima);
     }

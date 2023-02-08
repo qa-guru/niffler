@@ -1,10 +1,13 @@
 package niffler.data;
 
-import niffler.data.model.Users;
+import niffler.data.model.UsersEntity;
 
 public interface UsersDAO extends DAO {
-    int addUser(Users users);
-    void updateUser(Users user);
-    void remove(Users user);
-    Users getByUsername(String username);
+    int addUser(UsersEntity users);
+
+    void updateUser(UsersEntity user);
+
+    void remove(UsersEntity user);
+
+    UsersEntity getByUsername(String username);
 }

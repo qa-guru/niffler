@@ -1,7 +1,7 @@
 package niffler.jupiter;
 
-import niffler.data.PostgresJdbcUsersDAO;
 import niffler.data.PostgresSpringJdbcUsersDAO;
+import niffler.data.jpa.PostgresHibernateUsersDAO;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
@@ -20,8 +20,8 @@ public class DAOResolver implements TestInstancePostProcessor {
                 .collect(Collectors.toList());
 
         for (Field field : fields) {
-            field.set(testInstance, System.getProperty("dao", "jdbc").equals("jdbc")
-                    ? new PostgresJdbcUsersDAO()
+            field.set(testInstance, System.getProperty("dao", "jpa").equals("jpa")
+                    ? new PostgresHibernateUsersDAO()
                     : new PostgresSpringJdbcUsersDAO());
         }
     }

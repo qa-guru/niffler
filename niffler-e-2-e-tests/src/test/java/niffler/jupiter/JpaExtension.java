@@ -1,8 +1,10 @@
 package niffler.jupiter;
 
+import jakarta.persistence.EntityManagerFactory;
+import niffler.data.jpa.EmfContext;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-public class BeforeSuiteExtension implements AroundAllTestsExtension {
+public class JpaExtension implements AroundAllTestsExtension {
     @Override
     public void beforeAllTests(ExtensionContext context) {
         System.out.println("BEFORE SUITE!");
@@ -10,6 +12,7 @@ public class BeforeSuiteExtension implements AroundAllTestsExtension {
 
     @Override
     public void afterAllTests() {
-        System.out.println("AFTER SUITE!");
+        EmfContext.INSTANCE.storedEmf()
+                .forEach(EntityManagerFactory::close);
     }
 }
