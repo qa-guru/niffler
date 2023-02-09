@@ -1,6 +1,6 @@
 import { useState} from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {toast, ToastContainer} from "react-toastify";
+import {ToastContainer} from "react-toastify";
 import {LoginPage} from "./components/LoginPage";
 import {MainLayout} from "./components/MainLayout";
 import {Profile} from "./components/Profile";
@@ -15,22 +15,6 @@ function App() {
     const [user, setUser] = useState(null);
     const value = { user, setUser };
 
-    const showSuccessMessage = (message) => {
-        toast.success(message, {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-        });
-    };
-
-    const showFailMessage = (message) => {
-        toast.error(message, {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-        });
-    };
-
-
-
     return (
         <div className="App">
             <ToastContainer/>
@@ -41,12 +25,12 @@ function App() {
                                <Route path="/authorized" element={<Redirect />} exact={false}/>
                                <Route path="/profile" element={
                                    <ProtectedRoute>
-                                       <Profile showSuccess={showSuccessMessage} showFail={showFailMessage}/>
+                                       <Profile/>
                                    </ProtectedRoute>
                                }/>
                                <Route path="/main" element={
                                    <ProtectedRoute>
-                                       <MainLayout showSuccess={showSuccessMessage} />
+                                       <MainLayout />
                                    </ProtectedRoute>
                                }/>
                                <Route path="*" element={<LoginPage/>}/>

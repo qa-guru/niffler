@@ -24,7 +24,12 @@ const getData = ({path, onSuccess, onFail, params}) => {
     const token = sessionStorage.getItem('id_token');
     apiClient(token).get(`${path}`, { params })
         .then(res => {
-            return res.data;
+            if(res.status === 200) {
+                return res.data;
+            }
+            else {
+                throw new Error("Error while loading data!")
+            }
         })
         .then(data => onSuccess(data))
         .catch((err) =>{
@@ -48,7 +53,11 @@ const postData = ({path, data, onSuccess, onFail }) => {
     const token = sessionStorage.getItem('id_token');
     apiClient(token).post(`${path}`, data)
         .then(res => {
-            return res.data;
+            if(res.status === 200 || res.status === 201) {
+                return res.data;
+            } else {
+                throw new Error("Entity not created!")
+            }
         })
         .then(data => onSuccess(data))
         .catch((err) =>{

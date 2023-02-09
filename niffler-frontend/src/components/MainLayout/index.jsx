@@ -3,17 +3,18 @@ import {useLoadedData} from "../../api/hooks";
 import {CurrencyContext} from "../../contexts/CurrencyContext";
 import {FilterContext} from "../../contexts/FilterContext";
 import {UserContext} from "../../contexts/UserContext";
+import {showError, showSuccess} from "../../toaster/toaster";
 import {AddSpending} from "../AddSpending";
 import {Header} from "../Header";
 import {SpendingHistory} from "../SpendingHistory";
 import {useContext, useEffect, useState} from "react";
 import {SpendingStatistics} from "../SpendingStatistics";
 
-export const MainLayout = ({showSuccess}) => {
+export const MainLayout = () => {
     const [spendings, setSpendings] = useState([]);
     const [categories, setCategories] = useState({});
     const [statistic, setStatistic] = useState([]);
-    const { user, setUser } = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     const [filter, setFilter] = useState(null);
     const value = { filter, setFilter };
@@ -101,6 +102,7 @@ export const MainLayout = ({showSuccess}) => {
                 showSuccess("Spending successfully added!")
             },
             onFail: (error) => {
+                showError("Can not add spending!")
                 console.log(error);
             },
         });
