@@ -24,8 +24,8 @@ public class NifflerLoginTest {
         Allure.step("Check login", () -> {
             Selenide.open("http://127.0.0.1:3000/");
             $("a[href*='redirect']").click();
-            $("input[name='username']").setValue("dima");
-            $("input[name='password']").setValue("12345");
+            $("input[name='username']").setValue("DIMA");
+            $("input[name='password']").setValue("123");
             $("button[type='submit']").click();
             $(".header__title").shouldBe(Condition.visible)
                     .shouldHave(Condition.text("Niffler. The coin keeper."));
