@@ -65,7 +65,7 @@ export const Categories = () => {
             {categories?.length > 0 ? (
                 <ul className="categories__list">
                     {categories.map(item => (
-                        <li className="categories__item">{item.category}</li>
+                        <li key={item.id} className="categories__item">{item.category}</li>
                     ))}
                 </ul>
             ) : (<span>No spending categories yet!</span>)}

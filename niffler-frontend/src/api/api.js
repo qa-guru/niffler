@@ -65,4 +65,20 @@ const postData = ({path, data, onSuccess, onFail }) => {
         });
 };
 
-export {apiClient, authClient, getData, postData, deleteData};
+const patchData = ({path, data, onSuccess, onFail }) => {
+    const token = sessionStorage.getItem('id_token');
+    apiClient(token).patch(`${path}`, data)
+        .then(res => {
+            if(res.status === 200) {
+                return res.data;
+            } else {
+                throw new Error("Unsuccessful editing!")
+            }
+        })
+        .then(data => onSuccess(data))
+        .catch((err) =>{
+            onFail(err);
+        });
+};
+
+export {apiClient, authClient, getData, postData, patchData, deleteData};

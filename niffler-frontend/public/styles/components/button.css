@@ -61,6 +61,12 @@
     background-image: url("./../../images/edit.svg");
 }
 
+.button-icon_type_submit {
+    background-image: url("./../../images/submit.svg");
+    width: 25px;
+    height: 25px;
+}
+
 .button-icon_type_logout {
     background-image: url("./../../images/logout.svg");
     margin-top: 7px;

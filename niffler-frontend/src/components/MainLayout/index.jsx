@@ -14,6 +14,8 @@ export const MainLayout = () => {
     const [spendings, setSpendings] = useState([]);
     const [categories, setCategories] = useState({});
     const [statistic, setStatistic] = useState([]);
+    const [isGraphOutdated, setIsGraphOutdated] = useState(false);
+
     const { user } = useContext(UserContext);
 
     const [filter, setFilter] = useState(null);
@@ -88,7 +90,7 @@ export const MainLayout = () => {
 
     useEffect(() => {
         getStatistics();
-    }, [filter, selectedCurrency]);
+    }, [filter, selectedCurrency, isGraphOutdated]);
 
 
     const addNewSpendingInTableCallback = (data) => {
@@ -130,8 +132,13 @@ export const MainLayout = () => {
                     <FilterContext.Provider value={value}>
                         <CurrencyContext.Provider value={curContext}>
                             <AddSpending addSpendingCallback={addNewSpendingInTableCallback} categories={categories} />
-                            <SpendingStatistics statistic={statistic} defaultCurrency={user?.currency} />
-                            <SpendingHistory spendings={spendings} currencies={currencies} handleDeleteItems={handleDeleteItems}/>
+                            <SpendingStatistics statistic={statistic} defaultCurrency={user?.currency}/>
+                            <SpendingHistory spendings={spendings}
+                                             currencies={currencies}
+                                             handleDeleteItems={handleDeleteItems}
+                                             isGraphOutdated={isGraphOutdated}
+                                             setIsGraphOutdated={setIsGraphOutdated}
+                            />
                         </CurrencyContext.Provider>
                     </FilterContext.Provider>
                 </div>

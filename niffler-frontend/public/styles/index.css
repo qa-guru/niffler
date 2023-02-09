@@ -36,15 +36,10 @@
     "history history history";
 }
 
-.value-form {
-    display: flex;
-    align-items: flex-end;
-}
 
 .value-container {
+    margin: 0 auto;
     width: 100%;
-    display: flex;
-    justify-content: space-between;
 }
 
 
