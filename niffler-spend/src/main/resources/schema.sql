@@ -12,6 +12,9 @@ create table if not exists categories
 alter table categories
     owner to postgres;
 
+--alter table categories add column username varchar(50) not null default 'dima'; -- testing username
+--alter table categories rename column description to category;
+
 create table if not exists spends
 (
     id          UUID unique  not null default uuid_generate_v1() primary key,
@@ -28,9 +31,11 @@ alter table spends
     owner to postgres;
 
 -- delete from categories;
--- insert into categories (description) values ('Рестораны');
--- insert into categories (description) values ('Продуктовые магазины');
--- insert into categories (description) values ('Обучение в QA.GURU ADVANCED');
+-- insert into categories (category) values ('Рестораны');
+-- insert into categories (category) values ('Продуктовые магазины');
+-- insert into categories (category) values ('Обучение в QA.GURU ADVANCED');
+-- insert into categories (category) values ('Бар');
+
 
 -- insert into spends (id, username, spend_date, currency, amount, description, category_id)
 -- values (uuid_generate_v1(), 'dima', date('2023-02-15'), 'RUB', 100.0, 'Радостная покупка', (select id from categories where description = 'Обучение в QA.GURU ADVANCED'));

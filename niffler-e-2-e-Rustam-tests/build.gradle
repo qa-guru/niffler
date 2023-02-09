@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+}
+
+group 'guru.qa'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+def junitVersion = "5.8.2",
+    slfVersion = "1.7.36",
+    allureVersion = "2.17.3",
+    jdbcVersion = "6.0.4",
+    restAssuredVersion = "4.5.1",
+    lombokVersion = "1.18.10",
+    ownerVersion = "1.0.4",
+    jacksonVersion = "2.9.5",
+    postgresqlVersion = "42.1.4",
+    selenideVersion = "6.5.2"
+
+dependencies {
+    testImplementation(
+            "com.codeborne:selenide:$selenideVersion",
+            "io.qameta.allure:allure-selenide:$allureVersion",
+            "org.junit.jupiter:junit-jupiter:$junitVersion",
+            "org.slf4j:slf4j-simple:$slfVersion",
+            "io.rest-assured:rest-assured:$restAssuredVersion",
+            "org.projectlombok:lombok:$lombokVersion",
+            "io.rest-assured:json-schema-validator:$restAssuredVersion",
+            "org.springframework:spring-jdbc:$jdbcVersion",
+            "org.aeonbits.owner:owner:$ownerVersion",
+            "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
+            "io.rest-assured:json-schema-validator:$restAssuredVersion",
+            "org.postgresql:postgresql:$postgresqlVersion"
+    )
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task tabs(type: Test) {
+    useJUnitPlatform {
+        includeTags "spendBlock"
+    }
+}
