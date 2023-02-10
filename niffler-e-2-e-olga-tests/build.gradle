@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.11.2'
+}
+
+group 'guru.qa'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+allure {
+    autoconfigure = true
+    version = '2.20.1'
+}
+
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.22'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation "com.codeborne:selenide:6.11.1"
+    testImplementation "io.rest-assured:rest-assured:5.3.0"
+    testImplementation "org.aeonbits.owner:owner:1.0.12"
+    testImplementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    testImplementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+    testImplementation 'com.squareup.okhttp:logging-interceptor:2.7.5'
+    testImplementation 'org.springframework:spring-jdbc:6.0.4'
+    testImplementation 'org.postgresql:postgresql:42.5.3'
+    testImplementation 'org.hibernate:hibernate-core:6.1.7.Final'
+    implementation("io.qameta.allure:allure-junit5:2.20.1") {
+        exclude group: "org.junit.platform"
+        exclude group: "org.junit.jupiter"
+    }
+    testImplementation 'com.codeborne:selenide:6.11.1'
+}
+
+test {
+    useJUnitPlatform()
+    options {
+        systemProperties(System.getProperties())
+    }
+}
+
+task wrapper(type: Wrapper){
+    gradleVersion = '7.2'
+}
+
+task prepareKotlinBuildScriptModel {
+
+}
