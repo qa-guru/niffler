@@ -7,7 +7,6 @@ import {BatchCheckbox} from "../Checkbox/BatchCheckbox";
 export const SpendingTable = ({spendings}) => {
 
     const {selectedIds, setSelectedIds, allIds} = useContext(TableSelectionContext);
-    console.log(allIds);
 
     const handleSingleClick = (id) => {
         selectedIds?.includes(id)
