@@ -1,6 +1,6 @@
 import { useEffect, useState} from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {toast, ToastContainer} from "react-toastify";
+import {ToastContainer} from "react-toastify";
 import {getData} from "./api/api";
 import {LoginPage} from "./components/LoginPage";
 import {MainLayout} from "./components/MainLayout";
@@ -18,6 +18,10 @@ function App() {
     const userContext = { user, setUser };
 
     useEffect(() => {
+        if (location.pathname === "/authorized") {
+            setUserLoading(false);
+            return;
+        }
         getData({
                 path: "/currentUser",
                 onSuccess: (user) => {
@@ -32,20 +36,6 @@ function App() {
         );
     }, []);
 
-    const showSuccessMessage = (message) => {
-        toast.success(message, {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-        });
-    };
-
-    const showFailMessage = (message) => {
-        toast.error(message, {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-        });
-    };
-
     return (
         <div className="App">
             <ToastContainer/>
@@ -56,8 +46,8 @@ function App() {
                             <Route path="/redirect" element={<Redirect />} exact={false}/>
                             <Route path="/authorized" element={<Redirect />} exact={false}/>
                             <Route element={<ProtectedRoutes/>}>
-                                <Route path="/profile" element={<Profile showSuccess={showSuccessMessage} showFail={showFailMessage}/>}/>
-                                <Route path="/main" element={<MainLayout showSuccess={showSuccessMessage} />}/>
+                                <Route path="/profile" element={<Profile/>}/>
+                                <Route path="/main" element={<MainLayout />}/>
                             </Route>
                             <Route path="*" element={<LoginPage/>}/>
                         </Routes>

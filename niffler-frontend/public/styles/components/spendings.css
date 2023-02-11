@@ -34,6 +34,12 @@
     margin-right: 20px;
 }
 
+.spendings__button-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
 .spendings__bulk-actions {
     display: flex;
     align-items: center;

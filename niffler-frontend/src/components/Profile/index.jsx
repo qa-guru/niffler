@@ -2,13 +2,15 @@ import {useContext, useState} from "react";
 import {postData} from "../../api/api";
 import {useLoadedData} from "../../api/hooks";
 import {UserContext} from "../../contexts/UserContext";
+import {showError, showSuccess} from "../../toaster/toaster";
 import {Button} from "../Button";
+import {Categories} from "../Categories";
 import {FormInput} from "../FormInput";
 import {FormSelect} from "../FormSelect";
 import {Header} from "../Header";
 import {ProfileAvatar} from "../ProfileAvatar";
 
-export const Profile = ({showSuccess, showError}) => {
+export const Profile = () => {
 
     const {user, setUser} = useContext(UserContext);
     const [userData, setUserData] = useState({
@@ -91,6 +93,7 @@ export const Profile = ({showSuccess, showError}) => {
                         </form>
                     </div>
                 </section>
+                <Categories />
             </div>
         </main>
         <footer className={"footer"}>

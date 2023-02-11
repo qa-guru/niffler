@@ -8,7 +8,7 @@ import {FormSelect} from "../FormSelect";
 import {SpendingTable} from "../SpendingTable";
 
 
-export const SpendingHistory = ({spendings, currencies, handleDeleteItems}) => {
+export const SpendingHistory = ({spendings, currencies, handleDeleteItems, isGraphOutdated, setIsGraphOutdated}) => {
     const {filter, setFilter} = useContext(FilterContext);
     const {selectedCurrency, setSelectedCurrency} = useContext(CurrencyContext);
 
@@ -70,7 +70,10 @@ export const SpendingHistory = ({spendings, currencies, handleDeleteItems}) => {
                     <img className={"spendings__img"} src="/images/gringotts2.jpeg" width={250} alt={"Image of Gringotts"}></img>
                 </div>
                 <TableSelectionContext.Provider value={value}>
-                    <SpendingTable spendings={spendings}/>
+                    <SpendingTable spendings={spendings}
+                                   isGraphOutdated={isGraphOutdated}
+                                   setIsGraphOutdated={setIsGraphOutdated}
+                    />
                 </TableSelectionContext.Provider>
             </div>
         </section>
