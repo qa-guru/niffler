@@ -18,6 +18,10 @@ function App() {
     const userContext = { user, setUser };
 
     useEffect(() => {
+        if (location.pathname === "/authorized") {
+            setUserLoading(false);
+            return;
+        }
         getData({
                 path: "/currentUser",
                 onSuccess: (user) => {
