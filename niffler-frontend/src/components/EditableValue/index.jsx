@@ -1,20 +1,40 @@
-export const EditableValue = ({value, onValueChange, fieldName,  placeholder, isEditState}) => {
+import dayjs from "dayjs";
+import {forwardRef} from "react";
+import DatePicker from "react-datepicker";
 
+const CustomInput = forwardRef((props, ref) => (
+    <input {...props} id="editable__input" ref={ref}/>
+));
 
-    const editView = (
-        <input
-            className="editable__input"
-            type={"text"}
-            value={value}
-            name={fieldName}
-            placeholder={placeholder}
-            onChange={onValueChange}/>
-    );
+export const EditableValue = ({value, onValueChange, fieldName,  placeholder, isEditState, type}) => {
+    const editView = () => {
+        switch (type){
+            case "date": {
+                return (
+                    <DatePicker
+                        dateFormat="dd/MM/yyyy"
+                        selected={new Date(value)}
+                        onChange={onValueChange}
+                        customInput={<CustomInput/>}
+                    />
+                );
+            }
+            default: {
+                return (<input
+                    className="editable__input"
+                    type={"text"}
+                    value={value}
+                    name={fieldName}
+                    placeholder={placeholder}
+                    onChange={onValueChange}/>);
+            }
+        }
+};
 
     const noEditView = (
         <div>
             <div className={"value-container"}>
-                <span>{value}</span>
+                <span>{type === "date" ? dayjs(value).format('DD MMM YY') : value}</span>
             </div>
         </div>
     )
@@ -22,7 +42,7 @@ export const EditableValue = ({value, onValueChange, fieldName,  placeholder, is
     return (
         <>
             {
-                isEditState ? editView : noEditView
+                isEditState ? editView() : noEditView
             }
         </>
     );

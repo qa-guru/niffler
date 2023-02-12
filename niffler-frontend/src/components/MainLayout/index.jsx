@@ -135,6 +135,7 @@ export const MainLayout = () => {
                             <SpendingStatistics statistic={statistic} defaultCurrency={user?.currency}/>
                             <SpendingHistory spendings={spendings}
                                              currencies={currencies}
+                                             categories={categories}
                                              handleDeleteItems={handleDeleteItems}
                                              isGraphOutdated={isGraphOutdated}
                                              setIsGraphOutdated={setIsGraphOutdated}
