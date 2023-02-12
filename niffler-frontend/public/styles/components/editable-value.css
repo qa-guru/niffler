@@ -1,5 +1,5 @@
 .editable__input {
-    font-family: "PTRootUIWeb";
+    font-family: "PTRootUIWeb", var(--font-fallback);;
     text-align: center;
     max-width: 100%;
     width: fit-content;

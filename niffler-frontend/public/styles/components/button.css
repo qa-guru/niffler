@@ -1,7 +1,5 @@
 .button {
-    font-family: "PTRootUIWeb", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    font-family: "PTRootUIWeb", var(--font-fallback);
     display: block;
     box-sizing: border-box;
     max-width: 350px;
