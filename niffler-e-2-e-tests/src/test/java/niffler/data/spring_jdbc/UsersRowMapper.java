@@ -1,6 +1,6 @@
-package niffler.data;
+package niffler.data.spring_jdbc;
 
-import niffler.data.model.UsersEntity;
+import niffler.data.entity.UsersEntity;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

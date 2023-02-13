@@ -20,9 +20,8 @@ public class SpendJson {
     private String description;
     @JsonProperty("username")
     private String username;
-
-    public SpendJson() {
-    }
+    @JsonProperty("spendDetails")
+    private SpendDetailsJson spendDetails;
 
     public UUID getId() {
         return id;
@@ -78,5 +77,26 @@ public class SpendJson {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public SpendDetailsJson getSpendDetails() {
+        return spendDetails;
+    }
+
+    public void setSpendDetails(SpendDetailsJson spendDetails) {
+        this.spendDetails = spendDetails;
+    }
+
+    public static class SpendDetailsJson {
+        private String id;
+
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
     }
 }
