@@ -13,7 +13,6 @@ spring:
   mvc:
     log-request-details: true
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/niffler-auth'
     hikari:
       connection-timeout: 20000
       minimum-idle: 10
@@ -46,7 +45,26 @@ logging:
     org.springframework.security.oauth2: DEBUG
 #    org.springframework.boot.autoconfigure: DEBUG
 
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/niffler-auth'
 niffler-front:
   base-uri: 'http://127.0.0.1:3000'
 niffler-auth:
-  base-uri: 'http://auth-server:9000'
+  base-uri: 'http://127.0.0.1:9000'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  datasource:
+    url: 'jdbc:postgresql://niffler-all-db:5432/niffler-auth'
+niffler-front:
+  base-uri: 'http://127.0.0.1'
+niffler-auth:
+  base-uri: 'http://niffler-auth:9000'
+---

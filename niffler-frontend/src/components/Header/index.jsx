@@ -10,7 +10,7 @@ export const Header = () => {
 
     const handleLogout = () => {
         getData({
-            path:"http://127.0.0.1:9000/logout",
+            path: `${process.env.REACT_APP_AUTH_URL}/logout`,
             onSuccess: () => {
                 sessionStorage.clear();
                 setUser(null);

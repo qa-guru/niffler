@@ -12,7 +12,6 @@ spring:
   application:
     name: niffler-cyrrency
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/niffler-currency'
     hikari:
       connection-timeout: 20000
       minimum-idle: 10
@@ -44,3 +43,19 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
 #    org.springframework.boot.autoconfigure: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/niffler-currency'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  datasource:
+    url: 'jdbc:postgresql://niffler-all-db:5432/niffler-currency'
+---

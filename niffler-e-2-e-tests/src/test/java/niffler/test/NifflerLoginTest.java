@@ -15,14 +15,14 @@ import static com.codeborne.selenide.Selenide.$;
 import static niffler.jupiter.User.UserType.ADMIN;
 
 @ExtendWith({ScreenshotExtension.class, UsersExtension.class})
-public class NifflerLoginTest {
+public class NifflerLoginTest extends BaseTest {
 
     @AllureId("1")
     @Test
     void mainPageShouldBeDisplayedAfterSuccessLogin(@User(userType = ADMIN) UserModel user) {
         System.out.println("#### Test 1 " + user.toString());
         Allure.step("Check login", () -> {
-            Selenide.open("http://127.0.0.1:3000/");
+            Selenide.open(CFG.frontUrl());
             $("a[href*='redirect']").click();
             $("input[name='username']").setValue("dima");
             $("input[name='password']").setValue("12345");
@@ -33,6 +33,7 @@ public class NifflerLoginTest {
     }
 
     @AllureId("2")
+
     @Test
     void mainPageShouldBeDisplayedAfterSuccessLogin0(@User(userType = ADMIN) UserModel user) {
         System.out.println("#### Test 2 " + user.toString());

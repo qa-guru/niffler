@@ -27,11 +27,11 @@
         <button class="form__submit" type="submit">
             Sign Up
         </button>
-        <p class="form__paragraph">Already have an account? <a th:href="@{/http://127.0.0.1:3000}">Sign in!</a></p>
+        <p class="form__paragraph">Already have an account? <a th:href="@{|${frontUri}|}">Sign in!</a></p>
     </form>
     <div class="form" th:unless="${username == null}">
         <p class="form__paragraph">Congratulations! You've registered!</p>
-        <p class="form__paragraph"><a th:href="@{http://127.0.0.1:3000}">Sign in!</a></p>
+        <p class="form__paragraph"><a th:href="@{|${frontUri}|}">Sign in!</a></p>
     </div>
 </main>
 </body>

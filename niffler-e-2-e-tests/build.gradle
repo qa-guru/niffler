@@ -20,6 +20,9 @@ dependencies {
     testImplementation 'com.squareup.retrofit2:retrofit:2.9.0'
     testImplementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
     testImplementation 'com.squareup.okhttp:logging-interceptor:2.7.5'
+    testImplementation 'org.springframework:spring-jdbc:6.0.4'
+    testImplementation 'org.postgresql:postgresql:42.5.3'
+    testImplementation 'org.hibernate:hibernate-core:6.1.7.Final'
     implementation("io.qameta.allure:allure-junit5:2.20.1") {
         exclude group: "org.junit.platform"
         exclude group: "org.junit.jupiter"
@@ -29,4 +32,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    options {
+        systemProperties(System.getProperties())
+    }
 }

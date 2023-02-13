@@ -1,8 +1,21 @@
+#editable__input,
 .editable__input {
-    font-family: "PTRootUIWeb";
+    font-family: "PTRootUIWeb", var(--font-fallback);;
+    text-align: center;
+    width: 100%;
     border: none;
     border-bottom: 2px solid black;
     background: transparent;
     display: block;
-    margin-top: 3px;
+    margin: 3px auto 0 ;
+}
+
+#editable__input {
+    box-sizing: content-box;
+    padding: 0;
+    opacity: 1;
+}
+
+.editable__input:hover {
+    cursor: pointer;
 }

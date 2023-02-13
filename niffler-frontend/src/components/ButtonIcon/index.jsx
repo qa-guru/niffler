@@ -2,6 +2,7 @@ export const IconType = {
     EDIT: "edit",
     CLOSE: "close",
     LOGOUT: "logout",
+    SUBMIT: "submit",
 };
 
 export const ButtonIcon = ({iconType, onClick, text}) => {

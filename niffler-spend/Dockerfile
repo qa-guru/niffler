@@ -1,13 +1,9 @@
-FROM openjdk/openjdk:17-alpine
+FROM openjdk:17-alpine
 ARG APP_VER
 ENV VER=${APP_VER}
 ENV JAVA_OPTS=""
-COPY ./build/libs/niffler-spend-$VER.jar /usr/src/app/
-WORKDIR /usr/src/app
+WORKDIR /application
+COPY niffler-spend-$VER.jar ./
 
-ENV JPDA_ADDRESS=8787
-ENV JPDA_TRANSPORT=dt_socket
-
-EXPOSE 8787
 EXPOSE 8093
-CMD java $JAVA_OPTS -jar niffler-spend-$VER.jar jpda
+CMD java -jar -Dspring.profiles.active=docker $JAVA_OPTS niffler-spend-$VER.jar

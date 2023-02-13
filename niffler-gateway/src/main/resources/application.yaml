@@ -7,11 +7,25 @@ server:
 spring:
   application:
     name: niffler-gateway
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+#    org.springframework.boot.autoconfigure: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: 'http://auth-server:9000'
+          issuer-uri: 'http://127.0.0.1:9000'
 
 grpc:
   client:
@@ -25,11 +39,32 @@ niffler-userdata:
   base-uri: 'http://127.0.0.1:8089'
 niffler-spend:
   base-uri: 'http://127.0.0.1:8093'
+niffler-front:
+  base-uri: 'http://127.0.0.1:3000'
 
-logging:
-  level:
-    root: INFO
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-#    org.springframework.boot.autoconfigure: DEBUG
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'http://niffler-auth:9000'
+
+grpc:
+  client:
+    grpcCurrencyClient:
+      address: 'static://niffler-currency:8092'
+      negotiationType: PLAINTEXT
+
+niffler-currency:
+  base-uri: 'http:/niffler-currency:8091'
+niffler-userdata:
+  base-uri: 'http://niffler-userdata:8089'
+niffler-spend:
+  base-uri: 'http://niffler-spend:8093'
+niffler-front:
+  base-uri: 'http://127.0.0.1'
+---
