@@ -3,7 +3,7 @@ import {TableSelectionContext} from "../../contexts/TableSelectionContext";
 import {BatchCheckbox} from "../Checkbox/BatchCheckbox";
 import {SpendingRow} from "../SpendingRow";
 
-export const SpendingTable = ({spendings, isGraphOutdated, setIsGraphOutdated}) => {
+export const SpendingTable = ({spendings, isGraphOutdated, setIsGraphOutdated, categories}) => {
 
     const {selectedIds, setSelectedIds, allIds} = useContext(TableSelectionContext);
 
@@ -40,6 +40,7 @@ export const SpendingTable = ({spendings, isGraphOutdated, setIsGraphOutdated}) 
                                  isSelected={selectedIds.includes(spending?.id)}
                                  isGraphOutdated={isGraphOutdated}
                                  setIsGraphOutdated={setIsGraphOutdated}
+                                 categories={categories}
                     />
                 ))}
                 </tbody>
