@@ -44,7 +44,7 @@ export const ProfileAvatar = ({username, value, handleChangeValue}) => {
             }}>
                 <img className="profile__avatar"
                      src={ value ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
-                     width={150} height={150}/>
+                     width={200} height={200}/>
             </button>
         </div>
     );
