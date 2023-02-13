@@ -1,4 +1,4 @@
-package niffler.jupiter;
+package niffler.jupiter.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import niffler.model.SpendJson;

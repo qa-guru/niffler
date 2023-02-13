@@ -1,13 +1,16 @@
 package niffler.api;
 
+import niffler.config.Config;
 import niffler.model.SpendJson;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public interface NifflerSpendService {
+public interface NifflerSpendApi {
 
-    String nifflerSpendUri = "http://127.0.0.1:8093";
+    Config CFG =  Config.getConfig();
+
+    String nifflerSpendUri = CFG.spendUrl();
 
     @POST("/addSpend")
     Call<SpendJson> addSpend(@Body SpendJson spend);

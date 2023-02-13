@@ -11,14 +11,14 @@ public class NifflerSpendClient {
             .build();
 
     private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(NifflerSpendService.nifflerSpendUri)
+            .baseUrl(NifflerSpendApi.nifflerSpendUri)
             .addConverterFactory(JacksonConverterFactory.create())
             .build();
 
-    private NifflerSpendService nifflerSpendService = retrofit.create(NifflerSpendService.class);
+    private NifflerSpendApi nifflerSpendApi = retrofit.create(NifflerSpendApi.class);
 
     public SpendJson createSpend(SpendJson spend) throws Exception {
-        return nifflerSpendService.addSpend(spend).execute().body();
+        return nifflerSpendApi.addSpend(spend).execute().body();
     }
 
 }

@@ -2,10 +2,10 @@ package niffler.test;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
-import niffler.data.UsersDAO;
-import niffler.data.model.UsersEntity;
-import niffler.jupiter.DAO;
-import niffler.jupiter.DAOResolver;
+import niffler.data.dao.UsersDAO;
+import niffler.data.entity.UsersEntity;
+import niffler.jupiter.annotation.DAO;
+import niffler.jupiter.extension.DAOResolver;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

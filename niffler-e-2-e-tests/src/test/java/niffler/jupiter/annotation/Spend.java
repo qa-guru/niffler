@@ -1,5 +1,6 @@
-package niffler.jupiter;
+package niffler.jupiter.annotation;
 
+import niffler.jupiter.converter.SpendConverter;
 import org.junit.jupiter.params.converter.ConvertWith;
 
 import java.lang.annotation.ElementType;

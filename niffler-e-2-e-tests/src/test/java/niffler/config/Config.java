@@ -13,4 +13,10 @@ public interface Config {
 
 
     String frontUrl();
+
+    String userdataUrl();
+
+    String currencyGrpcUrl();
+
+    String spendUrl();
 }

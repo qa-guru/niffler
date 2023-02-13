@@ -4,5 +4,8 @@
   "currency": "RUB",
   "amount": 300.0,
   "description": "Описание",
-  "username": "dima"
+  "username": "dima",
+  "spendDetails": {
+    "id": "1"
+  }
 }

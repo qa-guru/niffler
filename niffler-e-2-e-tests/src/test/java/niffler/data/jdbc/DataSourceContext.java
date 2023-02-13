@@ -1,5 +1,7 @@
-package niffler.data;
+package niffler.data.jdbc;
 
+import com.p6spy.engine.spy.P6DataSource;
+import niffler.data.DataBase;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
@@ -17,7 +19,8 @@ public enum DataSourceContext {
             ds.setUser("postgres");
             ds.setPassword("secret");
             ds.setURL(dataBase.url);
-            this.dsContext.put(dataBase, ds);
+            P6DataSource p6DataSource = new P6DataSource(ds);
+            this.dsContext.put(dataBase, p6DataSource);
         }
         return dsContext.get(dataBase);
     }

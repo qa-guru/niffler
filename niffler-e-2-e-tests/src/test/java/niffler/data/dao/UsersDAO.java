@@ -1,6 +1,6 @@
-package niffler.data;
+package niffler.data.dao;
 
-import niffler.data.model.UsersEntity;
+import niffler.data.entity.UsersEntity;
 
 public interface UsersDAO extends DAO {
     int addUser(UsersEntity users);
