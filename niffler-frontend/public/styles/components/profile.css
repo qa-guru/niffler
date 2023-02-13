@@ -6,6 +6,7 @@
 }
 
 .profile__avatar-edit {
+    display: flex;
     border: none;
     background: transparent;
     margin: 0;
