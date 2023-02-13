@@ -17,6 +17,7 @@
 
 .profile__avatar {
     margin: 10px;
+    object-fit: cover;
 }
 
 .profile__info-container {

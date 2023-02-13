@@ -16,7 +16,8 @@ export const Profile = () => {
     const [userData, setUserData] = useState({
         firstname: user?.firstname ?? "",
         surname: user?.surname ?? "",
-        currency: {value: user.currency, label: user.currency}
+        currency: {value: user.currency, label: user.currency},
+        photo: user?.photo ?? null,
         });
     const [currencies, setCurrencies] = useState([]);
 
@@ -49,7 +50,15 @@ export const Profile = () => {
         });
     };
 
-    const handleProfileAvatarChange = (e) => {
+    const handleProfileAvatarChange = (selectedFile) => {
+        if (selectedFile && selectedFile !== userData.photo) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const result = reader.result;
+                setUserData({...userData, photo: result})
+            }
+            reader.readAsDataURL(selectedFile);
+        }
     }
 
 
@@ -62,7 +71,7 @@ export const Profile = () => {
                     <div className="main-content__section-avatar">
                         <form onSubmit={handleChangeProfile}>
                         <ProfileAvatar username={user?.username}
-                                       value={userData?.photo}
+                                       value={user?.photo}
                                        handleChangeValue={handleProfileAvatarChange}/>
                             <div className="profile__info-container">
                                     <FormInput placeholder={"Set your name"}
