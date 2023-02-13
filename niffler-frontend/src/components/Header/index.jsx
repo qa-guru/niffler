@@ -37,7 +37,7 @@ export const Header = () => {
                             ) : (
                                 <Link className="header__link" to={"/profile"}>
                                     <img className="header__avatar"
-                                         src={user?.avatar ? URL.createObjectURL(user.avatar) : "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
+                                         src={user?.photo ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
                                          width={60} height={60}/>
                                     <p className="header__username">{user?.username}</p>
                                 </Link>
