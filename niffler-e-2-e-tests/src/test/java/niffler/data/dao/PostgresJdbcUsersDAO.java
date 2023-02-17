@@ -1,6 +1,9 @@
-package niffler.data;
+package niffler.data.dao;
 
-import niffler.data.model.UsersEntity;
+import io.qameta.allure.Allure;
+import io.qameta.allure.AllureId;
+import niffler.data.jdbc.DataSourceContext;
+import niffler.data.entity.UsersEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

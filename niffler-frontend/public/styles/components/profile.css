@@ -6,9 +6,11 @@
 }
 
 .profile__avatar-edit {
+    display: flex;
     border: none;
     background: transparent;
-    margin-top: 13px;
+    margin: 0;
+    padding: 0;
 }
 
 .profile__avatar-edit:hover {
@@ -16,7 +18,11 @@
 }
 
 .profile__avatar {
-    margin: 10px;
+    object-fit: cover;
+    width: 200px;
+    height: 200px;
+    margin: 0;
+    padding: 0;
 }
 
 .profile__info-container {

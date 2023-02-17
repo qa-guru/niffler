@@ -1,7 +1,7 @@
 package niffler.test;
 
 import niffler.config.Config;
-import niffler.jupiter.JpaExtension;
+import niffler.jupiter.extension.JpaExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(JpaExtension.class)

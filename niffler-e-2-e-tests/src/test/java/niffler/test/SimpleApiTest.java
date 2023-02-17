@@ -1,7 +1,7 @@
 package niffler.test;
 
 import niffler.api.NifflerSpendClient;
-import niffler.jupiter.Spend;
+import niffler.jupiter.annotation.Spend;
 import niffler.model.SpendJson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;

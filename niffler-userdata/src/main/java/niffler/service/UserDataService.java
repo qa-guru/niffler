@@ -8,6 +8,8 @@ import niffler.model.UserJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+
 @Component
 public class UserDataService {
 
@@ -25,7 +27,7 @@ public class UserDataService {
         userEntity.setFirstname(user.getFirstname());
         userEntity.setSurname(user.getSurname());
         userEntity.setCurrency(user.getCurrency());
-        userEntity.setPhoto(user.getPhoto());
+        userEntity.setPhoto(user.getPhoto() != null ? user.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
         UserEntity saved = userRepository.save(userEntity);
 
         return UserJson.fromEntity(saved);

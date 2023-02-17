@@ -6,15 +6,14 @@
 
 .edit-avatar__container {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     margin: 10px;
     box-shadow: 0 0 5px 5px black;
     width: 200px;
     height: 200px;
     z-index: 1;
-}
-
-.edit-avatar__header {
-    margin-bottom: 30px;
 }
 
 .edit-avatar__form {
@@ -34,6 +33,15 @@
     margin-top: 30px;
 }
 
+.edit-avatar__error {
+    color: darkred;
+    font-size: 12px;
+}
+
+.edit-avatar__input {
+    width: inherit;
+    padding: 3px;
+}
 
 input[type=file]::file-selector-button {
     font-family: PTRootUIWeb;
@@ -46,7 +54,6 @@ input[type=file]::file-selector-button {
 }
 
 input[type=file]::file-selector-button:hover {
-    background-color: saddlebrown;
-    border: 2px solid white;
+    opacity: 0.8;
     cursor: pointer;
 }

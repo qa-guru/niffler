@@ -22,9 +22,13 @@ dependencies {
     testImplementation 'com.squareup.okhttp:logging-interceptor:2.7.5'
     testImplementation 'org.springframework:spring-jdbc:6.0.4'
     testImplementation 'org.postgresql:postgresql:42.5.3'
+    testImplementation 'p6spy:p6spy:3.9.1'
     testImplementation 'org.hibernate:hibernate-core:6.1.7.Final'
-    implementation("io.qameta.allure:allure-junit5:2.20.1") {
+    testImplementation 'io.qameta.allure:allure-attachments:2.21.0'
+    testImplementation 'com.github.vertical-blank:sql-formatter:2.0.3'
+    testImplementation("io.qameta.allure:allure-junit5:2.21.0") {
         exclude group: "org.junit.platform"
+        exclude group: "org.junit.jupiter-api"
         exclude group: "org.junit.jupiter"
     }
     testImplementation 'com.codeborne:selenide:6.11.1'

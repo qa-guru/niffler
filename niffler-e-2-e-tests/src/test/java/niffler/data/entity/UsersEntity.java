@@ -1,4 +1,4 @@
-package niffler.data.model;
+package niffler.data.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

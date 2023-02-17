@@ -1,4 +1,4 @@
-package niffler.jupiter;
+package niffler.jupiter.extension;
 
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;

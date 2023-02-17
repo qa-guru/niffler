@@ -1,11 +1,8 @@
 package niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import niffler.data.CurrencyValues;
-import niffler.data.UserEntity;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -72,18 +69,6 @@ public class UserJson {
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
-
-    public static UserJson fromEntity(UserEntity entity) {
-        UserJson usr = new UserJson();
-        byte[] photo = entity.getPhoto();
-        usr.setId(entity.getId());
-        usr.setUserName(entity.getUsername());
-        usr.setFirstname(entity.getFirstname());
-        usr.setSurname(entity.getSurname());
-        usr.setCurrency(entity.getCurrency());
-        usr.setPhoto(photo !=  null && photo.length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null);
-        return usr;
     }
 
     @Override

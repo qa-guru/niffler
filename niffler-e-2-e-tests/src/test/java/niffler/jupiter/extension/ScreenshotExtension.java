@@ -1,4 +1,4 @@
-package niffler.jupiter;
+package niffler.jupiter.extension;
 
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Allure;
