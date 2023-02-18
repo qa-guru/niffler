@@ -98,7 +98,7 @@ export const Profile = () => {
                                         />
                                     </div>
                             </div>
-                            <Button buttonText={"Submit"}/>
+                            <Button type="submit" buttonText={"Submit"}/>
                         </form>
                     </div>
                 </section>

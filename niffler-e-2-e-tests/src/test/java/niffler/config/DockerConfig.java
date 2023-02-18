@@ -20,4 +20,9 @@ public class DockerConfig implements Config {
     public String spendUrl() {
         return "niffler-spend";
     }
+
+    @Override
+    public String authUrl() {
+        return "niffler-auth";
+    }
 }
