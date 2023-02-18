@@ -1,0 +1,34 @@
+plugins {
+    id "java"
+    id "io.freefair.lombok" version "6.6.1"
+}
+
+group "guru.qa"
+version "0.0.1-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+def junitVersion = "5.9.2",
+    slf4jVersion = "2.0.6",
+    selenideVersion = "6.11.2",
+    restAssuredVersion = "5.3.0",
+    jacksonVersion = "2.14.1",
+    ownerVersion = "1.0.12"
+
+dependencies {
+    testImplementation(
+            "org.junit.jupiter:junit-jupiter:$junitVersion",
+            "org.slf4j:slf4j-simple:$slf4jVersion",
+            "com.codeborne:selenide:$selenideVersion",
+            "io.rest-assured:rest-assured:$restAssuredVersion",
+            "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
+            "org.aeonbits.owner:owner:$ownerVersion"
+    )
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty "selenide.timeout", "6000"
+}
