@@ -17,8 +17,6 @@ public class ProfileTest extends BaseTest{
                 .submitProfile();
 
         Selenide.refresh();
-
-        profilePage = new ProfilePage();
         profilePage.checkName("Пизлик");
     }
 }

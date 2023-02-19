@@ -40,11 +40,8 @@ public class ApiLoginExtention implements BeforeEachCallback, AfterEachCallback 
     }
 
     private void apiLogin(String username, String password) throws Exception{
-        loginClient.preAuthorize();
-        String xsrf = CookieHolder.getInstance().getCookieValueByPart("XSRF-TOKEN");
-        String jsessionid = CookieHolder.getInstance().getCookieValueByPart("JSESSIONID");
-
-        loginClient.login(jsessionid, xsrf, username, password);
+        loginClient.authorize();
+        loginClient.login(username, password);
         JsonNode token = loginClient.getToken();
         SessionStorage.getInstance().addToken(token.get("id_token").asText());
     }

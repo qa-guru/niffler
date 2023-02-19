@@ -8,12 +8,14 @@ import java.util.Map;
 
 public class CookieHolder {
 
+    private static final String COOKIE_KEY = "Cookie";
+
     private final Map <String, List<String>> cookieStorage;
 
     private static final ThreadLocal<CookieHolder> INSTANCE = ThreadLocal.withInitial(CookieHolder::new);
 
     private CookieHolder() {
-        cookieStorage = new HashMap<>(Map.of("Cookie", new ArrayList<>()));
+        cookieStorage = new HashMap<>(Map.of(COOKIE_KEY, new ArrayList<>()));
     }
 
     public static CookieHolder getInstance() {
@@ -21,20 +23,20 @@ public class CookieHolder {
     }
 
     public void setCookie(List<String> value) {
-        cookieStorage.put("Cookie", value);
+        cookieStorage.put(COOKIE_KEY, value);
     }
 
     public void removeCookie(String cookiePart) {
-        getAll().get("Cookie").removeIf(c -> c.contains(cookiePart));
+        getAll().get(COOKIE_KEY).removeIf(c -> c.contains(cookiePart));
     }
 
     public String getCookieByPart(String cookiePart) {
-        List<String> cookies = getAll().get("Cookie");
+        List<String> cookies = getAll().get(COOKIE_KEY);
         for (String cookie : cookies) {
             if (cookie.contains(cookiePart))
                 return cookie;
         }
-        return null;
+        throw new IllegalArgumentException("No cookie for part " + cookiePart);
     }
 
     public String getCookieValueByPart(String cookiePart) {
@@ -42,7 +44,7 @@ public class CookieHolder {
     }
 
     public List<String> getStoredCookies() {
-        return cookieStorage.get("Cookie");
+        return cookieStorage.get(COOKIE_KEY);
     }
     public Map<String, List<String>> getAll() {
         return cookieStorage;
