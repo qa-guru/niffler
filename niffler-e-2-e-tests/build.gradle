@@ -35,8 +35,9 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform()
     options {
         systemProperties(System.getProperties())
+        systemProperty("test.env", "local")
     }
+    useJUnitPlatform()
 }

@@ -1,5 +1,7 @@
 package niffler.config;
 
+import com.codeborne.selenide.Configuration;
+
 public interface Config {
     String PROJECT_NAME = "niffler";
 
@@ -11,7 +13,7 @@ public interface Config {
         } else throw new IllegalStateException();
     }
 
-
+    String authUrl();
     String frontUrl();
 
     String userdataUrl();
