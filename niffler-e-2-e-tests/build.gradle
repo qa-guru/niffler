@@ -32,6 +32,7 @@ dependencies {
         exclude group: "org.junit.jupiter"
     }
     testImplementation 'com.codeborne:selenide:6.11.1'
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
 }
 
 test {
