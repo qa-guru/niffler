@@ -12,12 +12,4 @@ public class WebTest {
                 .waitForPageLoaded()
                 .fillProfile();
     }
-
-
-    @Test
-    void webtest0() {
-        MainPage mp = new MainPage()
-                .waitForPageLoaded()
-                .fillNewSpending();
-    }
 }

@@ -8,6 +8,8 @@ import niffler.jupiter.extension.ScreenshotExtension;
 import niffler.jupiter.annotation.User;
 import niffler.jupiter.extension.UsersExtension;
 import niffler.model.UserModel;
+import niffler.page.MainPage;
+import niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -16,6 +18,9 @@ import static niffler.jupiter.annotation.User.UserType.ADMIN;
 
 @ExtendWith({ScreenshotExtension.class, UsersExtension.class})
 public class NifflerLoginTest extends BaseTest {
+
+    private MainPage mainPage = new MainPage();
+    private ProfilePage profilePage = new ProfilePage();
 
     @AllureId("1")
     @Test
@@ -33,7 +38,6 @@ public class NifflerLoginTest extends BaseTest {
     }
 
     @AllureId("2")
-
     @Test
     void mainPageShouldBeDisplayedAfterSuccessLogin0(@User(userType = ADMIN) UserModel user) {
         System.out.println("#### Test 2 " + user.toString());
