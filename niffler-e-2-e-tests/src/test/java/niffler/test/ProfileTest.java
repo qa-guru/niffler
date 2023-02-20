@@ -12,9 +12,6 @@ import org.junit.jupiter.api.Test;
 
 public class ProfileTest extends BaseTest{
 
-    private final NifflerAuthClient registerClient = new NifflerAuthClient();
-
-
     @Test
     @AllureId("123")
     @ApiLogin(nifflerUser = @GenerateUser)
