@@ -1,4 +1,4 @@
-package niffler.api.utils;
+package niffler.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

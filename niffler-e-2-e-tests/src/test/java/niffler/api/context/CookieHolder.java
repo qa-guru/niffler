@@ -50,4 +50,8 @@ public class CookieHolder {
     public Map<String, List<String>> getAll() {
         return cookieStorage;
     }
+
+    public void flushAll() {
+        cookieStorage.get(COOKIE_KEY).clear();
+    }
 }

@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static niffler.api.utils.DataUtils.generateRandomPassword;
-import static niffler.api.utils.DataUtils.generateRandomUsername;
+import static niffler.utils.DataUtils.generateRandomPassword;
+import static niffler.utils.DataUtils.generateRandomUsername;
 
 public class CreateUserExtension implements BeforeEachCallback, ParameterResolver {
 
