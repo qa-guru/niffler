@@ -1,13 +1,11 @@
 package niffler.page;
 
-import io.qameta.allure.Step;
 import niffler.page.component.Footer;
 import niffler.page.component.Header;
 import niffler.page.component.SpendingTable;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage extends BasePage<MainPage> {
 
@@ -16,18 +14,6 @@ public class MainPage extends BasePage<MainPage> {
     protected final Header header = new Header();
     protected final Footer footer = new Footer();
     protected final SpendingTable spendingTable = new SpendingTable();
-
-    @Step("Redirect to login page")
-    public LoginPage doLogin() {
-        $("a[href*='redirect']").click();
-        return new LoginPage();
-    }
-
-    @Step("Redirect to register page")
-    public RegisterPage doRegister() {
-        $("a[href*='register']").click();
-        return new RegisterPage();
-    }
 
     public Header getHeader() {
         return header;

@@ -16,7 +16,19 @@ public class LoginPage extends BasePage<LoginPage> {
 
     @Step("Fill login page with credentials: username: {0}, password: {1}")
     public LoginPage fillLoginPage(String login, String password) {
-        usernameInput.setValue(login);
+        setUsername(login);
+        setPassword(password);
+        return this;
+    }
+
+    @Step("Set username: {0}")
+    public LoginPage setUsername(String username) {
+        usernameInput.setValue(username);
+        return this;
+    }
+
+    @Step("Set password: {0}")
+    public LoginPage setPassword(String password) {
         passwordInput.setValue(password);
         return this;
     }

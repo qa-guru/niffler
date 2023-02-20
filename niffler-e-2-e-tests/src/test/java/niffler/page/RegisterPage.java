@@ -16,10 +16,28 @@ public class RegisterPage extends BasePage<RegisterPage> {
     private final SelenideElement submitButton = $("button[type='submit']");
     private final SelenideElement proceedLoginLink = $("a[href*='redirect']");
 
-    @Step("Fill register page with credentials: username: {0}, password: {1}")
-    public RegisterPage fillLoginPage(String login, String password) {
-        usernameInput.setValue(login);
+    @Step("Fill register page with credentials: username: {0}, password: {1}, submit password: {2}")
+    public RegisterPage fillRegisterPage(String login, String password, String passwordSubmit) {
+        setUsername(login);
+        setPassword(password);
+        setPasswordSubmit(passwordSubmit);
+        return this;
+    }
+
+    @Step("Set username: {0}")
+    public RegisterPage setUsername(String username) {
+        usernameInput.setValue(username);
+        return this;
+    }
+
+    @Step("Set password: {0}")
+    public RegisterPage setPassword(String password) {
         passwordInput.setValue(password);
+        return this;
+    }
+
+    @Step("Confirm password: {0}")
+    public RegisterPage setPasswordSubmit(String password) {
         passwordSubmitInput.setValue(password);
         return this;
     }
