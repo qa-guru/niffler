@@ -33,6 +33,7 @@ dependencies {
     }
     testImplementation 'com.codeborne:selenide:6.11.1'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 test {

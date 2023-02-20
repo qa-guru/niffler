@@ -1,6 +1,6 @@
 package niffler.api.context;
 
-import niffler.api.utils.LoginUtils;
+import niffler.utils.LoginUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,6 @@ public class SessionStorageHolder {
         final String codeVerifier = LoginUtils.generateCodeVerifier();
         sessionStorage.put(CODE_VERIFIER_KEY, codeVerifier);
         sessionStorage.put(CODE_CHALLENGE_KEY, LoginUtils.generateCodeChallange(codeVerifier));
-
     }
 
     public void addCode(String code) {
@@ -53,5 +52,9 @@ public class SessionStorageHolder {
 
     public String getCodeChallenge() {
         return sessionStorage.get(CODE_CHALLENGE_KEY);
+    }
+
+    public void flushAll() {
+        sessionStorage.clear();
     }
 }

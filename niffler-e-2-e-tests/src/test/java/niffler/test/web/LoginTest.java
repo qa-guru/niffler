@@ -5,7 +5,6 @@ import io.qameta.allure.AllureId;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.UserJson;
-import niffler.page.MainPage;
 import niffler.page.WelcomePage;
 import org.junit.jupiter.api.Test;
 

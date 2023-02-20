@@ -11,7 +11,7 @@ import niffler.config.Config;
 import niffler.jupiter.annotation.ApiLogin;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.model.UserJson;
-import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.Cookie;
@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import static niffler.jupiter.extension.CreateUserExtension.API_LOGIN_USERS_NAMESPACE;
 
-public class ApiAuthExtension implements BeforeEachCallback {
+public class ApiAuthExtension implements BeforeEachCallback, AfterTestExecutionCallback {
 
     private final NifflerAuthClient authClient = new NifflerAuthClient();
     protected static final Config CFG = Config.getConfig();
@@ -54,6 +54,12 @@ public class ApiAuthExtension implements BeforeEachCallback {
 
         WebDriverRunner.getWebDriver().manage()
                 .addCookie(new Cookie("JSESSIONID", CookieHolder.getInstance().getCookieValueByPart("JSESSIONID")));
+    }
+
+    @Override
+    public void afterTestExecution(ExtensionContext context) throws Exception {
+        CookieHolder.getInstance().flushAll();
+        SessionStorageHolder.getInstance().flushAll();
     }
 
     private void apiLogin(String username, String password) throws Exception {

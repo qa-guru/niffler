@@ -10,21 +10,23 @@ import io.qameta.allure.attachment.AttachmentProcessor;
 import io.qameta.allure.attachment.DefaultAttachmentProcessor;
 import io.qameta.allure.attachment.FreemarkerAttachmentRenderer;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 public class AllureAppender extends StdoutLogger {
-    private final AttachmentProcessor<AttachmentData> processor
-            = new DefaultAttachmentProcessor();
+    private final AttachmentProcessor<AttachmentData> processor = new DefaultAttachmentProcessor();
     private final String sqlTemplatePath = "sql-query.ftl";
 
     @Override
     public void logSQL(int connectionId, String now, long elapsed, Category category,
                        String prepared, String sql, String url) {
         super.logSQL(connectionId, now, elapsed, category, prepared, sql, url);
-
-        SqlRequestAttachment attachment = new SqlRequestAttachment(
-                "SQL statement and query",
-                SqlFormatter.of(Dialect.StandardSql).format(prepared),
-                SqlFormatter.of(Dialect.StandardSql).format(sql));
-        processor.addAttachment(attachment, new FreemarkerAttachmentRenderer(sqlTemplatePath));
+        if (isNotEmpty(prepared) && isNotEmpty(sql)) {
+            SqlRequestAttachment attachment = new SqlRequestAttachment(
+                    "SQL statement and query",
+                    SqlFormatter.of(Dialect.StandardSql).format(prepared),
+                    SqlFormatter.of(Dialect.StandardSql).format(sql));
+            processor.addAttachment(attachment, new FreemarkerAttachmentRenderer(sqlTemplatePath));
+        }
     }
 
     @Override

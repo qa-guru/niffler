@@ -1,4 +1,4 @@
-package niffler.api.utils;
+package niffler.utils;
 
 import com.github.javafaker.Faker;
 
