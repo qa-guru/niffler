@@ -1,38 +1,51 @@
 package niffler.page;
 
-import com.codeborne.selenide.CollectionCondition;
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.SelenideElement;
-import org.openqa.selenium.support.FindBy;
-import org.opentest4j.AssertionFailedError;
+import io.qameta.allure.Step;
+import niffler.page.component.Footer;
+import niffler.page.component.Header;
+import niffler.page.component.SpendingTable;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 
 public class MainPage extends BasePage<MainPage> {
 
-    private final ElementsCollection spendingButtons = $$(".spendings__buttons");
-    private final SelenideElement spendingTable = $(".spendings-table");
+    public static final String URL = CFG.frontUrl() + "main";
 
-    public MainPage clickByButton(String buttonText) {
-        spendingButtons.find(Condition.text(buttonText))
-                .scrollIntoView(false)
-                .click();
-        return this;
+    protected final Header header = new Header();
+    protected final Footer footer = new Footer();
+    protected final SpendingTable spendingTable = new SpendingTable();
+
+    @Step("Redirect to login page")
+    public LoginPage doLogin() {
+        $("a[href*='redirect']").click();
+        return new LoginPage();
     }
 
-    public MainPage checkTableContains(String... expectedDescriptions) {
-        ElementsCollection rows = spendingTable.$$("tr");
-        for (String description : expectedDescriptions) {
-            rows.find(Condition.text(description))
-                    .$$("td").get(5)
-                    .should(Condition.text(description));
-        }
-        return this;
+    @Step("Redirect to register page")
+    public RegisterPage doRegister() {
+        $("a[href*='register']").click();
+        return new RegisterPage();
     }
 
+    public Header getHeader() {
+        return header;
+    }
+
+    public Footer getFooter() {
+        return footer;
+    }
+
+    public SpendingTable getSpendingTable() {
+        return spendingTable;
+    }
+
+    @Override
+    public MainPage waitForPageLoaded() {
+        header.getSelf().should(visible).shouldHave(text("Niffler. The coin keeper."));
+        footer.getSelf().should(visible).shouldHave(text("Study project for QA Automation Advanced. 2023"));
+        spendingTable.getSelf().should(visible).shouldHave(text("History of spendings"));
+        return this;
+    }
 }

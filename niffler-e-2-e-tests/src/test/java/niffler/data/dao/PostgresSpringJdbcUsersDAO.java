@@ -1,8 +1,8 @@
 package niffler.data.dao;
 
+import niffler.data.entity.UsersEntity;
 import niffler.data.jdbc.DataSourceContext;
 import niffler.data.spring_jdbc.UsersRowMapper;
-import niffler.data.entity.UsersEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;

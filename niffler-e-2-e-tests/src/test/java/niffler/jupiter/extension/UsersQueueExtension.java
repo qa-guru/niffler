@@ -16,13 +16,13 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class UsersExtension implements
+public class UsersQueueExtension implements
         BeforeTestExecutionCallback,
         AfterTestExecutionCallback,
         ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE
-            = ExtensionContext.Namespace.create(UsersExtension.class);
+            = ExtensionContext.Namespace.create(UsersQueueExtension.class);
 
     private static final Queue<UserModel> USER_MODEL_ADMIN_QUEUE = new ConcurrentLinkedQueue<>();
     private static final Queue<UserModel> USER_MODEL_COMMON_QUEUE = new ConcurrentLinkedQueue<>();

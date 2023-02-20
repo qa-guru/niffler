@@ -51,8 +51,7 @@ public class RegisterController {
     public String registerUser(@Valid @ModelAttribute RegistrationModel registrationModel,
                                Errors errors,
                                Model model,
-                               HttpServletResponse response
-    ) {
+                               HttpServletResponse response) {
         if (!errors.hasErrors()) {
             final String registeredUserName;
             try {
@@ -74,7 +73,7 @@ public class RegisterController {
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-        model.addAttribute(MODEL_FRONT_URI_ATTR,nifflerFrontUri +  "/redirect");
+        model.addAttribute(MODEL_FRONT_URI_ATTR, nifflerFrontUri + "/redirect");
         return REGISTRATION_VIEW_NAME;
     }
 

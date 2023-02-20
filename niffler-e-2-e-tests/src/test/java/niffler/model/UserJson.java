@@ -2,7 +2,7 @@ package niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,8 +22,7 @@ public class UserJson {
     @JsonProperty("password")
     private String password;
 
-    public UserJson() {
-    }
+    private transient List<CategoryJson> categoryJsons;
 
     public UUID getId() {
         return id;
@@ -79,6 +78,14 @@ public class UserJson {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<CategoryJson> getCategoryJsons() {
+        return categoryJsons;
+    }
+
+    public void setCategoryJsons(List<CategoryJson> categoryJsons) {
+        this.categoryJsons = categoryJsons;
     }
 
     @Override

@@ -2,10 +2,10 @@ package niffler.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import niffler.api.context.CookieHolder;
-import niffler.api.interceptops.CodeInterceptor;
-import niffler.api.interceptops.CookieInterceptor;
-import niffler.api.interceptops.RequestInterceptor;
-import niffler.api.context.SessionStorage;
+import niffler.api.context.SessionStorageHolder;
+import niffler.api.interceptops.AddCookiesReqInterceptor;
+import niffler.api.interceptops.ExtractCodeFromRespInterceptor;
+import niffler.api.interceptops.ReceivedCookieRespInterceptor;
 import niffler.config.Config;
 import okhttp3.OkHttpClient;
 import retrofit2.Response;
@@ -17,13 +17,13 @@ import java.util.Base64;
 
 public class NifflerAuthClient {
 
-    Config CFG = Config.getConfig();
+    private static final Config CFG = Config.getConfig();
 
     private static final OkHttpClient httpClient = new OkHttpClient.Builder()
             .followRedirects(true)
-            .addNetworkInterceptor(new CookieInterceptor())
-            .addNetworkInterceptor(new RequestInterceptor())
-            .addNetworkInterceptor(new CodeInterceptor())
+            .addNetworkInterceptor(new ReceivedCookieRespInterceptor())
+            .addNetworkInterceptor(new AddCookiesReqInterceptor())
+            .addNetworkInterceptor(new ExtractCodeFromRespInterceptor())
             .build();
 
     private final Retrofit retrofit = new Retrofit.Builder()
@@ -35,15 +35,15 @@ public class NifflerAuthClient {
     private final NifflerAuthApi nifflerAuthApi = retrofit.create(NifflerAuthApi.class);
 
     public void authorize() throws Exception {
-        SessionStorage.getInstance().init();
+        SessionStorageHolder.getInstance().init();
         nifflerAuthApi.authorize(
                 "code",
                 "client",
                 "openid",
-                  CFG.frontUrl() + "authorized",
-                SessionStorage.getInstance().getCodeChallenge(),
+                CFG.frontUrl() + "authorized",
+                SessionStorageHolder.getInstance().getCodeChallenge(),
                 "S256"
-                ).execute();
+        ).execute();
     }
 
     public Response<Void> login(String username, String password) throws Exception {
@@ -64,8 +64,8 @@ public class NifflerAuthClient {
                 "client",
                 CFG.frontUrl() + "authorized",
                 "authorization_code",
-                SessionStorage.getInstance().getCode(),
-                SessionStorage.getInstance().getCodeVerifier()
+                SessionStorageHolder.getInstance().getCode(),
+                SessionStorageHolder.getInstance().getCodeVerifier()
         ).execute().body();
     }
 
@@ -79,5 +79,4 @@ public class NifflerAuthClient {
                 password
         ).execute();
     }
-
 }

@@ -7,7 +7,7 @@ import okhttp3.Response;
 import java.io.IOException;
 import java.util.List;
 
-public class CookieInterceptor implements Interceptor {
+public class ReceivedCookieRespInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -19,7 +19,7 @@ public class CookieInterceptor implements Interceptor {
         for (String header : headers) {
             String[] setCookie = header.split(";");
             for (String s : setCookie) {
-                if(s.contains("XSRF-TOKEN") || s.contains("JSESSIONID")) {
+                if (s.contains("XSRF-TOKEN") || s.contains("JSESSIONID")) {
                     String[] keyValuePair = s.split("=");
                     loginDataHolder.removeCookie(keyValuePair[0]);
                     if (keyValuePair.length == 2) {

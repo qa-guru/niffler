@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class RequestInterceptor implements Interceptor {
+public class AddCookiesReqInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Interceptor.Chain chain) throws IOException {
