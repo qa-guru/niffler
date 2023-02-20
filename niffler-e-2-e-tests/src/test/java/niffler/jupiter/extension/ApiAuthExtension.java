@@ -33,7 +33,7 @@ public class ApiAuthExtension implements BeforeEachCallback, AfterEachCallback {
         ApiLogin apiLoginAnnotation = context.getRequiredTestMethod().getAnnotation(ApiLogin.class);
         GenerateUser generateUserAnnotation = apiLoginAnnotation.nifflerUser();
         if ((!generateUserAnnotation.handleAnnotation() && "".equals(apiLoginAnnotation.username()) && "".equals(apiLoginAnnotation.password()))) {
-            throw new IllegalArgumentException("You have to provide in @ApiLogin annotation user by username/password or @NifflerUser");
+            throw new IllegalArgumentException("You have to provide in @ApiLogin annotation user by username/password or @GenerateUser");
         }
         String testId = getTestId(context);
 
