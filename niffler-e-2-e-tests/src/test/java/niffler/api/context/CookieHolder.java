@@ -10,7 +10,7 @@ public class CookieHolder {
 
     private static final String COOKIE_KEY = "Cookie";
 
-    private final Map <String, List<String>> cookieStorage;
+    private final Map<String, List<String>> cookieStorage;
 
     private static final ThreadLocal<CookieHolder> INSTANCE = ThreadLocal.withInitial(CookieHolder::new);
 
@@ -46,6 +46,7 @@ public class CookieHolder {
     public List<String> getStoredCookies() {
         return cookieStorage.get(COOKIE_KEY);
     }
+
     public Map<String, List<String>> getAll() {
         return cookieStorage;
     }

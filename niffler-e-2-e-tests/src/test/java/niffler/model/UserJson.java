@@ -2,7 +2,7 @@ package niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -19,9 +19,10 @@ public class UserJson {
     private CurrencyValues currency;
     @JsonProperty("photo")
     private String photo;
+    @JsonProperty("password")
+    private String password;
 
-    public UserJson() {
-    }
+    private transient List<CategoryJson> categoryJsons;
 
     public UUID getId() {
         return id;
@@ -71,17 +72,32 @@ public class UserJson {
         this.photo = photo;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<CategoryJson> getCategoryJsons() {
+        return categoryJsons;
+    }
+
+    public void setCategoryJsons(List<CategoryJson> categoryJsons) {
+        this.categoryJsons = categoryJsons;
+    }
+
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo);
+        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && Objects.equals(password, userJson.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, firstname, surname, currency, photo);
+        return Objects.hash(id, userName, firstname, surname, currency, photo, password);
     }
 }

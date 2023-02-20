@@ -3,6 +3,7 @@ package guru.qa.nifflerauth.controller;
 import guru.qa.nifflerauth.model.RegistrationModel;
 import guru.qa.nifflerauth.service.UserService;
 import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,10 @@ public class RegisterController {
     }
 
     @PostMapping(value = "/register")
-    public String registerUser(@Valid @ModelAttribute RegistrationModel registrationModel, Errors errors, Model model) {
+    public String registerUser(@Valid @ModelAttribute RegistrationModel registrationModel,
+                               Errors errors,
+                               Model model,
+                               HttpServletResponse response) {
         if (!errors.hasErrors()) {
             final String registeredUserName;
             try {
@@ -55,17 +59,21 @@ public class RegisterController {
                         registrationModel.getUsername(),
                         registrationModel.getPassword()
                 );
+                response.setStatus(HttpServletResponse.SC_CREATED);
                 model.addAttribute(MODEL_USERNAME_ATTR, registeredUserName);
             } catch (DataIntegrityViolationException e) {
                 LOG.error("### Error while registration user: " + e.getMessage());
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 addErrorToRegistrationModel(
                         registrationModel,
                         model,
                         "username", "Username `" + registrationModel.getUsername() + "` already exists"
                 );
             }
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-        model.addAttribute(MODEL_FRONT_URI_ATTR,nifflerFrontUri +  "/redirect");
+        model.addAttribute(MODEL_FRONT_URI_ATTR, nifflerFrontUri + "/redirect");
         return REGISTRATION_VIEW_NAME;
     }
 

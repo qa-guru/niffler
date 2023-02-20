@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-public class MyFullExtension implements AfterAllCallback,
+public class ExampleExtension implements AfterAllCallback,
         AfterEachCallback,
         BeforeAllCallback,
         BeforeEachCallback,

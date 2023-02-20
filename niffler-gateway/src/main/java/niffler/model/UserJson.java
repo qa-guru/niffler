@@ -2,9 +2,7 @@ package niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.Length;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 

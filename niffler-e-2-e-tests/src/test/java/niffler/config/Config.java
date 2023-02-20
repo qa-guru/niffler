@@ -1,8 +1,7 @@
 package niffler.config;
 
-import com.codeborne.selenide.Configuration;
-
 public interface Config {
+
     String PROJECT_NAME = "niffler";
 
     static Config getConfig() {
@@ -14,6 +13,7 @@ public interface Config {
     }
 
     String authUrl();
+
     String frontUrl();
 
     String userdataUrl();

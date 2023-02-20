@@ -1,15 +1,13 @@
 package niffler.api.utils;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
 public class LoginUtils {
 
-    public static String generateCodeVerifier(){
+    public static String generateCodeVerifier() {
         SecureRandom secureRandom = new SecureRandom();
         byte[] codeVerifier = new byte[32];
         secureRandom.nextBytes(codeVerifier);
@@ -19,7 +17,7 @@ public class LoginUtils {
     public static String generateCodeChallange(String codeVerifier) {
         byte[] bytes = null;
         MessageDigest messageDigest = null;
-        try{
+        try {
             bytes = codeVerifier.getBytes(StandardCharsets.US_ASCII);
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (Exception e) {
