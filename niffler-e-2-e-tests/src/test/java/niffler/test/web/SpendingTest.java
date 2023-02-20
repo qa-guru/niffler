@@ -10,12 +10,17 @@ import niffler.utils.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.ResourceLocks;
 
 @Execution(ExecutionMode.SAME_THREAD)
 public class SpendingTest extends BaseTest {
 
     @Test
     @AllureId("50")
+    @ResourceLocks({
+            @ResourceLock("spend")
+    })
     @ApiLogin(username = "dima", password = "12345")
     void checkLastWeekSpendingTest() throws Exception {
         SpendJson expected = new SpendJson();
@@ -33,6 +38,7 @@ public class SpendingTest extends BaseTest {
 
     @Test
     @AllureId("51")
+    @ResourceLock("spend")
     @ApiLogin(username = "dima", password = "12345")
     void deleteSpendingTest() {
         Selenide.open(MainPage.URL, MainPage.class)
