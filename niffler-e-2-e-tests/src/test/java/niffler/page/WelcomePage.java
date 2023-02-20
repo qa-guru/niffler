@@ -25,6 +25,7 @@ public class WelcomePage extends BasePage<WelcomePage> {
         return new RegisterPage();
     }
 
+    @Step("Check that page is loaded")
     @Override
     public WelcomePage waitForPageLoaded() {
         loginButton.should(visible);

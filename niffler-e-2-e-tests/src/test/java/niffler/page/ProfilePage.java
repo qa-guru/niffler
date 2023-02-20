@@ -74,6 +74,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
         return this;
     }
 
+    @Step("Check that page is loaded")
     @Override
     public ProfilePage waitForPageLoaded() {
         nameInput.should(visible);

@@ -1,5 +1,6 @@
 package niffler.page;
 
+import io.qameta.allure.Step;
 import niffler.page.component.Footer;
 import niffler.page.component.Header;
 import niffler.page.component.SpendingTable;
@@ -27,6 +28,7 @@ public class MainPage extends BasePage<MainPage> {
         return spendingTable;
     }
 
+    @Step("Check that page is loaded")
     @Override
     public MainPage waitForPageLoaded() {
         header.getSelf().should(visible).shouldHave(text("Niffler. The coin keeper."));
