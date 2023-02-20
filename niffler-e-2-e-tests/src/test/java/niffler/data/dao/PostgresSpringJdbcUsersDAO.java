@@ -29,7 +29,11 @@ public class PostgresSpringJdbcUsersDAO implements UsersDAO {
 
     @Override
     public void updateUser(UsersEntity user) {
-        jdbcTemplate.update("UPDATE users SET currency = ? WHERE username = ?", user.getCurrency(), user.getUsername());
+        jdbcTemplate.update("UPDATE users SET currency = ?,firstname = ?, surname = ?  WHERE username = ?",
+                user.getCurrency().name(),
+                user.getFirstname(),
+                user.getSurname(),
+                user.getUsername());
     }
 
     @Override

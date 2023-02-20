@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import static niffler.jupiter.extension.CreateUserExtension.API_LOGIN_USERS_NAMESPACE;
 
-public class ApiAuthExtension implements BeforeEachCallback, AfterEachCallback {
+public class ApiAuthExtension implements BeforeEachCallback {
 
     private final NifflerAuthClient authClient = new NifflerAuthClient();
     protected static final Config CFG = Config.getConfig();
@@ -54,11 +54,6 @@ public class ApiAuthExtension implements BeforeEachCallback, AfterEachCallback {
 
         WebDriverRunner.getWebDriver().manage()
                 .addCookie(new Cookie("JSESSIONID", CookieHolder.getInstance().getCookieValueByPart("JSESSIONID")));
-    }
-
-    @Override
-    public void afterEach(ExtensionContext context) {
-        Selenide.closeWebDriver();
     }
 
     private void apiLogin(String username, String password) throws Exception {
