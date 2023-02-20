@@ -2,10 +2,13 @@ package niffler.data.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import niffler.model.CurrencyValues;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -22,7 +25,8 @@ public class UsersEntity {
     private String username;
 
     @Column(name = "currency")
-    private String currency;
+    @Enumerated(EnumType.STRING)
+    private CurrencyValues currency;
 
     @Column(name = "firstname")
     private String firstname;
@@ -49,11 +53,11 @@ public class UsersEntity {
         this.username = username;
     }
 
-    public String getCurrency() {
+    public CurrencyValues getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(CurrencyValues currency) {
         this.currency = currency;
     }
 

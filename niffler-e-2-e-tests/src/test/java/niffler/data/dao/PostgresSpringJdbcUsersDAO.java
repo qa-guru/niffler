@@ -1,8 +1,8 @@
 package niffler.data.dao;
 
+import niffler.data.entity.UsersEntity;
 import niffler.data.jdbc.DataSourceContext;
 import niffler.data.spring_jdbc.UsersRowMapper;
-import niffler.data.entity.UsersEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,7 +29,11 @@ public class PostgresSpringJdbcUsersDAO implements UsersDAO {
 
     @Override
     public void updateUser(UsersEntity user) {
-        jdbcTemplate.update("UPDATE users SET currency = ? WHERE username = ?", user.getCurrency(), user.getUsername());
+        jdbcTemplate.update("UPDATE users SET currency = ?,firstname = ?, surname = ?  WHERE username = ?",
+                user.getCurrency().name(),
+                user.getFirstname(),
+                user.getSurname(),
+                user.getUsername());
     }
 
     @Override

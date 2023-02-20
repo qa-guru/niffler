@@ -20,15 +20,6 @@ public interface NifflerAuthApi {
             @Query("code_challenge") String codeChallenge,
             @Query("code_challenge_method") String codeChallengeMethod);
 
-    @POST("/login")
-    @FormUrlEncoded
-    Call<Void> login(
-            @Header("Cookie") String jsessionidCookie,
-            @Header("Cookie") String csrfCookie,
-            @Field("_csrf") String csrf,
-            @Field("username") String username,
-            @Field("password") String password);
-
     @POST("/oauth2/token")
     Call<JsonNode> getToken(
             @Header("Authorization") String basic,
@@ -37,6 +28,15 @@ public interface NifflerAuthApi {
             @Query("grant_type") String grantType,
             @Query("code") String code,
             @Query("code_verifier") String codeChallenge);
+
+    @POST("/login")
+    @FormUrlEncoded
+    Call<Void> login(
+            @Header("Cookie") String jsessionidCookie,
+            @Header("Cookie") String csrfCookie,
+            @Field("_csrf") String csrf,
+            @Field("username") String username,
+            @Field("password") String password);
 
     @POST("/register")
     @FormUrlEncoded

@@ -1,9 +1,11 @@
 package niffler.page;
 
-public class BasePage<T extends BasePage> {
+import io.qameta.allure.Step;
+import niffler.config.Config;
 
-   public T waitForPageLoaded() {
-       //do smth
-       return (T) this;
-   }
+public abstract class BasePage<T extends BasePage> {
+
+    protected static final Config CFG = Config.getConfig();
+
+    public abstract T waitForPageLoaded();
 }

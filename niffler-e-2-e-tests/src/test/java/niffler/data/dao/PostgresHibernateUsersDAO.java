@@ -1,7 +1,6 @@
 package niffler.data.dao;
 
 import niffler.data.DataBase;
-import niffler.data.dao.UsersDAO;
 import niffler.data.entity.UsersEntity;
 import niffler.data.jpa.EmfContext;
 import niffler.data.jpa.JpaService;

@@ -1,9 +1,8 @@
 package niffler.data.dao;
 
-import io.qameta.allure.Allure;
-import io.qameta.allure.AllureId;
-import niffler.data.jdbc.DataSourceContext;
 import niffler.data.entity.UsersEntity;
+import niffler.data.jdbc.DataSourceContext;
+import niffler.model.CurrencyValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +65,7 @@ public class PostgresJdbcUsersDAO implements UsersDAO {
                 UsersEntity result = new UsersEntity();
                 result.setId(UUID.fromString(resultSet.getString(1)));
                 result.setUsername(resultSet.getString(2));
-                result.setCurrency(resultSet.getString(3));
+                result.setCurrency(CurrencyValues.valueOf(resultSet.getString(3)));
                 result.setFirstname(resultSet.getString("firstname"));
                 result.setSurname(resultSet.getString("surname"));
                 result.setPhoto(resultSet.getBytes("photo"));

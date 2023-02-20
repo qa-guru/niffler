@@ -5,7 +5,6 @@ import niffler.data.CurrencyValues;
 import niffler.data.UserEntity;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -82,7 +81,7 @@ public class UserJson {
         usr.setFirstname(entity.getFirstname());
         usr.setSurname(entity.getSurname());
         usr.setCurrency(entity.getCurrency());
-        usr.setPhoto(photo !=  null && photo.length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null);
+        usr.setPhoto(photo != null && photo.length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null);
         return usr;
     }
 

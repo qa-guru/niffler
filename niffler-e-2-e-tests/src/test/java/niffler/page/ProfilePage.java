@@ -1,34 +1,83 @@
 package niffler.page;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
-import org.openqa.selenium.devtools.v85.profiler.model.Profile;
+import io.qameta.allure.Step;
+import niffler.model.CurrencyValues;
 
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.value;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class ProfilePage extends BasePage<ProfilePage> {
 
-    SelenideElement profileConatainer = $(".main-content__section-avatar");
+    public static final String URL = CFG.frontUrl() + "profile";
 
-    public ProfilePage fillProfile() {
-        // fill
+    private final SelenideElement nameInput = $("input[name='firstname']");
+    private final SelenideElement surnameInput = $("input[name='surname']");
+    private final SelenideElement categoryInput = $("input[name='category']");
+    private final SelenideElement currencySelect = $("div .select-wrapper");
+    private final SelenideElement submitButton = $(byText("Submit"));
+    private final SelenideElement createCategoryButton = $(byText("Create"));
+
+    @Step("Fill profile page with rate: name: {0}, surname: {1}, currency: {2}")
+    public ProfilePage fillProfile(String name, String surname, CurrencyValues currency) {
+        setName(name);
+        setSurname(surname);
+        setCurrency(currency);
+        submitProfile();
         return this;
     }
 
-    public ProfilePage checkPageLoaded() {
-        profileConatainer.shouldBe(Condition.visible);
-        return this;
-    }
+    @Step("Set name: {0}")
     public ProfilePage setName(String name) {
-        profileConatainer.$("input[name='firstname']").setValue(name);
+        nameInput.setValue(name);
         return this;
     }
+
+    @Step("Set surname: {0}")
+    public ProfilePage setSurname(String surname) {
+        surnameInput.setValue(surname);
+        return this;
+    }
+
+    @Step("Set currency: {0}")
+    public ProfilePage setCurrency(CurrencyValues currency) {
+        currencySelect.click();
+        $$("div[id^='react-select']").find(text(currency.name())).click();
+        return this;
+    }
+
+    @Step("Check name: {0}")
     public ProfilePage checkName(String name) {
-        profileConatainer.$("input[name='firstname']").shouldHave(Condition.value(name));
+        nameInput.shouldHave(value(name));
         return this;
     }
+
+    @Step("Check surname: {0}")
+    public ProfilePage checkSurname(String surname) {
+        surnameInput.shouldHave(value(surname));
+        return this;
+    }
+
+    @Step("Check currency: {0}")
+    public ProfilePage checkCurrency(CurrencyValues currency) {
+        currencySelect.shouldHave(text(currency.name()));
+        return this;
+    }
+
+    @Step("Save profile")
     public ProfilePage submitProfile() {
-        profileConatainer.$("button[type='submit']").click();
+        submitButton.click();
+        return this;
+    }
+
+    @Step("Check that page is loaded")
+    @Override
+    public ProfilePage waitForPageLoaded() {
+        nameInput.should(visible);
         return this;
     }
 }

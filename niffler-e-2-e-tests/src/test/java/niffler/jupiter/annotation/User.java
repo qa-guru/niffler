@@ -1,5 +1,7 @@
 package niffler.jupiter.annotation;
 
+import niffler.jupiter.extension.CreateUserExtension;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,6 +13,9 @@ public @interface User {
 
     UserType userType() default UserType.COMMON;
 
+    CreateUserExtension.Selector selector() default CreateUserExtension.Selector.NESTED;
+
+    @Deprecated // for study only
     enum UserType {
         ADMIN, COMMON
     }
