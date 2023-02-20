@@ -15,11 +15,11 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class NifflerLoginClient {
+public class NifflerAuthClient {
 
     Config CFG = Config.getConfig();
 
-    private final OkHttpClient httpClient = new OkHttpClient.Builder()
+    private static final OkHttpClient httpClient = new OkHttpClient.Builder()
             .followRedirects(true)
             .addNetworkInterceptor(new CookieInterceptor())
             .addNetworkInterceptor(new RequestInterceptor())
@@ -32,7 +32,7 @@ public class NifflerLoginClient {
             .baseUrl(CFG.authUrl())
             .build();
 
-    private final NifflerLoginApi nifflerAuthApi = retrofit.create(NifflerLoginApi.class);
+    private final NifflerAuthApi nifflerAuthApi = retrofit.create(NifflerAuthApi.class);
 
     public void authorize() throws Exception {
         SessionStorage.getInstance().init();
@@ -67,6 +67,17 @@ public class NifflerLoginClient {
                 SessionStorage.getInstance().getCode(),
                 SessionStorage.getInstance().getCodeVerifier()
         ).execute().body();
+    }
+
+    public Response<Void> register(String username, String password) throws Exception {
+        return nifflerAuthApi.register(
+                CookieHolder.getInstance().getCookieByPart("JSESSIONID"),
+                CookieHolder.getInstance().getCookieByPart("XSRF-TOKEN"),
+                CookieHolder.getInstance().getCookieValueByPart("XSRF-TOKEN"),
+                username,
+                password,
+                password
+        ).execute();
     }
 
 }

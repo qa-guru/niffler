@@ -9,7 +9,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-public interface NifflerLoginApi {
+public interface NifflerAuthApi {
 
     @GET("/oauth2/authorize")
     Call<Void> authorize(
@@ -37,4 +37,14 @@ public interface NifflerLoginApi {
             @Query("grant_type") String grantType,
             @Query("code") String code,
             @Query("code_verifier") String codeChallenge);
+
+    @POST("/register")
+    @FormUrlEncoded
+    Call<Void> register(
+            @Header("Cookie") String jsessionidCookie,
+            @Header("Cookie") String csrfCookie,
+            @Field("_csrf") String csrf,
+            @Field("username") String username,
+            @Field("password") String password,
+            @Field("passwordSubmit") String passwordSubmit);
 }
