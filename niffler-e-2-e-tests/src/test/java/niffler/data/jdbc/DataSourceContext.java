@@ -18,7 +18,7 @@ public enum DataSourceContext {
             PGSimpleDataSource ds = new PGSimpleDataSource();
             ds.setUser("postgres");
             ds.setPassword("secret");
-            ds.setURL(dataBase.url);
+            ds.setURL(dataBase.getUrl());
             P6DataSource p6DataSource = new P6DataSource(ds);
             this.dsContext.put(dataBase, p6DataSource);
         }
