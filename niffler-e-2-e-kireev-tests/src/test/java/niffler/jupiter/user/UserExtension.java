@@ -1,49 +1,60 @@
 package niffler.jupiter.user;
 
 import niffler.models.user.User;
-import niffler.models.user.UsersQueue;
+import niffler.models.user.UserRole;
 import org.junit.jupiter.api.extension.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static com.codeborne.selenide.Selenide.sleep;
 import static niffler.models.user.UserRole.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.*;
 
 final class UserExtension implements BeforeTestExecutionCallback, ParameterResolver, AfterTestExecutionCallback {
 
-    public static final Namespace MAIN_NAMESPACE = Namespace.create(UserExtension.class);
-    private static final Namespace TEMP_NAMESPACE = Namespace.create(UserExtension.class, "TEMP");
+    private static final int GET_USER_TIMEOUT_MINUTES = 3;
 
-    private static final UsersQueue USERS_QUEUE = UsersQueue.instance();
+    public static final Namespace NAMESPACE = Namespace.create(UserExtension.class);
+    private static final Map<UserRole, Queue<User>> USERS_QUEUE = new ConcurrentHashMap<>();
 
     static {
-        USERS_QUEUE.add(new User("admin1", "admin1", ADMIN));
-        USERS_QUEUE.add(new User("admin2", "admin2", ADMIN));
-        USERS_QUEUE.add(new User("admin3", "admin3", ADMIN));
+        Queue<User> admins = new LinkedList<>();
+        admins.add(new User("admin1", "admin1"));
+        admins.add(new User("admin2", "admin2"));
+        admins.add(new User("admin3", "admin3"));
+        USERS_QUEUE.put(ADMIN, admins);
 
-        USERS_QUEUE.add(new User("manager1", "manager1", MANAGER));
-        USERS_QUEUE.add(new User("manager2", "manager2", MANAGER));
+        Queue<User> managers = new LinkedList<>();
+        managers.add(new User("manager1", "manager1"));
+        managers.add(new User("manager2", "manager2"));
+        USERS_QUEUE.put(MANAGER, managers);
 
-        USERS_QUEUE.add(new User("common1", "common1", COMMON));
-        USERS_QUEUE.add(new User("common2", "common2", COMMON));
-        USERS_QUEUE.add(new User("common3", "common3", COMMON));
+        Queue<User> commons = new LinkedList<>();
+        commons.add(new User("common1", "common1"));
+        commons.add(new User("common2", "common2"));
+        commons.add(new User("common3", "common3"));
+        USERS_QUEUE.put(COMMON, commons);
     }
 
     @Override
     public void beforeTestExecution(ExtensionContext extensionContext) {
-        List<WithUser> annotations = Arrays.stream(extensionContext.getRequiredTestMethod().getParameters())
+        List<UserRole> userRoles = Arrays.stream(extensionContext.getRequiredTestMethod().getParameters())
                 .filter(p -> p.isAnnotationPresent(WithUser.class))
                 .filter(p -> p.getType().isAssignableFrom(User.class))
-                .map(p -> p.getAnnotation(WithUser.class))
+                .map(p -> p.getAnnotation(WithUser.class).value())
                 .toList();
 
-        Set<User> users = new HashSet<>();
-        for (WithUser annotation : annotations)
-            users.add(USERS_QUEUE.get(annotation.value()));
+        Map<UserRole, List<User>> users = new HashMap<>();
+        new HashSet<>(userRoles).forEach(role -> users.put(role, new ArrayList<>()));
+
+        for (UserRole role : userRoles) {
+            User user = pollFromUsersQueue(role);
+            users.get(role).add(user);
+        }
 
         String testIdentifier = getTestIdentifier(extensionContext);
-        extensionContext.getStore(MAIN_NAMESPACE).put(testIdentifier, UsersQueue.instance(users));
-        extensionContext.getStore(TEMP_NAMESPACE).put(testIdentifier, UsersQueue.instance(users));
+        extensionContext.getStore(NAMESPACE).put(testIdentifier, users);
     }
 
     @Override
@@ -56,22 +67,52 @@ final class UserExtension implements BeforeTestExecutionCallback, ParameterResol
     @Override
     public User resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
             throws ParameterResolutionException {
-        WithUser annotation = parameterContext.getParameter().getAnnotation(WithUser.class);
-        return extensionContext.getStore(TEMP_NAMESPACE)
-                .get(getTestIdentifier(extensionContext), UsersQueue.class)
-                .get(annotation.value());
+        String testIdentifier = getTestIdentifier(extensionContext);
+        UserRole role = parameterContext.getParameter().getAnnotation(WithUser.class).value();
+
+        Map<UserRole, List<User>> users = extensionContext.getStore(NAMESPACE).get(testIdentifier, Map.class);
+        for (User user : users.get(role)) {
+            if (!user.isAvailable())
+                continue;
+
+            user.setAvailable(false);
+            return user;
+        }
+
+        throw new RuntimeException("No user found with role " + role);
     }
 
     @Override
     public void afterTestExecution(ExtensionContext extensionContext) {
-        UsersQueue usersQueue = extensionContext.getStore(MAIN_NAMESPACE)
-                .get(getTestIdentifier(extensionContext), UsersQueue.class);
-        USERS_QUEUE.addAll(usersQueue);
+        String testIdentifier = getTestIdentifier(extensionContext);
+
+        Map<UserRole, List<User>> usersMap = extensionContext.getStore(NAMESPACE).get(testIdentifier, Map.class);
+        for (UserRole role : usersMap.keySet()) {
+            usersMap.get(role).forEach(user -> {
+                user.setAvailable(true);
+                USERS_QUEUE.get(role).add(user);
+            });
+        }
     }
 
     private String getTestIdentifier(ExtensionContext extensionContext) {
         return extensionContext.getRequiredTestClass().getName() + ":" +
                 extensionContext.getRequiredTestMethod().getName();
+    }
+
+    private User pollFromUsersQueue(UserRole role) {
+        if (!USERS_QUEUE.containsKey(role))
+            throw new RuntimeException("There are no users with role " + role);
+
+        Queue<User> queue = USERS_QUEUE.get(role);
+        for (int i = 1; i <= GET_USER_TIMEOUT_MINUTES * 60; i++) {
+            User user = queue.poll();
+            if (user != null)
+                return user;
+            sleep(1_000);
+        }
+
+        throw new RuntimeException("No user found with role " + role);
     }
 
 }
