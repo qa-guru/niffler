@@ -9,17 +9,17 @@ import static niffler.model.Category.PRODUCTS;
 
 class HistoryOfSpendingTest extends BaseTest {
 
-    @WithSpend(amount = 2_500.0, username = "sashkir7")
+    @WithSpend(amount = 2500.0, username = "olga")
     private SpendDto restaurantSpend;
 
-    @WithSpend(category = PRODUCTS, amount = 1_000.0, description = "Ашан", username = "sashkir7")
+    @WithSpend(category = PRODUCTS, amount = 1_000.0, description = "Ашан", username = "olga")
     private SpendDto productSpend;
 
     @BeforeEach
     void login() {
         landingPage.open()
                 .clickLoginButton();
-        loginPage.login("sashkir7", "12345");
+        loginPage.login("olga", "12345");
     }
 
     @Test

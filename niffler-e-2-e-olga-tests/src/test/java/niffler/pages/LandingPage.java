@@ -2,7 +2,7 @@ package niffler.pages;
 
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.Step;
-import niffler.config.AppProperties;
+import niffler.config.app.AppProperties;
 
 import static com.codeborne.selenide.Selenide.$;
 

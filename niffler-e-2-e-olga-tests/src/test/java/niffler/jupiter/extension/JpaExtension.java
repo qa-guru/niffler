@@ -1,7 +1,8 @@
-package niffler.jupiter;
+package niffler.jupiter.extension;
 
 import jakarta.persistence.EntityManagerFactory;
 import niffler.data.jpa.EmfContext;
+import niffler.jupiter.extension.AroundAllTestsExtension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class JpaExtension implements AroundAllTestsExtension {

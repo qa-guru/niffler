@@ -8,12 +8,14 @@ import niffler.model.Category;
 import niffler.model.Currency;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public final class SpendDto extends BaseDto {
 
+    private UUID id;
     public Date spendDate;
     private Category category;
     private Currency currency;

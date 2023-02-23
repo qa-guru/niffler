@@ -1,6 +1,8 @@
-package niffler.data;
+package niffler.data.dao;
 
-import niffler.data.model.UsersEntity;
+import niffler.data.DataSourceContext;
+import niffler.data.UsersRowMapper;
+import niffler.data.entity.UsersEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,7 +12,7 @@ import static niffler.data.DataBase.USERDATA;
 public class PostgresSpringJdbcUsersDAO implements UsersDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(PostgresSpringJdbcUsersDAO.class);
-    private final JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSourceContext.INSTANCE.getDatatSource(USERDATA));
+    private final JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSourceContext.INSTANCE.getDataSource(USERDATA));
 
     @Override
     public int addUser(UsersEntity users) {
@@ -27,11 +29,16 @@ public class PostgresSpringJdbcUsersDAO implements UsersDAO {
 
     @Override
     public void updateUser(UsersEntity user) {
-        jdbcTemplate.update("UPDATE users SET currency = ? WHERE username = ?", user.getCurrency(), user.getUsername());
+        jdbcTemplate.update("UPDATE users SET currency = ?, firstname = ?, surname = ? WHERE username = ?",
+                user.getCurrency(),
+                user.getFirstname(),
+                user.getSurname(),
+                user.getUsername());
     }
 
     @Override
     public void remove(UsersEntity user) {
+
         jdbcTemplate.update("DELETE from users WHERE id = ?", user.getId());
     }
 
