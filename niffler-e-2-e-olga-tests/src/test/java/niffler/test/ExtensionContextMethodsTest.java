@@ -1,6 +1,6 @@
 package niffler.test;
 
-import niffler.jupiter.MyFullExtension;
+import niffler.jupiter.extension.MyFullExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

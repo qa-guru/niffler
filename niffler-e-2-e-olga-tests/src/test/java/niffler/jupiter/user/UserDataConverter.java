@@ -1,4 +1,4 @@
-package niffler.jupiter;
+package niffler.jupiter.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import niffler.model.UserJson;

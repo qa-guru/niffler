@@ -2,8 +2,8 @@ package niffler.test;
 
 import niffler.api.NifflerSpendClient;
 import niffler.api.NifflerUserdataClient;
-import niffler.jupiter.Spend;
-import niffler.jupiter.UserData;
+import niffler.jupiter.spend.Spend;
+import niffler.jupiter.user.UserData;
 import niffler.model.SpendJson;
 import niffler.model.UserJson;
 import org.junit.jupiter.api.Assertions;

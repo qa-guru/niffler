@@ -1,4 +1,4 @@
-package niffler.data;
+package niffler.data.dao;
 
 public interface DAO {
 }

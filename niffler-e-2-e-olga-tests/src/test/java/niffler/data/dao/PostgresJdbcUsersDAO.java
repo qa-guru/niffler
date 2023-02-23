@@ -1,6 +1,7 @@
-package niffler.data;
+package niffler.data.dao;
 
-import niffler.data.model.UsersEntity;
+import niffler.data.DataSourceContext;
+import niffler.data.entity.UsersEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,7 @@ import static niffler.data.DataBase.USERDATA;
 public class PostgresJdbcUsersDAO implements UsersDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(PostgresJdbcUsersDAO.class);
-    private final DataSource ds = DataSourceContext.INSTANCE.getDatatSource(USERDATA);
+    private final DataSource ds = DataSourceContext.INSTANCE.getDataSource(USERDATA);
 
     @Override
     public int addUser(UsersEntity users) {
@@ -38,10 +39,11 @@ public class PostgresJdbcUsersDAO implements UsersDAO {
 
     @Override
     public void updateUser(UsersEntity user) {
-        try (Connection con = ds.getConnection();
-             Statement st = con.createStatement()) {
-            String sql = "UPDATE users SET currency = '" + user.getCurrency() + "' WHERE username = '" + user.getUsername() + "';";
-            st.executeUpdate(sql);
+        try (final Connection con = ds.getConnection()) {
+            String sql = "UPDATE users SET currency = '" + user.getCurrency() +
+                    "' WHERE username = '" + user.getUsername() + "';";
+             Statement statement = con.createStatement();
+            statement.executeUpdate(sql);
         } catch (SQLException e) {
             LOG.error("Error while database operation", e);
             throw new RuntimeException(e);
@@ -50,7 +52,14 @@ public class PostgresJdbcUsersDAO implements UsersDAO {
 
     @Override
     public void remove(UsersEntity user) {
-
+        try ( final Connection connection = ds.getConnection()) {
+    String sql = "DELETE FROM users WHERE username = ' " + user.getUsername() + "';";
+    Statement statement = connection.createStatement();
+    statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            LOG.error("Error while database operation", e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

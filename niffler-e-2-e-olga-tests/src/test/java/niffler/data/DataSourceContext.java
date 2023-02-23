@@ -11,13 +11,13 @@ public enum DataSourceContext {
 
     private Map<DataBase, DataSource> dsContext = new HashMap<>();
 
-    public synchronized DataSource getDatatSource(DataBase dataBase) {
+    public synchronized DataSource getDataSource(DataBase dataBase) {
         if (dsContext.get(dataBase) == null) {
-            PGSimpleDataSource ds = new PGSimpleDataSource();
-            ds.setUser("postgres");
-            ds.setPassword("secret");
-            ds.setURL(dataBase.url);
-            this.dsContext.put(dataBase, ds);
+            PGSimpleDataSource dataSource = new PGSimpleDataSource();
+            dataSource.setUser(dataBase.getUser());
+            dataSource.setPassword(dataBase.getPassword());
+            dataSource.setURL(dataBase.getUrl());
+            this.dsContext.put(dataBase, dataSource);
         }
         return dsContext.get(dataBase);
     }

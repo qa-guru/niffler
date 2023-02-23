@@ -5,7 +5,7 @@ import io.qameta.allure.Step;
 import io.restassured.specification.RequestSpecification;
 import niffler.api.base.BaseApi;
 import niffler.api.spend.dto.SpendDto;
-import niffler.config.AppProperties;
+import niffler.config.app.AppProperties;
 
 import java.util.List;
 import java.util.UUID;

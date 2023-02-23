@@ -1,4 +1,4 @@
-package niffler.jupiter;
+package niffler.jupiter.spend;
 
 import org.junit.jupiter.params.converter.ConvertWith;
 

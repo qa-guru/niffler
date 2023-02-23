@@ -1,8 +1,8 @@
 package niffler.data.jpa;
 
 import niffler.data.DataBase;
-import niffler.data.UsersDAO;
-import niffler.data.model.UsersEntity;
+import niffler.data.dao.UsersDAO;
+import niffler.data.entity.UsersEntity;
 
 public class PostgresHibernateUsersDAO extends JpaService implements UsersDAO {
     public PostgresHibernateUsersDAO() {

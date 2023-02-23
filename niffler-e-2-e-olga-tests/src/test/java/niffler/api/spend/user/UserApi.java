@@ -5,7 +5,7 @@ import io.qameta.allure.Step;
 import io.restassured.specification.RequestSpecification;
 import niffler.api.base.BaseApi;
 import niffler.api.spend.dto.UserDto;
-import niffler.config.AppProperties;
+import niffler.config.app.AppProperties;
 
 import static io.restassured.RestAssured.given;
 

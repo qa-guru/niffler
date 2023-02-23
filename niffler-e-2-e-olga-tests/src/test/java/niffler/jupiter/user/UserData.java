@@ -1,4 +1,6 @@
-package niffler.jupiter;
+package niffler.jupiter.user;
+
+import org.junit.jupiter.params.converter.ConvertWith;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,11 +9,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface User {
-
-    UserType userType() default UserType.COMMON;
-
-    enum UserType {
-        ADMIN, COMMON
-    }
+@ConvertWith(UserDataConverter.class)
+public @interface UserData {
 }
