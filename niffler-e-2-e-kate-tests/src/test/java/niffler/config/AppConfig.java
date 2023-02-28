@@ -1,4 +1,4 @@
-package config;
+package niffler.config;
 
 import org.aeonbits.owner.Config;
 

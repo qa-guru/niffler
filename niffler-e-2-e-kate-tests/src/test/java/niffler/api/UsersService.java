@@ -1,6 +1,6 @@
 package niffler.api;
 
-import config.App;
+import niffler.config.App;
 import niffler.model.UserJson;
 
 import static io.restassured.RestAssured.given;

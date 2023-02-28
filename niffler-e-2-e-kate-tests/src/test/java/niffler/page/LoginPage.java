@@ -1,6 +1,6 @@
 package niffler.page;
 
-import config.App;
+import niffler.config.App;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
