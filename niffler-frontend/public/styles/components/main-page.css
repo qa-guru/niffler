@@ -23,10 +23,9 @@
 
 .main__link {
     border: 2px solid black;
-    opacity: 0.5;
     padding: 10px 15px;
     color: black;
-    background: white;
+    background-color: #eeedea;
 }
 
 .main__link:active,
