@@ -10,6 +10,9 @@ import niffler.model.StatisticJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -25,6 +28,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
@@ -98,12 +102,19 @@ class SpendServiceTest {
         assertEquals(4, result.size());
     }
 
-    @Test
-    void resolveDesiredCurrenciesInStatisticTest() {
-        CurrencyValues[] currencyValues = spendService.resolveDesiredCurrenciesInStatistic(null);
-        assertArrayEquals(CurrencyValues.values(), currencyValues);
-        currencyValues = spendService.resolveDesiredCurrenciesInStatistic(CurrencyValues.KZT);
-        assertArrayEquals(new CurrencyValues[]{CurrencyValues.KZT}, currencyValues);
+    static Stream<Arguments> resolveDesiredCurrenciesInStatisticTest() {
+        return Stream.of(
+                Arguments.of(null, CurrencyValues.values()),
+                Arguments.of(CurrencyValues.KZT, new CurrencyValues[]{CurrencyValues.KZT}),
+                Arguments.of(CurrencyValues.USD, new CurrencyValues[]{CurrencyValues.USD})
+        );
+    }
+
+    @MethodSource
+    @ParameterizedTest
+    void resolveDesiredCurrenciesInStatisticTest(CurrencyValues tested, CurrencyValues[] expected) {
+        CurrencyValues[] currencyValues = spendService.resolveDesiredCurrenciesInStatistic(tested);
+        assertArrayEquals(expected, currencyValues);
     }
 
     @Test
@@ -115,6 +126,8 @@ class SpendServiceTest {
         assertEquals(userCurrency, defaultStatisticJson.getUserDefaultCurrency());
         assertEquals(0.0, defaultStatisticJson.getTotal());
         assertEquals(0.0, defaultStatisticJson.getTotalInUserDefaultCurrency());
+        assertNull(defaultStatisticJson.getDateFrom());
+        assertNull(defaultStatisticJson.getCategoryStatistics());
     }
 
     @Test
@@ -156,6 +169,7 @@ class SpendServiceTest {
                 .peek(spendService.enrichStatisticTotalInUserCurrencyByAllStreamElements(defaultStatisticJson, statisticCurrency, userCurrency))
                 .collect(Collectors.toList());
 
+        assertEquals(13350.0, defaultStatisticJson.getTotal());
         assertEquals(13350.0, defaultStatisticJson.getTotalInUserDefaultCurrency());
     }
 
@@ -172,6 +186,7 @@ class SpendServiceTest {
                 .peek(spendService.enrichStatisticTotalInUserCurrencyByAllStreamElements(defaultStatisticJson, statisticCurrency, userCurrency))
                 .collect(Collectors.toList());
 
+        assertEquals(13350.0, defaultStatisticJson.getTotal());
         assertEquals(178.0, defaultStatisticJson.getTotalInUserDefaultCurrency());
     }
 
