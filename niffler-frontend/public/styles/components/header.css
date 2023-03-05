@@ -56,7 +56,8 @@
 .header__avatar {
     margin: 10px;
     object-fit: cover;
-    box-shadow: 0 0 3px 3px black;
+    border: 2px solid white;
+    border-radius: 50%;
 }
 
 .header__people {

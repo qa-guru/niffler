@@ -34,8 +34,8 @@ export const Header = () => {
                         <Link className="header__link" to={"/main"}>
                             <img className="header__people"
                                  src={"/images/home.svg"} alt="Иконка дома"
-                                 width={60}
-                                 height={60}
+                                 width={45}
+                                 height={45}
                             />
                         </Link>
                     </li>
@@ -43,8 +43,8 @@ export const Header = () => {
                         <Link className="header__link" to={"/friends"}>
                             <img className="header__people"
                                  src={"/images/friends.svg"} alt="Иконка друзей"
-                                 width={45}
-                                 height={45}
+                                 width={48}
+                                 height={48}
                             />
                         </Link>
                     </li>
@@ -61,7 +61,7 @@ export const Header = () => {
                         <Link className="header__link" to={"/profile"}>
                             <img className="header__avatar"
                                  src={user?.photo ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
-                                 width={45} height={45}/>
+                                 width={65} height={65}/>
                         </Link>
                     </li>
                     <li>
