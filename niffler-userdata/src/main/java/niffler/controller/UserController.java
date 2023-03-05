@@ -36,6 +36,11 @@ public class UserController {
         return userService.getCurrentUserOrCreateIfAbsent(username);
     }
 
+    @GetMapping("/allUsers")
+    public List<UserJson> allUsers(@RequestParam String username) {
+        return userService.allUsers(username);
+    }
+
     @GetMapping("/friends")
     public List<UserJson> friends(@RequestParam String username,
                                   @RequestParam boolean includePending) {

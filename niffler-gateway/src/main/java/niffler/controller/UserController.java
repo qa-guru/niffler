@@ -43,13 +43,18 @@ public class UserController {
         return restUserDataClient.currentUser(username);
     }
 
+    @GetMapping("/allUsers")
+    public List<UserJson> allUsers(@AuthenticationPrincipal Jwt principal) {
+        String username = principal.getClaim("sub");
+        return restUserDataClient.allUsers(username);
+    }
+
     @GetMapping("/friends")
     public List<UserJson> friends(@AuthenticationPrincipal Jwt principal,
                                   @RequestParam boolean includePending) {
         String username = principal.getClaim("sub");
         return restUserDataClient.friends(username, includePending);
     }
-
 
     @GetMapping("/invitations")
     public List<UserJson> invitations(@AuthenticationPrincipal Jwt principal) {
