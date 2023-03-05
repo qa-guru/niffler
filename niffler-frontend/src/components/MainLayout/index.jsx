@@ -5,6 +5,7 @@ import {FilterContext} from "../../contexts/FilterContext";
 import {UserContext} from "../../contexts/UserContext";
 import {showError, showSuccess} from "../../toaster/toaster";
 import {AddSpending} from "../AddSpending";
+import {Footer} from "../Footer";
 import {Header} from "../Header";
 import {SpendingHistory} from "../SpendingHistory";
 import {useContext, useEffect, useState} from "react";
@@ -144,9 +145,7 @@ export const MainLayout = () => {
                     </FilterContext.Provider>
                 </div>
             </main>
-            <footer className={"footer"}>
-                Study project for QA Automation Advanced. 2023
-            </footer>
+            <Footer/>
         </div>
     )
 }

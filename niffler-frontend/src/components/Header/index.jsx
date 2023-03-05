@@ -31,18 +31,30 @@ export const Header = () => {
             <nav className="header__navigation">
                 <ul>
                     <li className="header__navigation-item">
-                        {
-                            location.pathname === "/profile" ? (
-                                <Link className="header__link" to={"/main"}>Go to main page</Link>
-                            ) : (
-                                <Link className="header__link" to={"/profile"}>
-                                    <img className="header__avatar"
-                                         src={user?.photo ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
-                                         width={60} height={60}/>
-                                    <p className="header__username">{user?.username}</p>
-                                </Link>
-                            )
-                        }
+                        <Link className="header__link" to={"/main"}>
+                            <img className="header__people"
+                                 src={"/images/home.svg"} alt="Иконка дома"
+                                 width={60}
+                                 height={60}
+                            />
+                        </Link>
+                    </li>
+                    <li className="header__navigation-item">
+                        <Link className="header__link" to={"/people"}>
+                            <img className="header__people"
+                                 src={"/images/globe.svg"} alt="Иконка глобуса"
+                                 width={45}
+                                 height={45}
+                            />
+                        </Link>
+                    </li>
+                    <li className="header__navigation-item">
+                        <Link className="header__link" to={"/profile"}>
+                            <img className="header__avatar"
+                                 src={user?.photo ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
+                                 width={60} height={60}/>
+                            <p className="header__username">{user?.username}</p>
+                        </Link>
                     </li>
                     <li>
                         <div className="header__logout">

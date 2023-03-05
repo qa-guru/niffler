@@ -5,6 +5,7 @@ import {UserContext} from "../../contexts/UserContext";
 import {showError, showSuccess} from "../../toaster/toaster";
 import {Button} from "../Button";
 import {Categories} from "../Categories";
+import {Footer} from "../Footer";
 import {FormInput} from "../FormInput";
 import {FormSelect} from "../FormSelect";
 import {Header} from "../Header";
@@ -105,9 +106,7 @@ export const Profile = () => {
                 <Categories />
             </div>
         </main>
-        <footer className={"footer"}>
-            Study project for QA Automation Advanced. 2023
-        </footer>
+        <Footer/>
     </div>
     );
 }

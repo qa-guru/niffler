@@ -4,6 +4,7 @@ import {ToastContainer} from "react-toastify";
 import {getData} from "./api/api";
 import {LoginPage} from "./components/LoginPage";
 import {MainLayout} from "./components/MainLayout";
+import {PeopleLayout} from "./components/PeopleLayout";
 import {Profile} from "./components/Profile";
 import {ProtectedRoutes} from "./components/ProtectedRoutes";
 import {Redirect} from "./components/Redirect";
@@ -48,6 +49,7 @@ function App() {
                             <Route element={<ProtectedRoutes/>}>
                                 <Route path="/profile" element={<Profile/>}/>
                                 <Route path="/main" element={<MainLayout />}/>
+                                <Route path="/people" element={<PeopleLayout/>}/>
                             </Route>
                             <Route path="*" element={<LoginPage/>}/>
                         </Routes>
