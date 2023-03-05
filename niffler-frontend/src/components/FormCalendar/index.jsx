@@ -7,6 +7,7 @@ export const FormCalendar = ({label, value, onChange}) => {
         <label className="form__label">{label}:
             <div className={"calendar-wrapper"}>
                 <DatePicker
+                    dateFormat="dd/MM/yyyy"
                     selected={value}
                     onChange={onChange}
                 />

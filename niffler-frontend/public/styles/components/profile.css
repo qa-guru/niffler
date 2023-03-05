@@ -1,13 +1,16 @@
 .profile-content {
     margin: 160px 20px 100px;
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 40px;
 }
 
 .profile__avatar-edit {
+    display: flex;
     border: none;
     background: transparent;
-    margin-top: 13px;
+    margin: 0;
+    padding: 0;
 }
 
 .profile__avatar-edit:hover {
@@ -15,7 +18,11 @@
 }
 
 .profile__avatar {
-    margin: 10px;
+    object-fit: cover;
+    width: 200px;
+    height: 200px;
+    margin: 0;
+    padding: 0;
 }
 
 .profile__info-container {

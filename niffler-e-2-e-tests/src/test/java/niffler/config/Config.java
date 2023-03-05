@@ -1,6 +1,7 @@
 package niffler.config;
 
 public interface Config {
+
     String PROJECT_NAME = "niffler";
 
     static Config getConfig() {
@@ -11,6 +12,13 @@ public interface Config {
         } else throw new IllegalStateException();
     }
 
+    String authUrl();
 
     String frontUrl();
+
+    String userdataUrl();
+
+    String currencyGrpcUrl();
+
+    String spendUrl();
 }

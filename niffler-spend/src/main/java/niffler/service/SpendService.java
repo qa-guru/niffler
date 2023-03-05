@@ -179,7 +179,7 @@ public class SpendService {
                 sbcjResult.add(sbcj);
             }
 
-            categoryRepository.findAll().stream()
+            categoryRepository.findAllByUsername(username).stream()
                     .filter(c -> !spendsByCategory.containsKey(c.getCategory()))
                     .map(c -> {
                         StatisticByCategoryJson sbcj = new StatisticByCategoryJson();

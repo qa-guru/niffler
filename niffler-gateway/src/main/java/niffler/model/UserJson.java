@@ -3,9 +3,10 @@ package niffler.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
+
+import static niffler.config.NifflerGatewayServiceConfig.THREE_MB;
 
 public class UserJson {
     @JsonProperty("id")
@@ -21,7 +22,8 @@ public class UserJson {
     @JsonProperty("currency")
     private CurrencyValues currency;
     @JsonProperty("photo")
-    private byte[] photo;
+    @Size(max = THREE_MB)
+    private String photo;
 
     public UserJson() {
     }
@@ -66,11 +68,11 @@ public class UserJson {
         this.currency = currency;
     }
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
@@ -79,13 +81,11 @@ public class UserJson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Arrays.equals(photo, userJson.photo);
+        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, userName, firstname, surname, currency);
-        result = 31 * result + Arrays.hashCode(photo);
-        return result;
+        return Objects.hash(id, userName, firstname, surname, currency, photo);
     }
 }

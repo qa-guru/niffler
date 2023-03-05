@@ -4,7 +4,8 @@ import {Bar} from "react-chartjs-2";
 import {CurrencyContext} from "../../contexts/CurrencyContext";
 
 export const SpendingStatistics = ({ statistic, defaultCurrency}) => {
-    const {selectedCurrency, setSelectedCurrency} = useContext(CurrencyContext);
+    const {selectedCurrency} = useContext(CurrencyContext);
+
 
     ChartJS.register(
         CategoryScale,

@@ -1,34 +1,40 @@
-import {useState} from "react";
-import {Currency as IconType} from "../../constants/iconType";
-import {ButtonIcon} from "../ButtonIcon";
+import dayjs from "dayjs";
+import {forwardRef} from "react";
+import DatePicker from "react-datepicker";
 
-export const EditableValue = ({value, fieldName, label, handleSubmit, placeholder}) => {
+const CustomInput = forwardRef((props, ref) => (
+    <input {...props} id="editable__input" ref={ref}/>
+));
 
-    const [editValue, setEditValue] = useState(value);
-    const [editState, setEditState] = useState(false);
-
-    const editView = (
-        <form className="value-form" onSubmit={handleSubmit}>
-            <label className="form__label">{label}:
-                <input
+export const EditableValue = ({value, onValueChange, fieldName,  placeholder, isEditState, type}) => {
+    const editView = () => {
+        switch (type){
+            case "date": {
+                return (
+                    <DatePicker
+                        dateFormat="dd/MM/yyyy"
+                        selected={new Date(value)}
+                        onChange={onValueChange}
+                        customInput={<CustomInput/>}
+                    />
+                );
+            }
+            default: {
+                return (<input
                     className="editable__input"
                     type={"text"}
-                    value={editValue}
+                    value={value}
                     name={fieldName}
                     placeholder={placeholder}
-                    onChange={(evt) => setEditValue(evt.target.value)}/>
-                <span className="form__error" id={`form__${fieldName}-error`}></span>
-            </label>
-            <ButtonIcon iconType={IconType.CLOSE} onClick={() => setEditState(!editState)}/>
-        </form>
-    );
+                    onChange={onValueChange}/>);
+            }
+        }
+};
 
     const noEditView = (
         <div>
-            <div className="form__label">{label}:</div>
             <div className={"value-container"}>
-                <span>{value}</span>
-                <ButtonIcon iconType={IconType.EDIT} onClick={() => setEditState(!editState)}/>
+                <span>{type === "date" ? dayjs(value).format('DD MMM YY') : value}</span>
             </div>
         </div>
     )
@@ -36,7 +42,7 @@ export const EditableValue = ({value, fieldName, label, handleSubmit, placeholde
     return (
         <>
             {
-                editState ? editView : noEditView
+                isEditState ? editView() : noEditView
             }
         </>
     );
