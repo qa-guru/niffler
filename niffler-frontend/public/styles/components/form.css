@@ -37,7 +37,11 @@
     border: 2px solid black;
     border-radius: 3px;
     font-weight: normal;
-    opacity: 0.5;
-    background-color: white;
+    background-color: #eeedea;
     color: black;
+}
+
+.form__error {
+    color: darkred;
+    font-size: 12px;
 }

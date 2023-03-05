@@ -2,6 +2,7 @@ import { useEffect, useState} from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import {getData} from "./api/api";
+import {FriendsLayout} from "./components/FriendsLayout";
 import {LoginPage} from "./components/LoginPage";
 import {MainLayout} from "./components/MainLayout";
 import {PeopleLayout} from "./components/PeopleLayout";
@@ -50,6 +51,7 @@ function App() {
                                 <Route path="/profile" element={<Profile/>}/>
                                 <Route path="/main" element={<MainLayout />}/>
                                 <Route path="/people" element={<PeopleLayout/>}/>
+                                <Route path="/friends" element={<FriendsLayout/>}/>
                             </Route>
                             <Route path="*" element={<LoginPage/>}/>
                         </Routes>

@@ -40,6 +40,15 @@ export const Header = () => {
                         </Link>
                     </li>
                     <li className="header__navigation-item">
+                        <Link className="header__link" to={"/friends"}>
+                            <img className="header__people"
+                                 src={"/images/friends.svg"} alt="Иконка друзей"
+                                 width={45}
+                                 height={45}
+                            />
+                        </Link>
+                    </li>
+                    <li className="header__navigation-item">
                         <Link className="header__link" to={"/people"}>
                             <img className="header__people"
                                  src={"/images/globe.svg"} alt="Иконка глобуса"
@@ -52,8 +61,7 @@ export const Header = () => {
                         <Link className="header__link" to={"/profile"}>
                             <img className="header__avatar"
                                  src={user?.photo ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
-                                 width={60} height={60}/>
-                            <p className="header__username">{user?.username}</p>
+                                 width={45} height={45}/>
                         </Link>
                     </li>
                     <li>
