@@ -8,10 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @RestController
@@ -37,5 +41,40 @@ public class UserController {
     public UserJson currentUser(@AuthenticationPrincipal Jwt principal) {
         String username = principal.getClaim("sub");
         return restUserDataClient.currentUser(username);
+    }
+
+    @GetMapping("/friends")
+    public List<UserJson> friends(@AuthenticationPrincipal Jwt principal,
+                                  @RequestParam boolean includePending) {
+        String username = principal.getClaim("sub");
+        return restUserDataClient.friends(username, includePending);
+    }
+
+
+    @GetMapping("/invitations")
+    public List<UserJson> invitations(@AuthenticationPrincipal Jwt principal) {
+        String username = principal.getClaim("sub");
+        return restUserDataClient.invitations(username);
+    }
+
+    @PostMapping("/acceptInvitation")
+    public List<UserJson> acceptInvitation(@AuthenticationPrincipal Jwt principal,
+                                           @RequestParam String inviteUsername) {
+        String username = principal.getClaim("sub");
+        return restUserDataClient.acceptInvitation(username, inviteUsername);
+    }
+
+    @PostMapping("/addFriend")
+    public List<UserJson> addFriend(@AuthenticationPrincipal Jwt principal,
+                                    @RequestParam String friendUsername) {
+        String username = principal.getClaim("sub");
+        return restUserDataClient.addFriend(username, friendUsername);
+    }
+
+    @DeleteMapping("/removeFriend")
+    public List<UserJson> removeFriend(@AuthenticationPrincipal Jwt principal,
+                                       @RequestParam String friendUsername) {
+        String username = principal.getClaim("sub");
+        return restUserDataClient.removeFriend(username, friendUsername);
     }
 }

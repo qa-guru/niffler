@@ -1,5 +1,6 @@
 package niffler.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import niffler.data.CurrencyValues;
 import niffler.data.UserEntity;
@@ -21,6 +22,9 @@ public class UserJson {
     private CurrencyValues currency;
     @JsonProperty("photo")
     private String photo;
+    @JsonProperty("pendingFriend")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean pendingFriend;
 
     public UserJson() {
     }
@@ -73,6 +77,14 @@ public class UserJson {
         this.photo = photo;
     }
 
+    public Boolean isPendingFriend() {
+        return pendingFriend;
+    }
+
+    public void setPendingFriend(Boolean pendingFriend) {
+        this.pendingFriend = pendingFriend;
+    }
+
     public static UserJson fromEntity(UserEntity entity) {
         UserJson usr = new UserJson();
         byte[] photo = entity.getPhoto();
@@ -85,17 +97,22 @@ public class UserJson {
         return usr;
     }
 
+    public static UserJson fromEntity(UserEntity entity, boolean pendingFriend) {
+        UserJson userJson = fromEntity(entity);
+        userJson.setPendingFriend(pendingFriend);
+        return userJson;
+    }
+
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo);
+        return pendingFriend == userJson.pendingFriend && Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, firstname, surname, currency, photo);
+        return Objects.hash(id, userName, firstname, surname, currency, photo, pendingFriend);
     }
 }
