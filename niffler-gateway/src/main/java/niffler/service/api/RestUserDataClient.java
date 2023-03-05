@@ -52,6 +52,20 @@ public class RestUserDataClient {
     }
 
     public @Nonnull
+    List<UserJson> allUsers(@Nonnull String username) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("username", username);
+        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/allUsers").queryParams(params).build().toUri();
+
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
+                })
+                .block();
+    }
+
+    public @Nonnull
     List<UserJson> friends(@Nonnull String username, boolean includePending) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);

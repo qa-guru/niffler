@@ -49,6 +49,14 @@ public class UserDataService {
     }
 
     public @Nonnull
+    List<UserJson> allUsers(@Nonnull String username) {
+        return userRepository.findByUsernameNot(username)
+                .stream()
+                .map(UserJson::fromEntity)
+                .toList();
+    }
+
+    public @Nonnull
     List<UserJson> friends(@Nonnull String username, boolean includePending) {
         return userRepository.findByUsername(username)
                 .getFriends()
