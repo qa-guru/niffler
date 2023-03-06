@@ -6,14 +6,18 @@ import niffler.data.FriendsEntity;
 import niffler.data.UserEntity;
 import niffler.data.repository.UserRepository;
 import niffler.model.FriendJson;
+import niffler.model.FriendState;
 import niffler.model.UserJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class UserDataService {
@@ -53,24 +57,37 @@ public class UserDataService {
 
     public @Nonnull
     List<UserJson> allUsers(@Nonnull String username) {
-        List<UserJson> result = new ArrayList<>();
+        Map<UUID, UserJson> result = new HashMap<>();
         for (UserEntity user : userRepository.findByUsernameNot(username)) {
-            List<FriendsEntity> invites = user.getInvites();
-            if (!invites.isEmpty()) {
-                Optional<FriendsEntity> ownInvite = invites.stream()
+            List<FriendsEntity> sendInvites = user.getFriends();
+            List<FriendsEntity> receivedInvites = user.getInvites();
+
+            if (!sendInvites.isEmpty() || !receivedInvites.isEmpty()) {
+                Optional<FriendsEntity> inviteToMe = sendInvites.stream()
+                        .filter(i -> i.getFriend().getUsername().equals(username))
+                        .findFirst();
+
+                Optional<FriendsEntity> inviteFromMe = receivedInvites.stream()
                         .filter(i -> i.getUser().getUsername().equals(username))
                         .findFirst();
 
-                if (ownInvite.isPresent()) {
-                    result.add(UserJson.fromEntity(user, ownInvite.get().isPending()));
-                } else {
-                    result.add(UserJson.fromEntity(user));
+                if (inviteToMe.isPresent()) {
+                    FriendsEntity invite = inviteToMe.get();
+                    result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
+                            ? FriendState.INVITE_RECEIVED
+                            : FriendState.FRIEND));
+                } else if (inviteFromMe.isPresent()) {
+                    FriendsEntity invite = inviteFromMe.get();
+                    result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
+                            ? FriendState.INVITE_SENT
+                            : FriendState.FRIEND));
                 }
-            } else {
-                result.add(UserJson.fromEntity(user));
+            }
+            if (!result.containsKey(user.getId())) {
+                result.put(user.getId(), UserJson.fromEntity(user));
             }
         }
-        return result;
+        return new ArrayList<>(result.values());
     }
 
     public @Nonnull
@@ -79,7 +96,9 @@ public class UserDataService {
                 .getFriends()
                 .stream()
                 .filter(fe -> includePending || !fe.isPending())
-                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()))
+                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
+                        ? FriendState.INVITE_SENT
+                        : FriendState.FRIEND))
                 .toList();
     }
 
@@ -89,7 +108,7 @@ public class UserDataService {
                 .getInvites()
                 .stream()
                 .filter(FriendsEntity::isPending)
-                .map(fe -> UserJson.fromEntity(fe.getUser()))
+                .map(fe -> UserJson.fromEntity(fe.getUser(), FriendState.INVITE_RECEIVED))
                 .toList();
     }
 
@@ -117,7 +136,9 @@ public class UserDataService {
         return currentUser
                 .getFriends()
                 .stream()
-                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()))
+                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
+                        ? FriendState.INVITE_SENT
+                        : FriendState.FRIEND))
                 .toList();
     }
 
@@ -129,19 +150,21 @@ public class UserDataService {
         return currentUser.getInvites()
                 .stream()
                 .filter(FriendsEntity::isPending)
-                .map(fe -> UserJson.fromEntity(fe.getUser()))
+                .map(fe -> UserJson.fromEntity(fe.getUser(), FriendState.INVITE_RECEIVED))
                 .toList();
     }
 
     public @Nonnull
-    List<UserJson> removeFriend(@Nonnull String username, @Nonnull FriendJson friend) {
+    List<UserJson> removeFriend(@Nonnull String username, @Nonnull String friendUsername) {
         UserEntity currentUser = userRepository.findByUsername(username);
-        currentUser.removeFriends(userRepository.findByUsername(friend.getUsername()));
+        currentUser.removeFriends(userRepository.findByUsername(friendUsername));
         userRepository.save(currentUser);
         return currentUser
                 .getFriends()
                 .stream()
-                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()))
+                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
+                        ? FriendState.INVITE_SENT
+                        : FriendState.FRIEND))
                 .toList();
     }
 }
