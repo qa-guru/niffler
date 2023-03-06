@@ -34,7 +34,7 @@
 }
 
 .edit-avatar__error {
-    color: darkred;
+    color: var(--color-error);
     font-size: 12px;
 }
 

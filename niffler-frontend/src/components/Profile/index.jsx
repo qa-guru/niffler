@@ -68,7 +68,7 @@ export const Profile = () => {
                 <section className="main-content__section">
                     <div className="main-content__section-avatar">
                         <form onSubmit={handleChangeProfile}>
-                            <ProfileAvatar username={userData?.username}
+                            <ProfileAvatar username={user?.username}
                                            value={userData?.photo}
                                            handleChangeValue={handleProfileAvatarChange}/>
                             <div className="profile__info-container">

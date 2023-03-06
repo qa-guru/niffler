@@ -20,5 +20,5 @@
 }
 
 .calendar-wrapper__error .react-datepicker__input-container input {
-    border: 2px solid darkred;
+    border: 2px solid var(--color-error);
 }

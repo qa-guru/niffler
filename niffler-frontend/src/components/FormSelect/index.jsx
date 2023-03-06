@@ -17,7 +17,7 @@ export const FormSelect = ({label, placeholder, options, value, defaultValue, on
                             ...baseStyles,
                             borderStyle: "solid",
                             borderWidth: "2px",
-                            borderColor: error ? "darkred" : state.isFocused ? "blue" : "black",
+                            borderColor: error ? "#a10b0b" : state.isFocused ? "blue" : "black",
                             borderRadius: "8px",
                             background: "#eeedea",
                         }),
