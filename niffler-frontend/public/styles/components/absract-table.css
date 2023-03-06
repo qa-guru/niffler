@@ -6,6 +6,10 @@
     minmax(100px, 0.7fr)
 }
 
+.abstract-table__buttons {
+    display: flex;
+}
+
 .abstract-table__buttons .button-icon{
     margin: 10px;
 }

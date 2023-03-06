@@ -11,6 +11,10 @@ export const Popup = () => {
         setContent(content.filter(f => f.username !== username));
     };
 
+    const onDeclineFriend = ({username}) => {
+        setContent(content.filter(f => f.username !== username));
+    };
+
     return (
         isOpen ? (
             <div className="popup">
@@ -19,6 +23,7 @@ export const Popup = () => {
                         <AbstractTable data={content}
                                        controls={[Controls.SUBMIT_FRIEND, Controls.DECLINE_FRIEND]}
                                        onSubmit={onSubmitFriend}
+                                       onDecline={onDeclineFriend}
                         />
                     ) : (
                         <div className="popup__no-data">No new invitations</div>
