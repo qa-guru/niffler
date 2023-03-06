@@ -15,6 +15,10 @@
     font-size: 15px;
 }
 
+.button_type_selected {
+    background-color: #cbae97;
+}
+
 .button_type_small {
     width: fit-content;
     padding: 10px 15px;
@@ -67,4 +71,8 @@
 .button-icon_type_logout {
     background-image: url("./../../images/logout.svg");
     margin-top: 7px;
+}
+
+.button-icon_type_add {
+    background-image: url("./../../images/add-friend.svg");
 }

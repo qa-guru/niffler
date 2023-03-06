@@ -1,4 +1,5 @@
 export const IconType = {
+    ADD_FRIEND: "add",
     EDIT: "edit",
     CLOSE: "close",
     LOGOUT: "logout",

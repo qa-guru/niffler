@@ -3,7 +3,7 @@ import {CurrencyContext} from "../../contexts/CurrencyContext";
 import {FilterContext} from "../../contexts/FilterContext";
 import {TableSelectionContext} from "../../contexts/TableSelectionContext";
 import {Button} from "../Button";
-import {ButtonIcon} from "../ButtonIcon";
+import {ButtonIcon, IconType} from "../ButtonIcon";
 import {FormSelect} from "../FormSelect";
 import {SpendingTable} from "../SpendingTable";
 
@@ -37,10 +37,10 @@ export const SpendingHistory = ({spendings, currencies, categories, handleDelete
                             <section className="spendings__filters">
                                 <div className="spendings__buttons">
                                     <h3 className={"spendings__controls-header"}>Filters:</h3>
-                                    <Button small type="button" buttonText={"Today"} onClick={() => setFilter("TODAY")}/>
-                                    <Button small type="button" buttonText={"Last week"} onClick={() =>{setFilter("WEEK")}}/>
-                                    <Button small type="button" buttonText={"Last month"} onClick={() =>{setFilter("MONTH")}}/>
-                                    <Button small type="button" buttonText={"All time"} onClick={() => setFilter("ALL")}/>
+                                    <Button small selected={filter === "TODAY"} type="button" buttonText={"Today"} onClick={() => setFilter("TODAY")}/>
+                                    <Button small selected={filter === "WEEK"} type="button" buttonText={"Last week"} onClick={() =>{setFilter("WEEK")}}/>
+                                    <Button small selected={filter === "MONTH"} type="button" buttonText={"Last month"} onClick={() =>{setFilter("MONTH")}}/>
+                                    <Button small selected={filter === "ALL"} type="button" buttonText={"All time"} onClick={() => setFilter("ALL")}/>
                                 </div>
                                 <div style={{width: 120, marginRight: 20}}>
                                     <FormSelect options={currencies}
@@ -51,7 +51,7 @@ export const SpendingHistory = ({spendings, currencies, categories, handleDelete
                                     />
                                 </div>
                                 {(filter !== null || selectedCurrency.value !== "ALL") &&
-                                    (<ButtonIcon iconType={"close"} onClick={() => {
+                                    (<ButtonIcon iconType={IconType.CLOSE} onClick={() => {
                                         setFilter(null);
                                         setSelectedCurrency({value: "ALL", label: "ALL"});
                                     }}/>)

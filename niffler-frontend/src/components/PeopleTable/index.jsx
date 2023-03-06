@@ -1,5 +1,7 @@
 import {useEffect, useState} from "react";
-import {getData} from "../../api/api";
+import {getData, postData} from "../../api/api";
+import {showError, showSuccess} from "../../toaster/toaster";
+import {ButtonIcon, IconType} from "../ButtonIcon";
 
 export const PeopleTable = ({}) => {
 
@@ -7,8 +9,9 @@ export const PeopleTable = ({}) => {
 
     useEffect(() => {
         getData({
-                path: "/users",
+                path: "/allUsers",
                 onSuccess: (data) => {
+                    console.log(data);
                     setAllUsers(data);
                 },
                 onFail: (err) => {
@@ -17,7 +20,22 @@ export const PeopleTable = ({}) => {
                 }
             }
         );
-    });
+    }, []);
+
+    const handleAddUserToFriends = (username) => {
+        console.log(username);
+        postData({
+            path: `/addFriend?username=${username}`,
+            onSuccess: (data) => {
+                console.log(data);
+                showSuccess("Invitation is sent!");
+            },
+            onFail: (err) => {
+                showError("Can not send invitation!");
+                console.error(err);
+            }
+        });
+    }
 
     return (
         <>
@@ -33,18 +51,23 @@ export const PeopleTable = ({}) => {
 
                 <tbody>
                 {allUsers?.map((user) => (
-                    <tr>
+                    <tr key={user.username}>
                         <td>
-                            <img
-                                 src={ user.src} alt={`Аватар пользователя ${user.username}`}
-                                 width={100} height={100}/>
+                            <img className="people__user-avatar"
+                                 src={ user.photo ?? "/images/niffler_avatar.jpeg"}
+                                 alt={`Аватар пользователя ${user.username}`}
+                                 width={50} height={50}/>
                         </td>
                         <td>
                             {user.username}
                         </td>
                         <td>{user.firstname} {user.surname}</td>
                         <td>
-                            Invite to friends
+                            {user.pending === undefined ?
+                                (
+                                <ButtonIcon iconType={IconType.ADD_FRIEND} onClick={() => {
+                                handleAddUserToFriends(user.username)
+                                }}/>) :  (<div>Invitation is sent</div>)}
                         </td>
                     </tr>
                 ))}

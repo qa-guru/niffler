@@ -71,7 +71,7 @@ public class UserController {
 
     @PostMapping("/addFriend")
     public List<UserJson> addFriend(@AuthenticationPrincipal Jwt principal,
-                                    @RequestParam String friendUsername) {
+                                    @RequestParam("username") String friendUsername) {
         String username = principal.getClaim("sub");
         return restUserDataClient.addFriend(username, friendUsername);
     }

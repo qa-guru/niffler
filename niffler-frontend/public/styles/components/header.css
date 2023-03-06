@@ -28,7 +28,7 @@
     width: 100%;
     max-width: 360px;
     padding: 0;
-    margin: 0;
+    margin: 0 15px 0 0;
     display: flex;
     list-style: none;
     align-items: center;
