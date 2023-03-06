@@ -47,7 +47,7 @@ input[type=file]::file-selector-button {
     font-family: "PTRootUIWeb", var(--font-fallback);
     border: 2px solid black;
     padding: .2em .4em;
-    border-radius: 3px;
+    border-radius: 8px;
     background-color: #eeedea;
     transition: 1s;
 }

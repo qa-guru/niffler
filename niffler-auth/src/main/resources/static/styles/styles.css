@@ -35,7 +35,7 @@ body {
     padding: 10px;
     box-shadow: 0 0 20px 20px black;
     background-image: url("../images/background.jpg");
-    border-radius: 3px;
+    border-radius: 8px;
     margin: 0 auto;
     width: 100%;
     max-width: 460px;
@@ -74,7 +74,7 @@ body {
     font-size: 14px;
     padding: 10px;
     border: 2px solid black;
-    border-radius: 3px;
+    border-radius: 8px;
     font-weight: normal;
     opacity: 0.5;
     background-color: #eeedea;
@@ -111,7 +111,7 @@ body {
     padding: 15px 30px;
     margin-bottom: 15px;
     margin-top: 15px;
-    border-radius: 3px;
+    border-radius: 8px;
     border: 2px solid black;
     opacity: 0.6;
     background-color: #eeedea;

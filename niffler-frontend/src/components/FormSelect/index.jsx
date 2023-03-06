@@ -11,13 +11,14 @@ export const FormSelect = ({label, placeholder, options, value, defaultValue, on
                         input: (baseStyles) => ({
                             ...baseStyles,
                             padding: "4.5px",
-                            margin: "0 3px"
+                            margin: "0 3px",
                         }),
                         control: (baseStyles, state) => ({
                             ...baseStyles,
                             borderStyle: "solid",
                             borderWidth: "2px",
                             borderColor: error ? "darkred" : state.isFocused ? "blue" : "black",
+                            borderRadius: "8px",
                             background: "#eeedea",
                         }),
                         option: (baseStyles) => ({
