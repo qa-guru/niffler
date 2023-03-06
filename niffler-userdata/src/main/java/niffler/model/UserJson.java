@@ -22,7 +22,7 @@ public class UserJson {
     private CurrencyValues currency;
     @JsonProperty("photo")
     private String photo;
-    @JsonProperty("FriendState")
+    @JsonProperty("friendState")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private FriendState friendState;
 

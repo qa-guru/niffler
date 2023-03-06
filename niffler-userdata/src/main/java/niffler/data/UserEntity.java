@@ -46,7 +46,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendsEntity> friends = new ArrayList<>();
 
-    @OneToMany(mappedBy = "friend", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "friend", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendsEntity> invites = new ArrayList<>();
 
     public UUID getId() {

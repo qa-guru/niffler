@@ -76,7 +76,8 @@ public class UserDataService {
                     result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
                             ? FriendState.INVITE_RECEIVED
                             : FriendState.FRIEND));
-                } else if (inviteFromMe.isPresent()) {
+                }
+                if (inviteFromMe.isPresent()) {
                     FriendsEntity invite = inviteFromMe.get();
                     result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
                             ? FriendState.INVITE_SENT
@@ -145,7 +146,9 @@ public class UserDataService {
     public @Nonnull
     List<UserJson> declineInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = userRepository.findByUsername(username);
-        currentUser.removeInvites(userRepository.findByUsername(invitation.getUsername()));
+        UserEntity friendToDecline = userRepository.findByUsername(invitation.getUsername());
+        currentUser.removeInvites(friendToDecline);
+        currentUser.removeFriends(friendToDecline);
         userRepository.save(currentUser);
         return currentUser.getInvites()
                 .stream()
@@ -157,7 +160,9 @@ public class UserDataService {
     public @Nonnull
     List<UserJson> removeFriend(@Nonnull String username, @Nonnull String friendUsername) {
         UserEntity currentUser = userRepository.findByUsername(username);
-        currentUser.removeFriends(userRepository.findByUsername(friendUsername));
+        UserEntity friendToRemove = userRepository.findByUsername(friendUsername);
+        currentUser.removeFriends(friendToRemove);
+        currentUser.removeInvites(friendToRemove);
         userRepository.save(currentUser);
         return currentUser
                 .getFriends()

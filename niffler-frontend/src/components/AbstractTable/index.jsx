@@ -65,7 +65,7 @@ const handleDeclineInvitation = (username, onDecline) => {
 const handleDeleteFriend = (username, onDelete) => {
     deleteData({
         path: "/removeFriend",
-        data: {
+        params: {
             username: username,
         },
         onSuccess: () => {
