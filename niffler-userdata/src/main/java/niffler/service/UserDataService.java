@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -50,10 +51,18 @@ public class UserDataService {
 
     public @Nonnull
     List<UserJson> allUsers(@Nonnull String username) {
-        return userRepository.findByUsernameNot(username)
-                .stream()
-                .map(UserJson::fromEntity)
-                .toList();
+        List<UserJson> result = new ArrayList<>();
+        for (UserEntity user : userRepository.findByUsernameNot(username)) {
+            List<FriendsEntity> invites = user.getInvites();
+            if (!invites.isEmpty()) {
+                invites.stream().filter(i -> i.getUser().getUsername().equals(username))
+                        .findFirst()
+                        .ifPresent(i -> result.add(UserJson.fromEntity(user, i.isPending())));
+            } else {
+                result.add(UserJson.fromEntity(user));
+            }
+        }
+        return result;
     }
 
     public @Nonnull
@@ -76,16 +85,10 @@ public class UserDataService {
                 .toList();
     }
 
-    public @Nonnull
-    List<UserJson> addFriend(String username, String friendUsername) {
+    public void addFriend(String username, String friendUsername) {
         UserEntity currentUser = userRepository.findByUsername(username);
         currentUser.addFriends(true, userRepository.findByUsername(friendUsername));
         userRepository.save(currentUser);
-        return currentUser
-                .getFriends()
-                .stream()
-                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()))
-                .toList();
     }
 
     public @Nonnull

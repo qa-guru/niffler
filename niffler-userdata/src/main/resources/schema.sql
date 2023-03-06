@@ -20,6 +20,7 @@ create table if not exists friends
 (
     user_id UUID not null,
     friend_id UUID not null,
+    pending boolean not null default true,
     primary key (user_id, friend_id),
     constraint fk_user_id foreign key (user_id) references users (id),
     constraint fk_friend_id foreign key (friend_id) references users (id)

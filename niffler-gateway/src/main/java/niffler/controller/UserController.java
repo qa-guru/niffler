@@ -70,10 +70,10 @@ public class UserController {
     }
 
     @PostMapping("/addFriend")
-    public List<UserJson> addFriend(@AuthenticationPrincipal Jwt principal,
-                                    @RequestParam("username") String friendUsername) {
+    public void addFriend(@AuthenticationPrincipal Jwt principal,
+                          @RequestParam("username") String friendUsername) {
         String username = principal.getClaim("sub");
-        return restUserDataClient.addFriend(username, friendUsername);
+        restUserDataClient.addFriend(username, friendUsername);
     }
 
     @DeleteMapping("/removeFriend")
