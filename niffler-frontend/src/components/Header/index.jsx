@@ -1,12 +1,29 @@
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {Link, useLocation} from "react-router-dom";
+import {Tooltip} from "react-tooltip";
 import {getData} from "../../api/api";
+import {PopupContext} from "../../contexts/PopupContext";
 import {UserContext} from "../../contexts/UserContext";
 import {ButtonIcon, IconType} from "../ButtonIcon";
 
 export const Header = () => {
     const location = useLocation();
     const { user, setUser } = useContext(UserContext);
+    const {setIsOpen, content, setContent} = useContext(PopupContext);
+
+    useEffect(() => {
+        getData({
+            path: "/invitations",
+            onSuccess: (invitations) => {
+                if(invitations.length > 0) {
+                    setContent(invitations);
+                }
+            },
+            onFail: (err) => {
+                console.error(err);
+            }
+        });
+    }, []);
 
     const handleLogout = () => {
         getData({
@@ -30,7 +47,20 @@ export const Header = () => {
             </div>
             <nav className="header__navigation">
                 <ul>
-                    <li className="header__navigation-item">
+                    <li className="header__navigation-item"
+                        data-tooltip-id="invitations"
+                        data-tooltip-content="Pending invitations"
+                    >
+                        <ButtonIcon iconType={content?.length > 0 ? IconType.MESSAGE_NEW : IconType.MESSAGE}
+                                    onClick={() => {setIsOpen(true);}
+                            }
+                        />
+                        <Tooltip className="tooltip" id="invitations"/>
+                    </li>
+                    <li className="header__navigation-item"
+                        data-tooltip-id="main"
+                        data-tooltip-content="Main page"
+                    >
                         <Link className="header__link" to={"/main"}>
                             <img className="header__people"
                                  src={"/images/home.svg"} alt="Иконка дома"
@@ -38,8 +68,12 @@ export const Header = () => {
                                  height={45}
                             />
                         </Link>
+                        <Tooltip className="tooltip" id="main"/>
                     </li>
-                    <li className="header__navigation-item">
+                    <li className="header__navigation-item"
+                        data-tooltip-id="friends"
+                        data-tooltip-content="Friends"
+                    >
                         <Link className="header__link" to={"/friends"}>
                             <img className="header__people"
                                  src={"/images/friends.svg"} alt="Иконка друзей"
@@ -47,8 +81,12 @@ export const Header = () => {
                                  height={48}
                             />
                         </Link>
+                        <Tooltip className="tooltip" id="friends"/>
                     </li>
-                    <li className="header__navigation-item">
+                    <li className="header__navigation-item"
+                        data-tooltip-id="people"
+                        data-tooltip-content="All people"
+                    >
                         <Link className="header__link" to={"/people"}>
                             <img className="header__people"
                                  src={"/images/globe.svg"} alt="Иконка глобуса"
@@ -56,18 +94,25 @@ export const Header = () => {
                                  height={45}
                             />
                         </Link>
+                        <Tooltip className="tooltip" id="people"/>
                     </li>
-                    <li className="header__navigation-item">
+                    <li className="header__navigation-item"
+                        data-tooltip-id="profile"
+                        data-tooltip-content="Profile">
                         <Link className="header__link" to={"/profile"}>
                             <img className="header__avatar"
                                  src={user?.photo ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
                                  width={65} height={65}/>
                         </Link>
+                        <Tooltip className="tooltip" id="profile"/>
                     </li>
                     <li>
-                        <div className="header__logout">
+                        <div className="header__navigation-item header__logout"
+                             data-tooltip-id="logout"
+                             data-tooltip-content="Logout">
                             <ButtonIcon iconType={IconType.LOGOUT} onClick={handleLogout}/>
                         </div>
+                        <Tooltip className="tooltip" id="logout"/>
                     </li>
                 </ul>
             </nav>

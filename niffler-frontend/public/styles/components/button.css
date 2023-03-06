@@ -64,8 +64,7 @@
 
 .button-icon_type_submit {
     background-image: url("./../../images/submit.svg");
-    width: 25px;
-    height: 25px;
+
 }
 
 .button-icon_type_logout {
@@ -75,4 +74,18 @@
 
 .button-icon_type_add {
     background-image: url("./../../images/add-friend.svg");
+}
+
+.button-icon_type_message {
+    background-image: url("./../../images/message.svg");
+    width: 45px;
+    height: 45px;
+    margin-right: 10px;
+}
+
+.button-icon_type_message-new {
+    background-image: url("./../../images/message-new.svg");
+    width: 45px;
+    height: 45px;
+    margin-right: 10px;
 }

@@ -64,7 +64,7 @@ public class UserController {
 
     @PostMapping("/acceptInvitation")
     public List<UserJson> acceptInvitation(@AuthenticationPrincipal Jwt principal,
-                                           @RequestParam String inviteUsername) {
+                                           @RequestParam("username") String inviteUsername) {
         String username = principal.getClaim("sub");
         return restUserDataClient.acceptInvitation(username, inviteUsername);
     }
@@ -78,7 +78,7 @@ public class UserController {
 
     @DeleteMapping("/removeFriend")
     public List<UserJson> removeFriend(@AuthenticationPrincipal Jwt principal,
-                                       @RequestParam String friendUsername) {
+                                       @RequestParam("username") String friendUsername) {
         String username = principal.getClaim("sub");
         return restUserDataClient.removeFriend(username, friendUsername);
     }

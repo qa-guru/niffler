@@ -4,6 +4,8 @@ export const IconType = {
     CLOSE: "close",
     LOGOUT: "logout",
     SUBMIT: "submit",
+    MESSAGE: "message",
+    MESSAGE_NEW: "message-new",
 };
 
 export const ButtonIcon = ({iconType, onClick, text}) => {

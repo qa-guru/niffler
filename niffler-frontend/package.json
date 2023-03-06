@@ -14,7 +14,8 @@
     "react-dom": "^18.1.0",
     "react-router-dom": "^6.7.0",
     "react-select": "^5.7.0",
-    "react-toastify": "^9.1.1"
+    "react-toastify": "^9.1.1",
+    "react-tooltip": "^5.9.0"
   },
   "scripts": {
     "build": "sh -ac '. ./.env.${REACT_APP_ENV}; webpack build'",
