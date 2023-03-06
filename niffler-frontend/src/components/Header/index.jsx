@@ -1,29 +1,13 @@
-import {useContext, useEffect} from "react";
+import {useContext} from "react";
 import {Link, useLocation} from "react-router-dom";
 import {Tooltip} from "react-tooltip";
 import {getData} from "../../api/api";
-import {PopupContext} from "../../contexts/PopupContext";
 import {UserContext} from "../../contexts/UserContext";
 import {ButtonIcon, IconType} from "../ButtonIcon";
 
 export const Header = () => {
     const location = useLocation();
     const { user, setUser } = useContext(UserContext);
-    const {setIsOpen, content, setContent} = useContext(PopupContext);
-
-    useEffect(() => {
-        getData({
-            path: "/invitations",
-            onSuccess: (invitations) => {
-                if(invitations.length > 0) {
-                    setContent(invitations);
-                }
-            },
-            onFail: (err) => {
-                console.error(err);
-            }
-        });
-    }, []);
 
     const handleLogout = () => {
         getData({
@@ -47,16 +31,6 @@ export const Header = () => {
             </div>
             <nav className="header__navigation">
                 <ul>
-                    <li className="header__navigation-item"
-                        data-tooltip-id="invitations"
-                        data-tooltip-content="Pending invitations"
-                    >
-                        <ButtonIcon iconType={content?.length > 0 ? IconType.MESSAGE_NEW : IconType.MESSAGE}
-                                    onClick={() => {setIsOpen(true);}
-                            }
-                        />
-                        <Tooltip className="tooltip" id="invitations"/>
-                    </li>
                     <li className="header__navigation-item"
                         data-tooltip-id="main"
                         data-tooltip-content="Main page"

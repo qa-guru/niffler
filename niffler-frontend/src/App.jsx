@@ -21,12 +21,9 @@ function App() {
     const userContext = { user, setUser };
 
     const [popupOpen, setPopupOpen] = useState(false);
-    const [popupContent, setPopupContent] = useState(null);
     const popupContext = {
         isOpen: popupOpen,
         setIsOpen: setPopupOpen,
-        content: popupContent,
-        setContent: setPopupContent,
     };
 
     useEffect(() => {

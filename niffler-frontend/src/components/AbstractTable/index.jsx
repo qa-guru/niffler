@@ -1,5 +1,6 @@
 import {Tooltip} from "react-tooltip";
 import {deleteData, postData} from "../../api/api";
+import {FriendState} from "../../constants/friendState";
 import {showError, showSuccess} from "../../toaster/toaster";
 import {ButtonIcon, IconType} from "../ButtonIcon";
 
@@ -16,7 +17,7 @@ const handleAddUserToFriends = (username, onInvite) => {
         data: {username: username},
         onSuccess: () => {
             showSuccess("Invitation is sent!");
-            if(onInvite) {
+            if (onInvite) {
                 onInvite({username});
             }
         },
@@ -33,7 +34,7 @@ const handleSubmitInvitation = (username, onSubmit) => {
         data: {username: username},
         onSuccess: () => {
             showSuccess("Invitation is accepted!");
-            if(onSubmit) {
+            if (onSubmit) {
                 onSubmit({username});
             }
         },
@@ -50,7 +51,7 @@ const handleDeclineInvitation = (username, onDecline) => {
         data: {username: username},
         onSuccess: () => {
             showSuccess("Invitation is declined!");
-            if(onDecline) {
+            if (onDecline) {
                 onDecline({username});
             }
         },
@@ -70,7 +71,7 @@ const handleDeleteFriend = (username, onDelete) => {
         },
         onSuccess: () => {
             showSuccess("Friend is deleted!");
-            if(onDelete) {
+            if (onDelete) {
                 onDelete({username});
             }
         },
@@ -81,60 +82,67 @@ const handleDeleteFriend = (username, onDelete) => {
     });
 };
 
-const getControl = (user, control, onDelete, onInvite, onSubmit, onDecline) => {
-    switch (control) {
-        case Controls.SEND_INVITATION:
-            if(user?.pendingFriend === undefined){
-                return (
-                    <>
-                        <div data-tooltip-id="add-friend"
-                             data-tooltip-content="Add friend">
-                            <ButtonIcon iconType={IconType.ADD_FRIEND}
-                                           onClick={() => {
-                                               handleAddUserToFriends(user.username, onInvite)}}/>
-                        </div>
-                        <Tooltip className="tooltip" id="add-friend"/>
-                    </>);
-            } else if (user?.pendingFriend === false) {
-                return <div>You are friends</div>
-            }
-            return <div>Pending invitation</div>
-        case Controls.SUBMIT_FRIEND:
-            return (
-                <>
-                    <div data-tooltip-id="submit-invitation"
-                        data-tooltip-content="Submit invitation">
-                        <ButtonIcon iconType={IconType.SUBMIT}
-                                    onClick={() => {
-                                        handleSubmitInvitation(user.username, onSubmit)}}/>
-                    </div>
-                    <Tooltip className="tooltip" id="submit-invitation"/>
-                </>);
-        case Controls.DECLINE_FRIEND:
-            return (
-                <>
-                    <div data-tooltip-id="decline-invitation"
-                         data-tooltip-content="Decline invitation">
-                        <ButtonIcon iconType={IconType.CLOSE}
-                               onClick={() => {
-                                   handleDeclineInvitation(user.username, onDecline)}}/>
-                    </div>
-                    <Tooltip className="tooltip" id="decline-invitation"/>
-                </>);
-        case Controls.DELETE_FRIEND:
-            return (
+const getControls = ({user, onSubmit, onDecline, onInvite, onDelete}) => {
+    const friendState = user.friendState;
+
+    if (friendState === FriendState.INVITE_SENT) {
+        return (<div>Pending invitation</div>);
+    } else if (friendState === FriendState.FRIEND) {
+        return (
+            <>
+                <div>You are friends</div>
                 <>
                     <div data-tooltip-id="remove-friend"
                          data-tooltip-content="Remove friend">
                         <ButtonIcon iconType={IconType.CLOSE}
-                                       onClick={() => {
-                                           handleDeleteFriend(user.username, onDelete)}}/>
+                                    onClick={() => {
+                                        handleDeleteFriend(user.username, onDelete)
+                                    }}/>
                     </div>
                     <Tooltip className="tooltip" id="remove-friend"/>
-                </>);
+                </>
+            </>);
+    } else if (friendState === FriendState.INVITE_RECEIVED) {
+        return (
+            <>
+                <>
+                    <div data-tooltip-id="submit-invitation"
+                         data-tooltip-content="Submit invitation">
+                        <ButtonIcon iconType={IconType.SUBMIT}
+                                    onClick={() => {
+                                        handleSubmitInvitation(user.username, onSubmit)
+                                    }}/>
+                    </div>
+                    <Tooltip className="tooltip" id="submit-invitation"/>
+                </>
+                <>
+                    <div data-tooltip-id="decline-invitation"
+                         data-tooltip-content="Decline invitation">
+                        <ButtonIcon iconType={IconType.CLOSE}
+                                    onClick={() => {
+                                        handleDeclineInvitation(user.username, onDecline)
+                                    }}/>
+                    </div>
+                    <Tooltip className="tooltip" id="decline-invitation"/>
+                </>
+            </>
+        )
+    } else {
+        return (
+            <>
+                <div data-tooltip-id="add-friend"
+                     data-tooltip-content="Add friend">
+                    <ButtonIcon iconType={IconType.ADD_FRIEND}
+                                onClick={() => {
+                                    handleAddUserToFriends(user.username, onInvite)
+                                }}/>
+                </div>
+                <Tooltip className="tooltip" id="add-friend"/>
+            </>
+        )
     }
 };
-export const AbstractTable = ({data, controls, onDelete, onInvite, onSubmit, onDecline}) => {
+export const AbstractTable = ({data, onDelete, onInvite, onSubmit, onDecline}) => {
 
     return (
         <>
@@ -153,7 +161,7 @@ export const AbstractTable = ({data, controls, onDelete, onInvite, onSubmit, onD
                     <tr key={item.username}>
                         <td>
                             <img className="people__user-avatar"
-                                 src={ item.photo ?? "/images/niffler_avatar.jpeg"}
+                                 src={item.photo ?? "/images/niffler_avatar.jpeg"}
                                  alt={`Аватар пользователя ${item.username}`}
                                  width={50} height={50}/>
                         </td>
@@ -163,7 +171,13 @@ export const AbstractTable = ({data, controls, onDelete, onInvite, onSubmit, onD
                         <td>{item.firstname} {item.surname}</td>
                         <td>
                             <div className="abstract-table__buttons">
-                                {controls.map(control => getControl(item, control, onDelete, onInvite, onSubmit, onDecline))}
+                                {getControls({
+                                    user: item,
+                                    onSubmit,
+                                    onDecline,
+                                    onInvite,
+                                    onDelete
+                                })}
                             </div>
                         </td>
                     </tr>
