@@ -22,9 +22,9 @@ public class UserJson {
     private CurrencyValues currency;
     @JsonProperty("photo")
     private String photo;
-    @JsonProperty("pendingFriend")
+    @JsonProperty("FriendState")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Boolean pendingFriend;
+    private FriendState friendState;
 
     public UserJson() {
     }
@@ -77,12 +77,12 @@ public class UserJson {
         this.photo = photo;
     }
 
-    public Boolean isPendingFriend() {
-        return pendingFriend;
+    public FriendState getFriendState() {
+        return friendState;
     }
 
-    public void setPendingFriend(Boolean pendingFriend) {
-        this.pendingFriend = pendingFriend;
+    public void setFriendState(FriendState friendState) {
+        this.friendState = friendState;
     }
 
     public static UserJson fromEntity(UserEntity entity) {
@@ -97,9 +97,9 @@ public class UserJson {
         return usr;
     }
 
-    public static UserJson fromEntity(UserEntity entity, boolean pendingFriend) {
+    public static UserJson fromEntity(UserEntity entity, FriendState friendState) {
         UserJson userJson = fromEntity(entity);
-        userJson.setPendingFriend(pendingFriend);
+        userJson.setFriendState(friendState);
         return userJson;
     }
 
@@ -108,11 +108,11 @@ public class UserJson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return pendingFriend == userJson.pendingFriend && Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo);
+        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, firstname, surname, currency, photo, pendingFriend);
+        return Objects.hash(id, userName, firstname, surname, currency, photo, friendState);
     }
 }

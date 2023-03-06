@@ -26,8 +26,8 @@ public class UserJson {
     @Size(max = THREE_MB)
     private String photo;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("pendingFriend")
-    private Boolean pendingFriend;
+    @JsonProperty("friendState")
+    private FriendState friendState;
 
     public UserJson() {
     }
@@ -80,12 +80,12 @@ public class UserJson {
         this.photo = photo;
     }
 
-    public Boolean isPendingFriend() {
-        return pendingFriend;
+    public FriendState getFriendState() {
+        return friendState;
     }
 
-    public void setPendingFriend(Boolean pendingFriend) {
-        this.pendingFriend = pendingFriend;
+    public void setFriendState(FriendState friendState) {
+        this.friendState = friendState;
     }
 
     @Override
@@ -93,11 +93,11 @@ public class UserJson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return pendingFriend == userJson.pendingFriend && Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo);
+        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, firstname, surname, currency, photo, pendingFriend);
+        return Objects.hash(id, userName, firstname, surname, currency, photo, friendState);
     }
 }

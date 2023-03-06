@@ -144,14 +144,14 @@ public class RestUserDataClient {
 
     public @Nonnull
     List<UserJson> removeFriend(@Nonnull String username,
-                                @Nonnull FriendJson friend) {
+                                @Nonnull String friendUsername) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
+        params.add("friendUsername", friendUsername);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/removeFriend").queryParams(params).build().toUri();
 
-        return webClient.method(HttpMethod.DELETE)
+        return webClient.delete()
                 .uri(uri)
-                .body(Mono.just(friend), FriendJson.class)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
                 })
