@@ -132,6 +132,12 @@ public class UserEntity {
         }
     }
 
+    public void removeInvites(UserEntity... invitations) {
+        for (UserEntity invite : invitations) {
+            getInvites().removeIf(i -> i.getUser().getId().equals(invite.getId()));
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,5 +1,6 @@
 package niffler.controller;
 
+import niffler.model.FriendJson;
 import niffler.model.UserJson;
 import niffler.service.UserDataService;
 import org.slf4j.Logger;
@@ -54,19 +55,25 @@ public class UserController {
 
     @PostMapping("/acceptInvitation")
     public List<UserJson> acceptInvitation(@RequestParam String username,
-                                           @RequestParam String inviteUsername) {
-        return userService.acceptInvitation(username, inviteUsername);
+                                           @RequestBody FriendJson invitation) {
+        return userService.acceptInvitation(username, invitation);
+    }
+
+    @PostMapping("/declineInvitation")
+    public List<UserJson> declineInvitation(@RequestParam String username,
+                                            @RequestBody FriendJson invitation) {
+        return userService.declineInvitation(username, invitation);
     }
 
     @PostMapping("/addFriend")
     public void addFriend(@RequestParam String username,
-                                    @RequestParam String friendUsername) {
-        userService.addFriend(username, friendUsername);
+                          @RequestBody FriendJson friend) {
+        userService.addFriend(username, friend);
     }
 
     @DeleteMapping("/removeFriend")
     public List<UserJson> removeFriend(@RequestParam String username,
-                                       @RequestParam String friendUsername) {
-        return userService.removeFriend(username, friendUsername);
+                                       @RequestBody FriendJson friend) {
+        return userService.removeFriend(username, friend);
     }
 }
