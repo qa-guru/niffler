@@ -5,6 +5,7 @@ import niffler.data.CurrencyValues;
 import niffler.data.FriendsEntity;
 import niffler.data.UserEntity;
 import niffler.data.repository.UserRepository;
+import niffler.model.FriendJson;
 import niffler.model.UserJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UserDataService {
@@ -55,9 +57,15 @@ public class UserDataService {
         for (UserEntity user : userRepository.findByUsernameNot(username)) {
             List<FriendsEntity> invites = user.getInvites();
             if (!invites.isEmpty()) {
-                invites.stream().filter(i -> i.getUser().getUsername().equals(username))
-                        .findFirst()
-                        .ifPresent(i -> result.add(UserJson.fromEntity(user, i.isPending())));
+                Optional<FriendsEntity> ownInvite = invites.stream()
+                        .filter(i -> i.getUser().getUsername().equals(username))
+                        .findFirst();
+
+                if (ownInvite.isPresent()) {
+                    result.add(UserJson.fromEntity(user, ownInvite.get().isPending()));
+                } else {
+                    result.add(UserJson.fromEntity(user));
+                }
             } else {
                 result.add(UserJson.fromEntity(user));
             }
@@ -85,23 +93,24 @@ public class UserDataService {
                 .toList();
     }
 
-    public void addFriend(String username, String friendUsername) {
+    public void addFriend(@Nonnull String username, @Nonnull FriendJson friend) {
         UserEntity currentUser = userRepository.findByUsername(username);
-        currentUser.addFriends(true, userRepository.findByUsername(friendUsername));
+        currentUser.addFriends(true, userRepository.findByUsername(friend.getUsername()));
         userRepository.save(currentUser);
     }
 
     public @Nonnull
-    List<UserJson> acceptInvitation(String username, String inviteUsername) {
+    List<UserJson> acceptInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = userRepository.findByUsername(username);
-        UserEntity inviteUser = userRepository.findByUsername(inviteUsername);
+        UserEntity inviteUser = userRepository.findByUsername(invitation.getUsername());
 
-        List<FriendsEntity> acceptedInvitations = currentUser.getInvites()
+        FriendsEntity invite = currentUser.getInvites()
                 .stream()
                 .filter(fe -> fe.getUser().equals(inviteUser))
-                .peek(fe -> fe.setPending(false))
-                .toList();
+                .findFirst()
+                .orElseThrow();
 
+        invite.setPending(false);
         currentUser.addFriends(false, inviteUser);
         userRepository.save(currentUser);
 
@@ -113,9 +122,21 @@ public class UserDataService {
     }
 
     public @Nonnull
-    List<UserJson> removeFriend(String username, String friendUsername) {
+    List<UserJson> declineInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = userRepository.findByUsername(username);
-        currentUser.removeFriends(userRepository.findByUsername(friendUsername));
+        currentUser.removeInvites(userRepository.findByUsername(invitation.getUsername()));
+        userRepository.save(currentUser);
+        return currentUser.getInvites()
+                .stream()
+                .filter(FriendsEntity::isPending)
+                .map(fe -> UserJson.fromEntity(fe.getUser()))
+                .toList();
+    }
+
+    public @Nonnull
+    List<UserJson> removeFriend(@Nonnull String username, @Nonnull FriendJson friend) {
+        UserEntity currentUser = userRepository.findByUsername(username);
+        currentUser.removeFriends(userRepository.findByUsername(friend.getUsername()));
         userRepository.save(currentUser);
         return currentUser
                 .getFriends()

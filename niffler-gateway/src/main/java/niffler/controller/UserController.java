@@ -1,6 +1,7 @@
 package niffler.controller;
 
 
+import niffler.model.FriendJson;
 import niffler.model.UserJson;
 import niffler.service.api.RestUserDataClient;
 import org.slf4j.Logger;
@@ -64,22 +65,29 @@ public class UserController {
 
     @PostMapping("/acceptInvitation")
     public List<UserJson> acceptInvitation(@AuthenticationPrincipal Jwt principal,
-                                           @RequestParam("username") String inviteUsername) {
+                                           @Validated @RequestBody FriendJson invitation) {
         String username = principal.getClaim("sub");
-        return restUserDataClient.acceptInvitation(username, inviteUsername);
+        return restUserDataClient.acceptInvitation(username, invitation);
+    }
+
+    @PostMapping("/declineInvitation")
+    public List<UserJson> declineInvitation(@AuthenticationPrincipal Jwt principal,
+                                            @Validated @RequestBody FriendJson invitation) {
+        String username = principal.getClaim("sub");
+        return restUserDataClient.declineInvitation(username, invitation);
     }
 
     @PostMapping("/addFriend")
     public void addFriend(@AuthenticationPrincipal Jwt principal,
-                          @RequestParam("username") String friendUsername) {
+                          @Validated @RequestBody FriendJson friend) {
         String username = principal.getClaim("sub");
-        restUserDataClient.addFriend(username, friendUsername);
+        restUserDataClient.addFriend(username, friend);
     }
 
     @DeleteMapping("/removeFriend")
     public List<UserJson> removeFriend(@AuthenticationPrincipal Jwt principal,
-                                       @RequestParam("username") String friendUsername) {
+                                       @Validated @RequestBody FriendJson friend) {
         String username = principal.getClaim("sub");
-        return restUserDataClient.removeFriend(username, friendUsername);
+        return restUserDataClient.removeFriend(username, friend);
     }
 }
