@@ -23,6 +23,7 @@
 
 .main__link {
     border: 2px solid black;
+    border-radius: 8px;
     padding: 10px 15px;
     color: black;
     background-color: #eeedea;

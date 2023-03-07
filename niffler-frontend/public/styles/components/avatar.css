@@ -11,6 +11,7 @@
     justify-content: center;
     margin: 10px;
     box-shadow: 0 0 5px 5px black;
+    border-radius: 50%;
     width: 200px;
     height: 200px;
     z-index: 1;
@@ -40,7 +41,7 @@
 
 .edit-avatar__input {
     width: inherit;
-    padding: 3px;
+    padding: 8px;
 }
 
 input[type=file]::file-selector-button {
