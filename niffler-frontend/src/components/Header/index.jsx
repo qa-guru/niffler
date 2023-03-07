@@ -1,4 +1,4 @@
-import {useContext} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Link, useLocation} from "react-router-dom";
 import {Tooltip} from "react-tooltip";
 import {getData} from "../../api/api";
@@ -8,6 +8,21 @@ import {ButtonIcon, IconType} from "../ButtonIcon";
 export const Header = () => {
     const location = useLocation();
     const { user, setUser } = useContext(UserContext);
+    const [invitations, setInvitations] = useState([]);
+
+    useEffect(() => {
+        getData({
+                path: "/invitations",
+                onSuccess: (data) => {
+                    setInvitations(data);
+                },
+                onFail: (err) => {
+                    console.log(err);
+                    setInvitations([]);
+                }
+            }
+        );
+    }, []);
 
     const handleLogout = () => {
         getData({
@@ -49,6 +64,7 @@ export const Header = () => {
                         data-tooltip-content="Friends"
                     >
                         <Link className="header__link" to={"/friends"}>
+                            {invitations?.length > 0 && (<span className="header__sign"></span>)}
                             <img className="header__people"
                                  src={"/images/friends.svg"} alt="Иконка друзей"
                                  width={48}
