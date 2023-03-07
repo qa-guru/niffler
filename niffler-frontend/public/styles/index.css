@@ -5,6 +5,7 @@
 @import url("./components/footer.css");
 @import url("./components/main-page.css");
 /*other components styles*/
+@import url("./components/absract-table.css");
 @import url("./components/avatar.css");
 @import url("./components/button.css");
 @import url("./components/categories.css");
@@ -12,11 +13,16 @@
 @import url("./components/form.css");
 @import url("./components/form-input.css");
 @import url("./components/loader.css");
+@import url("./components/people.css");
 @import url("./components/profile.css");
+@import url("./components/popup.css");
 @import url("./components/react-calendar.css");
 @import url("./components/select.css");
 @import url("./components/spendings.css");
 @import url("./components/table.css");
+@import url("./components/tooltip.css");
+@import url("./components/spendings-table.css");
+
 
 .main {
     display: flex;
@@ -49,7 +55,7 @@
     box-shadow: 0 0 20px 20px black;
     background-color: peru;
     background-image: url("./../images/old-paper-background-texture-37.jpg");
-    border-radius: 3px;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
 }
@@ -59,7 +65,7 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    padding: 50px;
+    padding: 20px 50px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -80,26 +86,12 @@
 
 .main-content__section-history {
     grid-area: history;
+    position: relative;
 }
 
 .spendings__content {
     margin: 20px;
 }
-
-.spendings__controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 20px 20px 20px 0;
-}
-
-.spendings__filters {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-}
-
 .spendings__buttons{
     display: flex;
     width: 100%;
@@ -111,11 +103,6 @@
 
 .add-spending__form {
     width: 350px;
-}
-
-.spendings__img {
-    box-shadow: 0 0 5px 5px black;
-    margin: 2px 0 20px 20px;
 }
 
 .cite {

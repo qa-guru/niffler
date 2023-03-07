@@ -26,9 +26,9 @@
 
 .header__navigation ul{
     width: 100%;
-    max-width: 260px;
+    max-width: 420px;
     padding: 0;
-    margin: 0;
+    margin: 0 15px 0 0;
     display: flex;
     list-style: none;
     align-items: center;
@@ -47,6 +47,7 @@
     color: black;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .header__link:hover {
@@ -56,7 +57,23 @@
 .header__avatar {
     margin: 10px;
     object-fit: cover;
-    box-shadow: 0 0 3px 3px black;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.header__people {
+    margin: 10px;
+}
+
+.header__sign {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    width: 10px;
+    height: 10px;
+    display: block;
+    border-radius: 50%;
+    background-color: var(--color-main);
 }
 
 .header__username {

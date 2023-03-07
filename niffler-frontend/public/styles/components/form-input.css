@@ -7,14 +7,17 @@
     font-size: 14px;
     padding: 10px;
     border: 2px solid black;
-    border-radius: 3px;
+    border-radius: 8px;
     font-weight: normal;
-    opacity: 0.5;
-    background-color: white;
+    background-color: #eeedea;
     color: black;
 }
 
 .form__input::placeholder {
     text-align: center;
     font-weight: 700;
+}
+
+.form__input-error {
+    border: 2px solid var(--color-error);
 }
