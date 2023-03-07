@@ -1,4 +1,5 @@
 .avatar-container {
+    margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,8 +13,8 @@
     margin: 10px;
     box-shadow: 0 0 5px 5px black;
     border-radius: 50%;
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     z-index: 1;
 }
 
@@ -41,7 +42,7 @@
 
 .edit-avatar__input {
     width: inherit;
-    padding: 8px;
+    padding: 25px;
 }
 
 input[type=file]::file-selector-button {

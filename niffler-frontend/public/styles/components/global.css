@@ -11,6 +11,7 @@
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
     --color-error: #a10b0b;
+    --color-main: #3a168d;
 }
 
 body {

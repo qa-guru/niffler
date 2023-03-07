@@ -65,7 +65,7 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    padding: 50px;
+    padding: 20px 50px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -86,26 +86,12 @@
 
 .main-content__section-history {
     grid-area: history;
+    position: relative;
 }
 
 .spendings__content {
     margin: 20px;
 }
-
-.spendings__controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 20px 20px 20px 0;
-}
-
-.spendings__filters {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-}
-
 .spendings__buttons{
     display: flex;
     width: 100%;
@@ -117,11 +103,6 @@
 
 .add-spending__form {
     width: 350px;
-}
-
-.spendings__img {
-    box-shadow: 0 0 5px 5px black;
-    margin: 2px 0 20px 20px;
 }
 
 .cite {
