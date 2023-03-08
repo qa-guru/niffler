@@ -68,12 +68,12 @@
 .header__sign {
     position: absolute;
     right: 0;
-    top: 10px;
-    width: 10px;
-    height: 10px;
+    top: 5px;
+    width: 15px;
+    height: 15px;
     display: block;
     border-radius: 50%;
-    background-color: var(--color-main);
+    background-color: #c4161a;
 }
 
 .header__username {
