@@ -1,22 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    id="svg1"
-    viewBox="0 0 60 60"
-    version="1.0"
-    y="0"
-    x="0"
-
-  >
-  <path
-      id="path1709"
-      style="stroke-linejoin:round;stroke:#008000;stroke-linecap:round;stroke-width:8.125;fill:none"
-      d="m4.6873 31.376c6.4437 5.864 10.608 11.142 17.501 23.374 14.984-37.823 35.502-47.534 32.9-49.208-5.264-3.5325-30.874 26.075-33.971 29.981-3.724-1.972-16.43-8.865-16.43-4.147z"
-  />
-  <path
-      id="path936"
-      style="stroke-linejoin:round;fill-rule:evenodd;stroke:#008000;stroke-linecap:round;stroke-width:3.125;fill:#008000"
-      d="m4.6873 31.376c6.4437 5.864 10.608 11.142 17.501 23.374 14.984-37.823 35.502-47.534 32.9-49.208-5.264-3.5325-30.874 26.075-33.971 29.981-3.724-1.972-16.43-8.865-16.43-4.147z"
-  />
-</svg>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="#77269c" width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<g id="SVGRepo_bgCarrier" stroke-width="0"/>
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#ffffff" stroke-width="0.192"/>
+<g id="SVGRepo_iconCarrier"> <defs> <style> .cls-1 { fill-rule: evenodd; } </style> </defs> <path id="accept" class="cls-1" d="M1008,120a12,12,0,1,1,12-12A12,12,0,0,1,1008,120Zm0-22a10,10,0,1,0,10,10A10,10,0,0,0,1008,98Zm-0.08,14.333a0.819,0.819,0,0,1-.22.391,0.892,0.892,0,0,1-.72.259,0.913,0.913,0,0,1-.94-0.655l-2.82-2.818a0.9,0.9,0,0,1,1.27-1.271l2.18,2.184,4.46-7.907a1,1,0,0,1,1.38-.385,1.051,1.051,0,0,1,.36,1.417Z" transform="translate(-996 -96)"/> </g>
+</svg>

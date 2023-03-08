@@ -24,7 +24,9 @@ export const SpendingStatistics = ({ statistic, defaultCurrency}) => {
             },
             title: {
                 display: true,
-                text: 'Statistics',
+                text: "Statistics",
+                font: {size: "24px"},
+                color: "black",
             },
         },
     };
@@ -65,6 +67,7 @@ export const SpendingStatistics = ({ statistic, defaultCurrency}) => {
         labels: Array.from(data.keys()),
         datasets:[{
             data: Array.from(data.values()),
+            maxBarThickness: 70,
             backgroundColor: [
                 "rgba(90, 34, 139, 0.5)",
                 "rgba(213, 184, 255, 0.5)",
@@ -99,7 +102,7 @@ export const SpendingStatistics = ({ statistic, defaultCurrency}) => {
 
     return (
         <section className={"main-content__section main-content__section-stats"}>
-            <Bar options={options} data={chartData} />
+                <Bar options={options} data={chartData} />
         </section>
 )
 }

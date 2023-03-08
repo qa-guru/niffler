@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
-import {Currency as IconType} from "../../constants/iconType";
-import {ButtonIcon} from "../ButtonIcon";
+import {ButtonIcon, IconType} from "../ButtonIcon";
 
 export const ProfileAvatar = ({username, value, handleChangeValue}) => {
     const [isEditAvatar, setIsEditAvatar] = useState(false);
@@ -44,7 +43,7 @@ export const ProfileAvatar = ({username, value, handleChangeValue}) => {
             }}>
                 <img className="profile__avatar"
                      src={ value ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
-                     width={200} height={200}/>
+                     width={250} height={250}/>
             </button>
         </div>
     );

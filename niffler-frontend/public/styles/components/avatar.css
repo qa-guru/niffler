@@ -1,4 +1,5 @@
 .avatar-container {
+    margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,8 +12,9 @@
     justify-content: center;
     margin: 10px;
     box-shadow: 0 0 5px 5px black;
-    width: 200px;
-    height: 200px;
+    border-radius: 50%;
+    width: 250px;
+    height: 250px;
     z-index: 1;
 }
 
@@ -34,26 +36,25 @@
 }
 
 .edit-avatar__error {
-    color: darkred;
+    color: var(--color-error);
     font-size: 12px;
 }
 
 .edit-avatar__input {
     width: inherit;
-    padding: 3px;
+    padding: 25px;
 }
 
 input[type=file]::file-selector-button {
-    font-family: PTRootUIWeb;
+    font-family: "PTRootUIWeb", var(--font-fallback);
     border: 2px solid black;
-    opacity: 0.5;
     padding: .2em .4em;
-    border-radius: 3px;
-    background-color: white;
+    border-radius: 8px;
+    background-color: #eeedea;
     transition: 1s;
 }
 
 input[type=file]::file-selector-button:hover {
-    opacity: 0.8;
+    opacity: 0.7;
     cursor: pointer;
 }

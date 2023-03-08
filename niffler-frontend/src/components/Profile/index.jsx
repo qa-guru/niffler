@@ -7,7 +7,7 @@ import {Button} from "../Button";
 import {Categories} from "../Categories";
 import {FormInput} from "../FormInput";
 import {FormSelect} from "../FormSelect";
-import {Header} from "../Header";
+import {PageContainer} from "../PageContainer";
 import {ProfileAvatar} from "../ProfileAvatar";
 
 export const Profile = () => {
@@ -63,40 +63,38 @@ export const Profile = () => {
 
 
     return (
-    <div className={"main-container"}>
-        <Header/>
-        <main className={"main"}>
+        <PageContainer>
             <div className={"profile-content"}>
                 <section className="main-content__section">
                     <div className="main-content__section-avatar">
                         <form onSubmit={handleChangeProfile}>
-                        <ProfileAvatar username={user?.username}
-                                       value={user?.photo}
-                                       handleChangeValue={handleProfileAvatarChange}/>
+                            <ProfileAvatar username={user?.username}
+                                           value={userData?.photo}
+                                           handleChangeValue={handleProfileAvatarChange}/>
                             <div className="profile__info-container">
-                                    <FormInput placeholder={"Set your name"}
-                                               value={userData.firstname}
-                                               label="Name"
-                                               fieldName={"firstname"}
-                                               max={30}
-                                               handleChangeValue={(data) => setUserData({...userData, firstname: data.target.value})}
+                                <FormInput placeholder={"Set your name"}
+                                           value={userData.firstname}
+                                           label="Name"
+                                           fieldName={"firstname"}
+                                           max={30}
+                                           handleChangeValue={(data) => setUserData({...userData, firstname: data.target.value})}
+                                />
+                                <FormInput label="Surname"
+                                           fieldName={"surname"}
+                                           value={userData.surname}
+                                           placeholder={"Set your surname"}
+                                           max={50}
+                                           handleChangeValue={(data) => setUserData({...userData, surname: data.target.value})}
+                                />
+                                <div style={{width: 350}}>
+                                    <FormSelect options={currencies}
+                                                placeholder="Select currency"
+                                                value={userData?.currency}
+                                                label="Currency"
+                                                onChange={(currency) => {
+                                                    setUserData({...userData, currency})}}
                                     />
-                                    <FormInput label="Surname"
-                                               fieldName={"surname"}
-                                               value={userData.surname}
-                                               placeholder={"Set your surname"}
-                                               max={50}
-                                               handleChangeValue={(data) => setUserData({...userData, surname: data.target.value})}
-                                    />
-                                    <div style={{width: 350}}>
-                                        <FormSelect options={currencies}
-                                                    placeholder="Select currency"
-                                                    value={userData?.currency}
-                                                    label="Currency:"
-                                                    onChange={(currency) => {
-                                                        setUserData({...userData, currency})}}
-                                        />
-                                    </div>
+                                </div>
                             </div>
                             <Button type="submit" buttonText={"Submit"}/>
                         </form>
@@ -104,10 +102,6 @@ export const Profile = () => {
                 </section>
                 <Categories />
             </div>
-        </main>
-        <footer className={"footer"}>
-            Study project for QA Automation Advanced. 2023
-        </footer>
-    </div>
+        </PageContainer>
     );
 }
