@@ -35,13 +35,13 @@ public class PhotoCondition extends Condition {
     public CheckResult check(Driver driver, WebElement element) {
         String actualPhoto = element.getAttribute("src");
         byte[] actualBase64Photo = StringUtils.substringAfter(actualPhoto, "base64,").getBytes();
-        byte[] expectedBase64Photo = getPhotoAsBase64StringFromClasspath(expectedPhotoClasspath);
+        byte[] expectedBase64Photo = getPhotoAsBase64StringFromClasspath();
 
         boolean valueMatches = Arrays.equals(expectedBase64Photo, actualBase64Photo);
         return new CheckResult(valueMatches, actualPhoto);
     }
 
-    private byte[] getPhotoAsBase64StringFromClasspath(String classpath) {
+    private byte[] getPhotoAsBase64StringFromClasspath() {
         ClassLoader classLoader = PhotoCondition.class.getClassLoader();
         try (InputStream is = classLoader.getResourceAsStream(expectedPhotoClasspath)) {
             return Base64.getEncoder().encode(is.readAllBytes());
