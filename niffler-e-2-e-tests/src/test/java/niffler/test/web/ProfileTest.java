@@ -25,4 +25,18 @@ public class ProfileTest extends BaseTest {
 
         profilePage.checkName("Pizzly");
     }
+    @Test
+    @AllureId("4")
+    @ApiLogin(nifflerUser = @GenerateUser)
+    void photoShouldBeUDisplayedAfterAddingToProfile(@User UserJson user) {
+        String avatarPath = "img/avatar.jpg";
+        ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
+                .waitForPageLoaded()
+                .updateAvatar(avatarPath)
+                .submitProfile();
+
+        Selenide.refresh();
+
+        profilePage.checkAvatar(avatarPath);
+    }
 }

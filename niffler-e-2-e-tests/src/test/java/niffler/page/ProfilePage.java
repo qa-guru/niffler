@@ -4,12 +4,11 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import niffler.model.CurrencyValues;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.value;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static niffler.condition.PhotoCondition.photo;
 
 public class ProfilePage extends BasePage<ProfilePage> {
 
@@ -79,5 +78,16 @@ public class ProfilePage extends BasePage<ProfilePage> {
     public ProfilePage waitForPageLoaded() {
         nameInput.should(visible);
         return this;
+    }
+
+    @Step("Update avatar with img: {avatarPath}")
+    public ProfilePage updateAvatar(String avatarPath) {
+        $(".profile__avatar").click();
+        $(".edit-avatar__input[type=file]").uploadFromClasspath(avatarPath);
+        return this;
+    }
+
+    public void checkAvatar(String avatarPath) {
+        $(".profile__avatar").shouldHave(photo(avatarPath));
     }
 }
