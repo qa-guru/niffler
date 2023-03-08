@@ -1,7 +1,11 @@
 package niffler.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public interface Config {
 
+    Logger LOG = LoggerFactory.getLogger(Config.class);
     String PROJECT_NAME = "niffler";
 
     static Config getConfig() {
@@ -9,7 +13,9 @@ public interface Config {
             return new DockerConfig();
         } else if ("local".equals(System.getProperty("test.env"))) {
             return new LocalConfig();
-        } else throw new IllegalStateException();
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     String authUrl();
@@ -18,7 +24,11 @@ public interface Config {
 
     String userdataUrl();
 
-    String currencyGrpcUrl();
+    String currencyGrpcAddress();
+
+    int currencyGrpcPort();
 
     String spendUrl();
+
+    String databaseAddress();
 }

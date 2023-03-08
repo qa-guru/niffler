@@ -7,9 +7,11 @@ import niffler.api.NifflerUserdataClient;
 import niffler.config.Config;
 import niffler.jupiter.annotation.ApiLogin;
 import niffler.jupiter.annotation.GenerateCategory;
+import niffler.jupiter.annotation.GenerateSpend;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.CategoryJson;
+import niffler.model.SpendJson;
 import niffler.model.UserJson;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -62,7 +64,23 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
                     createdCategories.add(spendClient.createCategory(cj));
                 }
             }
+
+            GenerateSpend[] spends = entry.getValue().spends();
+            List<SpendJson> createdSpends = new ArrayList<>();
+            if (spends != null && spends.length > 0) {
+                for (GenerateSpend spend : spends) {
+                    SpendJson sj = new SpendJson();
+                    sj.setUsername(username);
+                    sj.setCategory(spend.spendCategory());
+                    sj.setAmount(spend.amount());
+                    sj.setCurrency(spend.currency());
+                    sj.setDescription(spend.spendName());
+                    createdSpends.add(spendClient.createSpend(sj));
+                }
+            }
+
             userJson.setCategoryJsons(createdCategories);
+            userJson.setSpendJsons(createdSpends);
             context.getStore(entry.getKey().getNamespace()).put(testId, userJson);
         }
     }

@@ -66,5 +66,5 @@ niffler-userdata:
 niffler-spend:
   base-uri: 'http://niffler-spend:8093'
 niffler-front:
-  base-uri: 'http://127.0.0.1'
+  base-uri: 'http://niffler-frontend'
 ---
