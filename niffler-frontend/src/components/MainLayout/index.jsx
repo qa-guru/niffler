@@ -1,5 +1,6 @@
+import {useQuery} from "@apollo/client";
 import {deleteData, getData} from "../../api/api";
-import {useLoadedData} from "../../api/hooks";
+import {QUERY_ALL_CATEGORIES, QUERY_ALL_CURRENCIES} from "../../api/graphql/queries";
 import {CurrencyContext} from "../../contexts/CurrencyContext";
 import {FilterContext} from "../../contexts/FilterContext";
 import {UserContext} from "../../contexts/UserContext";
@@ -7,12 +8,32 @@ import {showSuccess} from "../../toaster/toaster";
 import {AddSpending} from "../AddSpending";
 import {PageContainer} from "../PageContainer";
 import {SpendingHistory} from "../SpendingHistory";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useMemo, useState} from "react";
 import {SpendingStatistics} from "../SpendingStatistics";
+
 
 export const MainLayout = () => {
     const [spendings, setSpendings] = useState([]);
-    const [categories, setCategories] = useState({});
+    const {data: categoriesData, loading: categoriesLoading, error: categoriesError} = useQuery(QUERY_ALL_CATEGORIES);
+    const {data: currenciesData, loading: currenciesLoading, error: currenciesError} = useQuery(QUERY_ALL_CURRENCIES);
+
+    const categories = useMemo(() => {
+        if (categoriesLoading || categoriesError) return [];
+        return categoriesData.categories.map((v) => {
+            return {value: v?.category, label: v?.category}
+        });
+    }, [categoriesLoading, categoriesError, categoriesData]);
+
+    const currencies = useMemo(() => {
+        if (currenciesLoading || currenciesError) return [];
+        const result = currenciesData.currencies.map((v) => {
+            return {value: v?.currency, label: v?.currency}
+        });
+        result.push({value: "ALL", label: "ALL"});
+        return result;
+
+    }, [currenciesLoading, currenciesError, currenciesData]);
+
     const [statistic, setStatistic] = useState([]);
     const [isGraphOutdated, setIsGraphOutdated] = useState(false);
 
@@ -21,7 +42,6 @@ export const MainLayout = () => {
     const [filter, setFilter] = useState(null);
     const value = { filter, setFilter };
 
-    const [currencies, setCurrencies] = useState([]);
 
     const [selectedCurrency, setSelectedCurrency] = useState({value: "ALL", label: "ALL"});
     const curContext = { selectedCurrency, setSelectedCurrency };
@@ -55,34 +75,6 @@ export const MainLayout = () => {
             },
         });
     }
-
-
-    useLoadedData({
-            path: "/categories",
-            onSuccess: (data) => {
-                setCategories(Array.from(data.map((v) => {
-                    return {value: v?.category, label: v?.category}
-                })));
-            },
-            onFail: (error) => {
-                console.log(error);
-            },
-        }
-    );
-
-    useLoadedData({
-        path: "/allCurrencies",
-        onSuccess: (data) => {
-            const currencies = Array.from(data.map((v) => {
-                return {value: v?.currency, label: v?.currency}
-            }));
-            currencies.push({value: "ALL", label: "ALL"});
-            setCurrencies(currencies);
-        },
-        onFail: (err) => {
-            console.log(err);
-        }
-    });
 
     useEffect(() => {
         getSpends();

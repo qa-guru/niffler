@@ -1,6 +1,7 @@
 package niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import niffler.model.graphql.CreateCategoryInput;
 
 import java.util.UUID;
 
@@ -37,5 +38,12 @@ public class CategoryJson {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+
+    public static CategoryJson fromCreateCategoryInput(CreateCategoryInput input) {
+        CategoryJson categoryJson = new CategoryJson();
+        categoryJson.setCategory(input.getCategory());
+        return categoryJson;
     }
 }

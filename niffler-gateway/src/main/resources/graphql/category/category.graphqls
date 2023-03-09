@@ -1,0 +1,9 @@
+type Category {
+    id: ID!
+    category: String!
+    username: String!
+}
+
+input CreateCategoryInput {
+    category: String!
+}

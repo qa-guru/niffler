@@ -1,7 +1,9 @@
+import {ApolloProvider} from "@apollo/client";
 import { useEffect, useState} from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import {getData} from "./api/api";
+import {qraphQlClient} from "./api/graphql/graphql";
 import {FriendsLayout} from "./components/FriendsLayout";
 import {LoginPage} from "./components/LoginPage";
 import {MainLayout} from "./components/MainLayout";
@@ -49,23 +51,25 @@ function App() {
         <div className="App">
             <ToastContainer/>
             <BrowserRouter>
-                <UserContext.Provider value={userContext}>
-                    <PopupContext.Provider value={popupContext}>
-                        {userLoading ? <div className="loader"></div> : (
-                            <Routes>
-                                <Route path="/redirect" element={<Redirect />} exact={false}/>
-                                <Route path="/authorized" element={<Redirect />} exact={false}/>
-                                <Route element={<ProtectedRoutes/>}>
-                                    <Route path="/profile" element={<Profile/>}/>
-                                    <Route path="/main" element={<MainLayout />}/>
-                                    <Route path="/people" element={<PeopleLayout/>}/>
-                                    <Route path="/friends" element={<FriendsLayout/>}/>
-                                </Route>
-                                <Route path="*" element={<LoginPage/>}/>
-                            </Routes>
-                        )}
-                    </PopupContext.Provider>
-                </UserContext.Provider>
+                <ApolloProvider client={qraphQlClient}>
+                    <UserContext.Provider value={userContext}>
+                        <PopupContext.Provider value={popupContext}>
+                            {userLoading ? <div className="loader"></div> : (
+                                <Routes>
+                                    <Route path="/redirect" element={<Redirect />} exact={false}/>
+                                    <Route path="/authorized" element={<Redirect />} exact={false}/>
+                                    <Route element={<ProtectedRoutes/>}>
+                                        <Route path="/profile" element={<Profile/>}/>
+                                        <Route path="/main" element={<MainLayout />}/>
+                                        <Route path="/people" element={<PeopleLayout/>}/>
+                                        <Route path="/friends" element={<FriendsLayout/>}/>
+                                    </Route>
+                                    <Route path="*" element={<LoginPage/>}/>
+                                </Routes>
+                            )}
+                        </PopupContext.Provider>
+                    </UserContext.Provider>
+                </ApolloProvider>
             </BrowserRouter>
         </div>
     );

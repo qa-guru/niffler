@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.7.10",
     "axios": "^0.24.0",
     "buffer": "^6.0.3",
     "chart.js": "^4.2.0",
