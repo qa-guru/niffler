@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class UserController {
 
@@ -31,5 +33,10 @@ public class UserController {
     @GetMapping("/currentUser")
     public UserJson currentUser(@RequestParam String username) {
         return userService.getCurrentUserOrCreateIfAbsent(username);
+    }
+
+    @GetMapping("/allUsers")
+    public List<UserJson> allUsers(@RequestParam String username) {
+        return userService.allUsers(username);
     }
 }

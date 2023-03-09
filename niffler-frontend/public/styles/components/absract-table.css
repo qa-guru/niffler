@@ -1,0 +1,16 @@
+.abstract-table {
+    grid-template-columns:
+    minmax(100px, 0.5fr)
+    minmax(100px, 0.7fr)
+    minmax(120px, 0.9fr)
+    minmax(100px, 0.7fr)
+}
+
+.abstract-table__buttons {
+    display: flex;
+    align-items: center;
+}
+
+.abstract-table__buttons .button-icon{
+    margin: 10px;
+}

@@ -1,8 +1,11 @@
 export const IconType = {
+    ADD_FRIEND: "add",
     EDIT: "edit",
     CLOSE: "close",
     LOGOUT: "logout",
     SUBMIT: "submit",
+    MESSAGE: "message",
+    MESSAGE_NEW: "message-new",
 };
 
 export const ButtonIcon = ({iconType, onClick, text}) => {

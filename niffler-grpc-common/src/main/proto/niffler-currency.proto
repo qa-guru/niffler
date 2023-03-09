@@ -11,6 +11,7 @@ option java_outer_classname = "NifflerCurrencyProto";
 service NifflerCurrencyService {
   rpc GetAllCurrencies (google.protobuf.Empty) returns (CurrencyResponse) {}
   rpc CalculateRate (CalculateRequest) returns (CalculateResponse) {}
+  rpc Stream (stream CalculateRequest) returns (stream CalculateResponse) {}
 }
 
 message CurrencyResponse {

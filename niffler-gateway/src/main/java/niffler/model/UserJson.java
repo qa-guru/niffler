@@ -1,5 +1,6 @@
 package niffler.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
 
@@ -24,6 +25,9 @@ public class UserJson {
     @JsonProperty("photo")
     @Size(max = THREE_MB)
     private String photo;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("friendState")
+    private FriendState friendState;
 
     public UserJson() {
     }
@@ -76,16 +80,24 @@ public class UserJson {
         this.photo = photo;
     }
 
+    public FriendState getFriendState() {
+        return friendState;
+    }
+
+    public void setFriendState(FriendState friendState) {
+        this.friendState = friendState;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo);
+        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, firstname, surname, currency, photo);
+        return Objects.hash(id, userName, firstname, surname, currency, photo, friendState);
     }
 }

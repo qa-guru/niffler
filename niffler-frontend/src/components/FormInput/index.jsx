@@ -1,10 +1,20 @@
 import React from 'react';
 
-export const FormInput = ({type, label, fieldName, placeholder, value = "", handleChangeValue, max}) => {
+export const FormInput = ({
+                              type,
+                              label,
+                              fieldName,
+                              placeholder,
+                              value = "",
+                              handleChangeValue,
+                              max,
+                              error,
+                              required
+}) => {
 
     return (
-        <label className="form__label">{label}:
-            <input className="form__input"
+        <label className="form__label">{label && <>{label} {required && <>*</>}</>}
+            <input className={`form__input ${error? "form__input-error" : ""}`}
                    type={type}
                    value={value}
                    name={fieldName}
@@ -12,7 +22,7 @@ export const FormInput = ({type, label, fieldName, placeholder, value = "", hand
                    onChange={handleChangeValue}
                    maxLength={max}
             />
-            <span className="form__error" id={`form__${fieldName}-error`}></span>
+            {error && (<span className="form__error">{error}</span>)}
         </label>
     );
 }

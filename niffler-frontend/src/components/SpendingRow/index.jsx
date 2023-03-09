@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {patchData} from "../../api/api";
 import {showError, showSuccess} from "../../toaster/toaster";
-import {ButtonIcon} from "../ButtonIcon";
+import {ButtonIcon, IconType} from "../ButtonIcon";
 import {Checkbox} from "../Checkbox";
 import {EditableSelect} from "../EditableSelect";
 import {EditableValue} from "../EditableValue";
@@ -73,19 +73,19 @@ export const SpendingRow = ({spending, isSelected, handleCheckboxClick, isGraphO
                     {isEdit ?
                         (
                             <div className={"spendings__button-group"}>
-                                <ButtonIcon iconType={"submit"} onClick={(evt) => {
+                                <ButtonIcon iconType={IconType.SUBMIT} onClick={(evt) => {
                                     handleDataSave(evt);
                                     setIsEdit(false);
                                 }
                                 }/>
-                                <ButtonIcon iconType={"close"} onClick={() => {
+                                <ButtonIcon iconType={IconType.CLOSE} onClick={() => {
                                     setEditableSpending(spending);
                                     setIsEdit(false)
                                 }}/>
                             </div>
                         )
                         :
-                        (<ButtonIcon iconType={"edit"} onClick={() => setIsEdit(true)}/>)}
+                        (<ButtonIcon iconType={IconType.EDIT} onClick={() => setIsEdit(true)}/>)}
                 </td>
         </tr>
 
