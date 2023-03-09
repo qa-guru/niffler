@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 
 @Execution(ExecutionMode.SAME_THREAD)
 public class SpendingTest extends BaseTest {
@@ -26,10 +25,11 @@ public class SpendingTest extends BaseTest {
             spends = @GenerateSpend(
                     spendName = "Коктейль",
                     spendCategory = "Бар",
+                    addDaysToSpendDate = -5,
                     amount = 650.0
             )
     ))
-    void checkLastWeekSpendingTest(@User(selector = METHOD) UserJson user) throws Exception {
+    void checkLastWeekSpendingTest(@User UserJson user) throws Exception {
         Selenide.open(MainPage.URL, MainPage.class)
                 .getSpendingTable()
                 .clickByButton("Last week")

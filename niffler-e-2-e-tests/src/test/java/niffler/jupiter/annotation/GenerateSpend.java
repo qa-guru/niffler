@@ -18,6 +18,8 @@ public @interface GenerateSpend {
 
     String spendCategory();
 
+    int addDaysToSpendDate() default 0;
+
     double amount();
 
     CurrencyValues currency() default CurrencyValues.USD;

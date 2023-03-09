@@ -5,7 +5,7 @@ import com.codeborne.selenide.Configuration;
 public class DockerConfig implements Config {
 
     static {
-        Configuration.browserSize = "1980x1024";
+        Configuration.browserSize = "1920x1200";
         Configuration.remote = "http://selenoid:4444/wd/hub";
         Configuration.timeout = 10000;
     }

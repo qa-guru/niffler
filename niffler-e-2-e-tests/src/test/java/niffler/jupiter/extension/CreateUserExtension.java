@@ -13,6 +13,7 @@ import niffler.jupiter.annotation.User;
 import niffler.model.CategoryJson;
 import niffler.model.SpendJson;
 import niffler.model.UserJson;
+import niffler.utils.DateUtils;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -21,6 +22,8 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import retrofit2.Response;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +78,7 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
                     sj.setAmount(spend.amount());
                     sj.setCurrency(spend.currency());
                     sj.setDescription(spend.spendName());
+                    sj.setSpendDate(DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()));
                     createdSpends.add(spendClient.createSpend(sj));
                 }
             }

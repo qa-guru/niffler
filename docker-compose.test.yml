@@ -61,7 +61,8 @@ services:
     ports:
       - "8090:8090"
     depends_on:
-      - niffler-auth
+      niffler-auth:
+        condition: service_started
     networks:
       - test-network
     dns_search: .
@@ -137,6 +138,20 @@ services:
     depends_on:
       niffler-frontend:
         condition: service_started
+    networks:
+      - test-network
+    dns_search: .
+
+  allure:
+    container_name: allure
+    image: frankescobar/allure-docker-service
+    depends_on:
+      - niffler-e-2-e
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 3
+      KEEP_HISTORY: 0
+    ports:
+      - "5050:5050"
     networks:
       - test-network
     dns_search: .

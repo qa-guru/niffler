@@ -12,17 +12,22 @@ import org.junit.jupiter.api.Test;
 
 public class ProfileTest extends BaseTest {
 
+    private static final String SUCCESS_MSG = "Profile updated!";
+
     @Test
     @AllureId("2")
     @ApiLogin(nifflerUser = @GenerateUser)
     void userNameShouldBeUpdatedAfterChangingInProfile(@User UserJson user) {
         ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
                 .waitForPageLoaded()
+                .checkUsername(user.getUserName())
                 .setName("Pizzly")
-                .submitProfile();
+                .submitProfile()
+                .checkSuccessMessage(SUCCESS_MSG);
 
         Selenide.refresh();
 
-        profilePage.checkName("Pizzly");
+        profilePage.checkUsername(user.getUserName())
+                .checkName("Pizzly");
     }
 }
