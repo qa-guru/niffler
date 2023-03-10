@@ -9,6 +9,7 @@ buildscript {
 plugins {
     id 'java'
     id 'io.qameta.allure' version '2.11.2'
+    id 'io.qameta.allure-adapter' version '2.11.2'
 }
 
 group 'guru.qa'
@@ -19,8 +20,12 @@ repositories {
 }
 
 allure {
-    autoconfigure = true
-    version = '2.20.1'
+    version.set("${allureVersion}")
+    adapter {
+        aspectjVersion.set("1.9.19")
+        autoconfigure.set(true)
+        aspectjWeaver.set(true)
+    }
 }
 
 dependencies {

@@ -9,7 +9,7 @@ docker-compose down
 #docker stop $(docker ps -a -q)
 #docker rm $(docker ps -a -q)
 docker ps -a
-docker rmi -f "$(docker images | grep 'niffler')"
+docker rmi -f $(docker images | grep 'niffler')
 
 if [ "$1" = "push" ]; then
   echo '### Build & push images ###'
@@ -18,7 +18,7 @@ if [ "$1" = "push" ]; then
   bash ./docker-build.sh dev "$1"
 else
   echo '### Build images without pushing ###'
-  bash ./gradlew clean build dockerTag -x :niffler-e-2-e-tests:test
+  bash ./gradlew clean build dockerTagLatest -x :niffler-e-2-e-tests:test
   cd ./niffler-frontend/ || exit
   bash ./docker-build.sh dev "$1"
 fi
