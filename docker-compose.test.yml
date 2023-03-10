@@ -105,7 +105,7 @@ services:
 
   selenoid:
     container_name: selenoid
-    image: aerokube/selenoid:1.10.9
+    image: aerokube/selenoid:1.10.10
     volumes:
       - ./selenoid:/etc/selenoid
       - /var/run/docker.sock:/var/run/docker.sock

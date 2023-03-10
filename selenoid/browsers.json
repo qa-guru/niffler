@@ -3,7 +3,7 @@
     "default": "110.0",
     "versions": {
       "110.0": {
-        "image": "selenoid/vnc:chrome_110.0",
+        "image": "dtuchs/selenoid_vnc:chromium_110.0",
         "port": "4444"
       }
     }
