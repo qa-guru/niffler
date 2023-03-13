@@ -113,20 +113,32 @@ Dmitriis-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.act
 
 #### 3. Выполнить docker login с созданным access_token (в инструкции это описано)
 
-#### 4. Перейти в корневой каталог проекта
+#### 4. Прописать в etc/hosts элиас для Docker-имени фроненда:  127.0.0.1 niffler-frontend
+```posh
+Dmitriis-MacBook-Pro niffler % vi /etc/hosts
+```
+```posh
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1       localhost
+127.0.0.1       niffler-frontend
+```
+
+#### 5. Перейти в корневой каталог проекта
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler
 ```
-#### 5.  Спуллить все контейнеры актуальных версий
+#### 6.  Запустить все сервисы
 ```posh
-Dmitriis-MacBook-Pro  niffler % docker-compose pull
-```
-#### 6.  Запустить все сервисы 
-```posh
-Dmitriis-MacBook-Pro  niffler % docker-compose up -d
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh
 ```
 
-Niffler при запуске в докере будет работать для вас на порту 80, этот порт можно не указывать в браузере, таким образом переходить напрямую по ссылке http://127.0.0.1/
+
+Niffler при запуске в докере будет работать для вас по адресу http://niffler-frontend:80/, этот порт НЕ НУЖНО указывать в браузере, таким образом переходить напрямую по ссылке http://niffler-frontend/
 *ВАЖНО!* из docker-network Вам будут доступны только следующие порты:
 - порт 80 (все запросы с него перенаправляются nginx-ом на frontend)
 - порт 9000 (сервис niffler-auth)
@@ -149,6 +161,7 @@ Niffler при запуске в докере будет работать для
 !К замене надо отнестись внимательно, вот список мест на текущий момент:!
 - build.gradle всех сервисов Spring
 - docker-compose.yaml в корне проекта
+- docker-compose.test.yaml в корне проекта
 - docker.properties в модуле niffler-frontend
 
 #### 3. Перейти в корневой каталог проекта
@@ -156,30 +169,25 @@ Niffler при запуске в докере будет работать для
 Dmitriis-MacBook-Pro niffler % cd niffler
 ```
 
-#### 3. Собрать весь java проект (можно скипнуть тесты, т.к. наши e-2-e все равно не запустятся без полностью развернутого Niffler)
+#### 4.  Собрать все имеджи, запушить и запустить niffler одной командой
 ```posh
-Dmitriis-MacBook-Pro niffler % gradle clean build -x test
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh push
 ```
 
-#### 4. Собрать докер images back-end
+# Запуск e-2-e тестов в Docker network изолированно Niffler в докере:
+#### 1. Перейти в корневой каталог проекта
 ```posh
-Dmitriis-MacBook-Pro niffler % gradle dockerTag
+Dmitriis-MacBook-Pro niffler % cd niffler
 ```
+#### 2.  Запустить все сервисы и тесты
+```posh
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-e2e.sh
+```
+#### 3.  Selenoid UI доступен по адресу: http://localhost:9090/
 
-#### 5. Запушить докер images back-end (у вас должен быть выполнен предварительно docker login)
-```posh
-Dmitriis-MacBook-Pro niffler % gradle dockerPush
-```
+#### 4.  Allure доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-e-2-e-tests/reports/latest/index.html
 
-#### 6. Собрать и запушить front-end (выполняется одним действием)
-```posh
-Dmitriis-MacBook-Pro niffler % cd niffler-frontend
-Dmitriis-MacBook-Pro niffler-frontend % bash build-docker.sh
-```
 
-#### 7.  Запустить все сервисы
-```posh
-Dmitriis-MacBook-Pro  niffler % docker-compose up -d
-```
+
 
 ![Enjoy the Niffler](/niffler-frontend/public/images/niffler-logo.png)

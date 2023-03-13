@@ -26,8 +26,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     generate-ddl: true
-    hibernate:
-      ddl-auto: validate
   sql:
     init:
       mode: always
@@ -47,6 +45,9 @@ spring:
       on-profile: 'local'
   datasource:
     url: 'jdbc:postgresql://localhost:5432/niffler-spend'
+  jpa:
+    hibernate:
+      ddl-auto: validate
 grpc:
   client:
     grpcCurrencyClient:
@@ -64,6 +65,9 @@ spring:
       on-profile: 'docker'
   datasource:
     url: 'jdbc:postgresql://niffler-all-db:5432/niffler-spend'
+  jpa:
+    hibernate:
+      ddl-auto: validate
 grpc:
   client:
     grpcCurrencyClient:

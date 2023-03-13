@@ -31,8 +31,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     generate-ddl: true
-    hibernate:
-      ddl-auto: validate
   sql:
     init:
       mode: always
@@ -52,6 +50,9 @@ spring:
       on-profile: 'local'
   datasource:
     url: 'jdbc:postgresql://localhost:5432/niffler-auth'
+  jpa:
+    hibernate:
+      ddl-auto: validate
 niffler-front:
   base-uri: 'http://127.0.0.1:3000'
 niffler-auth:
@@ -63,8 +64,11 @@ spring:
       on-profile: 'docker'
   datasource:
     url: 'jdbc:postgresql://niffler-all-db:5432/niffler-auth'
+  jpa:
+    hibernate:
+      ddl-auto: validate
 niffler-front:
-  base-uri: 'http://127.0.0.1'
+  base-uri: 'http://niffler-frontend'
 niffler-auth:
   base-uri: 'http://niffler-auth:9000'
 ---

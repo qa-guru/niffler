@@ -15,6 +15,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
 
     public static final String URL = CFG.frontUrl() + "profile";
 
+    private final SelenideElement userName = $(".avatar-container figcaption");
     private final SelenideElement nameInput = $("input[name='firstname']");
     private final SelenideElement surnameInput = $("input[name='surname']");
     private final SelenideElement categoryInput = $("input[name='category']");
@@ -50,6 +51,12 @@ public class ProfilePage extends BasePage<ProfilePage> {
         return this;
     }
 
+    @Step("Check userName: {0}")
+    public ProfilePage checkUsername(String userName) {
+        this.userName.should(text(userName));
+        return this;
+    }
+
     @Step("Check name: {0}")
     public ProfilePage checkName(String name) {
         nameInput.shouldHave(value(name));
@@ -77,7 +84,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
     @Step("Check that page is loaded")
     @Override
     public ProfilePage waitForPageLoaded() {
-        nameInput.should(visible);
+        userName.should(visible);
         return this;
     }
 }

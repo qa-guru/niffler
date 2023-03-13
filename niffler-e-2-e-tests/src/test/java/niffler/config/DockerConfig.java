@@ -1,29 +1,47 @@
 package niffler.config;
 
+import com.codeborne.selenide.Configuration;
+
 public class DockerConfig implements Config {
+
+    static {
+        Configuration.browserSize = "1920x1200";
+        Configuration.remote = "http://selenoid:4444/wd/hub";
+        Configuration.timeout = 10000;
+    }
 
     @Override
     public String frontUrl() {
-        return "http://127.0.0.1/";
+        return "http://niffler-frontend/";
     }
 
     @Override
     public String userdataUrl() {
-        return "niffler-userdata";
+        return "http://niffler-userdata:8089/";
     }
 
     @Override
-    public String currencyGrpcUrl() {
+    public String currencyGrpcAddress() {
         return "niffler-currency";
     }
 
     @Override
+    public int currencyGrpcPort() {
+        return 8092;
+    }
+
+    @Override
     public String spendUrl() {
-        return "niffler-spend";
+        return "http://niffler-spend:8093/";
     }
 
     @Override
     public String authUrl() {
-        return "niffler-auth";
+        return "http://niffler-auth:9000/";
+    }
+
+    @Override
+    public String databaseAddress() {
+        return "niffler-all-db:5432";
     }
 }
