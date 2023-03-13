@@ -37,7 +37,7 @@ public class DockerConfig implements Config {
 
     @Override
     public String authUrl() {
-        return "http://niffler-auth:9000/";
+        return "http://niffler-auth:9001/";
     }
 
     @Override

@@ -9,7 +9,6 @@ import niffler.model.UserJson;
 import niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
 
-
 public class ProfileTest extends BaseTest {
 
     private static final String SUCCESS_MSG = "Profile updated!";

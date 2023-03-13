@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-
 @Execution(ExecutionMode.SAME_THREAD)
 public class SpendingTest extends BaseTest {
 

@@ -28,10 +28,10 @@ services:
   niffler-auth:
     container_name: niffler-auth
     image: dtuchs/niffler-auth:latest
-    ports:
-      - "9000:9000"
+    expose:
+      - "9001"
     healthcheck:
-      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      test: "wget --spider http://localhost:9001/actuator/health || exit 1"
       interval: 5s
       timeout: 5s
       retries: 10
@@ -58,8 +58,8 @@ services:
   niffler-gateway:
     container_name: niffler-gateway
     image: dtuchs/niffler-gateway:latest
-    ports:
-      - "8090:8090"
+    expose:
+      - "8090"
     depends_on:
       niffler-auth:
         condition: service_started
@@ -84,9 +84,15 @@ services:
     image: dtuchs/niffler-userdata:latest
     expose:
       - "8089"
+#    image: wiremock/wiremock:latest
+#    ports:
+#      - "9000:9000"
+#    volumes:
+#      - ./wiremock:/home/wiremock
     depends_on:
       niffler-all-db:
         condition: service_healthy
+#    command: [ "--port", "8089" ]
     networks:
       - test-network
     dns_search: .
@@ -94,8 +100,8 @@ services:
   niffler-frontend:
     container_name: niffler-frontend
     image: dtuchs/niffler-frontend-test:latest
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     depends_on:
       niffler-gateway:
         condition: service_started

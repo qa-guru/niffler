@@ -25,7 +25,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: 'http://127.0.0.1:9000'
+          issuer-uri: 'http://127.0.0.1:9001'
 
 grpc:
   client:
@@ -51,7 +51,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: 'http://niffler-auth:9000'
+          issuer-uri: 'http://niffler-auth:9001'
 
 grpc:
   client:
