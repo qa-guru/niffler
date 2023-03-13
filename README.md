@@ -138,7 +138,7 @@ Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh
 ```
 
 
-Niffler при запуске в докере будет работать для вас по адресу http://niffler-frontend:80/, этот НЕ НУЖНО указывать в браузере, таким образом переходить напрямую по ссылке http://niffler-frontend/
+Niffler при запуске в докере будет работать для вас по адресу http://niffler-frontend:80/, этот порт НЕ НУЖНО указывать в браузере, таким образом переходить напрямую по ссылке http://niffler-frontend/
 *ВАЖНО!* из docker-network Вам будут доступны только следующие порты:
 - порт 80 (все запросы с него перенаправляются nginx-ом на frontend)
 - порт 9000 (сервис niffler-auth)
