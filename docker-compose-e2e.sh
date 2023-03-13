@@ -26,7 +26,7 @@ fi
 cd ./niffler-frontend/ || exit
 bash ./docker-build.sh test
 cd ../
-docker pull dtuchs/selenoid_vnc:chromium_110.0
+docker pull selenoid/vnc_chrome:110.0
 docker images
 docker-compose -f docker-compose.test.yml up -d
 docker ps -a

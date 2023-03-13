@@ -122,8 +122,6 @@ services:
     image: aerokube/selenoid-ui:1.10.9
     depends_on:
       - selenoid
-    links:
-      - selenoid
     restart: unless-stopped
     ports:
       - "9090:8080"
