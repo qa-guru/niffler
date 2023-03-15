@@ -81,18 +81,16 @@ services:
 
   niffler-userdata:
     container_name: niffler-userdata
-    image: dtuchs/niffler-userdata:latest
-    expose:
-      - "8089"
-#    image: wiremock/wiremock:latest
-#    ports:
-#      - "9000:9000"
-#    volumes:
-#      - ./wiremock:/home/wiremock
+    image: wiremock/wiremock:latest
+    ports:
+      - "8089:8089"
+      - "9000:9000"
+    volumes:
+      - ./wiremock:/home/wiremock
     depends_on:
       niffler-all-db:
         condition: service_healthy
-#    command: [ "--port", "8089" ]
+    command: [ "--port", "8089" ]
     networks:
       - test-network
     dns_search: .

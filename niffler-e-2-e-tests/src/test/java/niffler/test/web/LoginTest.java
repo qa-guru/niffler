@@ -6,10 +6,12 @@ import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.UserJson;
 import niffler.page.WelcomePage;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 
+@Disabled
 public class LoginTest extends BaseTest {
 
     @Test

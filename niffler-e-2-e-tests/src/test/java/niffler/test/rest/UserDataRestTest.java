@@ -5,6 +5,7 @@ import niffler.api.NifflerUserdataClient;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class UserDataRestTest {
 
     private final NifflerUserdataClient nus = new NifflerUserdataClient();

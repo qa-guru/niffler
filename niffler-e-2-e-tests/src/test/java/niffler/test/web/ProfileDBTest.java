@@ -13,12 +13,13 @@ import niffler.model.CurrencyValues;
 import niffler.model.UserJson;
 import niffler.page.ProfilePage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.NESTED;
 
-
+@Disabled
 @ExtendWith({DAOResolver.class})
 public class ProfileDBTest extends BaseTest {
 

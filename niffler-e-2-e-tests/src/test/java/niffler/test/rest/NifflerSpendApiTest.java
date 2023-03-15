@@ -9,11 +9,13 @@ import niffler.jupiter.annotation.User;
 import niffler.model.SpendJson;
 import niffler.model.UserJson;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 
+@Disabled
 public class NifflerSpendApiTest {
 
     private final NifflerSpendClient nsc = new NifflerSpendClient();

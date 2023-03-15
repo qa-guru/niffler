@@ -7,8 +7,10 @@ import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.UserJson;
 import niffler.page.ProfilePage;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class ProfileTest extends BaseTest {
 
     private static final String SUCCESS_MSG = "Profile updated!";

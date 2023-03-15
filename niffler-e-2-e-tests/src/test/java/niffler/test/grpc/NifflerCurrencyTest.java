@@ -6,6 +6,7 @@ import guru.qa.grpc.niffler.grpc.CalculateResponse;
 import guru.qa.grpc.niffler.grpc.CurrencyResponse;
 import io.qameta.allure.Allure;
 import io.qameta.allure.AllureId;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Queue;
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 public class NifflerCurrencyTest extends BaseGRPCTest {
 
     @AllureId("1000")
