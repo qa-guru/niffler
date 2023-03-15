@@ -25,6 +25,7 @@ public class MainPage extends BasePage<MainPage> {
     }
 
     public SpendingTable getSpendingTable() {
+        spendingTable.getSelf().scrollIntoView(true);
         return spendingTable;
     }
 

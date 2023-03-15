@@ -19,6 +19,7 @@
   },
   "scripts": {
     "build": "sh -ac '. ./.env.${REACT_APP_ENV}; webpack build'",
+    "build:test": "REACT_APP_ENV=test webpack --mode production",
     "build:docker": "REACT_APP_ENV=docker webpack --mode development",
     "build:dev": "REACT_APP_ENV=dev webpack serve --mode development",
     "build:windows": "Set REACT_APP_ENV=dev&& webpack serve --mode development"

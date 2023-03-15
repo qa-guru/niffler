@@ -27,9 +27,7 @@ docker {
     name "dtuchs/niffler-currency:${project.version}"
     tag 'latest', 'dtuchs/niffler-currency:latest'
     files bootJar.archiveFile
-    buildArgs([
-            APP_VER: project.version
-    ])
+    buildArgs([APP_VER: project.version, DOCKER: project.ext.dockerImage])
     noCache true
 }
 
