@@ -9,9 +9,11 @@ import niffler.service.api.RestUserDataClient;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,27 +26,19 @@ public class UserGraphqlController {
         this.restUserDataClient = restUserDataClient;
     }
 
+    @SchemaMapping(typeName="User", field="friends")
+    public List<UserJsonGQL> getFriends(UserJsonGQL user) {
+        return getFriends(user.getUsername());
+    }
+
     @QueryMapping
-    public UserJsonGQL user(@AuthenticationPrincipal Jwt principal) {
+    public UserJsonGQL user(@AuthenticationPrincipal Jwt principal, @Argument Long id) {
         String username = principal.getClaim("sub");
         UserJson userJson = restUserDataClient.currentUser(username);
         UserJsonGQL userJsonGQL = UserJsonGQL.fromUserJson(userJson);
         userJsonGQL.setFriends(getFriends(username));
         userJsonGQL.setInvitations(getInvitations(username));
         return userJsonGQL;
-    }
-     private List<UserJsonGQL> getFriends(String username) {
-        return restUserDataClient.friends(username, false)
-                .stream()
-                .map(friend -> UserJsonGQL.fromUserJson(friend))
-                .collect(Collectors.toList());
-     }
-
-    private List<UserJsonGQL> getInvitations(String username) {
-        return restUserDataClient.invitations(username)
-                .stream()
-                .map(friend -> UserJsonGQL.fromUserJson(friend))
-                .collect(Collectors.toList());
     }
 
     @QueryMapping
@@ -57,7 +51,7 @@ public class UserGraphqlController {
 
     @MutationMapping
     public UserJsonGQL updateUser(@AuthenticationPrincipal Jwt principal,
-                                   @Argument @Valid UpdateUserInfoInput input) {
+                                  @Argument @Valid UpdateUserInfoInput input) {
         String username = principal.getClaim("sub");
         UserJson user = UserJson.fromUpdateUserInfoInput(input);
         user.setUsername(username);
@@ -75,11 +69,24 @@ public class UserGraphqlController {
 
     @MutationMapping
     public UserJsonGQL acceptInvitation(@AuthenticationPrincipal Jwt principal,
-                                           @Argument String friendUsername) {
+                                        @Argument String friendUsername) {
         String username = principal.getClaim("sub");
         FriendJson friend = new FriendJson();
         friend.setUsername(friendUsername);
-        restUserDataClient.acceptInvitation(username, friend);
-        return null;
+        return UserJsonGQL.fromUserJson(restUserDataClient.acceptInvitationAndReturnFriend(username, friend));
+    }
+
+    private List<UserJsonGQL> getFriends(String username) {
+        return restUserDataClient.friends(username, false)
+                .stream()
+                .map(friend -> UserJsonGQL.fromUserJson(friend))
+                .collect(Collectors.toList());
+    }
+
+    private List<UserJsonGQL> getInvitations(String username) {
+        return restUserDataClient.invitations(username)
+                .stream()
+                .map(friend -> UserJsonGQL.fromUserJson(friend))
+                .collect(Collectors.toList());
     }
 }

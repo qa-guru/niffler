@@ -56,6 +56,10 @@ export const QUERY_FRIENDS = gql(`
                 friends {
                     id
                     username
+                    friends {
+                        id
+                        username
+                    }
                 }
             }
         } 

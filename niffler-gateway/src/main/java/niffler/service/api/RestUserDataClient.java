@@ -6,7 +6,6 @@ import niffler.model.UserJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -113,6 +112,15 @@ public class RestUserDataClient {
     }
 
     public @Nonnull
+    UserJson acceptInvitationAndReturnFriend(@Nonnull String username,
+                                             @Nonnull FriendJson invitation) {
+        return acceptInvitation(username, invitation).stream()
+                .filter(friend -> friend.getUsername().equals(invitation.getUsername()))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public @Nonnull
     List<UserJson> declineInvitation(@Nonnull String username,
                                      @Nonnull FriendJson invitation) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -129,7 +137,7 @@ public class RestUserDataClient {
     }
 
     public UserJson addFriend(@Nonnull String username,
-                          @Nonnull FriendJson friend) {
+                              @Nonnull FriendJson friend) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/addFriend").queryParams(params).build().toUri();
