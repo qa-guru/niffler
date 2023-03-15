@@ -5,5 +5,3 @@ type Mutation {
     updateSpend(spend: UpdateSpendInput!): Spend
     deleteSpends(ids: [String]): [String]
 }
-
-

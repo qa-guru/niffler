@@ -30,4 +30,3 @@ input UpdateSpendInput {
     amount: Float!
     description: String
 }
-

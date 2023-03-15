@@ -20,5 +20,3 @@ input UpdateUserInfoInput {
     currency: CurrencyValues!
     photo: String
 }
-
-
