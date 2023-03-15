@@ -6,6 +6,7 @@ import niffler.model.UserJson;
 import niffler.model.graphql.UpdateUserInfoInput;
 import niffler.model.graphql.UserJsonGQL;
 import niffler.service.api.RestUserDataClient;
+import org.springframework.graphql.data.GraphQlRepository;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -37,7 +38,7 @@ public class UserGraphqlController {
     }
 
     @QueryMapping
-    public UserJsonGQL user(@AuthenticationPrincipal Jwt principal, @Argument Long id) {
+    public UserJsonGQL user(@AuthenticationPrincipal Jwt principal) {
         String username = principal.getClaim("sub");
         UserJson userJson = restUserDataClient.currentUser(username);
         UserJsonGQL userJsonGQL = UserJsonGQL.fromUserJson(userJson);
