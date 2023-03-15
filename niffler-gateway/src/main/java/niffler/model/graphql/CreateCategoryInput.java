@@ -1,6 +1,9 @@
 package niffler.model.graphql;
 
+import jakarta.validation.constraints.NotNull;
+
 public class CreateCategoryInput {
+    @NotNull(message = "Category name can not be null")
     private String category;
 
     public String getCategory() {

@@ -1,5 +1,6 @@
 package niffler.controller.graphql;
 
+import jakarta.validation.Valid;
 import niffler.model.CategoryJson;
 import niffler.model.graphql.CreateCategoryInput;
 import niffler.service.api.RestSpendClient;
@@ -31,7 +32,7 @@ public class CategoriesGraphqlController {
     }
 
     @MutationMapping
-    public CategoryJson createCategory(@AuthenticationPrincipal Jwt principal, @Argument CreateCategoryInput input) {
+    public CategoryJson createCategory(@AuthenticationPrincipal Jwt principal, @Argument @Valid CreateCategoryInput input) {
         String username = principal.getClaim("sub");
         CategoryJson category = CategoryJson.fromCreateCategoryInput(input);
         category.setUsername(username);

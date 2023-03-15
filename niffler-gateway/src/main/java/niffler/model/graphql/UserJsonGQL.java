@@ -1,16 +1,18 @@
-package niffler.model;
+package niffler.model.graphql;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
-import niffler.model.graphql.UpdateUserInfoInput;
+import niffler.model.CurrencyValues;
+import niffler.model.FriendState;
+import niffler.model.UserJson;
 
-import java.util.Objects;
+import java.util.List;
 import java.util.UUID;
 
 import static niffler.config.NifflerGatewayServiceConfig.THREE_MB;
 
-public class UserJson {
+public class UserJsonGQL {
     @JsonProperty("id")
     private UUID id;
     @JsonProperty("username")
@@ -29,9 +31,10 @@ public class UserJson {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("friendState")
     private FriendState friendState;
-
-    public UserJson() {
-    }
+    @JsonProperty("friends")
+    private List<UserJsonGQL> friends;
+    @JsonProperty("invitations")
+    private List<UserJsonGQL> invitations;
 
     public UUID getId() {
         return id;
@@ -89,25 +92,31 @@ public class UserJson {
         this.friendState = friendState;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
+    public List<UserJsonGQL> getFriends() {
+        return friends;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, firstname, surname, currency, photo, friendState);
+    public void setFriends(List<UserJsonGQL> friends) {
+        this.friends = friends;
     }
 
-    public static UserJson fromUpdateUserInfoInput(UpdateUserInfoInput input) {
-        UserJson userJson = new UserJson();
-        userJson.setCurrency(input.getCurrency());
-        userJson.setFirstname(input.getFirstname());
-        userJson.setPhoto(input.getPhoto());
-        userJson.setSurname(input.getSurname());
-        return userJson;
+    public List<UserJsonGQL> getInvitations() {
+        return invitations;
+    }
+
+    public void setInvitations(List<UserJsonGQL> invitations) {
+        this.invitations = invitations;
+    }
+
+    public static UserJsonGQL fromUserJson(UserJson userJson) {
+        UserJsonGQL userGQLJson = new UserJsonGQL();
+        userGQLJson.setId(userJson.getId());
+        userGQLJson.setCurrency(userJson.getCurrency());
+        userGQLJson.setFirstname(userJson.getFirstname());
+        userGQLJson.setSurname(userJson.getSurname());
+        userGQLJson.setUsername(userJson.getUsername());
+        userGQLJson.setPhoto(userJson.getPhoto());
+        userGQLJson.setFriendState(userJson.getFriendState());
+        return userGQLJson;
     }
 }

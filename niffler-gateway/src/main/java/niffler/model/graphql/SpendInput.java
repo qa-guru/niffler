@@ -1,19 +1,15 @@
-package niffler.model;
+package niffler.model.graphql;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import niffler.model.graphql.SpendInput;
-import niffler.model.graphql.UpdateSpendInput;
+import niffler.model.CurrencyValues;
 
 import java.util.Date;
-import java.util.UUID;
 
-public class SpendJson {
-    @JsonProperty("id")
-    private UUID id;
+public class SpendInput {
     @JsonProperty("spendDate")
     @NotNull(message = "Spend date can not be null")
     @PastOrPresent(message = "Spend date must not be future")
@@ -30,19 +26,6 @@ public class SpendJson {
     private Double amount;
     @JsonProperty("description")
     private String description;
-    @JsonProperty("username")
-    private String username;
-
-    public SpendJson() {
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public Date getSpendDate() {
         return spendDate;
@@ -82,33 +65,5 @@ public class SpendJson {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public static SpendJson fromSpendInput(SpendInput input) {
-        SpendJson spendJson = new SpendJson();
-        spendJson.setAmount(input.getAmount());
-        spendJson.setSpendDate(input.getSpendDate());
-        spendJson.setCategory(input.getCategory());
-        spendJson.setDescription(input.getDescription());
-        return spendJson;
-    }
-
-    public static SpendJson fromUpdateSpendInput(UpdateSpendInput input) {
-        SpendJson spendJson = new SpendJson();
-        spendJson.setId(input.getId());
-        spendJson.setAmount(input.getAmount());
-        spendJson.setSpendDate(input.getSpendDate());
-        spendJson.setCategory(input.getCategory());
-        spendJson.setCurrency(input.getCurrency());
-        spendJson.setDescription(input.getDescription());
-        return spendJson;
     }
 }

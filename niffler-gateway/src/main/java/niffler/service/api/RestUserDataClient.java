@@ -128,17 +128,17 @@ public class RestUserDataClient {
                 .block();
     }
 
-    public void addFriend(@Nonnull String username,
+    public UserJson addFriend(@Nonnull String username,
                           @Nonnull FriendJson friend) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/addFriend").queryParams(params).build().toUri();
 
-        webClient.post()
+        return webClient.post()
                 .uri(uri)
                 .body(Mono.just(friend), FriendJson.class)
                 .retrieve()
-                .bodyToMono(Void.class)
+                .bodyToMono(UserJson.class)
                 .block();
     }
 

@@ -58,10 +58,10 @@ public class FriendsController {
     }
 
     @PostMapping("/addFriend")
-    public void addFriend(@AuthenticationPrincipal Jwt principal,
+    public UserJson addFriend(@AuthenticationPrincipal Jwt principal,
                           @Validated @RequestBody FriendJson friend) {
         String username = principal.getClaim("sub");
-        restUserDataClient.addFriend(username, friend);
+        return restUserDataClient.addFriend(username, friend);
     }
 
     @DeleteMapping("/removeFriend")
