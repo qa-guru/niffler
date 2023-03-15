@@ -31,6 +31,11 @@ public class UserGraphqlController {
         return getFriends(user.getUsername());
     }
 
+    @SchemaMapping(typeName="User", field="invitations")
+    public List<UserJsonGQL> getInvitations(UserJsonGQL user) {
+        return getInvitations(user.getUsername());
+    }
+
     @QueryMapping
     public UserJsonGQL user(@AuthenticationPrincipal Jwt principal, @Argument Long id) {
         String username = principal.getClaim("sub");
@@ -64,7 +69,8 @@ public class UserGraphqlController {
         String username = principal.getClaim("sub");
         FriendJson friend = new FriendJson();
         friend.setUsername(friendUsername);
-        return UserJsonGQL.fromUserJson(restUserDataClient.addFriend(username, friend));
+        UserJsonGQL userJsonGQL = UserJsonGQL.fromUserJson(restUserDataClient.addFriend(username, friend));
+        return userJsonGQL;
     }
 
     @MutationMapping
@@ -74,6 +80,32 @@ public class UserGraphqlController {
         FriendJson friend = new FriendJson();
         friend.setUsername(friendUsername);
         return UserJsonGQL.fromUserJson(restUserDataClient.acceptInvitationAndReturnFriend(username, friend));
+    }
+
+    @MutationMapping
+    public UserJsonGQL declineInvitation(@AuthenticationPrincipal Jwt principal,
+                                        @Argument String friendUsername) {
+        String username = principal.getClaim("sub");
+        FriendJson friend = new FriendJson();
+        friend.setUsername(friendUsername);
+        restUserDataClient.declineInvitation(username, friend);
+        return UserJsonGQL.fromUserJson(restUserDataClient.allUsers(username)
+                .stream()
+                .filter(user -> user.getUsername().equals(friendUsername))
+                .findFirst()
+                .orElseThrow());
+    }
+
+    @MutationMapping
+    public UserJsonGQL removeFriend(@AuthenticationPrincipal Jwt principal,
+                                       @Argument String friendUsername) {
+        String username = principal.getClaim("sub");
+        restUserDataClient.removeFriend(username, friendUsername);
+        return UserJsonGQL.fromUserJson(restUserDataClient.allUsers(username)
+                .stream()
+                .filter(user -> user.getUsername().equals(friendUsername))
+                .findFirst()
+                .orElseThrow());
     }
 
     private List<UserJsonGQL> getFriends(String username) {

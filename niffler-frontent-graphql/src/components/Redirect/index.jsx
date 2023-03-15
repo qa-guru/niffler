@@ -29,7 +29,6 @@ export const Redirect = ({}) => {
                         sessionStorage.setItem('id_token', data.id_token);
                         updateUser().then(res => {
                             if(res?.data?.user !== null) {
-                                console.log(user);
                                 navigate("/main");
                             } else {
                                 navigate("/login");

@@ -136,6 +136,7 @@ public class RestUserDataClient {
                 .block();
     }
 
+
     public UserJson addFriend(@Nonnull String username,
                               @Nonnull FriendJson friend) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

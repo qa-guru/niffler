@@ -1,89 +1,18 @@
+import {useMutation} from "@apollo/client";
 import {Tooltip} from "react-tooltip";
-import {deleteData, postData} from "../../api/api";
+import {
+    ACCEPT_INVITATION_MUTATION,
+    ADD_FRIEND_MUTATION,
+    DECLINE_INVITATION_MUTATION, REMOVE_FRIEND_MUTATION
+} from "../../api/graphql/mutations";
 import {FriendState} from "../../constants/friendState";
 import {showError, showSuccess} from "../../toaster/toaster";
 import {ButtonIcon, IconType} from "../ButtonIcon";
 
-export const Controls = {
-    SEND_INVITATION: "send",
-    SUBMIT_FRIEND: "submit",
-    DECLINE_FRIEND: "decline",
-    DELETE_FRIEND: "delete"
-};
 
-const handleAddUserToFriends = (username, onInvite) => {
-    postData({
-        path: "/addFriend",
-        data: {username: username},
-        onSuccess: () => {
-            showSuccess("Invitation is sent!");
-            if (onInvite) {
-                onInvite({username});
-            }
-        },
-        onFail: (err) => {
-            showError("Can not send invitation!");
-            console.error(err);
-        }
-    });
-};
-
-const handleSubmitInvitation = (username, onSubmit) => {
-    postData({
-        path: "/acceptInvitation",
-        data: {username: username},
-        onSuccess: () => {
-            showSuccess("Invitation is accepted!");
-            if (onSubmit) {
-                onSubmit({username});
-            }
-        },
-        onFail: (err) => {
-            showError("Can not accept invitation!");
-            console.error(err);
-        }
-    });
-};
-
-const handleDeclineInvitation = (username, onDecline) => {
-    postData({
-        path: "/declineInvitation",
-        data: {username: username},
-        onSuccess: () => {
-            showSuccess("Invitation is declined!");
-            if (onDecline) {
-                onDecline({username});
-            }
-        },
-        onFail: (err) => {
-            showError("Can not decline invitation!");
-            console.error(err);
-        }
-    });
-
-}
-
-const handleDeleteFriend = (username, onDelete) => {
-    deleteData({
-        path: "/removeFriend",
-        params: {
-            username: username,
-        },
-        onSuccess: () => {
-            showSuccess("Friend is deleted!");
-            if (onDelete) {
-                onDelete({username});
-            }
-        },
-        onFail: (err) => {
-            showError("Can not delete friend!");
-            console.error(err);
-        }
-    });
-};
-
-const getControls = ({user, onSubmit, onDecline, onInvite, onDelete}) => {
+const getControls = ({user, addFriend, declineInvitation, acceptInvitation, removeFriend}) => {
     const friendState = user.friendState;
+
 
     if (friendState === FriendState.INVITE_SENT) {
         return (<div>Pending invitation</div>);
@@ -96,7 +25,11 @@ const getControls = ({user, onSubmit, onDecline, onInvite, onDelete}) => {
                          data-tooltip-content="Remove friend">
                         <ButtonIcon iconType={IconType.CLOSE}
                                     onClick={() => {
-                                        handleDeleteFriend(user.username, onDelete)
+                                        removeFriend({
+                                            variables: {
+                                                username: user.username
+                                            }
+                                        }).then(()=> showError("Friend is removed!"));
                                     }}/>
                     </div>
                     <Tooltip className="tooltip" id="remove-friend"/>
@@ -110,7 +43,11 @@ const getControls = ({user, onSubmit, onDecline, onInvite, onDelete}) => {
                          data-tooltip-content="Submit invitation">
                         <ButtonIcon iconType={IconType.SUBMIT}
                                     onClick={() => {
-                                        handleSubmitInvitation(user.username, onSubmit)
+                                        acceptInvitation({
+                                            variables: {
+                                                username: user.username
+                                            }
+                                        }).then(()=> showSuccess("Invitation submitted!"));
                                     }}/>
                     </div>
                     <Tooltip className="tooltip" id="submit-invitation"/>
@@ -120,7 +57,11 @@ const getControls = ({user, onSubmit, onDecline, onInvite, onDelete}) => {
                          data-tooltip-content="Decline invitation">
                         <ButtonIcon iconType={IconType.CLOSE}
                                     onClick={() => {
-                                        handleDeclineInvitation(user.username, onDecline)
+                                        declineInvitation({
+                                            variables: {
+                                                username: user.username
+                                            }
+                                        }).then(()=> showError("Invitation declined!"));
                                     }}/>
                     </div>
                     <Tooltip className="tooltip" id="decline-invitation"/>
@@ -134,7 +75,11 @@ const getControls = ({user, onSubmit, onDecline, onInvite, onDelete}) => {
                      data-tooltip-content="Add friend">
                     <ButtonIcon iconType={IconType.ADD_FRIEND}
                                 onClick={() => {
-                                    handleAddUserToFriends(user.username, onInvite)
+                                    addFriend({
+                                        variables: {
+                                            username: user.username
+                                        }
+                                    }).then(()=> showSuccess("Invitation sent!"));
                                 }}/>
                 </div>
                 <Tooltip className="tooltip" id="add-friend"/>
@@ -142,7 +87,11 @@ const getControls = ({user, onSubmit, onDecline, onInvite, onDelete}) => {
         )
     }
 };
-export const AbstractTable = ({data, onDelete, onInvite, onSubmit, onDecline}) => {
+export const AbstractTable = ({data, onDelete, onDecline}) => {
+    const [addFriend] = useMutation(ADD_FRIEND_MUTATION);
+    const [declineInvitation] = useMutation(DECLINE_INVITATION_MUTATION);
+    const [acceptInvitation] = useMutation(ACCEPT_INVITATION_MUTATION);
+    const [removeFriend] = useMutation(REMOVE_FRIEND_MUTATION);
 
     return (
         <>
@@ -173,10 +122,10 @@ export const AbstractTable = ({data, onDelete, onInvite, onSubmit, onDecline}) =
                             <div className="abstract-table__buttons">
                                 {getControls({
                                     user: item,
-                                    onSubmit,
-                                    onDecline,
-                                    onInvite,
-                                    onDelete
+                                    addFriend,
+                                    declineInvitation,
+                                    acceptInvitation,
+                                    removeFriend
                                 })}
                             </div>
                         </td>
