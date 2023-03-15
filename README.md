@@ -182,4 +182,4 @@ Dmitriis-MacBook-Pro niffler-frontend % bash build-docker.sh
 Dmitriis-MacBook-Pro  niffler % docker-compose up -d
 ```
 
-![Enjoy the Niffler](/niffler-frontent-graphql/public/images/niffler-logo.png)
+![Enjoy the Niffler](/niffler-frontend-gql/public/images/niffler-logo.png)

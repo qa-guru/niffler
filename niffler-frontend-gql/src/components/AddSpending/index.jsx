@@ -1,8 +1,7 @@
 import {gql, useMutation} from "@apollo/client";
 import dayjs from "dayjs";
 import {useState} from "react";
-import {postData} from "../../api/api";
-import {ADD_SPEND_MUTATION, CREATE_CATEGORY_MUTATION} from "../../api/graphql/mutations";
+import {ADD_SPEND_MUTATION} from "../../api/graphql/mutations";
 import {MAX_TEXT_INPUT_FIELD_LENGTH} from "../../constants/const";
 import {showError, showSuccess} from "../../toaster/toaster";
 import {Button} from "../Button/index";

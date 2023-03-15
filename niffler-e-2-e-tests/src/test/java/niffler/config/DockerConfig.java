@@ -8,6 +8,11 @@ public class DockerConfig implements Config {
     }
 
     @Override
+    public String gatewayUrl() {
+        return "http://niffler-gateway:8090/";
+    }
+
+    @Override
     public String userdataUrl() {
         return "niffler-userdata";
     }

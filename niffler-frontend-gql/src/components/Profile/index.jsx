@@ -1,9 +1,7 @@
 import {useMutation, useQuery} from "@apollo/client";
 import {useContext, useMemo, useState} from "react";
-import {postData} from "../../api/api";
-import {CREATE_CATEGORY_MUTATION, UPDATE_USER_INFO_MUTATION} from "../../api/graphql/mutations";
+import {UPDATE_USER_INFO_MUTATION} from "../../api/graphql/mutations";
 import {QUERY_ALL_CURRENCIES} from "../../api/graphql/queries";
-import {useLoadedData} from "../../api/hooks";
 import {UserContext} from "../../contexts/UserContext";
 import {showError, showSuccess} from "../../toaster/toaster";
 import {Button} from "../Button";

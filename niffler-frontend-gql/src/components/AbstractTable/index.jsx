@@ -3,7 +3,8 @@ import {Tooltip} from "react-tooltip";
 import {
     ACCEPT_INVITATION_MUTATION,
     ADD_FRIEND_MUTATION,
-    DECLINE_INVITATION_MUTATION, REMOVE_FRIEND_MUTATION
+    DECLINE_INVITATION_MUTATION,
+    REMOVE_FRIEND_MUTATION
 } from "../../api/graphql/mutations";
 import {FriendState} from "../../constants/friendState";
 import {showError, showSuccess} from "../../toaster/toaster";

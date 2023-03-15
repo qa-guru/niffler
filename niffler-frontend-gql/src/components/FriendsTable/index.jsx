@@ -1,6 +1,6 @@
 import {useQuery} from "@apollo/client";
 import {useMemo} from "react";
-import { QUERY_FRIENDS} from "../../api/graphql/queries";
+import {QUERY_FRIENDS} from "../../api/graphql/queries";
 import {AbstractTable} from "../AbstractTable";
 
 export const FriendsTable = () => {

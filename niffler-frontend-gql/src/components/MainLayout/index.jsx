@@ -1,7 +1,7 @@
 import {useMutation, useQuery} from "@apollo/client";
 import {getData} from "../../api/api";
-import {DELETE_SPENDS_MUTATION, UPDATE_SPEND_MUTATION, UPDATE_USER_INFO_MUTATION} from "../../api/graphql/mutations";
-import {QUERY_ALL_CATEGORIES, QUERY_ALL_CURRENCIES, QUERY_FRIENDS, QUERY_SPENDS} from "../../api/graphql/queries";
+import {DELETE_SPENDS_MUTATION} from "../../api/graphql/mutations";
+import {QUERY_ALL_CATEGORIES, QUERY_ALL_CURRENCIES, QUERY_SPENDS} from "../../api/graphql/queries";
 import {CurrencyContext} from "../../contexts/CurrencyContext";
 import {FilterContext} from "../../contexts/FilterContext";
 import {UserContext} from "../../contexts/UserContext";
@@ -11,7 +11,6 @@ import {PageContainer} from "../PageContainer";
 import {SpendingHistory} from "../SpendingHistory";
 import {useContext, useEffect, useMemo, useState} from "react";
 import {SpendingStatistics} from "../SpendingStatistics";
-import {SpendingTable} from "../SpendingTable";
 
 
 export const MainLayout = () => {

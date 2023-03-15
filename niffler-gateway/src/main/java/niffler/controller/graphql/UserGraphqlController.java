@@ -6,7 +6,6 @@ import niffler.model.UserJson;
 import niffler.model.graphql.UpdateUserInfoInput;
 import niffler.model.graphql.UserJsonGQL;
 import niffler.service.api.RestUserDataClient;
-import org.springframework.graphql.data.GraphQlRepository;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;

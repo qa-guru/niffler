@@ -1,8 +1,8 @@
-import { useQuery} from "@apollo/client";
+import {useQuery} from "@apollo/client";
 import {useState} from "react";
 import {Route, Routes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
-import { QUERY_CURRENT_USER} from "./api/graphql/queries";
+import {QUERY_CURRENT_USER} from "./api/graphql/queries";
 import {FriendsLayout} from "./components/FriendsLayout";
 import {LoginPage} from "./components/LoginPage";
 import {MainLayout} from "./components/MainLayout";

@@ -1,9 +1,9 @@
-import { useQuery} from "@apollo/client";
+import {useQuery} from "@apollo/client";
 import {useContext} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {Tooltip} from "react-tooltip";
 import {getData} from "../../api/api";
-import { QUERY_INVITATIONS} from "../../api/graphql/queries";
+import {QUERY_INVITATIONS} from "../../api/graphql/queries";
 import {UserContext} from "../../contexts/UserContext";
 import {ButtonIcon, IconType} from "../ButtonIcon";
 

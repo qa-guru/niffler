@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import { getData} from "./api";
+import {getData} from "./api";
 
 const useLoadedData = ({path, onSuccess, onFail, params }) => {
     useEffect(() => {

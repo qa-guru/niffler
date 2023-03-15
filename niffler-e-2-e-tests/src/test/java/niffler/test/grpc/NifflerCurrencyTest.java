@@ -4,7 +4,6 @@ import com.google.protobuf.Empty;
 import guru.qa.grpc.niffler.grpc.CalculateRequest;
 import guru.qa.grpc.niffler.grpc.CalculateResponse;
 import guru.qa.grpc.niffler.grpc.CurrencyResponse;
-import io.grpc.stub.ClientResponseObserver;
 import io.qameta.allure.Allure;
 import org.junit.jupiter.api.Test;
 
