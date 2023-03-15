@@ -1,0 +1,11 @@
+.people-content {
+    margin: 160px 20px 100px;
+    width: 80%;
+    display: flex;
+}
+
+.people__user-avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}

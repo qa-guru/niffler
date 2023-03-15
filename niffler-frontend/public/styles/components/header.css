@@ -1,0 +1,87 @@
+.header {
+    margin: 0 0 30px;
+    position: fixed;
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    background-image: url("./../../images/old-paper-background-texture-37.jpg");
+    align-items: center;
+    justify-content: space-between;
+    z-index: 3;
+    box-shadow: 0 0 5px 5px #040E20;
+}
+
+.header__group {
+    display: flex;
+    align-items: center;
+    margin-left: 40px;
+}
+
+.header__logo {
+    margin-right: 20px;
+    width: 70px;
+    height: 70px;
+}
+
+.header__navigation ul{
+    width: 100%;
+    max-width: 420px;
+    padding: 0;
+    margin: 0 15px 0 0;
+    display: flex;
+    list-style: none;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header__navigation-item {
+    padding: 0;
+    margin: 0;
+    font-size: 20px;
+}
+
+.header__link,
+.header__link:active,
+.header__link:visited {
+    color: black;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.header__link:hover {
+    opacity: 0.8;
+}
+
+.header__avatar {
+    margin: 10px;
+    object-fit: cover;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.header__people {
+    margin: 10px;
+}
+
+.header__sign {
+    position: absolute;
+    right: 0;
+    top: 5px;
+    width: 15px;
+    height: 15px;
+    display: block;
+    border-radius: 50%;
+    background-color: #c4161a;
+}
+
+.header__username {
+    margin-left: 20px;
+    font-size: 20px;
+}
+
+.header__logout {
+    margin-left: 20px;
+    margin-right: 40px;
+}

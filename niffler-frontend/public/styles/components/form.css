@@ -1,0 +1,47 @@
+.form {
+    text-align: center;
+    box-shadow: 0 0 20px 20px black;
+    background-image: url("./../../images/old-paper-background-texture-37.jpg");
+    border-radius: 8px;
+    margin: 0 auto;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.form__header {
+    margin-top: 60px;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    text-align: center;
+}
+
+.form__label {
+    max-width: 350px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-weight: 700;
+}
+
+
+.form__select {
+    width: 100%;
+    display: block;
+    font-size: 14px;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 8px;
+    font-weight: normal;
+    background-color: #eeedea;
+    color: black;
+}
+
+.form__error {
+    color: var(--color-error);
+    font-size: 12px;
+}
