@@ -1,5 +1,5 @@
 {
-  "name": "niffler-frontend",
+  "name": "niffler-frontend-gql",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
