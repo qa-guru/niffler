@@ -22,7 +22,7 @@ public class SecurityConfig {
         corsCustomizer.corsCustomizer(http);
 
         http.authorizeHttpRequests()
-                .requestMatchers("/actuator/health").permitAll()
+                .requestMatchers("/actuator/health", "/graphiql/**").permitAll()
                 .anyRequest()
                 .authenticated().and()
                 .oauth2ResourceServer()
