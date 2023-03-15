@@ -7,6 +7,9 @@ server:
 spring:
   application:
     name: niffler-gateway
+  graphql:
+    graphiql:
+      enabled: true
 
 logging:
   level:
