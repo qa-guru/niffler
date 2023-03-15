@@ -53,3 +53,42 @@ export const DELETE_SPENDS_MUTATION = gql(`
             deleteSpends(ids: $ids) 
         }
 `);
+
+export const ADD_FRIEND_MUTATION = gql(`
+    mutation AddFriend($username: String!){
+        addFriend(friendUsername: $username) {
+            id
+            username
+            friendState
+        }
+    }
+`);
+
+export const ACCEPT_INVITATION_MUTATION = gql(`
+    mutation AcceptInvitation($username: String!){
+        acceptInvitation(friendUsername: $username) {
+            id
+            username
+            friendState
+        }
+    }
+`);
+
+export const DECLINE_INVITATION_MUTATION = gql(`
+    mutation DeclineInvitation($username: String!){
+        declineInvitation(friendUsername: $username) {
+            id
+            username
+            friendState}
+    }
+`);
+
+export const REMOVE_FRIEND_MUTATION = gql(`
+    mutation RemoveFriend($username: String!){
+        removeFriend(friendUsername: $username) {
+            id
+            username
+            friendState
+        }
+    }
+`);

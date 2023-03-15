@@ -53,6 +53,7 @@ export const QUERY_FRIENDS = gql(`
                 firstname
                 surname
                 photo
+                friendState
                 friends {
                     id
                     username
@@ -61,6 +62,14 @@ export const QUERY_FRIENDS = gql(`
                         username
                     }
                 }
+            }
+            invitations {
+                id
+                username
+                firstname
+                surname
+                photo
+                friendState
             }
         } 
     }
