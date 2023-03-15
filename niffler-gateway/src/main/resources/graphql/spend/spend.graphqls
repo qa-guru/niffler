@@ -17,7 +17,7 @@ enum FilterPeriod {
 input SpendInput {
     spendDate: Date!
     category: String!
-    currency: CurrencyValues!
+    currency: CurrencyValues
     amount: Float!
     description: String
 }

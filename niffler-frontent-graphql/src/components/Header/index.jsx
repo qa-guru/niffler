@@ -1,6 +1,6 @@
-import {useQuery} from "@apollo/client";
+import { useQuery} from "@apollo/client";
 import {useContext} from "react";
-import {Link, useLocation} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Tooltip} from "react-tooltip";
 import {getData} from "../../api/api";
 import { QUERY_INVITATIONS} from "../../api/graphql/queries";
@@ -8,17 +8,18 @@ import {UserContext} from "../../contexts/UserContext";
 import {ButtonIcon, IconType} from "../ButtonIcon";
 
 export const Header = () => {
-    const location = useLocation();
-    const { user, setUser } = useContext(UserContext);
-    const {data: invitationsData, loading, error} = useQuery(QUERY_INVITATIONS);
+    const navigate = useNavigate()
+    const { user } = useContext(UserContext);
+    const {data: invitationsData, client} = useQuery(QUERY_INVITATIONS);
 
     const handleLogout = () => {
         getData({
             path: `${process.env.REACT_APP_AUTH_URL}/logout`,
             onSuccess: () => {
                 sessionStorage.clear();
-                setUser(null);
-                location.pathname = "/login";
+                client.clearStore().then(() => {
+                   navigate(0);
+                })
             },
             onFail: (err) => {
                 console.log(err);

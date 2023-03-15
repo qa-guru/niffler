@@ -17,7 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     const {data: currentUserData, loading, refetch} = useQuery(QUERY_CURRENT_USER);
-    const userContext = { user: currentUserData?.user, updateUser: refetch };
+    const userContext = { user: currentUserData?.user, updateUser: refetch};
 
     const [popupOpen, setPopupOpen] = useState(false);
     const popupContext = {
