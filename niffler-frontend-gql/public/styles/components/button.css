@@ -30,7 +30,7 @@
 }
 
 .button:disabled,
-.button:disabled:hover{
+.button:disabled:hover {
     cursor: not-allowed;
     opacity: 0.3;
 }

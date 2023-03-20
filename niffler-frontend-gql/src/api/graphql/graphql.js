@@ -5,7 +5,7 @@ const httpLink = createHttpLink({
     uri: `${process.env.REACT_APP_GATEWAY_URL}/graphql`,
 });
 
-const authLink = setContext((_, { headers }) => {
+const authLink = setContext((_, {headers}) => {
     const token = sessionStorage.getItem('id_token');
     return {
         headers: {

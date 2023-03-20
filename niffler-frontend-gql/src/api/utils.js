@@ -18,7 +18,7 @@ const generateCodeChallenge = () => {
 const getCookie = (name) => {
     const pattern = RegExp(name + "=.[^;]*")
     const matched = document.cookie.match(pattern)
-    if(matched){
+    if (matched) {
         const cookie = matched[0].split('=')
         return cookie[1]
     }

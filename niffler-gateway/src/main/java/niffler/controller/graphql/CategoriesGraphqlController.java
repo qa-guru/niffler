@@ -18,6 +18,7 @@ import java.util.List;
 public class CategoriesGraphqlController {
 
     private final RestSpendClient restSpendClient;
+
     @Autowired
     public CategoriesGraphqlController(RestSpendClient restSpendClient) {
         this.restSpendClient = restSpendClient;

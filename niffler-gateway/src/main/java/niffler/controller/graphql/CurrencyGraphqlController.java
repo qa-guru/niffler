@@ -17,6 +17,7 @@ public class CurrencyGraphqlController {
     public CurrencyGraphqlController(GrpcCurrencyClient grpcCurrencyClient) {
         this.grpcCurrencyClient = grpcCurrencyClient;
     }
+
     @QueryMapping
     public List<CurrencyJson> currencies() {
         return grpcCurrencyClient.getAllCurrencies();

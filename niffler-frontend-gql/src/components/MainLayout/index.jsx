@@ -93,7 +93,7 @@ export const MainLayout = () => {
             update(cache) {
                 cache.modify({
                     fields: {
-                        spends(existingSpendsRef, { readField}) {
+                        spends(existingSpendsRef, {readField}) {
                             return existingSpendsRef.filter(spendRef => {
                                 const spendId = readField("id", spendRef);
                                 return !ids.includes(spendId);
@@ -117,7 +117,7 @@ export const MainLayout = () => {
                         <SpendingStatistics statistic={statistic} defaultCurrency={user?.currency}/>
                         {categoriesLoading || currenciesLoading ? (<div className="loader"></div>) : (
                             <SpendingHistory
-                                spendingsLoading = {spendingsLoading}
+                                spendingsLoading={spendingsLoading}
                                 spendings={spendingsLoading ? [] : spendingsData?.spends}
                                 currencies={currencies}
                                 categories={categories}

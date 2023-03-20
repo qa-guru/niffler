@@ -62,7 +62,7 @@ public class FriendsController {
 
     @PostMapping("/addFriend")
     public UserJson addFriend(@AuthenticationPrincipal Jwt principal,
-                          @Validated @RequestBody FriendJson friend) {
+                              @Validated @RequestBody FriendJson friend) {
         String username = principal.getClaim("sub");
         return userDataClient.addFriend(username, friend);
     }

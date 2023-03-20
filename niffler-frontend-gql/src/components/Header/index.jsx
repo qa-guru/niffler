@@ -9,7 +9,7 @@ import {ButtonIcon, IconType} from "../ButtonIcon";
 
 export const Header = () => {
     const navigate = useNavigate()
-    const { user } = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const {data: invitationsData, client} = useQuery(QUERY_INVITATIONS);
 
     const handleLogout = () => {
@@ -18,7 +18,7 @@ export const Header = () => {
             onSuccess: () => {
                 sessionStorage.clear();
                 client.clearStore().then(() => {
-                   navigate(0);
+                    navigate(0);
                 })
             },
             onFail: (err) => {

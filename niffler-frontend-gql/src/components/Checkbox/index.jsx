@@ -1,4 +1,3 @@
-
 export const Checkbox = ({id, handleSingleClick, selected}) => {
     return (
         <input type={"checkbox"}

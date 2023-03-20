@@ -30,7 +30,7 @@ const getControls = ({user, addFriend, declineInvitation, acceptInvitation, remo
                                             variables: {
                                                 username: user.username
                                             }
-                                        }).then(()=> showError("Friend is removed!"));
+                                        }).then(() => showError("Friend is removed!"));
                                     }}/>
                     </div>
                     <Tooltip className="tooltip" id="remove-friend"/>
@@ -48,7 +48,7 @@ const getControls = ({user, addFriend, declineInvitation, acceptInvitation, remo
                                             variables: {
                                                 username: user.username
                                             }
-                                        }).then(()=> showSuccess("Invitation submitted!"));
+                                        }).then(() => showSuccess("Invitation submitted!"));
                                     }}/>
                     </div>
                     <Tooltip className="tooltip" id="submit-invitation"/>
@@ -62,7 +62,7 @@ const getControls = ({user, addFriend, declineInvitation, acceptInvitation, remo
                                             variables: {
                                                 username: user.username
                                             }
-                                        }).then(()=> showError("Invitation declined!"));
+                                        }).then(() => showError("Invitation declined!"));
                                     }}/>
                     </div>
                     <Tooltip className="tooltip" id="decline-invitation"/>
@@ -80,7 +80,7 @@ const getControls = ({user, addFriend, declineInvitation, acceptInvitation, remo
                                         variables: {
                                             username: user.username
                                         }
-                                    }).then(()=> showSuccess("Invitation sent!"));
+                                    }).then(() => showSuccess("Invitation sent!"));
                                 }}/>
                 </div>
                 <Tooltip className="tooltip" id="add-friend"/>

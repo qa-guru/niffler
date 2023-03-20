@@ -13,9 +13,9 @@ export const PeopleTable = ({}) => {
     return (
         <>
             {allUsersData?.users?.length > 0 ? (
-                <AbstractTable data={allUsersData.users}
-                />
-            ) :
+                    <AbstractTable data={allUsersData.users}
+                    />
+                ) :
                 (<div style={{margin: 20}}>There are no other users yet!</div>)
             }
         </>

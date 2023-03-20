@@ -131,7 +131,7 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
 
     @Override
     public UserJson addFriend(@Nonnull String username,
-                          @Nonnull FriendJson friend) {
+                              @Nonnull FriendJson friend) {
         AddFriendRequest request = new AddFriendRequest();
         request.setUsername(username);
         request.setFriend(friend.toJaxbFriend());

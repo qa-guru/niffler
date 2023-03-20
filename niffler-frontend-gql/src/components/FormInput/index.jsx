@@ -10,11 +10,11 @@ export const FormInput = ({
                               max,
                               error,
                               required
-}) => {
+                          }) => {
 
     return (
         <label className="form__label">{label && <>{label} {required && <>*</>}</>}
-            <input className={`form__input ${error? "form__input-error" : ""}`}
+            <input className={`form__input ${error ? "form__input-error" : ""}`}
                    type={type}
                    value={value}
                    name={fieldName}

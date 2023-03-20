@@ -2,7 +2,9 @@ import {createContext} from "react";
 
 export const TableSelectionContext = createContext({
     allIds: [],
-    setAllIds: () => {},
+    setAllIds: () => {
+    },
     selectedIds: [],
-    setSelectedIds: () => {},
+    setSelectedIds: () => {
+    },
 });
