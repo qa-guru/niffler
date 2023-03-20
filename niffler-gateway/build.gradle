@@ -23,6 +23,8 @@ dependencies {
     implementation 'net.devh:grpc-client-spring-boot-starter:2.14.0.RELEASE'
     implementation "org.springframework:spring-webflux"
     implementation "io.projectreactor.netty:reactor-netty"
+    implementation "org.springframework.boot:spring-boot-starter-graphql"
+    implementation 'com.tailrocks.graphql:graphql-datetime-spring-boot-starter:6.0.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

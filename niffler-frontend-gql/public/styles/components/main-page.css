@@ -1,0 +1,40 @@
+.main-page__container {
+    display: block;
+    margin-top: 200px;
+}
+
+.main__header {
+    margin: 10px;
+}
+
+.main__logo {
+    width: 150px;
+    height: 150px;
+}
+
+.main__links {
+    display: flex;
+    width: 100%;
+    margin: 20px;
+    max-width: 220px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.main__link {
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: black;
+    background-color: #eeedea;
+}
+
+.main__link:active,
+.main__link:visited {
+    color: black;
+}
+
+.main__link:hover {
+    border: 2px solid saddlebrown;
+    color: saddlebrown;
+}

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import niffler.model.graphql.SpendInput;
+import niffler.model.graphql.UpdateSpendInput;
 
 import java.util.Date;
 import java.util.UUID;
@@ -88,5 +90,25 @@ public class SpendJson {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public static SpendJson fromSpendInput(SpendInput input) {
+        SpendJson spendJson = new SpendJson();
+        spendJson.setAmount(input.getAmount());
+        spendJson.setSpendDate(input.getSpendDate());
+        spendJson.setCategory(input.getCategory());
+        spendJson.setDescription(input.getDescription());
+        return spendJson;
+    }
+
+    public static SpendJson fromUpdateSpendInput(UpdateSpendInput input) {
+        SpendJson spendJson = new SpendJson();
+        spendJson.setId(input.getId());
+        spendJson.setAmount(input.getAmount());
+        spendJson.setSpendDate(input.getSpendDate());
+        spendJson.setCategory(input.getCategory());
+        spendJson.setCurrency(input.getCurrency());
+        spendJson.setDescription(input.getDescription());
+        return spendJson;
     }
 }

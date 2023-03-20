@@ -76,7 +76,6 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
 
     const handleAddSpendingSubmit = (e) => {
         e.preventDefault();
-        console.log(isFormValid());
         if(isFormValid()) {
             const dataToSend = {...data, category: data.category?.value};
             postData({

@@ -3,6 +3,7 @@ package niffler.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
+import niffler.model.graphql.UpdateUserInfoInput;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -13,7 +14,7 @@ public class UserJson {
     @JsonProperty("id")
     private UUID id;
     @JsonProperty("username")
-    private String userName;
+    private String username;
     @JsonProperty("firstname")
     @Size(max = 30, message = "First name can`t be longer than 30 characters")
     private String firstname;
@@ -40,12 +41,12 @@ public class UserJson {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getFirstname() {
@@ -93,11 +94,20 @@ public class UserJson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
+        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, firstname, surname, currency, photo, friendState);
+        return Objects.hash(id, username, firstname, surname, currency, photo, friendState);
+    }
+
+    public static UserJson fromUpdateUserInfoInput(UpdateUserInfoInput input) {
+        UserJson userJson = new UserJson();
+        userJson.setCurrency(input.getCurrency());
+        userJson.setFirstname(input.getFirstname());
+        userJson.setPhoto(input.getPhoto());
+        userJson.setSurname(input.getSurname());
+        return userJson;
     }
 }

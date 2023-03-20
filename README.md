@@ -84,25 +84,33 @@ OpenJDK Runtime Environment Homebrew (build 19.0.1)
 
 # Запуск Niffler локальное в IDE:
 
-#### 1. Запустить фронтенд (сначала обновить зависимости)
+#### 1. Выбрать какой фронтенд предполагается запускать - REST или GraphQL, и перейти в соответсвующий каталог
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler-frontend
+```
+или для GraphQL:
+```posh
+Dmitriis-MacBook-Pro niffler % cd niffler-frontend-gql
+```
+
+#### 2. Запустить фронтенд (сначала обновить зависимости)
+```posh
 Dmitriis-MacBook-Pro niffler-frontend % npm i
 Dmitriis-MacBook-Pro niffler-frontend % npm run build:dev
 ```
 
-#### 2. Прописать run конфигурацию для всех сервисов niffler-* - Active profiles local
+#### 3. Прописать run конфигурацию для всех сервисов niffler-* - Active profiles local
 Для этого зайти в меню Run -> Edit Configurations -> выбрать main класс -> указать Active profiles: local
 [Инструкция](https://stackoverflow.com/questions/39738901/how-do-i-activate-a-spring-boot-profile-when-running-from-intellij).
 
-#### 3 Запустить сервис Niffler-auth c помощью gradle или командой Run в IDE:
+#### 4 Запустить сервис Niffler-auth c помощью gradle или командой Run в IDE:
 - Запустить сервис auth
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler-auth
 Dmitriis-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.active=local'
 ```
 Или просто перейдя к main-классу приложения NifflerAuthApplication выбрать run в IDEA (предварительно удостовериться что выполнен предыдущий пункт)
-#### 4  Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
+#### 5  Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
 
 
 # Запуск Niffler в докере:
@@ -113,7 +121,7 @@ Dmitriis-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.act
 
 #### 3. Выполнить docker login с созданным access_token (в инструкции это описано)
 
-#### 4. Прописать в etc/hosts элиас для Docker-имени фроненда:  127.0.0.1 niffler-frontend
+#### 4. Прописать в etc/hosts элиас для Docker-имени фронтенда:  127.0.0.1 niffler-frontend
 ```posh
 Dmitriis-MacBook-Pro niffler % vi /etc/hosts
 ```
@@ -132,9 +140,14 @@ Dmitriis-MacBook-Pro niffler % vi /etc/hosts
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler
 ```
-#### 6.  Запустить все сервисы
+#### 6.  Запустить все сервисы, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
+для REST:
 ```posh
 Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh
+```
+для GraphQL:
+```posh
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh gql
 ```
 
 
@@ -147,6 +160,7 @@ Niffler при запуске в докере будет работать для
 # Создание своего docker repository для форка Niffler и сборка своих докер контейнеров
 #### 1. Войти в свою УЗ на https://hub.docker.com/ и последовательно создать публичные репозитории
 - niffler-frontend
+- niffler-frontend-gql
 - niffler-userdata
 - niffler-spend
 - niffler-gateway
@@ -163,15 +177,21 @@ Niffler при запуске в докере будет работать для
 - docker-compose.yaml в корне проекта
 - docker-compose.test.yaml в корне проекта
 - docker.properties в модуле niffler-frontend
+- docker.properties в модуле niffler-frontend-gql
 
 #### 3. Перейти в корневой каталог проекта
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler
 ```
 
-#### 4.  Собрать все имеджи, запушить и запустить niffler одной командой
+#### 4.  Собрать все имеджи, запушить и запустить niffler одной командой, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
+для REST:
 ```posh
 Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh push
+```
+для GraphQL:
+```posh
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh gql push
 ```
 
 # Запуск e-2-e тестов в Docker network изолированно Niffler в докере:
@@ -179,10 +199,16 @@ Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh push
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler
 ```
-#### 2.  Запустить все сервисы и тесты
+#### 2.  Запустить все сервисы и тесты, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
+для REST:
 ```posh
 Dmitriis-MacBook-Pro  niffler % bash docker-compose-e2e.sh
 ```
+для GraphQL:
+```posh
+Dmitriis-MacBook-Pro  niffler % bash docker-compose-e2e.sh gql
+```
+
 #### 3.  Selenoid UI доступен по адресу: http://localhost:9090/
 
 #### 4.  Allure доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-e-2-e-tests/reports/latest/index.html
@@ -190,4 +216,4 @@ Dmitriis-MacBook-Pro  niffler % bash docker-compose-e2e.sh
 
 
 
-![Enjoy the Niffler](/niffler-frontend/public/images/niffler-logo.png)
+![Enjoy the Niffler](/niffler-frontend-gql/public/images/niffler-logo.png)

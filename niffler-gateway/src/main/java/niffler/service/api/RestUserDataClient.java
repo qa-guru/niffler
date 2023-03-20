@@ -112,6 +112,15 @@ public class RestUserDataClient {
     }
 
     public @Nonnull
+    UserJson acceptInvitationAndReturnFriend(@Nonnull String username,
+                                             @Nonnull FriendJson invitation) {
+        return acceptInvitation(username, invitation).stream()
+                .filter(friend -> friend.getUsername().equals(invitation.getUsername()))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public @Nonnull
     List<UserJson> declineInvitation(@Nonnull String username,
                                      @Nonnull FriendJson invitation) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -127,17 +136,18 @@ public class RestUserDataClient {
                 .block();
     }
 
-    public void addFriend(@Nonnull String username,
-                          @Nonnull FriendJson friend) {
+
+    public UserJson addFriend(@Nonnull String username,
+                              @Nonnull FriendJson friend) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/addFriend").queryParams(params).build().toUri();
 
-        webClient.post()
+        return webClient.post()
                 .uri(uri)
                 .body(Mono.just(friend), FriendJson.class)
                 .retrieve()
-                .bodyToMono(Void.class)
+                .bodyToMono(UserJson.class)
                 .block();
     }
 

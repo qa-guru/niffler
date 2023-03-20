@@ -28,7 +28,6 @@ export const PeopleTable = ({}) => {
         getData({
                 path: "/allUsers",
                 onSuccess: (data) => {
-                    console.log(data);
                     setAllUsers(data);
                 },
                 onFail: (err) => {
