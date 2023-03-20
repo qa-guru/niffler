@@ -131,7 +131,11 @@
     </xs:element>
 
     <xs:element name="addFriendResponse">
-        <xs:complexType/>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="user" type="tns:user"/>
+            </xs:sequence>
+        </xs:complexType>
     </xs:element>
 
     <xs:element name="removeFriendRequest">

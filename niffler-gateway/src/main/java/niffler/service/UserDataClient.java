@@ -27,11 +27,16 @@ public interface UserDataClient {
                                     @Nonnull FriendJson invitation);
 
     @Nonnull
+    UserJson acceptInvitationAndReturnFriend(@Nonnull String username,
+                                             @Nonnull FriendJson invitation);
+
+    @Nonnull
     List<UserJson> declineInvitation(@Nonnull String username,
                                      @Nonnull FriendJson invitation);
 
-    void addFriend(@Nonnull String username,
-                   @Nonnull FriendJson friend);
+    @Nonnull
+    UserJson addFriend(@Nonnull String username,
+                       @Nonnull FriendJson friend);
 
     @Nonnull
     List<UserJson> removeFriend(@Nonnull String username,

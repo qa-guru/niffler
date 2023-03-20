@@ -20,14 +20,14 @@ public class ProfileTest extends BaseTest {
     void userNameShouldBeUpdatedAfterChangingInProfile(@User UserJson user) {
         ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
                 .waitForPageLoaded()
-                .checkUsername(user.getUserName())
+                .checkUsername(user.getUsername())
                 .setName("Pizzly")
                 .submitProfile()
                 .checkSuccessMessage(SUCCESS_MSG);
 
         Selenide.refresh();
 
-        profilePage.checkUsername(user.getUserName())
+        profilePage.checkUsername(user.getUsername())
                 .checkName("Pizzly");
     }
 }

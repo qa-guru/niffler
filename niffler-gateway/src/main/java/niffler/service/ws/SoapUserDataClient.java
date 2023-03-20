@@ -7,6 +7,7 @@ import niffler.service.UserDataClient;
 import niffler.userdata.wsdl.AcceptInvitationRequest;
 import niffler.userdata.wsdl.AcceptInvitationResponse;
 import niffler.userdata.wsdl.AddFriendRequest;
+import niffler.userdata.wsdl.AddFriendResponse;
 import niffler.userdata.wsdl.AllUsersRequest;
 import niffler.userdata.wsdl.AllUsersResponse;
 import niffler.userdata.wsdl.CurrentUserRequest;
@@ -107,6 +108,14 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
     }
 
     @Override
+    public UserJson acceptInvitationAndReturnFriend(String username, FriendJson invitation) {
+        return acceptInvitation(username, invitation).stream()
+                .filter(friend -> friend.getUsername().equals(invitation.getUsername()))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    @Override
     public @Nonnull
     List<UserJson> declineInvitation(@Nonnull String username,
                                      @Nonnull FriendJson invitation) {
@@ -121,14 +130,15 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
     }
 
     @Override
-    public void addFriend(@Nonnull String username,
+    public UserJson addFriend(@Nonnull String username,
                           @Nonnull FriendJson friend) {
         AddFriendRequest request = new AddFriendRequest();
         request.setUsername(username);
         request.setFriend(friend.toJaxbFriend());
 
-        getWebServiceTemplate()
+        AddFriendResponse response = (AddFriendResponse) getWebServiceTemplate()
                 .marshalSendAndReceive(getDefaultUri(), request);
+        return UserJson.fromJaxb(response.getUser());
     }
 
     @Override

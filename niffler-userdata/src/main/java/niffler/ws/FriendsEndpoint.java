@@ -97,8 +97,10 @@ public class FriendsEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addFriendRequest")
     @ResponsePayload
     public AddFriendResponse addFriendRequest(@RequestPayload AddFriendRequest request) {
-        userService.addFriend(request.getUsername(), FriendJson.fromJaxb(request.getFriend()));
-        return new AddFriendResponse();
+        AddFriendResponse response = new AddFriendResponse();
+        UserJson friend = userService.addFriend(request.getUsername(), FriendJson.fromJaxb(request.getFriend()));
+        response.setUser(friend.toJaxbUser());
+        return response;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "removeFriendRequest")

@@ -52,8 +52,8 @@ public class ProfilePage extends BasePage<ProfilePage> {
     }
 
     @Step("Check userName: {0}")
-    public ProfilePage checkUsername(String userName) {
-        this.userName.should(text(userName));
+    public ProfilePage checkUsername(String username) {
+        this.userName.should(text(username));
         return this;
     }
 

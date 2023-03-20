@@ -18,7 +18,7 @@ public class LoginTest extends BaseTest {
     void mainPageShouldBeDisplayedAfterSuccessLogin(@User(selector = METHOD) UserJson user) {
         Selenide.open(WelcomePage.URL, WelcomePage.class)
                 .doLogin()
-                .fillLoginPage(user.getUserName(), user.getPassword())
+                .fillLoginPage(user.getUsername(), user.getPassword())
                 .submit()
                 .waitForPageLoaded();
     }

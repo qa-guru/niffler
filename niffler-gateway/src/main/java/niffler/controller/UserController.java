@@ -34,7 +34,7 @@ public class UserController {
     public UserJson updateUserInfo(@AuthenticationPrincipal Jwt principal,
                                    @Validated @RequestBody UserJson user) {
         String username = principal.getClaim("sub");
-        user.setUserName(username);
+        user.setUsername(username);
         return userDataClient.updateUserInfo(user);
     }
 

@@ -42,10 +42,10 @@ public class ApiAuthExtension implements BeforeEachCallback, AfterTestExecutionC
             userToLogin = context.getStore(API_LOGIN_USERS_NAMESPACE).get(testId, UserJson.class);
         } else {
             userToLogin = new UserJson();
-            userToLogin.setUserName(apiLoginAnnotation.username());
+            userToLogin.setUsername(apiLoginAnnotation.username());
             userToLogin.setPassword(apiLoginAnnotation.password());
         }
-        apiLogin(userToLogin.getUserName(), userToLogin.getPassword());
+        apiLogin(userToLogin.getUsername(), userToLogin.getPassword());
         Selenide.open(CFG.frontUrl());
         com.codeborne.selenide.SessionStorage sessionStorage = Selenide.sessionStorage();
         sessionStorage.setItem("codeChallenge", SessionStorageHolder.getInstance().getCodeChallenge());

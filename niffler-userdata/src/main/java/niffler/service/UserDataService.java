@@ -32,7 +32,7 @@ public class UserDataService {
 
     public @Nonnull
     UserJson update(@Nonnull UserJson user) {
-        UserEntity userEntity = userRepository.findByUsername(user.getUserName());
+        UserEntity userEntity = userRepository.findByUsername(user.getUsername());
         userEntity.setFirstname(user.getFirstname());
         userEntity.setSurname(user.getSurname());
         userEntity.setCurrency(user.getCurrency());

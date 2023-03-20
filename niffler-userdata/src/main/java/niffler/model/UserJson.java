@@ -15,7 +15,7 @@ public class UserJson {
     @JsonProperty("id")
     private UUID id;
     @JsonProperty("username")
-    private String userName;
+    private String username;
     @JsonProperty("firstname")
     private String firstname;
     @JsonProperty("surname")
@@ -39,12 +39,12 @@ public class UserJson {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getFirstname() {
@@ -91,7 +91,7 @@ public class UserJson {
         UserJson usr = new UserJson();
         usr.setPhoto(jaxbUser.getPhoto());
         usr.setId(UUID.fromString(jaxbUser.getId()));
-        usr.setUserName(jaxbUser.getUsername());
+        usr.setUsername(jaxbUser.getUsername());
         usr.setFirstname(jaxbUser.getFirstname());
         usr.setSurname(jaxbUser.getSurname());
         usr.setCurrency(CurrencyValues.valueOf(jaxbUser.getCurrency().name()));
@@ -102,7 +102,7 @@ public class UserJson {
         UserJson usr = new UserJson();
         byte[] photo = entity.getPhoto();
         usr.setId(entity.getId());
-        usr.setUserName(entity.getUsername());
+        usr.setUsername(entity.getUsername());
         usr.setFirstname(entity.getFirstname());
         usr.setSurname(entity.getSurname());
         usr.setCurrency(entity.getCurrency());
@@ -133,11 +133,11 @@ public class UserJson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
+        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, firstname, surname, currency, photo, friendState);
+        return Objects.hash(id, username, firstname, surname, currency, photo, friendState);
     }
 }
