@@ -1,0 +1,8 @@
+type Currency {
+    currency: CurrencyValues!
+    currencyRate: Float!
+}
+
+enum CurrencyValues {
+    RUB, USD, EUR, KZT
+}

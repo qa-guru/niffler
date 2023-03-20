@@ -1,0 +1,10 @@
+.spendings-table {
+    grid-template-columns:
+    minmax(50px, 0.2fr)
+    minmax(100px, 0.7fr)
+    minmax(120px, 0.9fr)
+    minmax(120px, 0.9fr)
+    minmax(150px, 2fr)
+    minmax(150px, 4fr)
+    minmax(100px, 0.7fr)
+}

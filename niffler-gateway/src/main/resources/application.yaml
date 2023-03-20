@@ -26,6 +26,9 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: 'http://127.0.0.1:9000'
+  graphql:
+    graphiql:
+      enabled: true
 
 grpc:
   client:

@@ -1,0 +1,22 @@
+type User {
+    id: ID!
+    username: String!
+    firstname: String
+    surname: String
+    currency: CurrencyValues!
+    photo: String
+    friendState: FriendState
+    friends: [User]
+    invitations: [User]
+}
+
+enum FriendState {
+    INVITE_SENT, INVITE_RECEIVED, FRIEND
+}
+
+input UpdateUserInfoInput {
+    firstname: String
+    surname: String
+    currency: CurrencyValues!
+    photo: String
+}

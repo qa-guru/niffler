@@ -1,0 +1,7 @@
+type Query {
+    categories: [Category]
+    currencies: [Currency]
+    users: [User]
+    user: User
+    spends(filterPeriod: FilterPeriod, filterCurrency: CurrencyValues): [Spend]
+}
