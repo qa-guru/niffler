@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import niffler.userdata.wsdl.Friend;
 
 public class FriendJson {
     @NotNull(message = "Username can not be null")
@@ -18,5 +19,17 @@ public class FriendJson {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public static FriendJson fromJaxb(Friend jaxbFriend) {
+        FriendJson friend = new FriendJson();
+        friend.setUsername(jaxbFriend.getUsername());
+        return friend;
+    }
+
+    public Friend toJaxbFriend() {
+        Friend f = new Friend();
+        f.setUsername(getUsername());
+        return f;
     }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import niffler.data.CurrencyValues;
 import niffler.data.UserEntity;
+import niffler_userdata.Currency;
+import niffler_userdata.User;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -85,6 +87,17 @@ public class UserJson {
         this.friendState = friendState;
     }
 
+    public static UserJson fromJaxb(User jaxbUser) {
+        UserJson usr = new UserJson();
+        usr.setPhoto(jaxbUser.getPhoto());
+        usr.setId(UUID.fromString(jaxbUser.getId()));
+        usr.setUserName(jaxbUser.getUsername());
+        usr.setFirstname(jaxbUser.getFirstname());
+        usr.setSurname(jaxbUser.getSurname());
+        usr.setCurrency(CurrencyValues.valueOf(jaxbUser.getCurrency().name()));
+        return usr;
+    }
+
     public static UserJson fromEntity(UserEntity entity) {
         UserJson usr = new UserJson();
         byte[] photo = entity.getPhoto();
@@ -101,6 +114,18 @@ public class UserJson {
         UserJson userJson = fromEntity(entity);
         userJson.setFriendState(friendState);
         return userJson;
+    }
+
+    public User toJaxbUser() {
+        User u = new User();
+        u.setId(getId().toString());
+        u.setUsername(getFirstname());
+        u.setFirstname(getFirstname());
+        u.setSurname(getSurname());
+        u.setCurrency(Currency.valueOf(getCurrency().name()));
+        u.setPhoto(getPhoto());
+        u.setFriendState(getFriendState() == null ? niffler_userdata.FriendState.VOID : niffler_userdata.FriendState.valueOf(getFriendState().name()));
+        return u;
     }
 
     @Override
