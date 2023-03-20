@@ -1,6 +1,6 @@
 server:
   port: 9000
-# ONLY FOR TESTING
+  # ONLY FOR TESTING
   servlet:
     session:
       cookie:

@@ -3,6 +3,7 @@ package niffler.service.ws;
 import jakarta.annotation.Nonnull;
 import niffler.model.FriendJson;
 import niffler.model.UserJson;
+import niffler.service.UserDataClient;
 import niffler.userdata.wsdl.AcceptInvitationRequest;
 import niffler.userdata.wsdl.AcceptInvitationResponse;
 import niffler.userdata.wsdl.AddFriendRequest;
@@ -20,45 +21,53 @@ import niffler.userdata.wsdl.RemoveFriendRequest;
 import niffler.userdata.wsdl.RemoveFriendResponse;
 import niffler.userdata.wsdl.UpdateUserInfoRequest;
 import niffler.userdata.wsdl.UpdateUserInfoResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
 import java.util.List;
 
-public class SoapUserDataClient extends WebServiceGatewaySupport {
+@Component
+@Qualifier("soap")
+public class SoapUserDataClient extends WebServiceGatewaySupport implements UserDataClient {
 
+    @Override
     public @Nonnull
     UserJson updateUserInfo(@Nonnull UserJson user) {
         UpdateUserInfoRequest request = new UpdateUserInfoRequest();
         request.setUser(user.toJaxbUser());
 
         UpdateUserInfoResponse response = (UpdateUserInfoResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri() + "/userdata", request);
+                .marshalSendAndReceive(getDefaultUri(), request);
 
         return UserJson.fromJaxb(response.getUser());
     }
 
+    @Override
     public @Nonnull
     UserJson currentUser(@Nonnull String username) {
         CurrentUserRequest request = new CurrentUserRequest();
         request.setUsername(username);
 
         CurrentUserResponse response = (CurrentUserResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri() + "/userdata", request);
+                .marshalSendAndReceive(getDefaultUri(), request);
 
         return UserJson.fromJaxb(response.getUser());
     }
 
+    @Override
     public @Nonnull
     List<UserJson> allUsers(@Nonnull String username) {
         AllUsersRequest request = new AllUsersRequest();
         request.setUsername(username);
 
         AllUsersResponse response = (AllUsersResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri() + "/userdata", request);
+                .marshalSendAndReceive(getDefaultUri(), request);
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }
 
+    @Override
     public @Nonnull
     List<UserJson> friends(@Nonnull String username, boolean includePending) {
         FriendsRequest request = new FriendsRequest();
@@ -66,22 +75,24 @@ public class SoapUserDataClient extends WebServiceGatewaySupport {
         request.setIncludePending(includePending);
 
         FriendsResponse response = (FriendsResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri() + "/userdata", request);
+                .marshalSendAndReceive(getDefaultUri(), request);
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }
 
+    @Override
     public @Nonnull
     List<UserJson> invitations(@Nonnull String username) {
         InvitationsRequest request = new InvitationsRequest();
         request.setUsername(username);
 
         InvitationsResponse response = (InvitationsResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri() + "/userdata", request);
+                .marshalSendAndReceive(getDefaultUri(), request);
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }
 
+    @Override
     public @Nonnull
     List<UserJson> acceptInvitation(@Nonnull String username,
                                     @Nonnull FriendJson invitation) {
@@ -90,11 +101,12 @@ public class SoapUserDataClient extends WebServiceGatewaySupport {
         request.setInvitation(invitation.toJaxbFriend());
 
         AcceptInvitationResponse response = (AcceptInvitationResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri() + "/userdata", request);
+                .marshalSendAndReceive(getDefaultUri(), request);
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }
 
+    @Override
     public @Nonnull
     List<UserJson> declineInvitation(@Nonnull String username,
                                      @Nonnull FriendJson invitation) {
@@ -103,11 +115,12 @@ public class SoapUserDataClient extends WebServiceGatewaySupport {
         request.setInvitation(invitation.toJaxbFriend());
 
         DeclineInvitationResponse response = (DeclineInvitationResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri() + "/userdata", request);
+                .marshalSendAndReceive(getDefaultUri(), request);
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }
 
+    @Override
     public void addFriend(@Nonnull String username,
                           @Nonnull FriendJson friend) {
         AddFriendRequest request = new AddFriendRequest();
@@ -115,9 +128,10 @@ public class SoapUserDataClient extends WebServiceGatewaySupport {
         request.setFriend(friend.toJaxbFriend());
 
         getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri() + "/userdata", request);
+                .marshalSendAndReceive(getDefaultUri(), request);
     }
 
+    @Override
     public @Nonnull
     List<UserJson> removeFriend(@Nonnull String username,
                                 @Nonnull String friendUsername) {
@@ -126,7 +140,7 @@ public class SoapUserDataClient extends WebServiceGatewaySupport {
         request.setFriendUsername(friendUsername);
 
         RemoveFriendResponse response = (RemoveFriendResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri() + "/userdata", request);
+                .marshalSendAndReceive(getDefaultUri(), request);
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }

@@ -17,21 +17,21 @@ export const ProfileAvatar = ({username, value, handleChangeValue}) => {
                     setError(null);
                 }}/>
             </span>
-                <p className="edit-avatar__header">Update Avatar</p>
-                <input className="edit-avatar__input"
-                       type="file"
-                       name="avatar"
-                       accept="image/png, image/jpeg"
-                       onChange={(e) => {
-                           const selectedFile = e.target.files[0];
-                           if (selectedFile.size > 3145728 ) {
-                               e.target.value = null;
-                               setError("Maximum file length is 3MB");
-                           } else {
-                               handleChangeValue(selectedFile);
-                               setError(null);
-                           }
-                       }} required/>
+            <p className="edit-avatar__header">Update Avatar</p>
+            <input className="edit-avatar__input"
+                   type="file"
+                   name="avatar"
+                   accept="image/png, image/jpeg"
+                   onChange={(e) => {
+                       const selectedFile = e.target.files[0];
+                       if (selectedFile.size > 3145728) {
+                           e.target.value = null;
+                           setError("Maximum file length is 3MB");
+                       } else {
+                           handleChangeValue(selectedFile);
+                           setError(null);
+                       }
+                   }} required/>
         </div>
     );
 
@@ -42,7 +42,7 @@ export const ProfileAvatar = ({username, value, handleChangeValue}) => {
                 setError(null);
             }}>
                 <img className="profile__avatar"
-                     src={ value ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
+                     src={value ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
                      width={250} height={250}/>
             </button>
         </div>

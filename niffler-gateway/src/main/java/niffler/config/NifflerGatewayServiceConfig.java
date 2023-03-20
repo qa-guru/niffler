@@ -35,7 +35,7 @@ public class NifflerGatewayServiceConfig {
     }
 
     @Bean
-    public SoapUserDataClient countryClient(Jaxb2Marshaller marshaller) {
+    public SoapUserDataClient userDataClient(Jaxb2Marshaller marshaller) {
         SoapUserDataClient client = new SoapUserDataClient();
         client.setDefaultUri(nifflerUserdataBaseUri + "/ws");
         client.setMarshaller(marshaller);

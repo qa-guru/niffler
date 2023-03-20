@@ -10,7 +10,7 @@ export const LoginPage = () => {
     sessionStorage.setItem('codeVerifier', verifier);
     const codeChallenge = generateCodeChallenge();
     sessionStorage.setItem('codeChallenge', codeChallenge);
-    const { user } = useContext(UserContext);
+    const {user} = useContext(UserContext);
 
     return (
         <>
@@ -22,7 +22,7 @@ export const LoginPage = () => {
                              height={150} alt="Logo Niffler"></img>
                         <div className={"main__links"}>
                             <Link className={"main__link"} to={'/redirect'}>Login</Link>
-                            <a className={"main__link"} href={`${process.env.REACT_APP_AUTH_URL}/register`} >Register</a>
+                            <a className={"main__link"} href={`${process.env.REACT_APP_AUTH_URL}/register`}>Register</a>
                         </div>
                     </div>
                 </div>

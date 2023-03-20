@@ -1,7 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
-const dotenv = require('dotenv').config({ path: `./.env.${process.env.REACT_APP_ENV}`});
+const dotenv = require('dotenv').config({path: `./.env.${process.env.REACT_APP_ENV}`});
 
 const env = dotenv.parsed;
 

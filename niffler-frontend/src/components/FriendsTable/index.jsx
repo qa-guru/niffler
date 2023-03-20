@@ -58,7 +58,8 @@ export const FriendsTable = () => {
                            onDecline={handleDeclineFriend}
                            onDelete={handleDeleteFriend}
             />
-            {(friends?.length === 0 && invitations.length === 0) && (<div style={{margin: 20}}>There are no friends yet!</div>)}
+            {(friends?.length === 0 && invitations.length === 0) && (
+                <div style={{margin: 20}}>There are no friends yet!</div>)}
         </>
     )
 }

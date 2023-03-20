@@ -23,17 +23,17 @@ public class NifflerUserdataServiceConfig {
     }
 
     @Bean(name = "userdata")
-    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema countriesSchema) {
+    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema userdataSchema) {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName("NifflerUserdataPort");
         wsdl11Definition.setLocationUri("/ws");
         wsdl11Definition.setTargetNamespace("niffler-userdata");
-        wsdl11Definition.setSchema(countriesSchema);
+        wsdl11Definition.setSchema(userdataSchema);
         return wsdl11Definition;
     }
 
     @Bean
-    public XsdSchema countriesSchema() {
+    public XsdSchema userdataSchema() {
         return new SimpleXsdSchema(new ClassPathResource("userdata.xsd"));
     }
 }

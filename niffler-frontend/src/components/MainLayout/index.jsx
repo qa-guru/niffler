@@ -16,15 +16,15 @@ export const MainLayout = () => {
     const [statistic, setStatistic] = useState([]);
     const [isGraphOutdated, setIsGraphOutdated] = useState(false);
 
-    const { user } = useContext(UserContext);
+    const {user} = useContext(UserContext);
 
     const [filter, setFilter] = useState(null);
-    const value = { filter, setFilter };
+    const value = {filter, setFilter};
 
     const [currencies, setCurrencies] = useState([]);
 
     const [selectedCurrency, setSelectedCurrency] = useState({value: "ALL", label: "ALL"});
-    const curContext = { selectedCurrency, setSelectedCurrency };
+    const curContext = {selectedCurrency, setSelectedCurrency};
 
     const getStatistics = () => getData({
         path: "/statistic",
@@ -42,7 +42,7 @@ export const MainLayout = () => {
 
     const getSpends = () => {
         getData({
-            path:`/spends`,
+            path: `/spends`,
             params: {
                 filterPeriod: filter === "ALL" ? null : filter,
                 filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
@@ -127,7 +127,7 @@ export const MainLayout = () => {
             <div className={"main-content"}>
                 <FilterContext.Provider value={value}>
                     <CurrencyContext.Provider value={curContext}>
-                        <AddSpending addSpendingCallback={addNewSpendingInTableCallback} categories={categories} />
+                        <AddSpending addSpendingCallback={addNewSpendingInTableCallback} categories={categories}/>
                         <SpendingStatistics statistic={statistic} defaultCurrency={user?.currency}/>
                         <SpendingHistory spendings={spendings}
                                          currencies={currencies}
