@@ -138,7 +138,6 @@ Dmitriis-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.act
 
 #### 5  Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
 
-
 # Запуск Niffler в докере:
 
 #### 1. Создать бесплатную учетную запись на https://hub.docker.com/ (если отсутствует)

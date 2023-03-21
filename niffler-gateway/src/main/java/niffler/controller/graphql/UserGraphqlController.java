@@ -6,6 +6,7 @@ import niffler.model.UserJson;
 import niffler.model.graphql.UpdateUserInfoInput;
 import niffler.model.graphql.UserJsonGQL;
 import niffler.service.api.RestUserDataClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -22,6 +23,7 @@ public class UserGraphqlController {
 
     private final RestUserDataClient restUserDataClient;
 
+    @Autowired
     public UserGraphqlController(RestUserDataClient restUserDataClient) {
         this.restUserDataClient = restUserDataClient;
     }

@@ -1,6 +1,7 @@
 package niffler.config;
 
 import niffler.service.ws.SoapUserDataClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ public class NifflerGatewayServiceConfig {
 
     private final String nifflerUserdataBaseUri;
 
+    @Autowired
     public NifflerGatewayServiceConfig(@Value("${niffler-userdata.base-uri}") String nifflerUserdataBaseUri) {
         this.nifflerUserdataBaseUri = nifflerUserdataBaseUri;
     }

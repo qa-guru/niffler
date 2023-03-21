@@ -9,6 +9,7 @@ import niffler.model.graphql.UpdateSpendInput;
 import niffler.service.StatisticAggregator;
 import niffler.service.api.RestSpendClient;
 import niffler.service.api.RestUserDataClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -28,7 +29,7 @@ public class SpendGraphqlController {
     private final RestUserDataClient restUserDataClient;
     private final StatisticAggregator statisticAggregator;
 
-
+    @Autowired
     public SpendGraphqlController(RestSpendClient restSpendClient, RestUserDataClient restUserDataClient, StatisticAggregator statisticAggregator) {
         this.restSpendClient = restSpendClient;
         this.restUserDataClient = restUserDataClient;
