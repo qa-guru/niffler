@@ -2,7 +2,7 @@
     text-align: center;
     box-shadow: 0 0 20px 20px black;
     background-image: url("./../../images/old-paper-background-texture-37.jpg");
-    border-radius: 3px;
+    border-radius: 8px;
     margin: 0 auto;
     max-width: 460px;
     display: flex;
@@ -35,9 +35,13 @@
     font-size: 14px;
     padding: 10px;
     border: 2px solid black;
-    border-radius: 3px;
+    border-radius: 8px;
     font-weight: normal;
-    opacity: 0.5;
-    background-color: white;
+    background-color: #eeedea;
     color: black;
+}
+
+.form__error {
+    color: var(--color-error);
+    font-size: 12px;
 }

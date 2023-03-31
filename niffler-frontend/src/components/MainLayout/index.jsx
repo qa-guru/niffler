@@ -3,17 +3,20 @@ import {useLoadedData} from "../../api/hooks";
 import {CurrencyContext} from "../../contexts/CurrencyContext";
 import {FilterContext} from "../../contexts/FilterContext";
 import {UserContext} from "../../contexts/UserContext";
+import {showSuccess} from "../../toaster/toaster";
 import {AddSpending} from "../AddSpending";
-import {Header} from "../Header";
+import {PageContainer} from "../PageContainer";
 import {SpendingHistory} from "../SpendingHistory";
 import {useContext, useEffect, useState} from "react";
 import {SpendingStatistics} from "../SpendingStatistics";
 
-export const MainLayout = ({showSuccess}) => {
+export const MainLayout = () => {
     const [spendings, setSpendings] = useState([]);
     const [categories, setCategories] = useState({});
     const [statistic, setStatistic] = useState([]);
-    const { user, setUser } = useContext(UserContext);
+    const [isGraphOutdated, setIsGraphOutdated] = useState(false);
+
+    const { user } = useContext(UserContext);
 
     const [filter, setFilter] = useState(null);
     const value = { filter, setFilter };
@@ -87,7 +90,7 @@ export const MainLayout = ({showSuccess}) => {
 
     useEffect(() => {
         getStatistics();
-    }, [filter, selectedCurrency]);
+    }, [filter, selectedCurrency, isGraphOutdated]);
 
 
     const addNewSpendingInTableCallback = (data) => {
@@ -98,7 +101,6 @@ export const MainLayout = ({showSuccess}) => {
             path: "/statistic",
             onSuccess: (data) => {
                 setStatistic(data);
-                showSuccess("Spending successfully added!")
             },
             onFail: (error) => {
                 console.log(error);
@@ -121,22 +123,22 @@ export const MainLayout = ({showSuccess}) => {
     }
 
     return (
-        <div className={"main-container"}>
-            <Header />
-            <main className={"main"}>
-                <div className={"main-content"}>
-                    <FilterContext.Provider value={value}>
-                        <CurrencyContext.Provider value={curContext}>
-                            <AddSpending addSpendingCallback={addNewSpendingInTableCallback} categories={categories} />
-                            <SpendingStatistics statistic={statistic} defaultCurrency={user?.currency} />
-                            <SpendingHistory spendings={spendings} currencies={currencies} handleDeleteItems={handleDeleteItems}/>
-                        </CurrencyContext.Provider>
-                    </FilterContext.Provider>
-                </div>
-            </main>
-            <footer className={"footer"}>
-                Study project for QA Automation Advanced. 2023
-            </footer>
-        </div>
-    )
+        <PageContainer>
+            <div className={"main-content"}>
+                <FilterContext.Provider value={value}>
+                    <CurrencyContext.Provider value={curContext}>
+                        <AddSpending addSpendingCallback={addNewSpendingInTableCallback} categories={categories} />
+                        <SpendingStatistics statistic={statistic} defaultCurrency={user?.currency}/>
+                        <SpendingHistory spendings={spendings}
+                                         currencies={currencies}
+                                         categories={categories}
+                                         handleDeleteItems={handleDeleteItems}
+                                         isGraphOutdated={isGraphOutdated}
+                                         setIsGraphOutdated={setIsGraphOutdated}
+                        />
+                    </CurrencyContext.Provider>
+                </FilterContext.Provider>
+            </div>
+        </PageContainer>
+    );
 }

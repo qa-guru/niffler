@@ -5,18 +5,20 @@
 }
 
 .react-datepicker__input-container input {
-    font-family: "PTRootUIWeb";
+    font-family: "PTRootUIWeb", var(--font-fallback);;
     width: 100%;
     display: block;
     margin: 5px 0;
-
     box-sizing: border-box;
     font-size: 14px;
     padding: 10px;
     border: 2px solid black;
-    border-radius: 3px;
+    border-radius: 8px;
     font-weight: normal;
-    opacity: 0.5;
-    background-color: white;
+    background-color: #eeedea;
     color: black;
+}
+
+.calendar-wrapper__error .react-datepicker__input-container input {
+    border: 2px solid var(--color-error);
 }

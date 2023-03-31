@@ -1,13 +1,11 @@
-import dayjs from "dayjs";
 import {useContext} from "react";
 import {TableSelectionContext} from "../../contexts/TableSelectionContext";
-import {Checkbox} from "../Checkbox";
 import {BatchCheckbox} from "../Checkbox/BatchCheckbox";
+import {SpendingRow} from "../SpendingRow";
 
-export const SpendingTable = ({spendings}) => {
+export const SpendingTable = ({spendings, isGraphOutdated, setIsGraphOutdated, categories}) => {
 
     const {selectedIds, setSelectedIds, allIds} = useContext(TableSelectionContext);
-    console.log(allIds);
 
     const handleSingleClick = (id) => {
         selectedIds?.includes(id)
@@ -30,19 +28,20 @@ export const SpendingTable = ({spendings}) => {
                     <th>Currency</th>
                     <th>Category</th>
                     <th>Description</th>
+                    <th></th>
                 </tr>
                 </thead>
 
                 <tbody>
                 {spendings?.map((spending) => (
-                    <tr key={spending?.id}>
-                        <td><Checkbox id={spending?.id} handleSingleClick={handleSingleClick} selected={selectedIds.includes(spending?.id)}/></td>
-                        <td>{dayjs(spending?.spendDate).format('DD MMM YY')}</td>
-                        <td>{spending?.amount}</td>
-                        <td>{spending?.currency}</td>
-                        <td>{spending?.category}</td>
-                        <td>{spending?.description}</td>
-                    </tr>
+                    <SpendingRow key={spending.id}
+                                 spending={spending}
+                                 handleCheckboxClick={handleSingleClick}
+                                 isSelected={selectedIds.includes(spending?.id)}
+                                 isGraphOutdated={isGraphOutdated}
+                                 setIsGraphOutdated={setIsGraphOutdated}
+                                 categories={categories}
+                    />
                 ))}
                 </tbody>
             </table>

@@ -18,9 +18,9 @@ public enum EmfContext {
             Map<String, String> settings = new HashMap<>();
             settings.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
             settings.put("hibernate.connection.driver_class", "org.postgresql.Driver");
-            settings.put("hibernate.connection.username", "postgres");
-            settings.put("hibernate.connection.password", "secret");
-            settings.put("hibernate.connection.url", dataBase.url);
+            settings.put("hibernate.connection.username", dataBase.getUser());
+            settings.put("hibernate.connection.password", dataBase.getPassword());
+            settings.put("hibernate.connection.url", dataBase.getUrl());
 
             this.emfContext.put(
                     dataBase, new ThreadLocalEntityManagerFactory(

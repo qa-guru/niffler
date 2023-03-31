@@ -32,7 +32,7 @@ public class SpendEntity {
     @Enumerated(EnumType.STRING)
     private CurrencyValues currency;
 
-    @Column(name = "spend_date", nullable = false)
+    @Column(name = "spend_date" , columnDefinition = "DATE", nullable = false)
     private Date spendDate;
 
     @Column(nullable = false)

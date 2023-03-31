@@ -1,10 +1,11 @@
 package niffler.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import niffler.data.CurrencyValues;
 import niffler.data.UserEntity;
 
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -20,7 +21,10 @@ public class UserJson {
     @JsonProperty("currency")
     private CurrencyValues currency;
     @JsonProperty("photo")
-    private byte[] photo;
+    private String photo;
+    @JsonProperty("friendState")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private FriendState friendState;
 
     public UserJson() {
     }
@@ -65,23 +69,38 @@ public class UserJson {
         this.currency = currency;
     }
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public FriendState getFriendState() {
+        return friendState;
+    }
+
+    public void setFriendState(FriendState friendState) {
+        this.friendState = friendState;
     }
 
     public static UserJson fromEntity(UserEntity entity) {
         UserJson usr = new UserJson();
+        byte[] photo = entity.getPhoto();
         usr.setId(entity.getId());
         usr.setUserName(entity.getUsername());
         usr.setFirstname(entity.getFirstname());
         usr.setSurname(entity.getSurname());
         usr.setCurrency(entity.getCurrency());
-        usr.setPhoto(entity.getPhoto());
+        usr.setPhoto(photo != null && photo.length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null);
         return usr;
+    }
+
+    public static UserJson fromEntity(UserEntity entity, FriendState friendState) {
+        UserJson userJson = fromEntity(entity);
+        userJson.setFriendState(friendState);
+        return userJson;
     }
 
     @Override
@@ -89,13 +108,11 @@ public class UserJson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Arrays.equals(photo, userJson.photo);
+        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, userName, firstname, surname, currency);
-        result = 31 * result + Arrays.hashCode(photo);
-        return result;
+        return Objects.hash(id, userName, firstname, surname, currency, photo, friendState);
     }
 }

@@ -27,11 +27,11 @@ dependencies {
     testImplementation 'org.springframework:spring-jdbc:6.0.4'
     testImplementation 'org.postgresql:postgresql:42.5.3'
     testImplementation 'org.hibernate:hibernate-core:6.1.7.Final'
+    testImplementation 'org.springframework.security:spring-security-crypto:6.0.1'
     implementation("io.qameta.allure:allure-junit5:2.20.1") {
         exclude group: "org.junit.platform"
         exclude group: "org.junit.jupiter"
     }
-    testImplementation 'com.codeborne:selenide:6.11.1'
 }
 
 test {

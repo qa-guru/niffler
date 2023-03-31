@@ -1,6 +1,6 @@
 package niffler.jupiter;
 
-import niffler.data.PostgresSpringJdbcUsersDAO;
+import niffler.data.dao.PostgresSpringJdbcUsersDAO;
 import niffler.data.jpa.PostgresHibernateUsersDAO;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
