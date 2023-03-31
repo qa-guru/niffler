@@ -1,15 +1,15 @@
 package niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
 @Data
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 public class UserJson {
     @JsonProperty("id")
     private UUID id;

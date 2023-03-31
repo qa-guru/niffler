@@ -1,10 +1,10 @@
 package niffler.test;
 
-import niffler.jupiter.MyFullExtension;
+import niffler.jupiter.FullCallbackExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(MyFullExtension.class)
+@ExtendWith(FullCallbackExtension.class)
 public class ExtensionContextMethodsTest extends BaseTest {
 
     /*
