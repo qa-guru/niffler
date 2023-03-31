@@ -1,0 +1,133 @@
+@font-face {
+    font-family: "PTRootUIWeb";
+    src: url("../fonts/PlayfairDisplaySC-Regular.woff2") format("woff2"),
+    url("../fonts/PlayfairDisplaySC-Regular.woff") format("woff"),
+    url("../fonts/PlayfairDisplaySC-Regular.ttf") format("ttf");
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "PTRootUIWeb", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: black;
+}
+
+.content {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("../images/forest-back.jpeg");
+    background-size: cover;
+    background-position: center;
+}
+
+.form {
+    text-align: center;
+    padding: 10px;
+    box-shadow: 0 0 20px 20px black;
+    background-image: url("../images/background.jpg");
+    border-radius: 8px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.form__header {
+    margin-top: 60px;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    text-align: center;
+}
+
+.form__label {
+    position: relative;
+    max-width: 350px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-weight: 700;
+}
+
+.form__input {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+    font-family: "PTRootUIWeb", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    box-sizing: border-box;
+    font-size: 14px;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 8px;
+    font-weight: normal;
+    background-color: #eeedea;
+    color: black;
+    text-transform: none;
+}
+
+.form__password-button {
+    position: absolute;
+    background-image: url("../images/eye.svg");
+    background-size: contain;
+    background-color: transparent;
+    right: 10px;
+    top: 25px;
+    border: none;
+    width: 25px;
+    height: 25px;
+    z-index: 5;
+}
+
+.form__password-button_active {
+    background-image: url("../images/eye-active.svg");
+}
+
+.form__password-button:hover {
+    cursor: pointer;
+}
+
+.form__submit {
+    font-family: "PTRootUIWeb", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    display: block;
+    box-sizing: border-box;
+    max-width: 350px;
+    width: 100%;
+    padding: 15px 30px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    border-radius: 8px;
+    border: 2px solid black;
+    background-color: #eeedea;
+    color: black;
+    font-weight: 700;
+}
+
+.form__submit:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.form__error {
+    color: #a10b0b;
+    font-size: 14px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}

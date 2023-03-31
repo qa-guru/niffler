@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Login to Niffler</title>
+    <link rel="icon" th:href="@{images/favicon.ico}"/>
+    <link th:href="@{styles/styles.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<main class="content">
+    <form class="form" action="#" th:action="@{/login}" method="post">
+        <h1 class="form__header">Welcome to Niffler. The coin keeper</h1>
+        <img src="../static/images/niffler-logo.png" width="90" th:src="@{images/niffler-logo.png}" alt="Niffler logo"/>
+        <p class="form__paragraph">Please sign in</p>
+        <div th:if="${param.error}">
+            <p class="form__error">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+        </div>
+        <div th:if="${param.logout}">
+            <p class="text-warning">You have been logged out.</p>
+        </div>
+        <label class="form__label">Username:
+            <input class="form__input" type="text" name="username" placeholder="Type your username" required/>
+        </label>
+        <label class="form__label">Password:
+            <input class="form__input" type="password" name="password" placeholder="Type your password" required/>
+            <button type="button" class="form__password-button"></button>
+        </label>
+        <button class="form__submit" type="submit">
+            Sign In
+        </button>
+        <p class="form__paragraph">Have no account? <a th:href="@{/register}">Sign up!</a></p>
+    </form>
+</main>
+<script>
+    const passwordButton = document.querySelector(".form__password-button");
+    const passwordInput = document.querySelector("[name=password]");
+
+    const togglePasswordInputType = (inputType) => {
+        return inputType === "password" ? "text" : "password";
+    }
+
+    const togglePasswordButtonClass = () => {
+        passwordButton.classList.toggle("form__password-button_active");
+    }
+
+    const handlePasswordButtonClick = () => {
+        passwordInput.setAttribute("type", togglePasswordInputType(passwordInput.getAttribute("type")));
+        togglePasswordButtonClass();
+    }
+
+    passwordButton.addEventListener("click", handlePasswordButtonClick);
+</script>
+</body>
+</html>

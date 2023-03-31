@@ -27,6 +27,12 @@ public class SimpleApiTest {
     @ParameterizedTest
     void updateUserInfo(@UserData UserJson user) throws Exception {
         UserJson updatedInfo = nifflerUserdataClient.updateUserInfo(user);
+
         Assertions.assertNotNull(updatedInfo.getId());
+        Assertions.assertEquals(user.getUserName(), updatedInfo.getUserName());
+        Assertions.assertEquals(user.getFirstname(), updatedInfo.getFirstname());
+        Assertions.assertEquals(user.getSurname(), updatedInfo.getSurname());
+        Assertions.assertEquals(user.getCurrency(), updatedInfo.getCurrency());
+        Assertions.assertEquals(user.getPhoto(), updatedInfo.getPhoto());
     }
 }
