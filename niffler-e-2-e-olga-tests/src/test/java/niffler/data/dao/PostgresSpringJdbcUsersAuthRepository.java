@@ -2,7 +2,7 @@ package niffler.data.dao;
 
 import niffler.data.AuthUserEntityRowMapper;
 import niffler.data.DataBase;
-import niffler.data.DataSourceContext;
+import niffler.data.jdbc.DataSourceContext;
 import niffler.data.entity.UserAuthEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static niffler.data.entity.UserAuthEntity.Authority.READ;
 import static niffler.data.entity.UserAuthEntity.Authority.WRITE;
 
-public class PostgresSpringJdbcUsersRepository implements UsersRepository{
+public class PostgresSpringJdbcUsersAuthRepository implements UsersAuthRepository {
 
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSourceContext.INSTANCE.getDataSource(DataBase.AUTH));
 

@@ -1,5 +1,6 @@
-package niffler.data;
+package niffler.data.jdbc;
 
+import niffler.data.DataBase;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;

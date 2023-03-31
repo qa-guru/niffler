@@ -1,11 +1,14 @@
 package niffler.data.dao;
 
-import niffler.data.entity.UserAuthEntity;
+import niffler.data.entity.UsersEntity;
 
-public interface UsersRepository {
-    UserAuthEntity createUserWithReadAuthority(UserAuthEntity userAuthEntity);
+public interface UsersRepository extends DAO {
+    UsersEntity getByUsername(String username);
 
-    UserAuthEntity createUserWithReadAndWriteAuthority(UserAuthEntity userAuthEntity);
+    void addUser(UsersEntity usersEntity);
 
-    UserAuthEntity getByUsername(String username);
+    void updateUser(UsersEntity usersEntity);
+
+    void removeUser(UsersEntity usersEntity);
+
 }

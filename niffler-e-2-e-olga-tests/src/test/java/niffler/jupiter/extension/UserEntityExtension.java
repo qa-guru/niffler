@@ -15,7 +15,7 @@ import java.util.List;
 public class UserEntityExtension implements BeforeEachCallback, AfterEachCallback {
 
     public static final ExtensionContext.Namespace NAMESPACE
-            = ExtensionContext.Namespace.create(UsersExtension.class);
+            = ExtensionContext.Namespace.create(niffler.jupiter.extension.UserExtension.class);
 
     @Override
     public void beforeEach(ExtensionContext context) throws IllegalAccessException {

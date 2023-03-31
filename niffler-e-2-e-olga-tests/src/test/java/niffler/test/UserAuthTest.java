@@ -1,13 +1,13 @@
 package niffler.test;
 
-import niffler.data.dao.PostgresSpringJdbcUsersRepository;
-import niffler.data.dao.UsersRepository;
+import niffler.data.dao.PostgresSpringJdbcUsersAuthRepository;
+import niffler.data.dao.UsersAuthRepository;
 import niffler.data.entity.UserAuthEntity;
 import org.junit.jupiter.api.Test;
 
 public class UserAuthTest {
 
-    UsersRepository usersRepository = new PostgresSpringJdbcUsersRepository();
+    UsersAuthRepository usersAuthRepository = new PostgresSpringJdbcUsersAuthRepository();
 
     UserAuthEntity userAuthEntityWrite = UserAuthEntity.builder()
             .username("UserWrite")
@@ -21,8 +21,8 @@ public class UserAuthTest {
 
     @Test
     void createUsers() {
-        UserAuthEntity createdWrite = usersRepository.createUserWithReadAndWriteAuthority(userAuthEntityWrite);
-        UserAuthEntity createdRead = usersRepository.createUserWithReadAuthority(userAuthEntityRead);
+        UserAuthEntity createdWrite = usersAuthRepository.createUserWithReadAndWriteAuthority(userAuthEntityWrite);
+        UserAuthEntity createdRead = usersAuthRepository.createUserWithReadAuthority(userAuthEntityRead);
 
         System.out.println(createdWrite);
         System.out.println(createdRead);
