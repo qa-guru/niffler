@@ -29,7 +29,7 @@ public class FriendsController {
     private final UserDataClient userDataClient;
 
     @Autowired
-    public FriendsController(@Qualifier("soap") UserDataClient userDataClient) {
+    public FriendsController(@Qualifier("rest") UserDataClient userDataClient) {
         this.userDataClient = userDataClient;
     }
 
