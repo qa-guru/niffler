@@ -7,6 +7,7 @@ import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.UserJson;
 import niffler.page.ProfilePage;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
@@ -15,6 +16,7 @@ public class ProfileTest extends BaseTest {
     private static final String SUCCESS_MSG = "Profile updated!";
 
     @Test
+    @DisplayName("WEB: Обновленное имя пользователя должно отображаться в профиле после обновления профиля")
     @AllureId("2")
     @ApiLogin(nifflerUser = @GenerateUser)
     void userNameShouldBeUpdatedAfterChangingInProfile(@User UserJson user) {
