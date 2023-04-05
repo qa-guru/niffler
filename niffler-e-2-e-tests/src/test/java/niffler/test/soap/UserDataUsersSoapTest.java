@@ -14,6 +14,7 @@ import niffler.ws.model.wsdl.FriendState;
 import niffler.ws.model.wsdl.UpdateUserInfoRequest;
 import niffler.ws.model.wsdl.UpdateUserInfoResponse;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
@@ -24,6 +25,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     private final NifflerUserdataWsService nus = new NifflerUserdataWsService();
 
     @Test
+    @DisplayName("SOAP: Для нового пользователя долна возвращаться информация из niffler-userdata c дефолтными значениями")
     @AllureId("100001")
     @GenerateUser()
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
@@ -39,6 +41,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     }
 
     @Test
+    @DisplayName("SOAP: При обновлении юзера должны сохраняться значения в niffler-userdata")
     @AllureId("100002")
     @GenerateUser()
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
@@ -67,6 +70,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     }
 
     @Test
+    @DisplayName("SOAP: Список всех пользователей системы не должен быть пустым")
     @AllureId("100003")
     @GenerateUser()
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
