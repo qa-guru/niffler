@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import niffler.api.NifflerAuthClient;
 import niffler.api.context.SessionStorageHolder;
 
-public abstract class RestTest {
+public abstract class BaseRestTest {
 
     protected final NifflerAuthClient authClient = new NifflerAuthClient();
 

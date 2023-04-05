@@ -90,7 +90,7 @@ public class UserEntity {
     }
 
     public void setAccountNonLocked(Boolean accountNonLocked) {
-        accountNonLocked = accountNonLocked;
+        this.accountNonLocked = accountNonLocked;
     }
 
     public Boolean getCredentialsNonExpired() {
@@ -98,7 +98,7 @@ public class UserEntity {
     }
 
     public void setCredentialsNonExpired(Boolean credentialsNonExpired) {
-        credentialsNonExpired = credentialsNonExpired;
+        this.credentialsNonExpired = credentialsNonExpired;
     }
 
     public List<AuthorityEntity> getAuthorities() {

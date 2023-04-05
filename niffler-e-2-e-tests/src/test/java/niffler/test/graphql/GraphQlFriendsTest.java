@@ -15,7 +15,7 @@ import java.io.InputStream;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 
-public class GraphQlFriendsTest extends GraphQlTest {
+public class GraphQlFriendsTest extends BaseGraphQlTest {
 
     private static final ObjectMapper om = new ObjectMapper();
     private final ClassLoader cl = GraphQlFriendsTest.class.getClassLoader();
