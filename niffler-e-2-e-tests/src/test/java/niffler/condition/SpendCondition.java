@@ -21,8 +21,7 @@ public class SpendCondition {
             @Override
             public void fail(CollectionSource collection, @Nullable List<WebElement> elements, @Nullable Exception lastError, long timeoutMs) {
                 if (elements == null || elements.isEmpty()) {
-                    ElementNotFound elementNotFound = new ElementNotFound(collection, toString(), lastError);
-                    elementNotFound.timeoutMs = timeoutMs;
+                    ElementNotFound elementNotFound = new ElementNotFound(collection, List.of("Can`t find elements"), lastError);
                     throw elementNotFound;
                 } else if (elements.size() != expectedSpends.length) {
                     throw new SpendsSizeMismatch(collection, Arrays.asList(expectedSpends), bindElementsToSpends(elements), explanation, timeoutMs);

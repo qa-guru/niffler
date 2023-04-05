@@ -1,5 +1,6 @@
 package niffler.ws.service;
 
+import io.qameta.allure.okhttp3.AllureOkHttp3;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import niffler.config.Config;
@@ -19,6 +20,7 @@ public abstract class SoapService {
 
     private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addInterceptor(new AllureOkHttp3())
             .build();
 
     private final String restServiceUrl;
