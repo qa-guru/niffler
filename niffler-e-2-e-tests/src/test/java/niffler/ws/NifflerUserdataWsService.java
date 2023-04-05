@@ -1,6 +1,7 @@
 package niffler.ws;
 
-import niffler.test.ws.RequestEnvelope;
+import niffler.ws.model.wsdl.CurrentUserRequest;
+import niffler.ws.model.wsdl.CurrentUserResponse;
 import niffler.ws.service.SoapService;
 
 public class NifflerUserdataWsService extends SoapService {
@@ -10,8 +11,8 @@ public class NifflerUserdataWsService extends SoapService {
 
     private final NifflerUserdataWs userdataWs = retrofit.create(NifflerUserdataWs.class);
 
-    public String currentUser(RequestEnvelope userJson) throws Exception {
-        return userdataWs.currentUserRequest(userJson)
+    public CurrentUserResponse currentUser(CurrentUserRequest currenUserMessage) throws Exception {
+        return userdataWs.currentUserRequest(currenUserMessage)
                 .execute()
                 .body();
     }

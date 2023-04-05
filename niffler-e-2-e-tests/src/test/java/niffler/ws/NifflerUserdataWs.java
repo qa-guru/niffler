@@ -1,6 +1,7 @@
 package niffler.ws;
 
-import niffler.test.ws.RequestEnvelope;
+import niffler.ws.model.wsdl.CurrentUserRequest;
+import niffler.ws.model.wsdl.CurrentUserResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
@@ -13,6 +14,6 @@ public interface NifflerUserdataWs {
             "Accept-Charset: utf-8"
     })
     @POST("/ws")
-    Call<String> currentUserRequest(@Body RequestEnvelope user);
+    Call<CurrentUserResponse> currentUserRequest(@Body CurrentUserRequest user);
 
 }
