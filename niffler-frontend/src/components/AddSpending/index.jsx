@@ -110,6 +110,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
                             }
                             }/>
                 <FormInput placeholder={"Set Amount"}
+                           fieldName={"amount"}
                            label={"Amount"}
                            type="number"
                            required
@@ -128,6 +129,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
                                   setData({...data, spendDate})
                               }}/>
                 <FormInput placeholder={"Spending description"}
+                           fieldName={"description"}
                            label={"Description"}
                            type="text"
                            max={255}
@@ -137,7 +139,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
                                setFormErrors({...formErrors, description: null})
                                setData({...data, description: evt.target.value})
                            }}/>
-                <Button buttonText={"Add new spending"}/>
+                <Button type="submit" buttonText={"Add new spending"}/>
             </form>
         </section>
     );
