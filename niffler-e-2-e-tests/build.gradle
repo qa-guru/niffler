@@ -3,6 +3,7 @@ buildscript {
         protobufVersion = '3.21.12'
         grpcVersion = '1.52.1'
         allureVersion = '2.21.0'
+        selenideVersion = '6.13.0'
     }
 }
 
@@ -45,7 +46,12 @@ dependencies {
         exclude group: "org.junit.platform"
         exclude group: "org.junit.jupiter"
     }
-    testImplementation 'com.codeborne:selenide:6.11.1'
+    testImplementation("io.qameta.allure:allure-selenide:${allureVersion}") {
+        exclude group: 'com.codeborne'
+    }
+    testImplementation "io.qameta.allure:allure-okhttp3:${allureVersion}"
+    testImplementation "io.qameta.allure:allure-selenide:${allureVersion}"
+    testImplementation "com.codeborne:selenide:${selenideVersion}"
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
     testImplementation "io.grpc:grpc-protobuf:${grpcVersion}"

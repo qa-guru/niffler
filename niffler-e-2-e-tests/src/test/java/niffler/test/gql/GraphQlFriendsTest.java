@@ -1,17 +1,20 @@
-package niffler.test.graphql;
+package niffler.test.gql;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.qameta.allure.AllureId;
 import niffler.graphql.GraphQLClient;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.UserJson;
+import niffler.test.gql.model.UserGql;
+import niffler.test.gql.model.UserDataGql;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
+import java.util.List;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 
@@ -22,22 +25,21 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
 
     private final GraphQLClient gqlClient = new GraphQLClient();
 
-    @AllureId("40000")
     @Test
+    @DisplayName("GraphQL: Для нового пользователя должен возвращаться пустой список friends и invitations из niffler-gateway")
+    @AllureId("400004")
     @GenerateUser
     void getFriendsTest(@User(selector = METHOD) UserJson user) throws Exception {
         apiLogin(user.getUsername(), user.getPassword());
 
         try (InputStream is = cl.getResourceAsStream("gql/getFriendsQuery.json")) {
             JsonNode query = om.readValue(is, JsonNode.class);
-            JsonNode response = gqlClient.request(query);
-            JsonNode data = response.get("data");
-            Assertions.assertNotNull(data);
-            JsonNode usr = data.get("user");
-            Assertions.assertNotNull(usr);
-            ArrayNode friends = usr.withArray("friends");
+            UserDataGql response = gqlClient.friends(query);
+
+            final List<UserGql> friends = response.getData().getUser().getFriends();
+            final List<UserGql> invitations = response.getData().getUser().getInvitations();
+
             Assertions.assertTrue(friends.isEmpty());
-            ArrayNode invitations = usr.withArray("invitations");
             Assertions.assertTrue(invitations.isEmpty());
         }
     }

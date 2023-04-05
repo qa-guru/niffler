@@ -1,4 +1,4 @@
-package niffler.test.graphql;
+package niffler.test.gql;
 
 import niffler.test.rest.BaseRestTest;
 
