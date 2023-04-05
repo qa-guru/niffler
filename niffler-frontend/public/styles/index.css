@@ -87,6 +87,7 @@
 .main-content__section-history {
     grid-area: history;
     position: relative;
+    margin-bottom: 100px;
 }
 
 .spendings__content {

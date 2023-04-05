@@ -13,6 +13,7 @@ import niffler.model.CurrencyValues;
 import niffler.model.UserJson;
 import niffler.page.ProfilePage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -35,7 +36,8 @@ public class ProfileDBTest extends BaseTest {
     }
 
     @Test
-    @AllureId("3")
+    @AllureId("20")
+    @DisplayName("WEB: В профиле должна отображаться валюта, сохраненная в niffler-userdata")
     @ApiLogin(nifflerUser = @GenerateUser)
     void checkCurrencyTest() {
         Selenide.open(ProfilePage.URL, ProfilePage.class)
