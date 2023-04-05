@@ -1,4 +1,4 @@
-package niffler.test.graphql;
+package niffler.test.gql;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,9 +7,10 @@ import niffler.graphql.GraphQLClient;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.UserJson;
-import niffler.test.graphql.model.UserGql;
-import niffler.test.graphql.model.UserDataGql;
+import niffler.test.gql.model.UserGql;
+import niffler.test.gql.model.UserDataGql;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
@@ -24,8 +25,9 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
 
     private final GraphQLClient gqlClient = new GraphQLClient();
 
-    @AllureId("400004")
     @Test
+    @DisplayName("GraphQL: Для нового пользователя должен возвращаться пустой список friends и invitations из niffler-gateway")
+    @AllureId("400004")
     @GenerateUser
     void getFriendsTest(@User(selector = METHOD) UserJson user) throws Exception {
         apiLogin(user.getUsername(), user.getPassword());

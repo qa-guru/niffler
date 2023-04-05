@@ -1,4 +1,4 @@
-package niffler.test.graphql;
+package niffler.test.gql;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,11 +8,12 @@ import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.CurrencyValues;
 import niffler.model.UserJson;
-import niffler.test.graphql.model.UpdateUserDataGql;
-import niffler.test.graphql.model.UserDataGql;
-import niffler.test.graphql.model.UserGql;
-import niffler.test.graphql.model.UsersDataGql;
+import niffler.test.gql.model.UpdateUserDataGql;
+import niffler.test.gql.model.UserDataGql;
+import niffler.test.gql.model.UserGql;
+import niffler.test.gql.model.UsersDataGql;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
@@ -28,8 +29,9 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
 
     private final GraphQLClient gqlClient = new GraphQLClient();
 
-    @AllureId("400001")
     @Test
+    @DisplayName("GraphQL: Для нового пользователя долна возвращаться информация из niffler-gateway c дефолтными значениями")
+    @AllureId("400001")
     @GenerateUser
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         apiLogin(user.getUsername(), user.getPassword());
@@ -47,6 +49,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     }
 
     @Test
+    @DisplayName("GraphQL: При обновлении юзера должны сохраняться значения в niffler-gateway")
     @AllureId("400002")
     @GenerateUser()
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
@@ -67,6 +70,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     }
 
     @Test
+    @DisplayName("GraphQL: Список всех пользователей системы не должен быть пустым")
     @AllureId("400003")
     @GenerateUser()
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {

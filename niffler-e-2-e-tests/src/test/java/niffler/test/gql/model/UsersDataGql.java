@@ -1,4 +1,4 @@
-package niffler.test.graphql.model;
+package niffler.test.gql.model;
 
 import java.util.List;
 

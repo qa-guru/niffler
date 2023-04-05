@@ -3,9 +3,9 @@ package niffler.graphql;
 import com.fasterxml.jackson.databind.JsonNode;
 import niffler.api.context.SessionStorageHolder;
 import niffler.api.service.RestService;
-import niffler.test.graphql.model.UpdateUserDataGql;
-import niffler.test.graphql.model.UserDataGql;
-import niffler.test.graphql.model.UsersDataGql;
+import niffler.test.gql.model.UpdateUserDataGql;
+import niffler.test.gql.model.UserDataGql;
+import niffler.test.gql.model.UsersDataGql;
 
 public class GraphQLClient extends RestService {
 

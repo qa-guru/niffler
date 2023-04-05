@@ -1,4 +1,4 @@
-package niffler.test.graphql.model;
+package niffler.test.gql.model;
 
 public abstract class GqlResponse<T> {
     protected T data;

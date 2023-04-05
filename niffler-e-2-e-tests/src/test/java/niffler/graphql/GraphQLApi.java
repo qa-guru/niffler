@@ -1,9 +1,9 @@
 package niffler.graphql;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import niffler.test.graphql.model.UpdateUserDataGql;
-import niffler.test.graphql.model.UserDataGql;
-import niffler.test.graphql.model.UsersDataGql;
+import niffler.test.gql.model.UpdateUserDataGql;
+import niffler.test.gql.model.UserDataGql;
+import niffler.test.gql.model.UsersDataGql;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
