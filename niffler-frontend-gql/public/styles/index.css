@@ -92,7 +92,8 @@
 .spendings__content {
     margin: 20px;
 }
-.spendings__buttons{
+
+.spendings__buttons {
     display: flex;
     width: 100%;
 }

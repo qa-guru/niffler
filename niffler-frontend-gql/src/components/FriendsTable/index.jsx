@@ -8,7 +8,7 @@ export const FriendsTable = () => {
     const {data: friendsData, loading} = useQuery(QUERY_FRIENDS);
 
     const data = useMemo(() => {
-        if(loading) {
+        if (loading) {
             return [];
         }
         const result = [];
@@ -30,9 +30,9 @@ export const FriendsTable = () => {
         <>
             {
                 (data.length > 0 ? (
-                    <AbstractTable data={data}/>
+                        <AbstractTable data={data}/>
                     ) :
-                (<div style={{margin: 20}}>There are no friends yet!</div>))
+                    (<div style={{margin: 20}}>There are no friends yet!</div>))
             }
         </>
     )

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
 import niffler.model.graphql.UpdateUserInfoInput;
+import niffler.userdata.wsdl.Currency;
+import niffler.userdata.wsdl.User;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -87,6 +89,31 @@ public class UserJson {
 
     public void setFriendState(FriendState friendState) {
         this.friendState = friendState;
+    }
+
+    public static UserJson fromJaxb(User jaxbUser) {
+        UserJson usr = new UserJson();
+        usr.setPhoto(jaxbUser.getPhoto());
+        usr.setId(UUID.fromString(jaxbUser.getId()));
+        usr.setUsername(jaxbUser.getUsername());
+        usr.setFirstname(jaxbUser.getFirstname());
+        usr.setSurname(jaxbUser.getSurname());
+        usr.setCurrency(CurrencyValues.valueOf(jaxbUser.getCurrency().name()));
+        return usr;
+    }
+
+    public User toJaxbUser() {
+        User u = new User();
+        u.setId(getId().toString());
+        u.setUsername(getFirstname());
+        u.setFirstname(getFirstname());
+        u.setSurname(getSurname());
+        u.setCurrency(Currency.valueOf(getCurrency().name()));
+        u.setPhoto(getPhoto());
+        u.setFriendState(getFriendState() == null ?
+                niffler.userdata.wsdl.FriendState.VOID :
+                niffler.userdata.wsdl.FriendState.valueOf(getFriendState().name()));
+        return u;
     }
 
     @Override

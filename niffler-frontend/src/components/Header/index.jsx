@@ -7,7 +7,7 @@ import {ButtonIcon, IconType} from "../ButtonIcon";
 
 export const Header = () => {
     const location = useLocation();
-    const { user, setUser } = useContext(UserContext);
+    const {user, setUser} = useContext(UserContext);
     const [invitations, setInvitations] = useState([]);
 
     useEffect(() => {

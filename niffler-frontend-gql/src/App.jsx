@@ -17,7 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     const {data: currentUserData, loading, refetch} = useQuery(QUERY_CURRENT_USER);
-    const userContext = { user: currentUserData?.user, updateUser: refetch};
+    const userContext = {user: currentUserData?.user, updateUser: refetch};
 
     const [popupOpen, setPopupOpen] = useState(false);
     const popupContext = {
@@ -28,23 +28,23 @@ function App() {
     return (
         <div className="App">
             <ToastContainer/>
-                <UserContext.Provider value={userContext}>
-                    <PopupContext.Provider value={popupContext}>
-                        {loading ? <div className="loader"></div> : (
-                            <Routes>
-                                <Route path="/redirect" element={<Redirect />} exact={false}/>
-                                <Route path="/authorized" element={<Redirect />} exact={false}/>
-                                <Route element={<ProtectedRoutes/>}>
-                                    <Route path="/profile" element={<Profile/>}/>
-                                    <Route path="/main" element={<MainLayout />}/>
-                                    <Route path="/people" element={<PeopleLayout/>}/>
-                                    <Route path="/friends" element={<FriendsLayout/>}/>
-                                </Route>
-                                <Route path="*" element={<LoginPage/>}/>
-                            </Routes>
-                        )}
-                    </PopupContext.Provider>
-                </UserContext.Provider>
+            <UserContext.Provider value={userContext}>
+                <PopupContext.Provider value={popupContext}>
+                    {loading ? <div className="loader"></div> : (
+                        <Routes>
+                            <Route path="/redirect" element={<Redirect/>} exact={false}/>
+                            <Route path="/authorized" element={<Redirect/>} exact={false}/>
+                            <Route element={<ProtectedRoutes/>}>
+                                <Route path="/profile" element={<Profile/>}/>
+                                <Route path="/main" element={<MainLayout/>}/>
+                                <Route path="/people" element={<PeopleLayout/>}/>
+                                <Route path="/friends" element={<FriendsLayout/>}/>
+                            </Route>
+                            <Route path="*" element={<LoginPage/>}/>
+                        </Routes>
+                    )}
+                </PopupContext.Provider>
+            </UserContext.Provider>
         </div>
     );
 }

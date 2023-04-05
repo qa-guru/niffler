@@ -43,10 +43,10 @@ public class UserEntity {
     @Column(name = "photo", columnDefinition = "bytea")
     private byte[] photo;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendsEntity> friends = new ArrayList<>();
 
-    @OneToMany(mappedBy = "friend", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "friend", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendsEntity> invites = new ArrayList<>();
 
     public UUID getId() {

@@ -29,7 +29,7 @@ public class NifflerSpendApiTest {
     })
     @ParameterizedTest
     void apiShouldReturnIdOfCreatedSpend(@Spend SpendJson spend, @User(selector = METHOD) UserJson user) throws Exception {
-        spend.setUsername(user.getUserName());
+        spend.setUsername(user.getUsername());
         SpendJson created = nsc.createSpend(spend);
         Assertions.assertNotNull(created.getId());
     }

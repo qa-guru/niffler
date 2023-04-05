@@ -9,6 +9,7 @@ import niffler.model.graphql.UpdateSpendInput;
 import niffler.service.StatisticAggregator;
 import niffler.service.api.RestSpendClient;
 import niffler.service.api.RestUserDataClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -28,7 +29,7 @@ public class SpendGraphqlController {
     private final RestUserDataClient restUserDataClient;
     private final StatisticAggregator statisticAggregator;
 
-
+    @Autowired
     public SpendGraphqlController(RestSpendClient restSpendClient, RestUserDataClient restUserDataClient, StatisticAggregator statisticAggregator) {
         this.restSpendClient = restSpendClient;
         this.restUserDataClient = restUserDataClient;
@@ -37,8 +38,8 @@ public class SpendGraphqlController {
 
     @QueryMapping
     public List<SpendJson> spends(@AuthenticationPrincipal Jwt principal,
-                                     @Argument DataFilterValues filterPeriod,
-                                     @Argument CurrencyValues filterCurrency) {
+                                  @Argument DataFilterValues filterPeriod,
+                                  @Argument CurrencyValues filterCurrency) {
         String username = principal.getClaim("sub");
         return restSpendClient.getSpends(username, filterPeriod, filterCurrency);
     }
@@ -57,7 +58,7 @@ public class SpendGraphqlController {
 
     @MutationMapping
     public SpendJson updateSpend(@Valid @Argument UpdateSpendInput spend,
-                               @AuthenticationPrincipal Jwt principal) {
+                                 @AuthenticationPrincipal Jwt principal) {
         if (spend.getId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id should be present");
         }
@@ -69,7 +70,7 @@ public class SpendGraphqlController {
 
     @MutationMapping
     public List<String> deleteSpends(@AuthenticationPrincipal Jwt principal,
-                                             @Argument List<String> ids) {
+                                     @Argument List<String> ids) {
         String username = principal.getClaim("sub");
         restSpendClient.deleteSpends(username, ids);
         return ids;

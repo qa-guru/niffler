@@ -26,7 +26,7 @@ public class GraphQlFriendsTest extends GraphQlTest {
     @Test
     @GenerateUser
     void getFriendsTest(@User(selector = METHOD) UserJson user) throws Exception {
-        apiLogin(user.getUserName(), user.getPassword());
+        apiLogin(user.getUsername(), user.getPassword());
 
         try (InputStream is = cl.getResourceAsStream("gql/getFriendsQuery.json")) {
             JsonNode query = om.readValue(is, JsonNode.class);

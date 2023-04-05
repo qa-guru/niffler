@@ -29,7 +29,7 @@ public class ProfileDBTest extends BaseTest {
 
     @BeforeEach
     void changeCurrencyBeforeTest(@User(selector = NESTED) UserJson user) {
-        UsersEntity usersEntity = usersDAO.getByUsername(user.getUserName());
+        UsersEntity usersEntity = usersDAO.getByUsername(user.getUsername());
         usersEntity.setCurrency(testedCurrency);
         usersDAO.updateUser(usersEntity);
     }

@@ -45,11 +45,10 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
     };
 
     const validateSpendDate = () => {
-        if(!data.spendDate) {
+        if (!data.spendDate) {
             setFormErrors({...formErrors, spendDate: "Spend date is required"});
             return false;
-        }
-        else if(dayjs(data.spendDate).isAfter(new Date())) {
+        } else if (dayjs(data.spendDate).isAfter(new Date())) {
             setFormErrors({...formErrors, spendDate: "You can not pick future date"});
             return false;
         }
@@ -57,7 +56,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
     };
 
     const validateDescription = () => {
-        if(data?.description?.length > MAX_TEXT_INPUT_FIELD_LENGTH) {
+        if (data?.description?.length > MAX_TEXT_INPUT_FIELD_LENGTH) {
             setFormErrors({
                 ...formErrors,
                 description: `Description length can not be greater than ${MAX_TEXT_INPUT_FIELD_LENGTH} characters`
@@ -76,7 +75,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
 
     const handleAddSpendingSubmit = (e) => {
         e.preventDefault();
-        if(isFormValid()) {
+        if (isFormValid()) {
             const dataToSend = {...data, category: data.category?.value};
             postData({
                 path: "/addSpend",
@@ -109,7 +108,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
                                 setFormErrors({...formErrors, category: null})
                                 setData({...data, category})
                             }
-                }/>
+                            }/>
                 <FormInput placeholder={"Set Amount"}
                            label={"Amount"}
                            type="number"

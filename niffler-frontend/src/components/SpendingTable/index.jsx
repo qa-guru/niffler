@@ -9,7 +9,7 @@ export const SpendingTable = ({spendings, isGraphOutdated, setIsGraphOutdated, c
 
     const handleSingleClick = (id) => {
         selectedIds?.includes(id)
-            ? setSelectedIds(selectedIds.filter(v => v!== id))
+            ? setSelectedIds(selectedIds.filter(v => v !== id))
             : setSelectedIds([...selectedIds, id]);
     }
 
@@ -22,7 +22,8 @@ export const SpendingTable = ({spendings, isGraphOutdated, setIsGraphOutdated, c
             <table className="table spendings-table">
                 <thead>
                 <tr>
-                    <th><BatchCheckbox handleBulkClick={handleBulkClick} selected={selectedIds?.length === allIds?.length}/></th>
+                    <th><BatchCheckbox handleBulkClick={handleBulkClick}
+                                       selected={selectedIds?.length === allIds?.length}/></th>
                     <th>Date</th>
                     <th>Amount</th>
                     <th>Currency</th>

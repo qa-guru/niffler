@@ -28,12 +28,12 @@ export const Redirect = ({}) => {
                     if (data?.id_token) {
                         sessionStorage.setItem('id_token', data.id_token);
                         updateUser().then(res => {
-                            if(res?.data?.user !== null) {
-                                navigate("/main");
-                            } else {
-                                navigate("/login");
+                                if (res?.data?.user !== null) {
+                                    navigate("/main");
+                                } else {
+                                    navigate("/login");
+                                }
                             }
-                        }
                         ).catch(err => {
                             console.log(err);
                             navigate("/login")

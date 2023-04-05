@@ -6,7 +6,7 @@ export const PageContainer = ({children}) => {
     return (
         <div className={"main-container"}>
             <Popup/>
-            <Header />
+            <Header/>
             <main className={"main"}>
                 {children}
             </main>

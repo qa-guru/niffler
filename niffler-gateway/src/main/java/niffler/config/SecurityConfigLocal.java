@@ -30,7 +30,7 @@ public class SecurityConfigLocal {
         corsCustomizer.corsCustomizer(http);
 
         http.csrf().disable().authorizeHttpRequests()
-                .requestMatchers("/actuator/health", "/graphiql/**",  "/graphql/**", "/favicon.ico").permitAll()
+                .requestMatchers("/actuator/health", "/graphiql/**", "/graphql/**", "/favicon.ico").permitAll()
                 .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
                 .anyRequest()
                 .authenticated().and()

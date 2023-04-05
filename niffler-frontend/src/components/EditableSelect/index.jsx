@@ -1,6 +1,6 @@
 import Select from "react-select";
 
-export const EditableSelect = ({value, options,  onValueChange, isEditState}) => {
+export const EditableSelect = ({value, options, onValueChange, isEditState}) => {
     const editView = (
         <Select
             isMulti={false}

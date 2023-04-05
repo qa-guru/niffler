@@ -28,7 +28,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
     const [formErrors, setFormErrors] = useState(initialErrorState);
 
     const [addSpend] = useMutation(ADD_SPEND_MUTATION, {
-        update(cache, {data: {addSpend}}){
+        update(cache, {data: {addSpend}}) {
             cache.modify({
                 fields: {
                     spends(existingSpends = []) {
@@ -71,11 +71,10 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
     };
 
     const validateSpendDate = () => {
-        if(!data.spendDate) {
+        if (!data.spendDate) {
             setFormErrors({...formErrors, spendDate: "Spend date is required"});
             return false;
-        }
-        else if(dayjs(data.spendDate).isAfter(new Date())) {
+        } else if (dayjs(data.spendDate).isAfter(new Date())) {
             setFormErrors({...formErrors, spendDate: "You can not pick future date"});
             return false;
         }
@@ -83,7 +82,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
     };
 
     const validateDescription = () => {
-        if(data?.description?.length > MAX_TEXT_INPUT_FIELD_LENGTH) {
+        if (data?.description?.length > MAX_TEXT_INPUT_FIELD_LENGTH) {
             setFormErrors({
                 ...formErrors,
                 description: `Description length can not be greater than ${MAX_TEXT_INPUT_FIELD_LENGTH} characters`
@@ -101,20 +100,21 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
     };
     const handleAddSpendingSubmit = (e) => {
         e.preventDefault();
-        if(isFormValid()) {
+        if (isFormValid()) {
             const dataToSend = {...data, category: data.category?.value};
             addSpend({
                 variables: {
                     spend: dataToSend
-                }}).then(res => {
-                if(res.data?.addSpend != null) {
-                            showSuccess("New spending successfully added!");
-                            addSpendingCallback(data);
-                            setData(initialSpendingState);
-                            setFormErrors(initialErrorState);
-                        } else {
-                            showError("Spending was not added!");
-                            console.error(err);
+                }
+            }).then(res => {
+                if (res.data?.addSpend != null) {
+                    showSuccess("New spending successfully added!");
+                    addSpendingCallback(data);
+                    setData(initialSpendingState);
+                    setFormErrors(initialErrorState);
+                } else {
+                    showError("Spending was not added!");
+                    console.error(err);
                 }
             })
         }
@@ -134,7 +134,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
                                 setFormErrors({...formErrors, category: null})
                                 setData({...data, category})
                             }
-                }/>
+                            }/>
                 <FormInput placeholder={"Set Amount"}
                            label={"Amount"}
                            type="number"

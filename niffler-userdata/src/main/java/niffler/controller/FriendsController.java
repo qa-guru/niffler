@@ -52,7 +52,7 @@ public class FriendsController {
 
     @PostMapping("/addFriend")
     public UserJson addFriend(@RequestParam String username,
-                          @RequestBody FriendJson friend) {
+                              @RequestBody FriendJson friend) {
         return userService.addFriend(username, friend);
     }
 

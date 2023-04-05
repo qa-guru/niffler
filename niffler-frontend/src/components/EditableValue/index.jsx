@@ -6,9 +6,9 @@ const CustomInput = forwardRef((props, ref) => (
     <input {...props} id="editable__input" ref={ref}/>
 ));
 
-export const EditableValue = ({value, onValueChange, fieldName,  placeholder, isEditState, type}) => {
+export const EditableValue = ({value, onValueChange, fieldName, placeholder, isEditState, type}) => {
     const editView = () => {
-        switch (type){
+        switch (type) {
             case "date": {
                 return (
                     <DatePicker
@@ -29,7 +29,7 @@ export const EditableValue = ({value, onValueChange, fieldName,  placeholder, is
                     onChange={onValueChange}/>);
             }
         }
-};
+    };
 
     const noEditView = (
         <div>

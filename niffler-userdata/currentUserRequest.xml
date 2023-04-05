@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:gs="niffler-userdata">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <gs:currentUserRequest>
+            <gs:username>pizzly</gs:username>
+        </gs:currentUserRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
