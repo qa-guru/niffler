@@ -27,7 +27,7 @@ public class NifflerSpendApiTest {
             "data/spend0.json",
             "data/spend1.json"
     })
-    @ParameterizedTest
+    @ParameterizedTest(name = "REST: При создании нового spend возвращается ID из niffler-spend для запроса {0}")
     void apiShouldReturnIdOfCreatedSpend(@Spend SpendJson spend, @User(selector = METHOD) UserJson user) throws Exception {
         spend.setUsername(user.getUsername());
         SpendJson created = nsc.createSpend(spend);

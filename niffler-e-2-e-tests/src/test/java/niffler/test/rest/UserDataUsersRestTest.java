@@ -7,6 +7,7 @@ import niffler.jupiter.annotation.User;
 import niffler.model.CurrencyValues;
 import niffler.model.UserJson;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class UserDataUsersRestTest {
     private final NifflerUserdataClient nus = new NifflerUserdataClient();
 
     @Test
+    @DisplayName("REST: Для нового пользователя долна возвращаться информация из niffler-userdata c дефолтными значениями")
     @AllureId("200001")
     @GenerateUser()
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
@@ -30,6 +32,7 @@ public class UserDataUsersRestTest {
     }
 
     @Test
+    @DisplayName("REST: При обновлении юзера должны сохраняться значения в niffler-userdata")
     @AllureId("200002")
     @GenerateUser()
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
@@ -54,6 +57,7 @@ public class UserDataUsersRestTest {
     }
 
     @Test
+    @DisplayName("REST: Список всех пользователей системы не должен быть пустым")
     @AllureId("200003")
     @GenerateUser()
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
