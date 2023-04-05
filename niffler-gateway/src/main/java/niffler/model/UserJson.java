@@ -105,7 +105,7 @@ public class UserJson {
     public User toJaxbUser() {
         User u = new User();
         u.setId(getId().toString());
-        u.setUsername(getFirstname());
+        u.setUsername(getUsername());
         u.setFirstname(getFirstname());
         u.setSurname(getSurname());
         u.setCurrency(Currency.valueOf(getCurrency().name()));
