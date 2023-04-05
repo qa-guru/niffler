@@ -2,7 +2,7 @@ package niffler.data.dao;
 
 import niffler.data.entity.UsersEntity;
 import niffler.data.jdbc.DataSourceContext;
-import niffler.model.CurrencyValues;
+import niffler.model.rest.CurrencyValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -10,9 +10,9 @@ import niffler.jupiter.annotation.GenerateCategory;
 import niffler.jupiter.annotation.GenerateSpend;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
-import niffler.model.CategoryJson;
-import niffler.model.SpendJson;
-import niffler.model.UserJson;
+import niffler.model.rest.CategoryJson;
+import niffler.model.rest.SpendJson;
+import niffler.model.rest.UserJson;
 import niffler.utils.DateUtils;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -70,7 +70,7 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
 
             GenerateSpend[] spends = entry.getValue().spends();
             List<SpendJson> createdSpends = new ArrayList<>();
-            if (spends != null && spends.length > 0) {
+            if (spends != null) {
                 for (GenerateSpend spend : spends) {
                     SpendJson sj = new SpendJson();
                     sj.setUsername(username);

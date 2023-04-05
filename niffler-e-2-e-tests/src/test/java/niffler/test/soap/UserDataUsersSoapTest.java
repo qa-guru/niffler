@@ -3,18 +3,19 @@ package niffler.test.soap;
 import io.qameta.allure.AllureId;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
-import niffler.model.UserJson;
+import niffler.model.rest.UserJson;
+import niffler.model.soap.AllUsersRequest;
+import niffler.model.soap.AllUsersResponse;
+import niffler.model.soap.Currency;
+import niffler.model.soap.CurrentUserRequest;
+import niffler.model.soap.CurrentUserResponse;
+import niffler.model.soap.FriendState;
+import niffler.model.soap.UpdateUserInfoRequest;
+import niffler.model.soap.UpdateUserInfoResponse;
 import niffler.ws.NifflerUserdataWsService;
-import niffler.ws.model.wsdl.AllUsersRequest;
-import niffler.ws.model.wsdl.AllUsersResponse;
-import niffler.ws.model.wsdl.Currency;
-import niffler.ws.model.wsdl.CurrentUserRequest;
-import niffler.ws.model.wsdl.CurrentUserResponse;
-import niffler.ws.model.wsdl.FriendState;
-import niffler.ws.model.wsdl.UpdateUserInfoRequest;
-import niffler.ws.model.wsdl.UpdateUserInfoResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
@@ -27,6 +28,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @Test
     @DisplayName("SOAP: Для нового пользователя долна возвращаться информация из niffler-userdata c дефолтными значениями")
     @AllureId("100001")
+    @Tag("SOAP")
     @GenerateUser()
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         CurrentUserRequest cur = new CurrentUserRequest();
@@ -43,17 +45,14 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @Test
     @DisplayName("SOAP: При обновлении юзера должны сохраняться значения в niffler-userdata")
     @AllureId("100002")
+    @Tag("SOAP")
     @GenerateUser()
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String firstName = "FirstName";
         final String secondName = "SecondName";
 
-        CurrentUserRequest cur = new CurrentUserRequest();
-        cur.setUsername(user.getUsername());
-        nus.currentUser(cur);
-
         UpdateUserInfoRequest uir = new UpdateUserInfoRequest();
-        niffler.ws.model.wsdl.User xmlUser = new niffler.ws.model.wsdl.User();
+        niffler.model.soap.User xmlUser = new niffler.model.soap.User();
         xmlUser.setUsername(user.getUsername());
         xmlUser.setCurrency(Currency.EUR);
         xmlUser.setFirstname(firstName);
@@ -72,12 +71,9 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @Test
     @DisplayName("SOAP: Список всех пользователей системы не должен быть пустым")
     @AllureId("100003")
+    @Tag("SOAP")
     @GenerateUser()
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
-        CurrentUserRequest cur = new CurrentUserRequest();
-        cur.setUsername(user.getUsername());
-        nus.currentUser(cur);
-
         AllUsersRequest aur = new AllUsersRequest();
         aur.setUsername(user.getUsername());
 

@@ -2,7 +2,7 @@ package niffler.jupiter.extension;
 
 import io.qameta.allure.AllureId;
 import niffler.jupiter.annotation.User;
-import niffler.model.UserModel;
+import niffler.model.rest.UserModel;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;

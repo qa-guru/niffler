@@ -24,7 +24,7 @@ public class MainPage extends BasePage<MainPage> {
 
     private final SelenideElement addSpendingSection = $(".main-content__section-add-spending");
     private final Select categorySelect = new Select(addSpendingSection.$("div.select-wrapper"));
-    private final Calendar calendar = new Calendar(addSpendingSection.$(".react-datepicker-wrapper"));
+    private final Calendar calendar = new Calendar(addSpendingSection.$(".react-datepicker"));
     private final SelenideElement amountInput = addSpendingSection.$("input[name='amount']");
     private final SelenideElement descriptionInput = addSpendingSection.$("input[name='description']");
     private final SelenideElement submitNewSpendingButton = addSpendingSection.$("button[type='submit']");
@@ -73,7 +73,7 @@ public class MainPage extends BasePage<MainPage> {
 
     @Step("Set new spending date: {0}")
     public MainPage setNewSpendingDate(String date) {
-        calendar.setDateAsValue(date);
+        calendar.selectDateInCalendar(date);
         addSpendingSection.$(byText("Add new spending")).click();
         return this;
     }

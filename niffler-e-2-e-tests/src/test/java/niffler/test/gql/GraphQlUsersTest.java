@@ -3,17 +3,18 @@ package niffler.test.gql;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.AllureId;
-import niffler.graphql.GraphQLClient;
+import niffler.gql.GraphQLClient;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
-import niffler.model.CurrencyValues;
-import niffler.model.UserJson;
-import niffler.test.gql.model.UpdateUserDataGql;
-import niffler.test.gql.model.UserDataGql;
-import niffler.test.gql.model.UserGql;
-import niffler.test.gql.model.UsersDataGql;
+import niffler.model.gql.UpdateUserDataGql;
+import niffler.model.gql.UserDataGql;
+import niffler.model.gql.UserGql;
+import niffler.model.gql.UsersDataGql;
+import niffler.model.rest.CurrencyValues;
+import niffler.model.rest.UserJson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
@@ -32,6 +33,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     @Test
     @DisplayName("GraphQL: Для нового пользователя долна возвращаться информация из niffler-gateway c дефолтными значениями")
     @AllureId("400001")
+    @Tag("GraphQL")
     @GenerateUser
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         apiLogin(user.getUsername(), user.getPassword());
@@ -51,6 +53,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     @Test
     @DisplayName("GraphQL: При обновлении юзера должны сохраняться значения в niffler-gateway")
     @AllureId("400002")
+    @Tag("GraphQL")
     @GenerateUser()
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         apiLogin(user.getUsername(), user.getPassword());
@@ -72,6 +75,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     @Test
     @DisplayName("GraphQL: Список всех пользователей системы не должен быть пустым")
     @AllureId("400003")
+    @Tag("GraphQL")
     @GenerateUser()
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
         apiLogin(user.getUsername(), user.getPassword());

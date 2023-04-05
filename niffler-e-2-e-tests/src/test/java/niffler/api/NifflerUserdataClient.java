@@ -1,7 +1,7 @@
 package niffler.api;
 
 import niffler.api.service.RestService;
-import niffler.model.UserJson;
+import niffler.model.rest.UserJson;
 
 import java.util.List;
 
@@ -30,4 +30,4 @@ public class NifflerUserdataClient extends RestService {
                 .execute()
                 .body();
     }
- }
+}

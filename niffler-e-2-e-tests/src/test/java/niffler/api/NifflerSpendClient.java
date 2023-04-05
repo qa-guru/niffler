@@ -1,8 +1,8 @@
 package niffler.api;
 
 import niffler.api.service.RestService;
-import niffler.model.CategoryJson;
-import niffler.model.SpendJson;
+import niffler.model.rest.CategoryJson;
+import niffler.model.rest.SpendJson;
 
 public class NifflerSpendClient extends RestService {
 

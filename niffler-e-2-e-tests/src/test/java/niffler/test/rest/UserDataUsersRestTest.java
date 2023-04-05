@@ -4,17 +4,18 @@ import io.qameta.allure.AllureId;
 import niffler.api.NifflerUserdataClient;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
-import niffler.model.CurrencyValues;
-import niffler.model.UserJson;
+import niffler.model.rest.CurrencyValues;
+import niffler.model.rest.UserJson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 
-public class UserDataUsersRestTest {
+public class UserDataUsersRestTest extends BaseRestTest {
 
     private static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
     private final NifflerUserdataClient nus = new NifflerUserdataClient();
@@ -22,6 +23,7 @@ public class UserDataUsersRestTest {
     @Test
     @DisplayName("REST: Для нового пользователя долна возвращаться информация из niffler-userdata c дефолтными значениями")
     @AllureId("200001")
+    @Tag("REST")
     @GenerateUser()
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         UserJson currentUserResponse = nus.getCurrentUser(user.getUsername());
@@ -34,12 +36,11 @@ public class UserDataUsersRestTest {
     @Test
     @DisplayName("REST: При обновлении юзера должны сохраняться значения в niffler-userdata")
     @AllureId("200002")
+    @Tag("REST")
     @GenerateUser()
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String firstName = "FirstName";
         final String secondName = "SecondName";
-
-        nus.getCurrentUser(user.getUsername());
 
         UserJson jsonUser = new UserJson();
         jsonUser.setUsername(user.getUsername());
@@ -59,10 +60,9 @@ public class UserDataUsersRestTest {
     @Test
     @DisplayName("REST: Список всех пользователей системы не должен быть пустым")
     @AllureId("200003")
+    @Tag("REST")
     @GenerateUser()
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
-        nus.getCurrentUser(user.getUsername());
-
         List<UserJson> allUsersResponse = nus.allUsers(user.getUsername());
 
         Assertions.assertFalse(allUsersResponse.isEmpty());

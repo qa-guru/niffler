@@ -3,7 +3,9 @@ package niffler.test.rest;
 import com.fasterxml.jackson.databind.JsonNode;
 import niffler.api.NifflerAuthClient;
 import niffler.api.context.SessionStorageHolder;
+import niffler.jupiter.annotation.meta.RestTest;
 
+@RestTest
 public abstract class BaseRestTest {
 
     protected final NifflerAuthClient authClient = new NifflerAuthClient();

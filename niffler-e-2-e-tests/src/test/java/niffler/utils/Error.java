@@ -10,6 +10,7 @@ public enum Error {
 
 
     public final String content;
+
     Error(String content) {
         this.content = content;
     }

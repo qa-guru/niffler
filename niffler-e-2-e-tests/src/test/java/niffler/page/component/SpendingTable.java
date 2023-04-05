@@ -4,7 +4,8 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import niffler.model.SpendJson;
+import niffler.model.rest.SpendJson;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

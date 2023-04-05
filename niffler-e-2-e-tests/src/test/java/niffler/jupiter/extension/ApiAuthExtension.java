@@ -10,7 +10,7 @@ import niffler.api.context.SessionStorageHolder;
 import niffler.config.Config;
 import niffler.jupiter.annotation.ApiLogin;
 import niffler.jupiter.annotation.GenerateUser;
-import niffler.model.UserJson;
+import niffler.model.rest.UserJson;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;

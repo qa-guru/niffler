@@ -1,7 +1,7 @@
 package niffler.api;
 
-import niffler.model.CategoryJson;
-import niffler.model.SpendJson;
+import niffler.model.rest.CategoryJson;
+import niffler.model.rest.SpendJson;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;

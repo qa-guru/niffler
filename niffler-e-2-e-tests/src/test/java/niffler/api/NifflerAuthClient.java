@@ -8,6 +8,7 @@ import niffler.api.interceptops.ExtractCodeFromRespInterceptor;
 import niffler.api.interceptops.ReceivedCookieRespInterceptor;
 import niffler.config.Config;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -21,6 +22,7 @@ public class NifflerAuthClient {
 
     private static final OkHttpClient httpClient = new OkHttpClient.Builder()
             .followRedirects(true)
+            .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addNetworkInterceptor(new ReceivedCookieRespInterceptor())
             .addNetworkInterceptor(new AddCookiesReqInterceptor())
             .addNetworkInterceptor(new ExtractCodeFromRespInterceptor())
