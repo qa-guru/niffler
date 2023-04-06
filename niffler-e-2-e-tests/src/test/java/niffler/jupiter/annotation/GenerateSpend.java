@@ -1,7 +1,7 @@
 package niffler.jupiter.annotation;
 
 
-import niffler.model.CurrencyValues;
+import niffler.model.rest.CurrencyValues;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

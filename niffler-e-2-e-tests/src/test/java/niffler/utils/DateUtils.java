@@ -12,6 +12,11 @@ public class DateUtils {
         return sdf.format(date);
     }
 
+    public static String getDateAsString(Date date, String stringFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat(stringFormat);
+        return sdf.format(date);
+    }
+
     public static Date fromString(String dateAsString) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy");
         try {

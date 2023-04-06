@@ -3,7 +3,7 @@ package niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import niffler.model.CurrencyValues;
+import niffler.model.rest.CurrencyValues;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.text;

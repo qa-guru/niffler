@@ -25,7 +25,6 @@
 - [Gradle 7.6](https://docs.gradle.org/7.6/release-notes.html)
 - And much more:)
 
-
 Рекомендуемые материалы к просмотру:
 
 - [Implementing an OAuth 2 authorization server with Spring Security - the new way! by Laurentiu Spilca](https://youtu.be/DaUGKnA7aro)
@@ -86,10 +85,14 @@ docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata
 #### 6. Подключиться к БД postgres (host: localhost, port: 5432, user: postgres, pass: secret, database name: postgres) из PgAdmin и создать пустые БД микросервисов
 
 ```sql
-create database "niffler-userdata" with owner postgres;
-create database "niffler-spend" with owner postgres;
-create database "niffler-currency" with owner postgres;
-create database "niffler-auth" with owner postgres;
+create
+database "niffler-userdata" with owner postgres;
+create
+database "niffler-spend" with owner postgres;
+create
+database "niffler-currency" with owner postgres;
+create
+database "niffler-auth" with owner postgres;
 ```
 
 #### 7. Установить Java версии 17 или новее. Это необходимо, т.к. проект не поддерживает версии <17

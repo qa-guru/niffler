@@ -7,7 +7,9 @@ import niffler.page.component.PeopleTable;
 import static com.codeborne.selenide.Selenide.$;
 
 public class PeoplePage extends BasePage<PeoplePage> {
+
     public static final String URL = CFG.frontUrl() + "people";
+
     private final SelenideElement tableContainer = $(".people-content");
     private final PeopleTable table = new PeopleTable($(".table"));
 

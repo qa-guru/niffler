@@ -2,21 +2,22 @@ package niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.AllureId;
+import io.qameta.allure.Epic;
 import niffler.jupiter.annotation.ApiLogin;
 import niffler.jupiter.annotation.GenerateCategory;
 import niffler.jupiter.annotation.GenerateSpend;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
-import niffler.model.SpendJson;
-import niffler.model.UserJson;
+import niffler.model.rest.SpendJson;
+import niffler.model.rest.UserJson;
 import niffler.page.MainPage;
 import niffler.page.component.SpendingTable;
 import niffler.utils.DateUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,15 +26,16 @@ import static niffler.utils.Error.CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT;
 import static niffler.utils.Error.CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY;
 import static niffler.utils.Error.CAN_NOT_PICK_FUTURE_DATE_FOR_SPENDING;
 
-
-@Execution(ExecutionMode.SAME_THREAD)
-public class SpendingTest extends BaseTest {
+@Epic("[WEB][niffler-frontend]: Траты")
+@DisplayName("[WEB][niffler-frontend]: Траты")
+public class SpendingTest extends BaseWebTest {
 
     private static final String ADD_SPENDING_SUCCESS_MSG = "Spending successfully added!";
 
     @Test
-    @AllureId("40")
+    @AllureId("500011")
     @DisplayName("WEB: Пользователь имеет возможность добавить трату")
+    @Tag("WEB")
     @ApiLogin(nifflerUser = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
@@ -41,7 +43,6 @@ public class SpendingTest extends BaseTest {
         String category = "Friends";
         int amount = 100;
         Date currentDate = new Date();
-        String date = DateUtils.getDateAsString(currentDate);
         String description = generateRandomSentence(3);
         SpendJson spendingToCheck = new SpendJson();
         spendingToCheck.setCurrency(user.getCurrency());
@@ -50,12 +51,11 @@ public class SpendingTest extends BaseTest {
         spendingToCheck.setDescription(description);
         spendingToCheck.setAmount(Double.valueOf(amount));
 
-
         Selenide.open(MainPage.URL, MainPage.class)
                 .waitForPageLoaded()
                 .setNewSpendingCategory(category)
                 .setNewSpendingAmount(amount)
-                .setNewSpendingDate(date)
+                .setNewSpendingDate(currentDate)
                 .setNewSpendingDescription(description)
                 .submitNewSpending()
                 .checkToasterMessage(ADD_SPENDING_SUCCESS_MSG)
@@ -64,67 +64,68 @@ public class SpendingTest extends BaseTest {
     }
 
     @Test
-    @AllureId("41")
+    @AllureId("500012")
     @DisplayName("WEB: Нельзя добавить трату с будущей датой")
+    @Tag("WEB")
     @ApiLogin(nifflerUser = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
-    void shouldNotAddSpendingWithFutureDate(@User UserJson user) {
+    void shouldNotAddSpendingWithFutureDate() {
         String category = "Friends";
         int amount = 100;
         Date spendDate = DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_MONTH, 2);
-        String formattedDate = DateUtils.getDateAsString(spendDate);
         String description = generateRandomSentence(3);
 
         Selenide.open(MainPage.URL, MainPage.class)
                 .waitForPageLoaded()
                 .setNewSpendingCategory(category)
                 .setNewSpendingAmount(amount)
-                .setNewSpendingDate(formattedDate)
+                .setNewSpendingDate(spendDate)
                 .setNewSpendingDescription(description)
                 .submitNewSpending()
                 .checkError(CAN_NOT_PICK_FUTURE_DATE_FOR_SPENDING.content);
     }
 
     @Test
-    @AllureId("42")
+    @AllureId("500013")
     @DisplayName("WEB: Нельзя добавить трату пустой категорией")
+    @Tag("WEB")
     @ApiLogin(nifflerUser = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
-    void shouldNotAddSpendingWithEmptyCategory(@User UserJson user) {
+    void shouldNotAddSpendingWithEmptyCategory() {
         int amount = 100;
-        String date = DateUtils.getDateAsString(new Date());
 
         Selenide.open(MainPage.URL, MainPage.class)
                 .waitForPageLoaded()
                 .setNewSpendingAmount(amount)
-                .setNewSpendingDate(date)
+                .setNewSpendingDate(new Date())
                 .submitNewSpending()
                 .checkError(CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY.content);
     }
 
     @Test
-    @AllureId("42")
+    @AllureId("500014")
     @DisplayName("WEB: Нельзя добавить трату с пустым значением суммы")
+    @Tag("WEB")
     @ApiLogin(nifflerUser = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
-    void shouldNotAddSpendingWithEmptyAmount(@User UserJson user) {
+    void shouldNotAddSpendingWithEmptyAmount() {
         String category = "Friends";
-        String date = DateUtils.getDateAsString(new Date());
 
         Selenide.open(MainPage.URL, MainPage.class)
                 .waitForPageLoaded()
                 .setNewSpendingCategory(category)
-                .setNewSpendingDate(date)
+                .setNewSpendingDate(new Date())
                 .submitNewSpending()
                 .checkError(CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT.content);
     }
 
     @Test
-    @AllureId("43")
+    @AllureId("500015")
     @DisplayName("WEB: Пользователь имеет возможность отредактировать трату")
+    @Tag("WEB")
     @ApiLogin(nifflerUser = @GenerateUser(
             categories = {
                     @GenerateCategory("Food"),
@@ -157,8 +158,9 @@ public class SpendingTest extends BaseTest {
     }
 
     @Test
-    @AllureId("50")
+    @AllureId("500016")
     @DisplayName("WEB: Траты за последнюю неделю должны отображаться при применении фильтра 'Last week'")
+    @Tag("WEB")
     @ApiLogin(nifflerUser = @GenerateUser(
             categories = @GenerateCategory("Бар"),
             spends = @GenerateSpend(
@@ -177,8 +179,9 @@ public class SpendingTest extends BaseTest {
 
     @Disabled("Not implemented")
     @Test
-    @AllureId("51")
+    @AllureId("500017")
     @DisplayName("WEB: Пользователь имеет возможность удалить трату")
+    @Tag("WEB")
     @ApiLogin(nifflerUser = @GenerateUser(
             categories = @GenerateCategory("Бар"),
             spends = @GenerateSpend(
@@ -190,7 +193,6 @@ public class SpendingTest extends BaseTest {
     void deleteSpendingTest() {
         Selenide.open(MainPage.URL, MainPage.class)
                 .getSpendingTable()
-                .deleteSpending()
-                .checkTable();
+                .deleteSpending();
     }
 }

@@ -2,7 +2,7 @@ package niffler.condition;
 
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.CollectionSource;
-import niffler.model.SpendJson;
+import niffler.model.rest.SpendJson;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -1,11 +1,11 @@
 package niffler.ws;
 
-import niffler.ws.model.wsdl.AllUsersRequest;
-import niffler.ws.model.wsdl.AllUsersResponse;
-import niffler.ws.model.wsdl.CurrentUserRequest;
-import niffler.ws.model.wsdl.CurrentUserResponse;
-import niffler.ws.model.wsdl.UpdateUserInfoRequest;
-import niffler.ws.model.wsdl.UpdateUserInfoResponse;
+import niffler.model.soap.AllUsersRequest;
+import niffler.model.soap.AllUsersResponse;
+import niffler.model.soap.CurrentUserRequest;
+import niffler.model.soap.CurrentUserResponse;
+import niffler.model.soap.UpdateUserInfoRequest;
+import niffler.model.soap.UpdateUserInfoResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;

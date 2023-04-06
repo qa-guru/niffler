@@ -8,7 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import niffler.model.CurrencyValues;
+import niffler.model.rest.CurrencyValues;
 
 import java.util.Arrays;
 import java.util.Objects;

@@ -6,7 +6,9 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
 import io.qameta.allure.grpc.AllureGrpc;
 import niffler.config.Config;
+import niffler.jupiter.annotation.meta.GrpcTest;
 
+@GrpcTest
 public abstract class BaseGRPCTest {
 
     protected static final Config CFG = Config.getConfig();

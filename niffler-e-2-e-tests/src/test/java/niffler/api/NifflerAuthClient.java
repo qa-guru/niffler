@@ -1,6 +1,7 @@
 package niffler.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.qameta.allure.Step;
 import niffler.api.context.CookieHolder;
 import niffler.api.context.SessionStorageHolder;
 import niffler.api.interceptops.AddCookiesReqInterceptor;
@@ -8,6 +9,7 @@ import niffler.api.interceptops.ExtractCodeFromRespInterceptor;
 import niffler.api.interceptops.ReceivedCookieRespInterceptor;
 import niffler.config.Config;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -21,6 +23,7 @@ public class NifflerAuthClient {
 
     private static final OkHttpClient httpClient = new OkHttpClient.Builder()
             .followRedirects(true)
+            .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addNetworkInterceptor(new ReceivedCookieRespInterceptor())
             .addNetworkInterceptor(new AddCookiesReqInterceptor())
             .addNetworkInterceptor(new ExtractCodeFromRespInterceptor())
@@ -34,6 +37,7 @@ public class NifflerAuthClient {
 
     private final NifflerAuthApi nifflerAuthApi = retrofit.create(NifflerAuthApi.class);
 
+    @Step("Send REST GET('/oauth2/authorize') request to niffler-auth")
     public void authorize() throws Exception {
         SessionStorageHolder.getInstance().init();
         nifflerAuthApi.authorize(
@@ -46,6 +50,7 @@ public class NifflerAuthClient {
         ).execute();
     }
 
+    @Step("Send REST POST('/login') request to niffler-auth")
     public Response<Void> login(String username, String password) throws Exception {
         return nifflerAuthApi.login(
                 CookieHolder.getInstance().getCookieByPart("JSESSIONID"),
@@ -56,7 +61,7 @@ public class NifflerAuthClient {
         ).execute();
     }
 
-
+    @Step("Send REST POST('/oauth2/token') request to niffler-auth")
     public JsonNode getToken() throws Exception {
         String basic = "Basic " + Base64.getEncoder().encodeToString("client:secret".getBytes(StandardCharsets.UTF_8));
         return nifflerAuthApi.getToken(
@@ -69,6 +74,7 @@ public class NifflerAuthClient {
         ).execute().body();
     }
 
+    @Step("Send REST POST('/register') request to niffler-auth")
     public Response<Void> register(String username, String password) throws Exception {
         return nifflerAuthApi.register(
                 CookieHolder.getInstance().getCookieByPart("JSESSIONID"),

@@ -7,14 +7,15 @@ import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class PeopleTable extends BaseComponent<PeopleTable>{
+public class PeopleTable extends BaseComponent<PeopleTable> {
+
     public PeopleTable(SelenideElement self) {
         super(self);
     }
+
     public ElementsCollection getAllRows() {
         return $$("tbody tr");
     }
-
 
     public SelenideElement getRowByUsername(String username) {
         ElementsCollection allRows = getAllRows();

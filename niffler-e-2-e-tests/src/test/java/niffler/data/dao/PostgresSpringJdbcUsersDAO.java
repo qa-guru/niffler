@@ -1,5 +1,6 @@
 package niffler.data.dao;
 
+import io.qameta.allure.Step;
 import niffler.data.entity.UsersEntity;
 import niffler.data.jdbc.DataSourceContext;
 import niffler.data.spring_jdbc.UsersRowMapper;
@@ -14,6 +15,7 @@ public class PostgresSpringJdbcUsersDAO implements UsersDAO {
     private static final Logger LOG = LoggerFactory.getLogger(PostgresSpringJdbcUsersDAO.class);
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSourceContext.INSTANCE.getDatatSource(USERDATA));
 
+    @Step("Add user to database using Spring-jdbc")
     @Override
     public int addUser(UsersEntity users) {
         return jdbcTemplate.update("INSERT INTO users " +
@@ -27,6 +29,7 @@ public class PostgresSpringJdbcUsersDAO implements UsersDAO {
         );
     }
 
+    @Step("Update user in database using Spring-jdbc")
     @Override
     public void updateUser(UsersEntity user) {
         jdbcTemplate.update("UPDATE users SET currency = ?,firstname = ?, surname = ?  WHERE username = ?",
@@ -36,11 +39,13 @@ public class PostgresSpringJdbcUsersDAO implements UsersDAO {
                 user.getUsername());
     }
 
+    @Step("Remove user from database using Spring-jdbc")
     @Override
     public void remove(UsersEntity user) {
         jdbcTemplate.update("DELETE from users WHERE id = ?", user.getId());
     }
 
+    @Step("Get user from database by username '{username}' using Spring-jdbc")
     @Override
     public UsersEntity getByUsername(String username) {
         return jdbcTemplate.queryForObject("SELECT * FROM users WHERE username = ?",
