@@ -7,11 +7,14 @@ import niffler.api.NifflerSpendClient;
 import niffler.api.NifflerUserdataClient;
 import niffler.config.Config;
 import niffler.jupiter.annotation.ApiLogin;
+import niffler.jupiter.annotation.Friends;
 import niffler.jupiter.annotation.GenerateCategory;
 import niffler.jupiter.annotation.GenerateSpend;
 import niffler.jupiter.annotation.GenerateUser;
+import niffler.jupiter.annotation.Invitations;
 import niffler.jupiter.annotation.User;
 import niffler.model.rest.CategoryJson;
+import niffler.model.rest.FriendJson;
 import niffler.model.rest.SpendJson;
 import niffler.model.rest.UserJson;
 import niffler.utils.DateUtils;
@@ -82,6 +85,29 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
                     sj.setDescription(spend.spendName());
                     sj.setSpendDate(DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()));
                     createdSpends.add(spendClient.createSpend(sj));
+                }
+            }
+
+            Friends friends = entry.getValue().friends();
+            if (friends.handleAnnotation() && friends.count() > 0) {
+                for (int i = 0; i < friends.count(); i++) {
+                    UserJson friend = apiRegister(generateRandomUsername(), generateRandomPassword());
+                    FriendJson addFriend = new FriendJson();
+                    FriendJson invitation = new FriendJson();
+                    addFriend.setUsername(friend.getUsername());
+                    invitation.setUsername(userJson.getUsername());
+                    userdataClient.addFriend(userJson.getUsername(), addFriend);
+                    userdataClient.acceptInvitation(friend.getUsername(), invitation);
+                }
+            }
+
+            Invitations invitations = entry.getValue().invitations();
+            if (invitations.handleAnnotation() && invitations.count() > 0) {
+                for (int i = 0; i < invitations.count(); i++) {
+                    UserJson invitation = apiRegister(generateRandomUsername(), generateRandomPassword());
+                    FriendJson addFriend = new FriendJson();
+                    addFriend.setUsername(userJson.getUsername());
+                    userdataClient.addFriend(invitation.getUsername(), addFriend);
                 }
             }
 

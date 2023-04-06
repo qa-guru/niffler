@@ -21,6 +21,8 @@ public class UserJson {
     private String photo;
     @JsonProperty("password")
     private String password;
+    @JsonProperty("friendState")
+    private FriendState friendState;
 
     private transient List<CategoryJson> categoryJsons;
     private transient List<SpendJson> spendJsons;
@@ -97,16 +99,24 @@ public class UserJson {
         this.spendJsons = spendJsons;
     }
 
+    public FriendState getFriendState() {
+        return friendState;
+    }
+
+    public void setFriendState(FriendState friendState) {
+        this.friendState = friendState;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && Objects.equals(password, userJson.password);
+        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && Objects.equals(password, userJson.password) && friendState == userJson.friendState && Objects.equals(categoryJsons, userJson.categoryJsons) && Objects.equals(spendJsons, userJson.spendJsons);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, firstname, surname, currency, photo, password);
+        return Objects.hash(id, username, firstname, surname, currency, photo, password, friendState, categoryJsons, spendJsons);
     }
 }

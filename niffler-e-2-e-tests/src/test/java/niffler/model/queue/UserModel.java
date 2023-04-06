@@ -1,4 +1,4 @@
-package niffler.model.rest;
+package niffler.model.queue;
 
 public class UserModel {
 

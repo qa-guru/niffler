@@ -24,4 +24,8 @@ public @interface GenerateUser {
     GenerateCategory[] categories() default {};
 
     GenerateSpend[] spends() default {};
+
+    Friends friends() default @Friends(handleAnnotation = false);
+
+    Invitations invitations() default @Invitations(handleAnnotation = false);
 }
