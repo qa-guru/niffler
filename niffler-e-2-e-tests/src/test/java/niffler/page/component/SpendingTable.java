@@ -29,7 +29,7 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
         return this;
     }
 
-    @Step("Check that table contains rest {0}")
+    @Step("Check that table contains data {0}")
     public SpendingTable checkTableContains(SpendJson... expectedSpends) {
         self.$$("tbody tr").should(spends(expectedSpends));
         return this;
@@ -43,10 +43,6 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
         setSpendingCategory(rowElement, editedSpending.getCategory());
 //        setSpendingDate(rowElement, editedSpending.getSpendDate());
         submitEditSpending(rowElement);
-        return this;
-    }
-
-    public SpendingTable checkTable() {
         return this;
     }
 

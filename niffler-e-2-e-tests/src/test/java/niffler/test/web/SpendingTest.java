@@ -193,7 +193,6 @@ public class SpendingTest extends BaseWebTest {
     void deleteSpendingTest() {
         Selenide.open(MainPage.URL, MainPage.class)
                 .getSpendingTable()
-                .deleteSpending()
-                .checkTable();
+                .deleteSpending();
     }
 }
