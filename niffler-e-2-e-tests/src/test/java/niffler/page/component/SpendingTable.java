@@ -11,7 +11,7 @@ import java.util.Date;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
-import static niffler.condition.SpendCondition.spends;
+import static niffler.condition.spend.SpendCondition.spends;
 
 public class SpendingTable extends BaseComponent<SpendingTable> {
 

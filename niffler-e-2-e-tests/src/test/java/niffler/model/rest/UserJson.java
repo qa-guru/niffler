@@ -2,6 +2,7 @@ package niffler.model.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -24,8 +25,10 @@ public class UserJson {
     @JsonProperty("friendState")
     private FriendState friendState;
 
-    private transient List<CategoryJson> categoryJsons;
-    private transient List<SpendJson> spendJsons;
+    private transient List<CategoryJson> categoryJsons = new ArrayList<>();
+    private transient List<SpendJson> spendJsons = new ArrayList<>();
+    private transient List<UserJson> friendsJsons = new ArrayList<>();
+    private transient List<UserJson> invitationsJsons = new ArrayList<>();
 
     public UUID getId() {
         return id;
@@ -99,6 +102,22 @@ public class UserJson {
         this.spendJsons = spendJsons;
     }
 
+    public List<UserJson> getFriendsJsons() {
+        return friendsJsons;
+    }
+
+    public void setFriendsJsons(List<UserJson> friendsJsons) {
+        this.friendsJsons = friendsJsons;
+    }
+
+    public List<UserJson> getInvitationsJsons() {
+        return invitationsJsons;
+    }
+
+    public void setInvitationsJsons(List<UserJson> invitationsJsons) {
+        this.invitationsJsons = invitationsJsons;
+    }
+
     public FriendState getFriendState() {
         return friendState;
     }
@@ -112,11 +131,11 @@ public class UserJson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && Objects.equals(password, userJson.password) && friendState == userJson.friendState && Objects.equals(categoryJsons, userJson.categoryJsons) && Objects.equals(spendJsons, userJson.spendJsons);
+        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && Objects.equals(password, userJson.password) && friendState == userJson.friendState && Objects.equals(categoryJsons, userJson.categoryJsons) && Objects.equals(spendJsons, userJson.spendJsons) && Objects.equals(friendsJsons, userJson.friendsJsons) && Objects.equals(invitationsJsons, userJson.invitationsJsons);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, firstname, surname, currency, photo, password, friendState, categoryJsons, spendJsons);
+        return Objects.hash(id, username, firstname, surname, currency, photo, password, friendState, categoryJsons, spendJsons, friendsJsons, invitationsJsons);
     }
 }

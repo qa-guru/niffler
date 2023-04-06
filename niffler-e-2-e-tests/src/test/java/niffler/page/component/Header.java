@@ -13,7 +13,7 @@ public class Header extends BaseComponent<Header> {
 
     private final SelenideElement friendsButton = self.$("a[href*='/friends']");
 
-    public FriendsPage selectFriends() {
+    public FriendsPage toFriendsPage() {
         friendsButton.click();
         return new FriendsPage();
     }

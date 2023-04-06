@@ -1,4 +1,4 @@
-package niffler.condition;
+package niffler.condition.spend;
 
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ex.ElementNotFound;

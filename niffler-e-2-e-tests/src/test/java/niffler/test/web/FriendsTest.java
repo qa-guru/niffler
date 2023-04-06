@@ -6,6 +6,8 @@ import io.qameta.allure.Epic;
 import niffler.jupiter.annotation.ApiLogin;
 import niffler.jupiter.annotation.Friends;
 import niffler.jupiter.annotation.GenerateUser;
+import niffler.jupiter.annotation.User;
+import niffler.model.rest.UserJson;
 import niffler.page.MainPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -20,10 +22,10 @@ public class FriendsTest extends BaseWebTest {
     @DisplayName("WEB: Пользователь должен видеть список своих друзей")
     @Tag("WEB")
     @ApiLogin(nifflerUser = @GenerateUser(friends = @Friends(count = 2)))
-    void shouldViewExistingFriendsInTable() {
+    void shouldViewExistingFriendsInTable(@User UserJson user) {
         Selenide.open(MainPage.URL, MainPage.class)
                 .getHeader()
-                .selectFriends()
-                .checkExistingFriendsCount(2);
+                .toFriendsPage()
+                .checkExistingFriendsCount(user.getFriendsJsons().size());
     }
 }
