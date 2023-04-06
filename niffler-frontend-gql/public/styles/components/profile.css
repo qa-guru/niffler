@@ -1,0 +1,33 @@
+.profile-content {
+    margin: 160px 20px 100px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 40px;
+}
+
+.profile__avatar-edit {
+    display: flex;
+    border: none;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.profile__avatar-edit:hover {
+    cursor: pointer;
+}
+
+.profile__avatar {
+    object-fit: cover;
+    border-radius: 50%;
+    width: 250px;
+    height: 250px;
+    margin: 0;
+    padding: 0;
+}
+
+.profile__info-container {
+    display: grid;
+    grid-gap: 10px;
+    margin-bottom: 20px;
+}

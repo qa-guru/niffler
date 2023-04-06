@@ -1,9 +1,11 @@
 package niffler.page;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import niffler.model.CurrencyValues;
+import niffler.model.rest.CurrencyValues;
 
+import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Condition.visible;
@@ -22,6 +24,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
     private final SelenideElement currencySelect = $("div .select-wrapper");
     private final SelenideElement submitButton = $(byText("Submit"));
     private final SelenideElement createCategoryButton = $(byText("Create"));
+    private final ElementsCollection existingCategories = $$(".categories__list li ");
 
     @Step("Fill profile page with rate: name: {0}, surname: {1}, currency: {2}")
     public ProfilePage fillProfile(String name, String surname, CurrencyValues currency) {
@@ -47,13 +50,25 @@ public class ProfilePage extends BasePage<ProfilePage> {
     @Step("Set currency: {0}")
     public ProfilePage setCurrency(CurrencyValues currency) {
         currencySelect.click();
-        $$("div[id^='react-select']").find(text(currency.name())).click();
+        $$("div[id^='react-select']").find(exactText(currency.name())).click();
+        return this;
+    }
+
+    @Step("Set category: {0}")
+    public ProfilePage addCategory(String category) {
+        categoryInput.setValue(category);
+        createCategoryButton.click();
+        return this;
+    }
+
+    public ProfilePage checkCategoryExists(String category) {
+        existingCategories.find(text(category)).shouldBe(visible);
         return this;
     }
 
     @Step("Check userName: {0}")
-    public ProfilePage checkUsername(String userName) {
-        this.userName.should(text(userName));
+    public ProfilePage checkUsername(String username) {
+        this.userName.should(text(username));
         return this;
     }
 

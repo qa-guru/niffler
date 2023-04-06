@@ -6,7 +6,7 @@ import {UserContext} from "../../contexts/UserContext";
 
 export const Redirect = ({}) => {
     const [searchParams] = useSearchParams();
-    const {user, setUser} = useContext(UserContext);
+    const {setUser} = useContext(UserContext);
     const navigate = useNavigate();
 
     useEffect(() => {

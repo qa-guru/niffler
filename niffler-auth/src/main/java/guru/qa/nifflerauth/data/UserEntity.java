@@ -37,10 +37,10 @@ public class UserEntity {
     private Boolean accountNonExpired;
 
     @Column(name = "account_non_locked", nullable = false)
-    private Boolean AccountNonLocked;
+    private Boolean accountNonLocked;
 
     @Column(name = "credentials_non_expired", nullable = false)
-    private Boolean CredentialsNonExpired;
+    private Boolean credentialsNonExpired;
 
     @OneToMany(fetch = EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     private List<AuthorityEntity> authorities = new ArrayList<>();
@@ -86,19 +86,19 @@ public class UserEntity {
     }
 
     public Boolean getAccountNonLocked() {
-        return AccountNonLocked;
+        return accountNonLocked;
     }
 
     public void setAccountNonLocked(Boolean accountNonLocked) {
-        AccountNonLocked = accountNonLocked;
+        this.accountNonLocked = accountNonLocked;
     }
 
     public Boolean getCredentialsNonExpired() {
-        return CredentialsNonExpired;
+        return credentialsNonExpired;
     }
 
     public void setCredentialsNonExpired(Boolean credentialsNonExpired) {
-        CredentialsNonExpired = credentialsNonExpired;
+        this.credentialsNonExpired = credentialsNonExpired;
     }
 
     public List<AuthorityEntity> getAuthorities() {
@@ -118,11 +118,11 @@ public class UserEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserEntity that = (UserEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(password, that.password) && Objects.equals(enabled, that.enabled) && Objects.equals(accountNonExpired, that.accountNonExpired) && Objects.equals(AccountNonLocked, that.AccountNonLocked) && Objects.equals(CredentialsNonExpired, that.CredentialsNonExpired) && Objects.equals(authorities, that.authorities);
+        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(password, that.password) && Objects.equals(enabled, that.enabled) && Objects.equals(accountNonExpired, that.accountNonExpired) && Objects.equals(accountNonLocked, that.accountNonLocked) && Objects.equals(credentialsNonExpired, that.credentialsNonExpired) && Objects.equals(authorities, that.authorities);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, enabled, accountNonExpired, AccountNonLocked, CredentialsNonExpired, authorities);
+        return Objects.hash(id, username, password, enabled, accountNonExpired, accountNonLocked, credentialsNonExpired, authorities);
     }
 }

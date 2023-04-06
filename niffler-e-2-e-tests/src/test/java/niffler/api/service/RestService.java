@@ -1,5 +1,6 @@
 package niffler.api.service;
 
+import io.qameta.allure.okhttp3.AllureOkHttp3;
 import niffler.config.Config;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -11,6 +12,7 @@ public abstract class RestService {
     protected static final Config CFG = Config.getConfig();
     private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addInterceptor(new AllureOkHttp3())
             .build();
 
     private final String restServiceUrl;

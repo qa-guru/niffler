@@ -18,7 +18,7 @@ export const Profile = () => {
         surname: user?.surname ?? "",
         currency: {value: user.currency, label: user.currency},
         photo: user?.photo ?? null,
-        });
+    });
     const [currencies, setCurrencies] = useState([]);
 
     useLoadedData({
@@ -37,11 +37,11 @@ export const Profile = () => {
         e.preventDefault();
         const dataToSend = {...userData, currency: userData.currency?.value};
         postData({
-            path:"/updateUserInfo",
+            path: "/updateUserInfo",
             data: dataToSend,
             onSuccess: (data) => {
-               setUser(data);
-               showSuccess("Profile updated!");
+                setUser(data);
+                showSuccess("Profile updated!");
             },
             onFail: (err) => {
                 console.log(err);
@@ -53,7 +53,7 @@ export const Profile = () => {
     const handleProfileAvatarChange = (selectedFile) => {
         if (selectedFile && selectedFile !== userData.photo) {
             const reader = new FileReader();
-            reader.onload = function(){
+            reader.onload = function () {
                 const result = reader.result;
                 setUserData({...userData, photo: result})
             }
@@ -77,14 +77,20 @@ export const Profile = () => {
                                            label="Name"
                                            fieldName={"firstname"}
                                            max={30}
-                                           handleChangeValue={(data) => setUserData({...userData, firstname: data.target.value})}
+                                           handleChangeValue={(data) => setUserData({
+                                               ...userData,
+                                               firstname: data.target.value
+                                           })}
                                 />
                                 <FormInput label="Surname"
                                            fieldName={"surname"}
                                            value={userData.surname}
                                            placeholder={"Set your surname"}
                                            max={50}
-                                           handleChangeValue={(data) => setUserData({...userData, surname: data.target.value})}
+                                           handleChangeValue={(data) => setUserData({
+                                               ...userData,
+                                               surname: data.target.value
+                                           })}
                                 />
                                 <div style={{width: 350}}>
                                     <FormSelect options={currencies}
@@ -92,7 +98,8 @@ export const Profile = () => {
                                                 value={userData?.currency}
                                                 label="Currency"
                                                 onChange={(currency) => {
-                                                    setUserData({...userData, currency})}}
+                                                    setUserData({...userData, currency})
+                                                }}
                                     />
                                 </div>
                             </div>
@@ -100,7 +107,7 @@ export const Profile = () => {
                         </form>
                     </div>
                 </section>
-                <Categories />
+                <Categories/>
             </div>
         </PageContainer>
     );

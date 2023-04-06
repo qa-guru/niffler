@@ -1,8 +1,9 @@
 package niffler.data.dao;
 
+import io.qameta.allure.Step;
 import niffler.data.entity.UsersEntity;
 import niffler.data.jdbc.DataSourceContext;
-import niffler.model.CurrencyValues;
+import niffler.model.rest.CurrencyValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +21,7 @@ public class PostgresJdbcUsersDAO implements UsersDAO {
     private static final Logger LOG = LoggerFactory.getLogger(PostgresJdbcUsersDAO.class);
     private final DataSource ds = DataSourceContext.INSTANCE.getDatatSource(USERDATA);
 
+    @Step("Add user to database using JDBC")
     @Override
     public int addUser(UsersEntity users) {
         try (Connection con = ds.getConnection();
@@ -38,6 +40,7 @@ public class PostgresJdbcUsersDAO implements UsersDAO {
         }
     }
 
+    @Step("Update user in database using JDBC")
     @Override
     public void updateUser(UsersEntity user) {
         try (Connection con = ds.getConnection();
@@ -50,11 +53,13 @@ public class PostgresJdbcUsersDAO implements UsersDAO {
         }
     }
 
+    @Step("Remove user from database using JDBC")
     @Override
     public void remove(UsersEntity user) {
 
     }
 
+    @Step("Get user from database by username '{username}' using JDBC")
     @Override
     public UsersEntity getByUsername(String username) {
         try (Connection con = ds.getConnection();

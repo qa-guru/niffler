@@ -23,9 +23,12 @@ else
   docker build --build-arg DOCKER=eclipse-temurin:19-jdk -t "${IMAGE_NAME}":"${VERSION}" -t "${IMAGE_NAME}":latest -f ./niffler-e-2-e-tests/Dockerfile .
 fi
 
-cd ./niffler-frontend/ || exit
+var front
+if [[ "$1" = "gql" ]]; then front="./niffler-frontend-gql/"; else front="./niffler-frontend/"; fi
+
+cd "$front" || exit
 bash ./docker-build.sh test
-cd ../
+cd ../ || exit
 docker pull selenoid/vnc_chrome:110.0
 docker images
 docker-compose -f docker-compose.test.yml up -d

@@ -15,7 +15,7 @@ public abstract class BasePage<T extends BasePage> {
     public abstract T waitForPageLoaded();
 
     @SuppressWarnings("unchecked")
-    public T checkSuccessMessage(String expectedText) {
+    public T checkToasterMessage(String expectedText) {
         tostifyAlert.should(Condition.visible).should(Condition.text(expectedText));
         return (T) this;
     }

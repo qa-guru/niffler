@@ -8,7 +8,14 @@ import {FormSelect} from "../FormSelect";
 import {SpendingTable} from "../SpendingTable";
 
 
-export const SpendingHistory = ({spendings, currencies, categories, handleDeleteItems, isGraphOutdated, setIsGraphOutdated}) => {
+export const SpendingHistory = ({
+                                    spendings,
+                                    currencies,
+                                    categories,
+                                    handleDeleteItems,
+                                    isGraphOutdated,
+                                    setIsGraphOutdated
+                                }) => {
     const {filter, setFilter} = useContext(FilterContext);
     const {selectedCurrency, setSelectedCurrency} = useContext(CurrencyContext);
 
@@ -24,7 +31,7 @@ export const SpendingHistory = ({spendings, currencies, categories, handleDelete
         setAllIds,
         selectedIds,
         setSelectedIds
-        };
+    };
 
     return (
         <section className={"main-content__section main-content__section-history"}>

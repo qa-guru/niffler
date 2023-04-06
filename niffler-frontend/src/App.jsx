@@ -1,4 +1,4 @@
-import { useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import {getData} from "./api/api";
@@ -18,7 +18,7 @@ function App() {
 
     const [user, setUser] = useState(null);
     const [userLoading, setUserLoading] = useState(true);
-    const userContext = { user, setUser };
+    const userContext = {user, setUser};
 
     const [popupOpen, setPopupOpen] = useState(false);
     const popupContext = {
@@ -53,11 +53,11 @@ function App() {
                     <PopupContext.Provider value={popupContext}>
                         {userLoading ? <div className="loader"></div> : (
                             <Routes>
-                                <Route path="/redirect" element={<Redirect />} exact={false}/>
-                                <Route path="/authorized" element={<Redirect />} exact={false}/>
+                                <Route path="/redirect" element={<Redirect/>}/>
+                                <Route path="/authorized" element={<Redirect/>}/>
                                 <Route element={<ProtectedRoutes/>}>
                                     <Route path="/profile" element={<Profile/>}/>
-                                    <Route path="/main" element={<MainLayout />}/>
+                                    <Route path="/main" element={<MainLayout/>}/>
                                     <Route path="/people" element={<PeopleLayout/>}/>
                                     <Route path="/friends" element={<FriendsLayout/>}/>
                                 </Route>

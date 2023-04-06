@@ -1,28 +1,33 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Login to Niffler</title>
+    <title>Register to Niffler</title>
     <link rel="icon" th:href="@{images/favicon.ico}"/>
     <link th:href="@{styles/styles.css}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <main class="content">
-    <form th:if="${username == null}" class="form" id="register-form" th:object="${registrationModel}" action="/register" th:action="@{/register}"
+    <form th:if="${username == null}" class="form" id="register-form" th:object="${registrationModel}"
+          action="/register" th:action="@{/register}"
           method="post">
         <h1 class="form__header">Welcome to Niffler. The coin keeper</h1>
         <img src="../static/images/niffler-logo.png" width="90" th:src="@{images/niffler-logo.png}" alt="Niffler logo"/>
         <p class="form__paragraph">Registration form</p>
         <label class="form__label">Username:
-            <input class="form__input" type="text" id="username" th:field="*{username}" name="username" placeholder="Type your username" required/>
+            <input class="form__input" type="text" id="username" th:field="*{username}" name="username"
+                   placeholder="Type your username" required/>
             <span class="form__error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
         </label>
         <label class="form__label">Password:
-            <input class="form__input" type="password" id="password" name="password" th:field="*{password}" placeholder="Type your password" required/>
+            <input class="form__input" type="password" id="password" name="password" th:field="*{password}"
+                   placeholder="Type your password" required/>
             <span class="form__error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
         </label>
         <label class="form__label">Submit Password:
-            <input class="form__input" type="password" id="passwordSubmit" name="passwordSubmit" th:field="*{passwordSubmit}" placeholder="Submit your password" required/>
-            <span class="form__error" th:if="${#fields.hasErrors('passwordSubmit')}" th:errors="*{passwordSubmit}"></span>
+            <input class="form__input" type="password" id="passwordSubmit" name="passwordSubmit"
+                   th:field="*{passwordSubmit}" placeholder="Submit your password" required/>
+            <span class="form__error" th:if="${#fields.hasErrors('passwordSubmit')}"
+                  th:errors="*{passwordSubmit}"></span>
         </label>
         <button class="form__submit" type="submit">
             Sign Up

@@ -1,0 +1,60 @@
+.avatar-container {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.edit-avatar__container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 10px;
+    box-shadow: 0 0 5px 5px black;
+    border-radius: 50%;
+    width: 250px;
+    height: 250px;
+    z-index: 1;
+}
+
+.edit-avatar__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.edit-avatar__close {
+    position: absolute;
+    right: -40px;
+    top: -15px;
+}
+
+.edit-avatar__button-container {
+    align-self: center;
+    margin-top: 30px;
+}
+
+.edit-avatar__error {
+    color: var(--color-error);
+    font-size: 12px;
+}
+
+.edit-avatar__input {
+    width: inherit;
+    padding: 25px;
+}
+
+input[type=file]::file-selector-button {
+    font-family: "PTRootUIWeb", var(--font-fallback);
+    border: 2px solid black;
+    padding: .2em .4em;
+    border-radius: 8px;
+    background-color: #eeedea;
+    transition: 1s;
+}
+
+input[type=file]::file-selector-button:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}

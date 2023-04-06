@@ -1,6 +1,7 @@
 package niffler.jupiter.extension;
 
 import io.qameta.allure.AllureId;
+import io.qameta.allure.Step;
 import niffler.api.NifflerAuthClient;
 import niffler.api.NifflerSpendClient;
 import niffler.api.NifflerUserdataClient;
@@ -10,9 +11,9 @@ import niffler.jupiter.annotation.GenerateCategory;
 import niffler.jupiter.annotation.GenerateSpend;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
-import niffler.model.CategoryJson;
-import niffler.model.SpendJson;
-import niffler.model.UserJson;
+import niffler.model.rest.CategoryJson;
+import niffler.model.rest.SpendJson;
+import niffler.model.rest.UserJson;
 import niffler.utils.DateUtils;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -43,6 +44,7 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
             ON_METHOD_USERS_NAMESPACE = ExtensionContext.Namespace.create(CreateUserExtension.class, Selector.METHOD),
             API_LOGIN_USERS_NAMESPACE = ExtensionContext.Namespace.create(CreateUserExtension.class, Selector.NESTED);
 
+    @Step("Create user for test")
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         final String testId = getTestId(context);
@@ -70,7 +72,7 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
 
             GenerateSpend[] spends = entry.getValue().spends();
             List<SpendJson> createdSpends = new ArrayList<>();
-            if (spends != null && spends.length > 0) {
+            if (spends != null) {
                 for (GenerateSpend spend : spends) {
                     SpendJson sj = new SpendJson();
                     sj.setUsername(username);

@@ -32,7 +32,7 @@ public class UserDataService {
 
     public @Nonnull
     UserJson update(@Nonnull UserJson user) {
-        UserEntity userEntity = userRepository.findByUsername(user.getUserName());
+        UserEntity userEntity = userRepository.findByUsername(user.getUsername());
         userEntity.setFirstname(user.getFirstname());
         userEntity.setSurname(user.getSurname());
         userEntity.setCurrency(user.getCurrency());
@@ -113,10 +113,12 @@ public class UserDataService {
                 .toList();
     }
 
-    public void addFriend(@Nonnull String username, @Nonnull FriendJson friend) {
+    public UserJson addFriend(@Nonnull String username, @Nonnull FriendJson friend) {
         UserEntity currentUser = userRepository.findByUsername(username);
-        currentUser.addFriends(true, userRepository.findByUsername(friend.getUsername()));
+        UserEntity friendEntity = userRepository.findByUsername(friend.getUsername());
+        currentUser.addFriends(true, friendEntity);
         userRepository.save(currentUser);
+        return UserJson.fromEntity(friendEntity, FriendState.INVITE_SENT);
     }
 
     public @Nonnull

@@ -1,0 +1,5 @@
+{
+  "operationName": "Users",
+  "variables": {},
+  "query": "query Users {\n  users {\n    id\n    username\n    firstname\n    surname\n    photo\n    friendState\n    __typename\n  }\n}"
+}

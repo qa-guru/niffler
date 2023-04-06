@@ -1,7 +1,7 @@
 package niffler.data.spring_jdbc;
 
 import niffler.data.entity.UsersEntity;
-import niffler.model.CurrencyValues;
+import niffler.model.rest.CurrencyValues;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

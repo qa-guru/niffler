@@ -4,13 +4,14 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.qameta.allure.AllureId;
+import io.qameta.allure.Step;
 import niffler.api.NifflerAuthClient;
 import niffler.api.context.CookieHolder;
 import niffler.api.context.SessionStorageHolder;
 import niffler.config.Config;
 import niffler.jupiter.annotation.ApiLogin;
 import niffler.jupiter.annotation.GenerateUser;
-import niffler.model.UserJson;
+import niffler.model.rest.UserJson;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -20,7 +21,7 @@ import java.util.Objects;
 
 import static niffler.jupiter.extension.CreateUserExtension.API_LOGIN_USERS_NAMESPACE;
 
-public class ApiAuthExtension implements BeforeEachCallback, AfterTestExecutionCallback {
+public class ApiAuthExtension implements BeforeEachCallback {
 
     private final NifflerAuthClient authClient = new NifflerAuthClient();
     protected static final Config CFG = Config.getConfig();
@@ -28,6 +29,7 @@ public class ApiAuthExtension implements BeforeEachCallback, AfterTestExecutionC
     public static final ExtensionContext.Namespace AUTH_EXTENSION_NAMESPACE
             = ExtensionContext.Namespace.create(ApiAuthExtension.class);
 
+    @Step("Login to niffler using api")
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         ApiLogin apiLoginAnnotation = context.getRequiredTestMethod().getAnnotation(ApiLogin.class);
@@ -42,10 +44,10 @@ public class ApiAuthExtension implements BeforeEachCallback, AfterTestExecutionC
             userToLogin = context.getStore(API_LOGIN_USERS_NAMESPACE).get(testId, UserJson.class);
         } else {
             userToLogin = new UserJson();
-            userToLogin.setUserName(apiLoginAnnotation.username());
+            userToLogin.setUsername(apiLoginAnnotation.username());
             userToLogin.setPassword(apiLoginAnnotation.password());
         }
-        apiLogin(userToLogin.getUserName(), userToLogin.getPassword());
+        apiLogin(userToLogin.getUsername(), userToLogin.getPassword());
         Selenide.open(CFG.frontUrl());
         com.codeborne.selenide.SessionStorage sessionStorage = Selenide.sessionStorage();
         sessionStorage.setItem("codeChallenge", SessionStorageHolder.getInstance().getCodeChallenge());
@@ -54,12 +56,6 @@ public class ApiAuthExtension implements BeforeEachCallback, AfterTestExecutionC
 
         WebDriverRunner.getWebDriver().manage()
                 .addCookie(new Cookie("JSESSIONID", CookieHolder.getInstance().getCookieValueByPart("JSESSIONID")));
-    }
-
-    @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
-        CookieHolder.getInstance().flushAll();
-        SessionStorageHolder.getInstance().flushAll();
     }
 
     private void apiLogin(String username, String password) throws Exception {

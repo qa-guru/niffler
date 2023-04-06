@@ -3,8 +3,8 @@ package niffler.condition;
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.impl.CollectionSource;
-import niffler.model.CurrencyValues;
-import niffler.model.SpendJson;
+import niffler.model.rest.CurrencyValues;
+import niffler.model.rest.SpendJson;
 import niffler.utils.DateUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -21,8 +21,7 @@ public class SpendCondition {
             @Override
             public void fail(CollectionSource collection, @Nullable List<WebElement> elements, @Nullable Exception lastError, long timeoutMs) {
                 if (elements == null || elements.isEmpty()) {
-                    ElementNotFound elementNotFound = new ElementNotFound(collection, toString(), lastError);
-                    elementNotFound.timeoutMs = timeoutMs;
+                    ElementNotFound elementNotFound = new ElementNotFound(collection, List.of("Can`t find elements"), lastError);
                     throw elementNotFound;
                 } else if (elements.size() != expectedSpends.length) {
                     throw new SpendsSizeMismatch(collection, Arrays.asList(expectedSpends), bindElementsToSpends(elements), explanation, timeoutMs);

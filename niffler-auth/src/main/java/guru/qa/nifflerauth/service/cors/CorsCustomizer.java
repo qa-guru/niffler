@@ -1,6 +1,7 @@
 package guru.qa.nifflerauth.service.cors;
 
 import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ public class CorsCustomizer {
 
     private final String nifflerFrontUri;
 
+    @Autowired
     public CorsCustomizer(@Value("${niffler-front.base-uri}") String nifflerFrontUri) {
         this.nifflerFrontUri = nifflerFrontUri;
     }

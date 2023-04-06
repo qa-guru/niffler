@@ -51,9 +51,9 @@ public class FriendsController {
     }
 
     @PostMapping("/addFriend")
-    public void addFriend(@RequestParam String username,
-                          @RequestBody FriendJson friend) {
-        userService.addFriend(username, friend);
+    public UserJson addFriend(@RequestParam String username,
+                              @RequestBody FriendJson friend) {
+        return userService.addFriend(username, friend);
     }
 
     @DeleteMapping("/removeFriend")

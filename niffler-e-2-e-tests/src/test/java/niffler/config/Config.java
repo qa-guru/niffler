@@ -22,6 +22,8 @@ public interface Config {
 
     String frontUrl();
 
+    String gatewayUrl();
+
     String userdataUrl();
 
     String currencyGrpcAddress();
