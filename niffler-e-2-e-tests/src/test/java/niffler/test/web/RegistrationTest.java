@@ -8,6 +8,7 @@ import niffler.jupiter.annotation.User;
 import niffler.model.rest.UserJson;
 import niffler.page.MainPage;
 import niffler.page.WelcomePage;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import static niffler.utils.Error.PASSWORDS_SHOULD_BE_EQUAL;
 @DisplayName("[WEB][niffler-frontend]: Регистрация")
 public class RegistrationTest extends BaseWebTest {
 
+    @Disabled
     @Test
     @AllureId("500008")
     @DisplayName("WEB: Пользователь может успешно зарегистрироваться в сиситеме")

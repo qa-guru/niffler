@@ -9,8 +9,9 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.qameta.allure.AllureId;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
-import niffler.model.CurrencyValues;
-import niffler.model.UserJson;
+import niffler.model.rest.CurrencyValues;
+import niffler.model.rest.UserJson;
+import niffler.page.MainPage;
 import niffler.page.WelcomePage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 
 //@WireMockTest(httpPort = 8089)
-public class LoginWithoutUserDataTest extends BaseTest {
+public class LoginWithoutUserDataTest extends BaseWebTest {
 
     private static final ObjectMapper om = new ObjectMapper();
     private static final WireMock wiremock = new WireMock("niffler-userdata", 8089);
@@ -32,7 +33,7 @@ public class LoginWithoutUserDataTest extends BaseTest {
     static void configureMock() throws Exception {
         UserJson user = new UserJson();
         user.setId(UUID.randomUUID());
-        user.setUserName("dima");
+        user.setUsername("dima");
         user.setFirstname("Dmitrii");
         user.setSurname("Tuchs");
         user.setCurrency(CurrencyValues.KZT);
@@ -47,13 +48,13 @@ public class LoginWithoutUserDataTest extends BaseTest {
     }
 
     @Test
-    @AllureId("2000")
+    @AllureId("0")
     @GenerateUser(username = "dima", password = "12345")
     void mainPageShouldBeDisplayedAfterSuccessLogin(@User(selector = METHOD) UserJson user)  {
         Selenide.open(WelcomePage.URL, WelcomePage.class)
                 .doLogin()
-                .fillLoginPage(user.getUserName(), user.getPassword())
-                .submit()
+                .fillLoginPage(user.getUsername(), user.getPassword())
+                .submit(new MainPage())
                 .waitForPageLoaded();
     }
 }

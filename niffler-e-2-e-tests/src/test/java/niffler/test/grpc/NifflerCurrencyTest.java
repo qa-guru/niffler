@@ -3,6 +3,7 @@ package niffler.test.grpc;
 import com.google.protobuf.Empty;
 import guru.qa.grpc.niffler.grpc.CalculateRequest;
 import guru.qa.grpc.niffler.grpc.CalculateResponse;
+import guru.qa.grpc.niffler.grpc.Currency;
 import guru.qa.grpc.niffler.grpc.CurrencyResponse;
 import guru.qa.grpc.niffler.grpc.CurrencyValues;
 import io.qameta.allure.AllureId;
@@ -21,7 +22,6 @@ import java.util.stream.Stream;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Disabled
 @Epic("[gRPC][niffler-currency]: Валюты")
 @DisplayName("[gRPC][niffler-currency]: Валюты")
 public class NifflerCurrencyTest extends BaseGRPCTest {

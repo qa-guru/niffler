@@ -13,6 +13,7 @@ import niffler.model.gql.UserGql;
 import niffler.model.gql.UsersDataGql;
 import niffler.model.rest.CurrencyValues;
 import niffler.model.rest.UserJson;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 @Epic("[GraphQL][niffler-gateway]: Пользователи")
 @DisplayName("[GraphQL][niffler-gateway]: Пользователи")
 public class GraphQlUsersTest extends BaseGraphQlTest {

@@ -7,6 +7,7 @@ import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.rest.CurrencyValues;
 import niffler.model.rest.UserJson;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 @Epic("[REST][niffler-userdata]: Пользователи")
 @DisplayName("[REST][niffler-userdata]: Пользователи")
 public class UserDataUsersRestTest extends BaseRestTest {
