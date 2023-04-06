@@ -12,8 +12,10 @@ public class Select extends BaseComponent<Select> {
         super(self);
     }
 
+    private final SelenideElement input = self.$("input");
+
     public void setValue(String value) {
-        self.$("div[class*='IndicatorsContainer']").scrollIntoView(false).click();
+        input.setValue(value);
         $$("div[id^='react-select']").find(exactText(value)).click();
     }
 

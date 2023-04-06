@@ -2,6 +2,7 @@ package niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.AllureId;
+import io.qameta.allure.Epic;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.rest.UserJson;
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 import static niffler.utils.Error.BAD_CREDENTIALS;
 
+@Epic("[WEB][niffler-frontend]: Авторизация")
+@DisplayName("[WEB][niffler-frontend]: Авторизация")
 public class LoginTest extends BaseWebTest {
 
     @Test

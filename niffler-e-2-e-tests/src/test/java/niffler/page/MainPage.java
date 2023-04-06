@@ -9,6 +9,8 @@ import niffler.page.component.Header;
 import niffler.page.component.Select;
 import niffler.page.component.SpendingTable;
 
+import java.util.Date;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
@@ -72,7 +74,7 @@ public class MainPage extends BasePage<MainPage> {
     }
 
     @Step("Set new spending date: {0}")
-    public MainPage setNewSpendingDate(String date) {
+    public MainPage setNewSpendingDate(Date date) {
         calendar.selectDateInCalendar(date);
         addSpendingSection.$(byText("Add new spending")).click();
         return this;

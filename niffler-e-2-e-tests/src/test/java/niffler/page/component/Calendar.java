@@ -1,13 +1,10 @@
 package niffler.page.component;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Month;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -16,7 +13,6 @@ import static com.codeborne.selenide.Selenide.$;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class Calendar extends BaseComponent<Calendar> {
 
@@ -24,99 +20,58 @@ public class Calendar extends BaseComponent<Calendar> {
         super(self);
     }
 
-    /**
-     * Select year, day and month in calendar
-     *
-     * @param date - date in format "dd/MM/yyyy" | "dd-MM-yyyy" | "yyyy/MM/dd" | "yyyy-MM-dd"
-     */
+    private final SelenideElement input = $(".react-datepicker__input-container input");
+    private final SelenideElement prevButton = self.$(".react-datepicker__navigation--previous");
+    private final SelenideElement nextButton = self.$(".react-datepicker__navigation--next");
+    private final SelenideElement currentMonthAndYear = self.$(".react-datepicker__current-month");
+
     @Step("Select date in calendar: {date}")
-    public void selectDateInCalendar(String date) {
-        String[] allowedFormats = {"dd/MM/yyyy", "dd-MM-yyyy", "yyyy/MM/dd", "yyyy-MM-dd"};
-        Date parsedDate = null;
+    public void selectDateInCalendar(Date date) {
         java.util.Calendar cal = new GregorianCalendar();
-        for (String formatString : allowedFormats) {
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat(formatString);
-                sdf.setLenient(false);
-                parsedDate = sdf.parse(date);
-                break;
-            } catch (ParseException e) {
-                continue;
-            }
-        }
-        assertNotNull(parsedDate, "Expected date format: \"dd/MM/yyyy\", \"dd-MM-yyyy\", \"yyyy/MM/dd\", \"yyyy-MM-dd\", but actual date: " + date);
-        cal.setTime(parsedDate);
-
-        $(".react-datepicker__input-container input").click();
-        self.should(Condition.visible);
-
+        cal.setTime(date);
+        input.click();
         selectYear(cal.get(YEAR));
-        selectMonth(cal.get(MONTH) + 1);
+        selectMonth(cal.get(MONTH));
         selectDay(cal.get(DAY_OF_MONTH));
     }
 
-    /**
-     * Select year in calendar
-     *
-     * @param expectedYear - expected year
-     */
-    protected void selectYear(int expectedYear) {
+    private void selectYear(int expectedYear) {
         int actualYear = getActualYear();
 
-        if (actualYear > expectedYear) {
-            while (actualYear > expectedYear) {
-                clickPrev();
-                Selenide.sleep(500);
-                actualYear = getActualYear();
-            }
-        } else if (actualYear < expectedYear) {
-            while (actualYear < expectedYear) {
-                clickNext();
-                Selenide.sleep(500);
-                actualYear = getActualYear();
-            }
+        while (actualYear > expectedYear) {
+            prevButton.click();
+            Selenide.sleep(200);
+            actualYear = getActualYear();
+        }
+        while (actualYear < expectedYear) {
+            nextButton.click();
+            Selenide.sleep(200);
+            actualYear = getActualYear();
         }
     }
 
-    /**
-     * Select month in calendar, for already selected year
-     *
-     * @param expectedMonth - expected month, for example: 0 - january, 11 - december;
-     *                      <p>
-     *                      NOTE: pika-lendar component was represent months for starting at 0 to.
-     *                      </p>
-     */
-    protected void selectMonth(int expectedMonth) {
+    private void selectMonth(int desiredMonth) {
         int actualMonth = getActualMonth();
 
-        if (actualMonth > (expectedMonth)) {
-            while (actualMonth > (expectedMonth)) {
-                clickPrev();
-                Selenide.sleep(500);
-                actualMonth = getActualMonth();
-            }
-        } else if (actualMonth < (expectedMonth)) {
-            while (actualMonth < (expectedMonth)) {
-                clickNext();
-                Selenide.sleep(500);
-                actualMonth = getActualMonth();
-            }
+        while (actualMonth > desiredMonth) {
+            prevButton.click();
+            Selenide.sleep(200);
+            actualMonth = getActualMonth();
+        }
+        while (actualMonth < desiredMonth) {
+            nextButton.click();
+            Selenide.sleep(200);
+            actualMonth = getActualMonth();
         }
     }
 
-    /**
-     * Select day in calendar, for already selected year and month
-     *
-     * @param expectedDay - expected day
-     */
-    protected void selectDay(int expectedDay) {
-        ElementsCollection rows = self
-                .findAll(".react-datepicker__week");
+    private void selectDay(int desiredDay) {
+        ElementsCollection rows = self.findAll(".react-datepicker__week").snapshot();
 
         for (SelenideElement row : rows) {
-            ElementsCollection days = row.$$(".react-datepicker__day");
+            ElementsCollection days = row.$$(".react-datepicker__day").snapshot();
             for (SelenideElement day : days) {
-                if (Integer.parseInt(day.getText()) == expectedDay) {
+                if (Integer.parseInt(day.getText()) == desiredDay) {
                     day.click();
                     return;
                 }
@@ -124,25 +79,14 @@ public class Calendar extends BaseComponent<Calendar> {
         }
     }
 
-    protected int getActualMonth() {
-        return Month.valueOf(self.$(".react-datepicker__current-month")
-                        .getText()
+    private int getActualMonth() {
+        return Month.valueOf(currentMonthAndYear.getText()
                         .split(" ")[0]
                         .toUpperCase())
-                .getValue();
+                .ordinal();
     }
 
-    protected int getActualYear() {
-        return Integer.parseInt(self.$(".react-datepicker__current-month")
-                .getText()
-                .split(" ")[1]);
-    }
-
-    protected void clickNext() {
-        self.$(".react-datepicker__navigation--next").click();
-    }
-
-    protected void clickPrev() {
-        self.$(".react-datepicker__navigation--previous").click();
+    private int getActualYear() {
+        return Integer.parseInt(currentMonthAndYear.getText().split(" ")[1]);
     }
 }

@@ -2,6 +2,7 @@ package niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.AllureId;
+import io.qameta.allure.Epic;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.User;
 import niffler.model.rest.UserJson;
@@ -16,6 +17,8 @@ import static niffler.utils.DataUtils.generateRandomPassword;
 import static niffler.utils.DataUtils.generateRandomUsername;
 import static niffler.utils.Error.PASSWORDS_SHOULD_BE_EQUAL;
 
+@Epic("[WEB][niffler-frontend]: Регистрация")
+@DisplayName("[WEB][niffler-frontend]: Регистрация")
 public class RegistrationTest extends BaseWebTest {
 
     @Test

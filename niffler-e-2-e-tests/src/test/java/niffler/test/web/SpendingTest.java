@@ -2,6 +2,7 @@ package niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.AllureId;
+import io.qameta.allure.Epic;
 import niffler.jupiter.annotation.ApiLogin;
 import niffler.jupiter.annotation.GenerateCategory;
 import niffler.jupiter.annotation.GenerateSpend;
@@ -25,7 +26,8 @@ import static niffler.utils.Error.CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT;
 import static niffler.utils.Error.CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY;
 import static niffler.utils.Error.CAN_NOT_PICK_FUTURE_DATE_FOR_SPENDING;
 
-
+@Epic("[WEB][niffler-frontend]: Траты")
+@DisplayName("[WEB][niffler-frontend]: Траты")
 public class SpendingTest extends BaseWebTest {
 
     private static final String ADD_SPENDING_SUCCESS_MSG = "Spending successfully added!";
@@ -41,7 +43,6 @@ public class SpendingTest extends BaseWebTest {
         String category = "Friends";
         int amount = 100;
         Date currentDate = new Date();
-        String date = DateUtils.getDateAsString(currentDate, "dd/MM/yyyy");
         String description = generateRandomSentence(3);
         SpendJson spendingToCheck = new SpendJson();
         spendingToCheck.setCurrency(user.getCurrency());
@@ -54,7 +55,7 @@ public class SpendingTest extends BaseWebTest {
                 .waitForPageLoaded()
                 .setNewSpendingCategory(category)
                 .setNewSpendingAmount(amount)
-                .setNewSpendingDate(date)
+                .setNewSpendingDate(currentDate)
                 .setNewSpendingDescription(description)
                 .submitNewSpending()
                 .checkToasterMessage(ADD_SPENDING_SUCCESS_MSG)
@@ -69,18 +70,17 @@ public class SpendingTest extends BaseWebTest {
     @ApiLogin(nifflerUser = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
-    void shouldNotAddSpendingWithFutureDate(@User UserJson user) {
+    void shouldNotAddSpendingWithFutureDate() {
         String category = "Friends";
         int amount = 100;
         Date spendDate = DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_MONTH, 2);
-        String formattedDate = DateUtils.getDateAsString(spendDate, "dd/MM/yyyy");
         String description = generateRandomSentence(3);
 
         Selenide.open(MainPage.URL, MainPage.class)
                 .waitForPageLoaded()
                 .setNewSpendingCategory(category)
                 .setNewSpendingAmount(amount)
-                .setNewSpendingDate(formattedDate)
+                .setNewSpendingDate(spendDate)
                 .setNewSpendingDescription(description)
                 .submitNewSpending()
                 .checkError(CAN_NOT_PICK_FUTURE_DATE_FOR_SPENDING.content);
@@ -93,14 +93,13 @@ public class SpendingTest extends BaseWebTest {
     @ApiLogin(nifflerUser = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
-    void shouldNotAddSpendingWithEmptyCategory(@User UserJson user) {
+    void shouldNotAddSpendingWithEmptyCategory() {
         int amount = 100;
-        String date = DateUtils.getDateAsString(new Date(), "dd/MM/yyyy");
 
         Selenide.open(MainPage.URL, MainPage.class)
                 .waitForPageLoaded()
                 .setNewSpendingAmount(amount)
-                .setNewSpendingDate(date)
+                .setNewSpendingDate(new Date())
                 .submitNewSpending()
                 .checkError(CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY.content);
     }
@@ -112,14 +111,13 @@ public class SpendingTest extends BaseWebTest {
     @ApiLogin(nifflerUser = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
-    void shouldNotAddSpendingWithEmptyAmount(@User UserJson user) {
+    void shouldNotAddSpendingWithEmptyAmount() {
         String category = "Friends";
-        String date = DateUtils.getDateAsString(new Date(), "dd/MM/yyyy");
 
         Selenide.open(MainPage.URL, MainPage.class)
                 .waitForPageLoaded()
                 .setNewSpendingCategory(category)
-                .setNewSpendingDate(date)
+                .setNewSpendingDate(new Date())
                 .submitNewSpending()
                 .checkError(CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT.content);
     }

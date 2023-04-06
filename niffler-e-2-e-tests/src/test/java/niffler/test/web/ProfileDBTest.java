@@ -2,6 +2,7 @@ package niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.AllureId;
+import io.qameta.allure.Epic;
 import niffler.data.dao.UsersDAO;
 import niffler.data.entity.UsersEntity;
 import niffler.jupiter.annotation.ApiLogin;
@@ -18,7 +19,8 @@ import org.junit.jupiter.api.Test;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.NESTED;
 
-
+@Epic("[WEB][niffler-frontend]: Профиль, DB preconditions")
+@DisplayName("[WEB][niffler-frontend]: Профиль, DB preconditions")
 public class ProfileDBTest extends BaseWebTest {
 
     @DAO

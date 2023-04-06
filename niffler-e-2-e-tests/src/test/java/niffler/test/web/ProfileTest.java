@@ -2,6 +2,7 @@ package niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.AllureId;
+import io.qameta.allure.Epic;
 import niffler.jupiter.annotation.ApiLogin;
 import niffler.jupiter.annotation.GenerateCategory;
 import niffler.jupiter.annotation.GenerateUser;
@@ -18,7 +19,8 @@ import static niffler.utils.DataUtils.generateRandomName;
 import static niffler.utils.DataUtils.generateRandomSurname;
 import static niffler.utils.Error.CAN_NOT_ADD_CATEGORY;
 
-
+@Epic("[WEB][niffler-frontend]: Профиль")
+@DisplayName("[WEB][niffler-frontend]: Профиль")
 public class ProfileTest extends BaseWebTest {
 
     private static final String SUCCESS_MSG = "Profile updated!";

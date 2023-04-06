@@ -1,6 +1,7 @@
 package niffler.jupiter.extension;
 
 import io.qameta.allure.AllureId;
+import io.qameta.allure.Step;
 import niffler.api.NifflerAuthClient;
 import niffler.api.NifflerSpendClient;
 import niffler.api.NifflerUserdataClient;
@@ -43,6 +44,7 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
             ON_METHOD_USERS_NAMESPACE = ExtensionContext.Namespace.create(CreateUserExtension.class, Selector.METHOD),
             API_LOGIN_USERS_NAMESPACE = ExtensionContext.Namespace.create(CreateUserExtension.class, Selector.NESTED);
 
+    @Step("Create user for test")
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         final String testId = getTestId(context);
