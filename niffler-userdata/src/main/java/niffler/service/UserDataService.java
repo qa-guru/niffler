@@ -3,7 +3,9 @@ package niffler.service;
 import jakarta.annotation.Nonnull;
 import niffler.data.CurrencyValues;
 import niffler.data.FriendsEntity;
+import niffler.data.FriendsId;
 import niffler.data.UserEntity;
+import niffler.data.repository.FriendsRepository;
 import niffler.data.repository.UserRepository;
 import niffler.model.FriendJson;
 import niffler.model.FriendState;
@@ -24,10 +26,12 @@ public class UserDataService {
 
     private static final CurrencyValues DEFAULT_USER_CURRENCY = CurrencyValues.RUB;
     private final UserRepository userRepository;
+    private final FriendsRepository friendsRepository;
 
     @Autowired
-    public UserDataService(UserRepository userRepository) {
+    public UserDataService(UserRepository userRepository, FriendsRepository friendsRepository) {
         this.userRepository = userRepository;
+        this.friendsRepository = friendsRepository;
     }
 
     public @Nonnull
@@ -149,9 +153,17 @@ public class UserDataService {
     List<UserJson> declineInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = userRepository.findByUsername(username);
         UserEntity friendToDecline = userRepository.findByUsername(invitation.getUsername());
+
+        FriendsId fId = new FriendsId();
+        fId.setUser(friendToDecline.getId());
+        fId.setFriend(currentUser.getId());
+        friendsRepository.deleteById(fId);
+
         currentUser.removeInvites(friendToDecline);
-        currentUser.removeFriends(friendToDecline);
+        friendToDecline.removeFriends(currentUser);
+
         userRepository.save(currentUser);
+        userRepository.save(friendToDecline);
         return currentUser.getInvites()
                 .stream()
                 .filter(FriendsEntity::isPending)
