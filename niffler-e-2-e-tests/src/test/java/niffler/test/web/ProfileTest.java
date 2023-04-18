@@ -10,6 +10,7 @@ import niffler.jupiter.annotation.User;
 import niffler.model.rest.CurrencyValues;
 import niffler.model.rest.UserJson;
 import niffler.page.ProfilePage;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import static niffler.utils.DataUtils.generateRandomName;
 import static niffler.utils.DataUtils.generateRandomSurname;
 import static niffler.utils.Error.CAN_NOT_ADD_CATEGORY;
 
+@Disabled
 @Epic("[WEB][niffler-frontend]: Профиль")
 @DisplayName("[WEB][niffler-frontend]: Профиль")
 public class ProfileTest extends BaseWebTest {

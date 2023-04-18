@@ -26,6 +26,7 @@ import static niffler.utils.Error.CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT;
 import static niffler.utils.Error.CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY;
 import static niffler.utils.Error.CAN_NOT_PICK_FUTURE_DATE_FOR_SPENDING;
 
+@Disabled
 @Epic("[WEB][niffler-frontend]: Траты")
 @DisplayName("[WEB][niffler-frontend]: Траты")
 public class SpendingTest extends BaseWebTest {

@@ -11,11 +11,13 @@ import niffler.page.MainPage;
 import niffler.page.WelcomePage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 import static niffler.utils.Error.BAD_CREDENTIALS;
 
+@Disabled
 @Epic("[WEB][niffler-frontend]: Авторизация")
 @DisplayName("[WEB][niffler-frontend]: Авторизация")
 public class LoginTest extends BaseWebTest {

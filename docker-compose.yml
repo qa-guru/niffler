@@ -25,9 +25,9 @@ services:
     container_name: niffler-auth
     image: dtuchs/niffler-auth:latest
     ports:
-      - "9000:9000"
+      - "9001:9001"
     healthcheck:
-      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      test: "wget --spider http://localhost:9001/actuator/health || exit 1"
       interval: 5s
       timeout: 5s
       retries: 10

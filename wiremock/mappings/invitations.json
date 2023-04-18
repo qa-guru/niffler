@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/invitations?username=dima"
+  },
+  "response": {
+    "status": 200,
+    "body": "[]",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

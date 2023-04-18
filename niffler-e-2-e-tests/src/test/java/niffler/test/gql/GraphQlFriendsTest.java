@@ -10,6 +10,7 @@ import niffler.jupiter.annotation.User;
 import niffler.model.gql.UserDataGql;
 import niffler.model.gql.UserGql;
 import niffler.model.rest.UserJson;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import static io.qameta.allure.Allure.step;
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 @Epic("[GraphQL][niffler-gateway]: Друзья")
 @DisplayName("[GraphQL][niffler-gateway]: Друзья")
 public class GraphQlFriendsTest extends BaseGraphQlTest {

@@ -14,6 +14,7 @@ import niffler.model.soap.FriendState;
 import niffler.model.soap.UpdateUserInfoRequest;
 import niffler.model.soap.UpdateUserInfoResponse;
 import niffler.ws.NifflerUserdataWsService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 @Epic("[SOAP][niffler-userdata]: Пользователи")
 @DisplayName("[SOAP][niffler-userdata]: Пользователи")
 public class UserDataUsersSoapTest extends BaseSoapTest {

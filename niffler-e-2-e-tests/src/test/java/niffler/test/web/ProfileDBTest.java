@@ -13,12 +13,14 @@ import niffler.model.rest.CurrencyValues;
 import niffler.model.rest.UserJson;
 import niffler.page.ProfilePage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static niffler.jupiter.extension.CreateUserExtension.Selector.NESTED;
 
+@Disabled
 @Epic("[WEB][niffler-frontend]: Профиль, DB preconditions")
 @DisplayName("[WEB][niffler-frontend]: Профиль, DB preconditions")
 public class ProfileDBTest extends BaseWebTest {

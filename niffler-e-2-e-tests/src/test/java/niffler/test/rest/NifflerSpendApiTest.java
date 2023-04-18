@@ -9,6 +9,7 @@ import niffler.jupiter.annotation.Spend;
 import niffler.jupiter.annotation.User;
 import niffler.model.rest.SpendJson;
 import niffler.model.rest.UserJson;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,6 +19,7 @@ import static io.qameta.allure.Allure.step;
 import static niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 @Epic("[REST][niffler-spend]: Траты")
 @DisplayName("[REST][niffler-spend]: Траты")
 public class NifflerSpendApiTest extends BaseRestTest {

@@ -8,6 +8,7 @@ import guru.qa.grpc.niffler.grpc.CurrencyResponse;
 import guru.qa.grpc.niffler.grpc.CurrencyValues;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
