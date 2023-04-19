@@ -7,9 +7,9 @@ import niffler.jupiter.annotation.GenerateUser;
 import niffler.jupiter.annotation.OutcomeInvitations;
 import niffler.jupiter.annotation.User;
 import niffler.model.rest.UserJson;
-import niffler.model.soap.FriendState;
-import niffler.model.soap.FriendsRequest;
-import niffler.model.soap.FriendsResponse;
+import niffler.userdata.wsdl.FriendState;
+import niffler.userdata.wsdl.FriendsRequest;
+import niffler.userdata.wsdl.FriendsResponse;
 import niffler.ws.NifflerUserdataWsService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -47,17 +47,17 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         final FriendsResponse friendsResponse = nus.friendsRequest(fr);
 
-        List<niffler.model.soap.User> friends = friendsResponse.getUser();
+        List<niffler.userdata.wsdl.User> friends = friendsResponse.getUser();
 
         step("Check that response contains expected users", () ->
                 assertEquals(1, friends.size())
         );
 
-        Optional<niffler.model.soap.User> friend = friends.stream()
+        Optional<niffler.userdata.wsdl.User> friend = friends.stream()
                 .filter(u -> u.getFriendState() == FriendState.FRIEND)
                 .findFirst();
 
-        Optional<niffler.model.soap.User> invitation = friends.stream()
+        Optional<niffler.userdata.wsdl.User> invitation = friends.stream()
                 .filter(u -> u.getFriendState() == FriendState.INVITE_SENT)
                 .findFirst();
 
@@ -87,17 +87,17 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         final FriendsResponse friendsResponse = nus.friendsRequest(fr);
 
-        List<niffler.model.soap.User> friends = friendsResponse.getUser();
+        List<niffler.userdata.wsdl.User> friends = friendsResponse.getUser();
 
         step("Check that response contains expected users", () ->
                 assertEquals(2, friends.size())
         );
 
-        Optional<niffler.model.soap.User> friend = friends.stream()
+        Optional<niffler.userdata.wsdl.User> friend = friends.stream()
                 .filter(u -> u.getFriendState() == FriendState.FRIEND)
                 .findFirst();
 
-        Optional<niffler.model.soap.User> invitation = friends.stream()
+        Optional<niffler.userdata.wsdl.User> invitation = friends.stream()
                 .filter(u -> u.getFriendState() == FriendState.INVITE_SENT)
                 .findFirst();
 

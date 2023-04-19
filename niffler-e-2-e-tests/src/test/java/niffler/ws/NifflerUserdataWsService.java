@@ -1,24 +1,24 @@
 package niffler.ws;
 
 import io.qameta.allure.Step;
-import niffler.model.soap.AcceptInvitationRequest;
-import niffler.model.soap.AcceptInvitationResponse;
-import niffler.model.soap.AddFriendRequest;
-import niffler.model.soap.AddFriendResponse;
-import niffler.model.soap.AllUsersRequest;
-import niffler.model.soap.AllUsersResponse;
-import niffler.model.soap.CurrentUserRequest;
-import niffler.model.soap.CurrentUserResponse;
-import niffler.model.soap.DeclineInvitationRequest;
-import niffler.model.soap.DeclineInvitationResponse;
-import niffler.model.soap.FriendsRequest;
-import niffler.model.soap.FriendsResponse;
-import niffler.model.soap.InvitationsRequest;
-import niffler.model.soap.InvitationsResponse;
-import niffler.model.soap.RemoveFriendRequest;
-import niffler.model.soap.RemoveFriendResponse;
-import niffler.model.soap.UpdateUserInfoRequest;
-import niffler.model.soap.UpdateUserInfoResponse;
+import niffler.userdata.wsdl.AcceptInvitationRequest;
+import niffler.userdata.wsdl.AcceptInvitationResponse;
+import niffler.userdata.wsdl.AddFriendRequest;
+import niffler.userdata.wsdl.AddFriendResponse;
+import niffler.userdata.wsdl.AllUsersRequest;
+import niffler.userdata.wsdl.AllUsersResponse;
+import niffler.userdata.wsdl.CurrentUserRequest;
+import niffler.userdata.wsdl.CurrentUserResponse;
+import niffler.userdata.wsdl.DeclineInvitationRequest;
+import niffler.userdata.wsdl.DeclineInvitationResponse;
+import niffler.userdata.wsdl.FriendsRequest;
+import niffler.userdata.wsdl.FriendsResponse;
+import niffler.userdata.wsdl.InvitationsRequest;
+import niffler.userdata.wsdl.InvitationsResponse;
+import niffler.userdata.wsdl.RemoveFriendRequest;
+import niffler.userdata.wsdl.RemoveFriendResponse;
+import niffler.userdata.wsdl.UpdateUserInfoRequest;
+import niffler.userdata.wsdl.UpdateUserInfoResponse;
 import niffler.ws.service.SoapService;
 
 public class NifflerUserdataWsService extends SoapService {
