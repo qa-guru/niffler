@@ -1,4 +1,4 @@
-package niffler.jupiter;
+package niffler.jupiter.annotation;
 
 
 import java.lang.annotation.ElementType;

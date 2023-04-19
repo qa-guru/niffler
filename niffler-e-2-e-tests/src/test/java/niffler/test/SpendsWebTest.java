@@ -5,24 +5,17 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 import com.codeborne.selenide.CollectionCondition;
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
-import niffler.jupiter.GenerateSpend;
-import niffler.jupiter.GenerateSpendExtension;
+import io.qameta.allure.AllureId;
+import niffler.jupiter.annotation.GenerateSpend;
 import niffler.model.CurrencyValues;
 import niffler.model.SpendJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 @Disabled
-@ExtendWith(GenerateSpendExtension.class)
-public class SpendsWebTest {
-
-    static {
-        Configuration.browserSize = "1920x1080";
-    }
+public class SpendsWebTest extends BaseWebTest {
 
     @BeforeEach
     void doLogin() {
@@ -40,6 +33,7 @@ public class SpendsWebTest {
         amount = 52000.00,
         category = "Обучение"
     )
+    @AllureId("101")
     @Test
     void spendShouldBeDeletedByActionInTable(SpendJson spend) {
         $(".spendings-table tbody").$$("tr")
@@ -54,5 +48,6 @@ public class SpendsWebTest {
         $(".spendings-table tbody")
             .$$("tr")
             .shouldHave(CollectionCondition.size(0));
+        throw new IllegalStateException();
     }
 }
