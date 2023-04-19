@@ -27,5 +27,7 @@ public @interface GenerateUser {
 
     Friends friends() default @Friends(handleAnnotation = false);
 
-    Invitations invitations() default @Invitations(handleAnnotation = false);
+    IncomeInvitations incomeInvitations() default @IncomeInvitations(handleAnnotation = false);
+
+    OutcomeInvitations outcomeInvitations() default @OutcomeInvitations(handleAnnotation = false);
 }

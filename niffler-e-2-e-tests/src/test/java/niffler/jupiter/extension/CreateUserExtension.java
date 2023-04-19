@@ -11,7 +11,8 @@ import niffler.jupiter.annotation.Friends;
 import niffler.jupiter.annotation.GenerateCategory;
 import niffler.jupiter.annotation.GenerateSpend;
 import niffler.jupiter.annotation.GenerateUser;
-import niffler.jupiter.annotation.Invitations;
+import niffler.jupiter.annotation.IncomeInvitations;
+import niffler.jupiter.annotation.OutcomeInvitations;
 import niffler.jupiter.annotation.User;
 import niffler.model.rest.CategoryJson;
 import niffler.model.rest.FriendJson;
@@ -60,14 +61,15 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
             if ("".equals(password)) {
                 password = generateRandomPassword();
             }
-            UserJson userJson = apiRegister(username, password);
+            UserJson createdUser = apiRegister(username, password);
 
-            createCategoriesIfPresent(generateUser, userJson);
-            createSpendsIfPresent(generateUser, userJson);
-            createFriendsIfPresent(generateUser, userJson);
-            createInvitationsIfPresent(generateUser, userJson);
+            createCategoriesIfPresent(generateUser, createdUser);
+            createSpendsIfPresent(generateUser, createdUser);
+            createFriendsIfPresent(generateUser, createdUser);
+            createIncomeInvitationsIfPresent(generateUser, createdUser);
+            createOutcomeInvitationsIfPresent(generateUser, createdUser);
 
-            context.getStore(entry.getKey().getNamespace()).put(testId, userJson);
+            context.getStore(entry.getKey().getNamespace()).put(testId, createdUser);
         }
     }
 
@@ -84,20 +86,33 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
         return extensionContext.getStore(annotation.selector().getNamespace()).get(testId, UserJson.class);
     }
 
-    private void createInvitationsIfPresent(GenerateUser generateUser, UserJson userJson) throws Exception {
-        Invitations invitations = generateUser.invitations();
+    private void createIncomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
+        IncomeInvitations invitations = generateUser.incomeInvitations();
         if (invitations.handleAnnotation() && invitations.count() > 0) {
             for (int i = 0; i < invitations.count(); i++) {
                 UserJson invitation = apiRegister(generateRandomUsername(), generateRandomPassword());
                 FriendJson addFriend = new FriendJson();
-                addFriend.setUsername(userJson.getUsername());
+                addFriend.setUsername(createdUser.getUsername());
                 userdataClient.addFriend(invitation.getUsername(), addFriend);
-                userJson.getInvitationsJsons().add(invitation);
+                createdUser.getInvitationsJsons().add(invitation);
             }
         }
     }
 
-    private void createFriendsIfPresent(GenerateUser generateUser, UserJson userJson) throws Exception {
+    private void createOutcomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
+        OutcomeInvitations invitations = generateUser.outcomeInvitations();
+        if (invitations.handleAnnotation() && invitations.count() > 0) {
+            for (int i = 0; i < invitations.count(); i++) {
+                UserJson friend = apiRegister(generateRandomUsername(), generateRandomPassword());
+                FriendJson addFriend = new FriendJson();
+                addFriend.setUsername(friend.getUsername());
+                userdataClient.addFriend(createdUser.getUsername(), addFriend);
+                createdUser.getInvitationsJsons().add(friend);
+            }
+        }
+    }
+
+    private void createFriendsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
         Friends friends = generateUser.friends();
         if (friends.handleAnnotation() && friends.count() > 0) {
             for (int i = 0; i < friends.count(); i++) {
@@ -105,38 +120,38 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
                 FriendJson addFriend = new FriendJson();
                 FriendJson invitation = new FriendJson();
                 addFriend.setUsername(friend.getUsername());
-                invitation.setUsername(userJson.getUsername());
-                userdataClient.addFriend(userJson.getUsername(), addFriend);
+                invitation.setUsername(createdUser.getUsername());
+                userdataClient.addFriend(createdUser.getUsername(), addFriend);
                 userdataClient.acceptInvitation(friend.getUsername(), invitation);
-                userJson.getFriendsJsons().add(friend);
+                createdUser.getFriendsJsons().add(friend);
             }
         }
     }
 
-    private void createSpendsIfPresent(GenerateUser generateUser, UserJson userJson) throws Exception {
+    private void createSpendsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
         GenerateSpend[] spends = generateUser.spends();
         if (spends != null) {
             for (GenerateSpend spend : spends) {
                 SpendJson sj = new SpendJson();
-                sj.setUsername(userJson.getUsername());
+                sj.setUsername(createdUser.getUsername());
                 sj.setCategory(spend.spendCategory());
                 sj.setAmount(spend.amount());
                 sj.setCurrency(spend.currency());
                 sj.setDescription(spend.spendName());
                 sj.setSpendDate(DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()));
-                userJson.getSpendJsons().add(spendClient.createSpend(sj));
+                createdUser.getSpendJsons().add(spendClient.createSpend(sj));
             }
         }
     }
 
-    private void createCategoriesIfPresent(GenerateUser generateUser, UserJson userJson) throws Exception {
+    private void createCategoriesIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
         GenerateCategory[] categories = generateUser.categories();
         if (categories != null) {
             for (GenerateCategory category : categories) {
                 CategoryJson cj = new CategoryJson();
-                cj.setUsername(userJson.getUsername());
+                cj.setUsername(createdUser.getUsername());
                 cj.setCategory(category.value());
-                userJson.getCategoryJsons().add(spendClient.createCategory(cj));
+                createdUser.getCategoryJsons().add(spendClient.createCategory(cj));
             }
         }
     }
