@@ -138,4 +138,12 @@ public class UserJson {
     public int hashCode() {
         return Objects.hash(id, username, firstname, surname, currency, photo, password, friendState, categoryJsons, spendJsons, friendsJsons, invitationsJsons);
     }
+
+    @Override
+    public String toString() {
+        return "UserJson{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

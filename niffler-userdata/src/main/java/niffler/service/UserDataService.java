@@ -132,7 +132,7 @@ public class UserDataService {
 
         FriendsEntity invite = currentUser.getInvites()
                 .stream()
-                .filter(fe -> fe.getUser().equals(inviteUser))
+                .filter(fe -> fe.getUser().getUsername().equals(inviteUser.getUsername()))
                 .findFirst()
                 .orElseThrow();
 

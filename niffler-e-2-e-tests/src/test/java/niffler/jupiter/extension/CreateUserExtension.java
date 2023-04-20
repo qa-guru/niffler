@@ -11,6 +11,7 @@ import niffler.jupiter.annotation.Friends;
 import niffler.jupiter.annotation.GenerateCategory;
 import niffler.jupiter.annotation.GenerateSpend;
 import niffler.jupiter.annotation.GenerateUser;
+import niffler.jupiter.annotation.GenerateUsers;
 import niffler.jupiter.annotation.IncomeInvitations;
 import niffler.jupiter.annotation.OutcomeInvitations;
 import niffler.jupiter.annotation.User;
@@ -26,9 +27,11 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import retrofit2.Response;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -50,40 +53,46 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         final String testId = getTestId(context);
-        Map<Selector, GenerateUser> userAnnotations = extractGenerateUserAnnotations(context);
-        for (Map.Entry<Selector, GenerateUser> entry : userAnnotations.entrySet()) {
-            final GenerateUser generateUser = entry.getValue();
-            String username = generateUser.username();
-            String password = generateUser.password();
-            if ("".equals(username)) {
-                username = generateRandomUsername();
-            }
-            if ("".equals(password)) {
-                password = generateRandomPassword();
-            }
-            UserJson createdUser = apiRegister(username, password);
+        Map<Selector, List<GenerateUser>> userAnnotations = extractGenerateUserAnnotations(context);
+        for (Map.Entry<Selector,  List<GenerateUser>> entry : userAnnotations.entrySet()) {
+            UserJson[] resultCollector = new UserJson[entry.getValue().size()];
+            List<GenerateUser> value = entry.getValue();
+            for (int i = 0; i < value.size(); i++) {
+                GenerateUser generateUser = value.get(i);
+                String username = generateUser.username();
+                String password = generateUser.password();
+                if ("".equals(username)) {
+                    username = generateRandomUsername();
+                }
+                if ("".equals(password)) {
+                    password = generateRandomPassword();
+                }
+                UserJson createdUser = apiRegister(username, password);
 
-            createCategoriesIfPresent(generateUser, createdUser);
-            createSpendsIfPresent(generateUser, createdUser);
-            createFriendsIfPresent(generateUser, createdUser);
-            createIncomeInvitationsIfPresent(generateUser, createdUser);
-            createOutcomeInvitationsIfPresent(generateUser, createdUser);
-
-            context.getStore(entry.getKey().getNamespace()).put(testId, createdUser);
+                createCategoriesIfPresent(generateUser, createdUser);
+                createSpendsIfPresent(generateUser, createdUser);
+                createFriendsIfPresent(generateUser, createdUser);
+                createIncomeInvitationsIfPresent(generateUser, createdUser);
+                createOutcomeInvitationsIfPresent(generateUser, createdUser);
+                resultCollector[i] = createdUser;
+            }
+            Object storedResult = resultCollector.length == 1 ? resultCollector[0] : resultCollector;
+            context.getStore(entry.getKey().getNamespace()).put(testId, storedResult);
         }
     }
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return parameterContext.getParameter().getType().isAssignableFrom(UserJson.class)
+        Class<?> parameterType = parameterContext.getParameter().getType();
+        return (parameterType.isAssignableFrom(UserJson.class) || parameterType.isAssignableFrom(UserJson[].class))
                 && parameterContext.getParameter().isAnnotationPresent(User.class);
     }
 
     @Override
-    public UserJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         final String testId = getTestId(extensionContext);
         User annotation = parameterContext.getParameter().getAnnotation(User.class);
-        return extensionContext.getStore(annotation.selector().getNamespace()).get(testId, UserJson.class);
+        return extensionContext.getStore(annotation.selector().getNamespace()).get(testId);
     }
 
     private void createIncomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
@@ -180,15 +189,18 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
         }
     }
 
-    private Map<Selector, GenerateUser> extractGenerateUserAnnotations(ExtensionContext context) {
-        Map<Selector, GenerateUser> annotationsOnTest = new HashMap<>();
-        GenerateUser annotationOnMethod = context.getRequiredTestMethod().getAnnotation(GenerateUser.class);
-        if (annotationOnMethod != null && annotationOnMethod.handleAnnotation()) {
-            annotationsOnTest.put(Selector.METHOD, annotationOnMethod);
+    private Map<Selector, List<GenerateUser>> extractGenerateUserAnnotations(ExtensionContext context) {
+        Map<Selector, List<GenerateUser>> annotationsOnTest = new HashMap<>();
+        GenerateUser singleUserAnnotation = context.getRequiredTestMethod().getAnnotation(GenerateUser.class);
+        GenerateUsers multipleUserAnnotation = context.getRequiredTestMethod().getAnnotation(GenerateUsers.class);
+        if (singleUserAnnotation != null && singleUserAnnotation.handleAnnotation()) {
+            annotationsOnTest.put(Selector.METHOD, List.of(singleUserAnnotation));
+        } else if (multipleUserAnnotation != null) {
+            annotationsOnTest.put(Selector.METHOD, Arrays.asList(multipleUserAnnotation.value()));
         }
         ApiLogin apiLoginAnnotation = context.getRequiredTestMethod().getAnnotation(ApiLogin.class);
         if (apiLoginAnnotation != null && apiLoginAnnotation.nifflerUser().handleAnnotation()) {
-            annotationsOnTest.put(Selector.NESTED, apiLoginAnnotation.nifflerUser());
+            annotationsOnTest.put(Selector.NESTED, List.of(apiLoginAnnotation.nifflerUser()));
         }
         return annotationsOnTest;
     }
