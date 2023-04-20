@@ -11,7 +11,9 @@ import niffler.jupiter.annotation.Friends;
 import niffler.jupiter.annotation.GenerateCategory;
 import niffler.jupiter.annotation.GenerateSpend;
 import niffler.jupiter.annotation.GenerateUser;
-import niffler.jupiter.annotation.Invitations;
+import niffler.jupiter.annotation.GenerateUsers;
+import niffler.jupiter.annotation.IncomeInvitations;
+import niffler.jupiter.annotation.OutcomeInvitations;
 import niffler.jupiter.annotation.User;
 import niffler.model.rest.CategoryJson;
 import niffler.model.rest.FriendJson;
@@ -25,9 +27,11 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import retrofit2.Response;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,55 +53,75 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         final String testId = getTestId(context);
-        Map<Selector, GenerateUser> userAnnotations = extractGenerateUserAnnotations(context);
-        for (Map.Entry<Selector, GenerateUser> entry : userAnnotations.entrySet()) {
-            final GenerateUser generateUser = entry.getValue();
-            String username = generateUser.username();
-            String password = generateUser.password();
-            if ("".equals(username)) {
-                username = generateRandomUsername();
-            }
-            if ("".equals(password)) {
-                password = generateRandomPassword();
-            }
-            UserJson userJson = apiRegister(username, password);
+        Map<Selector, List<GenerateUser>> userAnnotations = extractGenerateUserAnnotations(context);
+        for (Map.Entry<Selector,  List<GenerateUser>> entry : userAnnotations.entrySet()) {
+            UserJson[] resultCollector = new UserJson[entry.getValue().size()];
+            List<GenerateUser> value = entry.getValue();
+            for (int i = 0; i < value.size(); i++) {
+                GenerateUser generateUser = value.get(i);
+                String username = generateUser.username();
+                String password = generateUser.password();
+                if ("".equals(username)) {
+                    username = generateRandomUsername();
+                }
+                if ("".equals(password)) {
+                    password = generateRandomPassword();
+                }
+                UserJson createdUser = apiRegister(username, password);
 
-            createCategoriesIfPresent(generateUser, userJson);
-            createSpendsIfPresent(generateUser, userJson);
-            createFriendsIfPresent(generateUser, userJson);
-            createInvitationsIfPresent(generateUser, userJson);
-
-            context.getStore(entry.getKey().getNamespace()).put(testId, userJson);
+                createCategoriesIfPresent(generateUser, createdUser);
+                createSpendsIfPresent(generateUser, createdUser);
+                createFriendsIfPresent(generateUser, createdUser);
+                createIncomeInvitationsIfPresent(generateUser, createdUser);
+                createOutcomeInvitationsIfPresent(generateUser, createdUser);
+                resultCollector[i] = createdUser;
+            }
+            Object storedResult = resultCollector.length == 1 ? resultCollector[0] : resultCollector;
+            context.getStore(entry.getKey().getNamespace()).put(testId, storedResult);
         }
     }
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return parameterContext.getParameter().getType().isAssignableFrom(UserJson.class)
+        Class<?> parameterType = parameterContext.getParameter().getType();
+        return (parameterType.isAssignableFrom(UserJson.class) || parameterType.isAssignableFrom(UserJson[].class))
                 && parameterContext.getParameter().isAnnotationPresent(User.class);
     }
 
     @Override
-    public UserJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         final String testId = getTestId(extensionContext);
         User annotation = parameterContext.getParameter().getAnnotation(User.class);
-        return extensionContext.getStore(annotation.selector().getNamespace()).get(testId, UserJson.class);
+        return extensionContext.getStore(annotation.selector().getNamespace()).get(testId);
     }
 
-    private void createInvitationsIfPresent(GenerateUser generateUser, UserJson userJson) throws Exception {
-        Invitations invitations = generateUser.invitations();
+    private void createIncomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
+        IncomeInvitations invitations = generateUser.incomeInvitations();
         if (invitations.handleAnnotation() && invitations.count() > 0) {
             for (int i = 0; i < invitations.count(); i++) {
                 UserJson invitation = apiRegister(generateRandomUsername(), generateRandomPassword());
                 FriendJson addFriend = new FriendJson();
-                addFriend.setUsername(userJson.getUsername());
+                addFriend.setUsername(createdUser.getUsername());
                 userdataClient.addFriend(invitation.getUsername(), addFriend);
-                userJson.getInvitationsJsons().add(invitation);
+                createdUser.getInvitationsJsons().add(invitation);
             }
         }
     }
 
-    private void createFriendsIfPresent(GenerateUser generateUser, UserJson userJson) throws Exception {
+    private void createOutcomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
+        OutcomeInvitations invitations = generateUser.outcomeInvitations();
+        if (invitations.handleAnnotation() && invitations.count() > 0) {
+            for (int i = 0; i < invitations.count(); i++) {
+                UserJson friend = apiRegister(generateRandomUsername(), generateRandomPassword());
+                FriendJson addFriend = new FriendJson();
+                addFriend.setUsername(friend.getUsername());
+                userdataClient.addFriend(createdUser.getUsername(), addFriend);
+                createdUser.getInvitationsJsons().add(friend);
+            }
+        }
+    }
+
+    private void createFriendsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
         Friends friends = generateUser.friends();
         if (friends.handleAnnotation() && friends.count() > 0) {
             for (int i = 0; i < friends.count(); i++) {
@@ -105,38 +129,38 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
                 FriendJson addFriend = new FriendJson();
                 FriendJson invitation = new FriendJson();
                 addFriend.setUsername(friend.getUsername());
-                invitation.setUsername(userJson.getUsername());
-                userdataClient.addFriend(userJson.getUsername(), addFriend);
+                invitation.setUsername(createdUser.getUsername());
+                userdataClient.addFriend(createdUser.getUsername(), addFriend);
                 userdataClient.acceptInvitation(friend.getUsername(), invitation);
-                userJson.getFriendsJsons().add(friend);
+                createdUser.getFriendsJsons().add(friend);
             }
         }
     }
 
-    private void createSpendsIfPresent(GenerateUser generateUser, UserJson userJson) throws Exception {
+    private void createSpendsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
         GenerateSpend[] spends = generateUser.spends();
         if (spends != null) {
             for (GenerateSpend spend : spends) {
                 SpendJson sj = new SpendJson();
-                sj.setUsername(userJson.getUsername());
+                sj.setUsername(createdUser.getUsername());
                 sj.setCategory(spend.spendCategory());
                 sj.setAmount(spend.amount());
                 sj.setCurrency(spend.currency());
                 sj.setDescription(spend.spendName());
                 sj.setSpendDate(DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()));
-                userJson.getSpendJsons().add(spendClient.createSpend(sj));
+                createdUser.getSpendJsons().add(spendClient.createSpend(sj));
             }
         }
     }
 
-    private void createCategoriesIfPresent(GenerateUser generateUser, UserJson userJson) throws Exception {
+    private void createCategoriesIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
         GenerateCategory[] categories = generateUser.categories();
         if (categories != null) {
             for (GenerateCategory category : categories) {
                 CategoryJson cj = new CategoryJson();
-                cj.setUsername(userJson.getUsername());
+                cj.setUsername(createdUser.getUsername());
                 cj.setCategory(category.value());
-                userJson.getCategoryJsons().add(spendClient.createCategory(cj));
+                createdUser.getCategoryJsons().add(spendClient.createCategory(cj));
             }
         }
     }
@@ -165,15 +189,18 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
         }
     }
 
-    private Map<Selector, GenerateUser> extractGenerateUserAnnotations(ExtensionContext context) {
-        Map<Selector, GenerateUser> annotationsOnTest = new HashMap<>();
-        GenerateUser annotationOnMethod = context.getRequiredTestMethod().getAnnotation(GenerateUser.class);
-        if (annotationOnMethod != null && annotationOnMethod.handleAnnotation()) {
-            annotationsOnTest.put(Selector.METHOD, annotationOnMethod);
+    private Map<Selector, List<GenerateUser>> extractGenerateUserAnnotations(ExtensionContext context) {
+        Map<Selector, List<GenerateUser>> annotationsOnTest = new HashMap<>();
+        GenerateUser singleUserAnnotation = context.getRequiredTestMethod().getAnnotation(GenerateUser.class);
+        GenerateUsers multipleUserAnnotation = context.getRequiredTestMethod().getAnnotation(GenerateUsers.class);
+        if (singleUserAnnotation != null && singleUserAnnotation.handleAnnotation()) {
+            annotationsOnTest.put(Selector.METHOD, List.of(singleUserAnnotation));
+        } else if (multipleUserAnnotation != null) {
+            annotationsOnTest.put(Selector.METHOD, Arrays.asList(multipleUserAnnotation.value()));
         }
         ApiLogin apiLoginAnnotation = context.getRequiredTestMethod().getAnnotation(ApiLogin.class);
         if (apiLoginAnnotation != null && apiLoginAnnotation.nifflerUser().handleAnnotation()) {
-            annotationsOnTest.put(Selector.NESTED, apiLoginAnnotation.nifflerUser());
+            annotationsOnTest.put(Selector.NESTED, List.of(apiLoginAnnotation.nifflerUser()));
         }
         return annotationsOnTest;
     }

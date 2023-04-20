@@ -4,14 +4,26 @@ import io.qameta.allure.okhttp3.AllureOkHttp3;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import niffler.config.Config;
-import niffler.model.soap.AllUsersRequest;
-import niffler.model.soap.AllUsersResponse;
-import niffler.model.soap.Currency;
-import niffler.model.soap.CurrentUserRequest;
-import niffler.model.soap.CurrentUserResponse;
-import niffler.model.soap.FriendState;
-import niffler.model.soap.UpdateUserInfoRequest;
-import niffler.model.soap.UpdateUserInfoResponse;
+import niffler.userdata.wsdl.AcceptInvitationRequest;
+import niffler.userdata.wsdl.AcceptInvitationResponse;
+import niffler.userdata.wsdl.AddFriendRequest;
+import niffler.userdata.wsdl.AddFriendResponse;
+import niffler.userdata.wsdl.AllUsersRequest;
+import niffler.userdata.wsdl.AllUsersResponse;
+import niffler.userdata.wsdl.Currency;
+import niffler.userdata.wsdl.CurrentUserRequest;
+import niffler.userdata.wsdl.CurrentUserResponse;
+import niffler.userdata.wsdl.DeclineInvitationRequest;
+import niffler.userdata.wsdl.DeclineInvitationResponse;
+import niffler.userdata.wsdl.FriendState;
+import niffler.userdata.wsdl.FriendsRequest;
+import niffler.userdata.wsdl.FriendsResponse;
+import niffler.userdata.wsdl.InvitationsRequest;
+import niffler.userdata.wsdl.InvitationsResponse;
+import niffler.userdata.wsdl.RemoveFriendRequest;
+import niffler.userdata.wsdl.RemoveFriendResponse;
+import niffler.userdata.wsdl.UpdateUserInfoRequest;
+import niffler.userdata.wsdl.UpdateUserInfoResponse;
 import niffler.ws.service.converter.JaxbConverterFactory;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -44,10 +56,21 @@ public abstract class SoapService {
                             UpdateUserInfoResponse.class,
                             AllUsersRequest.class,
                             AllUsersResponse.class,
+                            FriendsRequest.class,
+                            FriendsResponse.class,
+                            InvitationsRequest.class,
+                            InvitationsResponse.class,
+                            AcceptInvitationRequest.class,
+                            AcceptInvitationResponse.class,
+                            DeclineInvitationRequest.class,
+                            DeclineInvitationResponse.class,
+                            AddFriendRequest.class,
+                            AddFriendResponse.class,
+                            RemoveFriendRequest.class,
+                            RemoveFriendResponse.class,
                             Currency.class,
                             FriendState.class
-                    )))
-                    .build();
+                    ))).build();
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }

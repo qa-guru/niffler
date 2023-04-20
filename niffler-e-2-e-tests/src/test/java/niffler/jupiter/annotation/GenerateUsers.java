@@ -13,21 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
 @ExtendWith({CreateUserExtension.class, ClearCookiesAndSessionExtension.class})
-public @interface GenerateUser {
+public @interface GenerateUsers {
 
-    boolean handleAnnotation() default true;
-
-    String username() default "";
-
-    String password() default "";
-
-    GenerateCategory[] categories() default {};
-
-    GenerateSpend[] spends() default {};
-
-    Friends friends() default @Friends(handleAnnotation = false);
-
-    IncomeInvitations incomeInvitations() default @IncomeInvitations(handleAnnotation = false);
-
-    OutcomeInvitations outcomeInvitations() default @OutcomeInvitations(handleAnnotation = false);
+    GenerateUser[] value();
 }

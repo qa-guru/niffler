@@ -6,6 +6,7 @@ import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import niffler.gql.GraphQLClient;
 import niffler.jupiter.annotation.GenerateUser;
+import niffler.jupiter.annotation.GenerateUsers;
 import niffler.jupiter.annotation.User;
 import niffler.model.gql.UpdateUserDataGql;
 import niffler.model.gql.UserDataGql;
@@ -97,9 +98,13 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     @DisplayName("GraphQL: Список всех пользователей системы не должен быть пустым")
     @AllureId("400003")
     @Tag("GraphQL")
-    @GenerateUser()
-    void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
-        apiLogin(user.getUsername(), user.getPassword());
+    @GenerateUsers({
+            @GenerateUser,
+            @GenerateUser
+    })
+    void allUsersTest(@User(selector = METHOD) UserJson[] users) throws Exception {
+        final UserJson currentUser = users[0];
+        apiLogin(currentUser.getUsername(), currentUser.getPassword());
 
         try (InputStream is = cl.getResourceAsStream("gql/usersQuery.json")) {
             JsonNode query = om.readValue(is, JsonNode.class);
