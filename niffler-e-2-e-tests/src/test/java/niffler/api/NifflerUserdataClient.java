@@ -36,9 +36,16 @@ public class NifflerUserdataClient extends RestService {
                 .body();
     }
 
-    @Step("Send REST POST('/addFriend') request to niffler-userdata")
-    public UserJson addFriend(String username, FriendJson friend) throws Exception {
-        return userdataApi.addFriend(username, friend)
+    @Step("Send REST GET('/friends') request to niffler-userdata")
+    public List<UserJson> friends(String username, boolean includePending) throws Exception {
+        return userdataApi.friends(username, includePending)
+                .execute()
+                .body();
+    }
+
+    @Step("Send REST GET('/invitations') request to niffler-userdata")
+    public List<UserJson> invitations(String username) throws Exception {
+        return userdataApi.invitations(username)
                 .execute()
                 .body();
     }
@@ -46,6 +53,27 @@ public class NifflerUserdataClient extends RestService {
     @Step("Send REST POST('/acceptInvitation') request to niffler-userdata")
     public List<UserJson> acceptInvitation(String username, FriendJson invitation) throws Exception {
         return userdataApi.acceptInvitation(username, invitation)
+                .execute()
+                .body();
+    }
+
+    @Step("Send REST POST('/declineInvitation') request to niffler-userdata")
+    public List<UserJson> declineInvitation(String username, FriendJson invitation) throws Exception {
+        return userdataApi.declineInvitation(username, invitation)
+                .execute()
+                .body();
+    }
+
+    @Step("Send REST POST('/addFriend') request to niffler-userdata")
+    public UserJson addFriend(String username, FriendJson friend) throws Exception {
+        return userdataApi.addFriend(username, friend)
+                .execute()
+                .body();
+    }
+
+    @Step("Send REST DELETE('/removeFriend') request to niffler-userdata")
+    public List<UserJson> removeFriend(String username, String friendUsername) throws Exception {
+        return userdataApi.removeFriend(username, friendUsername)
                 .execute()
                 .body();
     }
