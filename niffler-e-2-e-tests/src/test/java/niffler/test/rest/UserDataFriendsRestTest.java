@@ -10,6 +10,7 @@ import niffler.jupiter.annotation.IncomeInvitations;
 import niffler.jupiter.annotation.OutcomeInvitations;
 import niffler.jupiter.annotation.User;
 import niffler.model.rest.FriendJson;
+import niffler.model.rest.FriendState;
 import niffler.model.rest.UserJson;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -47,17 +48,17 @@ public class UserDataFriendsRestTest extends BaseRestTest {
         );
 
         Optional<UserJson> friend = friends.stream()
-                .filter(u -> u.getFriendState() == niffler.model.rest.FriendState.FRIEND)
+                .filter(u -> u.getFriendState() == FriendState.FRIEND)
                 .findFirst();
 
         Optional<UserJson> invitation = friends.stream()
-                .filter(u -> u.getFriendState() == niffler.model.rest.FriendState.INVITE_SENT)
+                .filter(u -> u.getFriendState() == FriendState.INVITE_SENT)
                 .findFirst();
 
         step("Check friend in response", () -> {
             assertTrue(friend.isPresent());
             assertEquals(user.getFriendsJsons().get(0).getUsername(), friend.get().getUsername());
-            assertEquals(niffler.model.rest.FriendState.FRIEND, friend.get().getFriendState());
+            assertEquals(FriendState.FRIEND, friend.get().getFriendState());
         });
 
         step("Check that no invitation present in response", () -> assertFalse(invitation.isPresent()));
@@ -80,23 +81,23 @@ public class UserDataFriendsRestTest extends BaseRestTest {
         );
 
         Optional<UserJson> friend = friends.stream()
-                .filter(u -> u.getFriendState() == niffler.model.rest.FriendState.FRIEND)
+                .filter(u -> u.getFriendState() == FriendState.FRIEND)
                 .findFirst();
 
         Optional<UserJson> invitation = friends.stream()
-                .filter(u -> u.getFriendState() == niffler.model.rest.FriendState.INVITE_SENT)
+                .filter(u -> u.getFriendState() == FriendState.INVITE_SENT)
                 .findFirst();
 
         step("Check friend in response", () -> {
             assertTrue(friend.isPresent());
             assertEquals(user.getFriendsJsons().get(0).getUsername(), friend.get().getUsername());
-            assertEquals(niffler.model.rest.FriendState.FRIEND, friend.get().getFriendState());
+            assertEquals(FriendState.FRIEND, friend.get().getFriendState());
         });
 
         step("Check invitation in response", () -> {
             assertTrue(invitation.isPresent());
             assertEquals(user.getInvitationsJsons().get(0).getUsername(), invitation.get().getUsername());
-            assertEquals(niffler.model.rest.FriendState.INVITE_SENT, invitation.get().getFriendState());
+            assertEquals(FriendState.INVITE_SENT, invitation.get().getFriendState());
         });
     }
 
@@ -118,7 +119,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
 
         step("Check invitation in response", () -> {
             assertEquals(user.getInvitationsJsons().get(0).getUsername(), invitation.getUsername());
-            assertEquals(niffler.model.rest.FriendState.INVITE_RECEIVED, invitation.getFriendState());
+            assertEquals(FriendState.INVITE_RECEIVED, invitation.getFriendState());
         });
     }
 
@@ -138,7 +139,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
 
         step("Check friend in response", () -> {
             assertEquals(user.getInvitationsJsons().get(0).getUsername(), friend.getUsername());
-            assertEquals(niffler.model.rest.FriendState.FRIEND, friend.getFriendState());
+            assertEquals(FriendState.FRIEND, friend.getFriendState());
         });
     }
 
@@ -177,7 +178,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
 
         step("Check invitation in response", () -> {
             assertEquals(friend.getUsername(), invitation.getUsername());
-            assertEquals(niffler.model.rest.FriendState.INVITE_SENT, invitation.getFriendState());
+            assertEquals(FriendState.INVITE_SENT, invitation.getFriendState());
         });
     }
 

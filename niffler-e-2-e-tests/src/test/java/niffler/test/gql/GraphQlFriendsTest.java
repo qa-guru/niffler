@@ -1,11 +1,11 @@
 package niffler.test.gql;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import niffler.gql.GraphQLClient;
 import niffler.jupiter.annotation.GenerateUser;
+import niffler.jupiter.annotation.GqlReq;
 import niffler.jupiter.annotation.User;
 import niffler.model.gql.UserDataGql;
 import niffler.model.gql.UserGql;
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.InputStream;
 import java.util.List;
 
 import static io.qameta.allure.Allure.step;
@@ -25,9 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("[GraphQL][niffler-gateway]: Друзья")
 public class GraphQlFriendsTest extends BaseGraphQlTest {
 
-    private static final ObjectMapper om = new ObjectMapper();
-    private final ClassLoader cl = GraphQlFriendsTest.class.getClassLoader();
-
     private final GraphQLClient gqlClient = new GraphQLClient();
 
     @Test
@@ -35,22 +31,20 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
     @AllureId("400004")
     @Tag("GraphQL")
     @GenerateUser
-    void getFriendsTest(@User(selector = METHOD) UserJson user) throws Exception {
+    void getFriendsTest(@User(selector = METHOD) UserJson user,
+                        @GqlReq("gql/getFriendsQuery.json") JsonNode query) throws Exception {
         apiLogin(user.getUsername(), user.getPassword());
 
-        try (InputStream is = cl.getResourceAsStream("gql/getFriendsQuery.json")) {
-            JsonNode query = om.readValue(is, JsonNode.class);
-            UserDataGql response = gqlClient.friends(query);
+        UserDataGql response = gqlClient.friends(query);
 
-            final List<UserGql> friends = response.getData().getUser().getFriends();
-            final List<UserGql> invitations = response.getData().getUser().getInvitations();
+        final List<UserGql> friends = response.getData().getUser().getFriends();
+        final List<UserGql> invitations = response.getData().getUser().getInvitations();
 
-            step("Check that friends list is empty", () ->
-                    assertTrue(friends.isEmpty())
-            );
-            step("Check that invitations list is empty", () ->
-                    assertTrue(invitations.isEmpty())
-            );
-        }
+        step("Check that friends list is empty", () ->
+                assertTrue(friends.isEmpty())
+        );
+        step("Check that invitations list is empty", () ->
+                assertTrue(invitations.isEmpty())
+        );
     }
 }
