@@ -35,6 +35,7 @@ dependencies {
     testImplementation 'com.squareup.retrofit2:retrofit:2.9.0'
     testImplementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
     testImplementation 'com.squareup.okhttp3:logging-interceptor:3.14.9'
+    testImplementation 'org.springframework.security:spring-security-crypto:6.0.1'
     testImplementation 'org.springframework:spring-jdbc:6.0.4'
     testImplementation 'org.postgresql:postgresql:42.5.3'
     testImplementation 'p6spy:p6spy:3.9.1'
