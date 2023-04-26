@@ -5,10 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
+import java.util.UUID;
 import javax.sql.DataSource;
 import niffler.db.DataSourceProvider;
 import niffler.db.ServiceDB;
+import niffler.db.entity.AuthorityEntity;
 import niffler.db.entity.UserEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,44 +17,57 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class NifflerUsersDAOJdbc implements NifflerUsersDAO {
 
   private static final DataSource ds = DataSourceProvider.INSTANCE.getDataSource(ServiceDB.NIFFLER_AUTH);
-  private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   @Override
   public int createUser(UserEntity user) {
     int executeUpdate;
 
-    try (Connection conn = ds.getConnection();
-        PreparedStatement st = conn.prepareStatement("INSERT INTO users "
-            + "(username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) "
-            + " VALUES (?, ?, ?, ?, ?, ?)")) {
-      st.setString(1, user.getUsername());
-      st.setString(2, pe.encode(user.getPassword()));
-      st.setBoolean(3, user.getEnabled());
-      st.setBoolean(4, user.getAccountNonExpired());
-      st.setBoolean(5, user.getAccountNonLocked());
-      st.setBoolean(6, user.getCredentialsNonExpired());
+    try (Connection conn = ds.getConnection()) {
 
-      executeUpdate = st.executeUpdate();
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+      conn.setAutoCommit(false);
 
-    String insertAuthoritiesSql = "INSERT INTO authorities (user_id, authority) VALUES ('%s', '%s')";
+      try (PreparedStatement insertUserSt = conn.prepareStatement("INSERT INTO users "
+          + "(username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) "
+          + " VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+          PreparedStatement insertAuthoritySt = conn.prepareStatement(
+              "INSERT INTO authorities (user_id, authority) VALUES (?, ?)")) {
+        insertUserSt.setString(1, user.getUsername());
+        insertUserSt.setString(2, pe.encode(user.getPassword()));
+        insertUserSt.setBoolean(3, user.getEnabled());
+        insertUserSt.setBoolean(4, user.getAccountNonExpired());
+        insertUserSt.setBoolean(5, user.getAccountNonLocked());
+        insertUserSt.setBoolean(6, user.getCredentialsNonExpired());
+        executeUpdate = insertUserSt.executeUpdate();
 
-    final String finalUserId = getUserId(user.getUsername());
-    List<String> sqls = user.getAuthorities()
-        .stream()
-        .map(ae -> ae.getAuthority().name())
-        .map(a -> String.format(insertAuthoritiesSql, finalUserId, a))
-        .toList();
+        final UUID finalUserId;
 
-    for (String sql : sqls) {
-      try (Connection conn = ds.getConnection();
-          Statement st = conn.createStatement()) {
-        st.executeUpdate(sql);
+        try (ResultSet generatedKeys = insertUserSt.getGeneratedKeys()) {
+          if (generatedKeys.next()) {
+            finalUserId = UUID.fromString(generatedKeys.getString(1));
+            user.setId(finalUserId);
+          } else {
+            throw new SQLException("Creating user failed, no ID present");
+          }
+        }
+
+        for (AuthorityEntity authority : user.getAuthorities()) {
+          insertAuthoritySt.setObject(1, finalUserId);
+          insertAuthoritySt.setString(2, authority.getAuthority().name());
+          insertAuthoritySt.addBatch();
+          insertAuthoritySt.clearParameters();
+        }
+        insertAuthoritySt.executeBatch();
       } catch (SQLException e) {
+        conn.rollback();
+        conn.setAutoCommit(true);
         throw new RuntimeException(e);
       }
+
+      conn.commit();
+      conn.setAutoCommit(true);
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
     }
     return executeUpdate;
   }
@@ -72,5 +86,37 @@ public class NifflerUsersDAOJdbc implements NifflerUsersDAO {
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public int removeUser(UserEntity user) {
+    int executeUpdate;
+
+    try (Connection conn = ds.getConnection()) {
+
+      conn.setAutoCommit(false);
+
+      try (PreparedStatement deleteUserSt = conn.prepareStatement("DELETE FROM users WHERE id = ?");
+          PreparedStatement deleteAuthoritySt = conn.prepareStatement(
+              "DELETE FROM authorities WHERE user_id = ?")) {
+        deleteUserSt.setObject(1, user.getId());
+        deleteAuthoritySt.setObject(1, user.getId());
+
+        deleteAuthoritySt.executeUpdate();
+        executeUpdate = deleteUserSt.executeUpdate();
+
+      } catch (SQLException e) {
+        conn.rollback();
+        conn.setAutoCommit(true);
+        throw new RuntimeException(e);
+      }
+
+      conn.commit();
+      conn.setAutoCommit(true);
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    return executeUpdate;
   }
 }
