@@ -182,9 +182,7 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
                 case NESTED -> {
                     return API_LOGIN_USERS_NAMESPACE;
                 }
-                default -> {
-                    throw new IllegalStateException();
-                }
+                default -> throw new IllegalStateException();
             }
         }
     }

@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("[REST][niffler-spend]: Траты")
 @DisplayName("[REST][niffler-spend]: Траты")
-public class NifflerSpendApiTest extends BaseRestTest {
+public class SpendRestTest extends BaseRestTest {
 
     private final NifflerSpendClient nsc = new NifflerSpendClient();
 
