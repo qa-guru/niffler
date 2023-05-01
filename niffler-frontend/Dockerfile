@@ -6,6 +6,7 @@ RUN npm install
 COPY . ./
 RUN npm run ${NPM_COMMAND}
 
+
 # release step
 FROM nginx:1.23.3-alpine as release
 COPY nginx.conf /etc/nginx/conf.d/default.conf
