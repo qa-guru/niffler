@@ -1,0 +1,28 @@
+name: frontend_deploy_prod
+on:
+  push:
+    branches: 
+      - main
+    path:
+      - 'niffler-frontend/**'
+      
+jobs:
+  checkout:
+    runs-on: prod-runner      
+
+  deploy:
+    runs-on: prod-runner
+    needs: checkout
+    steps:  
+      - name: deploy
+        working-directory: ./niffler-frontend
+        env:
+         IMAGE_NAME: ${{ env.IMAGE_NAME_FRONTEND }}
+         NPM_COMMAND: ${{ env.NPM_COMMAND_FRONTEND }}
+        run: |
+         pwd
+         docker stop niffler-fronend
+         docker build . --tag ${IMAGE_NAME}:latest
+         docker-compose up -d
+         echo "done"
+        
