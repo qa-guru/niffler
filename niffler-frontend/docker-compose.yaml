@@ -8,6 +8,4 @@ services:
       - "8080:8080"
     environment:
       NPM_COMMAND=${NPM_COMMAND}
-    restart: always
-    
-    
+    restart: always    
