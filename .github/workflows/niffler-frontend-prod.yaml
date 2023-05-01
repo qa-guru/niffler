@@ -8,7 +8,9 @@ on:
       
 jobs:
   checkout:
-    runs-on: prod-runner      
+    runs-on: prod-runner  
+    steps:
+      - uses: actions/checkout@v3
 
   deploy:
     runs-on: prod-runner
