@@ -24,7 +24,7 @@ jobs:
         run: |
          pwd
          docker stop niffler-fronend 
-         docker build . --tag ${IMAGE_NAME}:latest
+         docker build . --tag ${IMAGE_NAME}
          docker-compose up -d
          echo "done"
         
