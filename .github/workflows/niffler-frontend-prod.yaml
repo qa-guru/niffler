@@ -23,7 +23,7 @@ jobs:
          NPM_COMMAND: ${{ env.NPM_COMMAND_FRONTEND }}
         run: |
          pwd
-         docker stop niffler-fronend
+         docker stop niffler-fronend || true
          docker build . --tag ${IMAGE_NAME}:latest
          docker-compose up -d
          echo "done"
