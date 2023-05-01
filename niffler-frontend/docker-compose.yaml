@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  niffler-fronend:
+    container_name: niffler-fronend
+    image: dtuchs/niffler-frontend:latest
+    ports:
+      - "8080:8080"
+    environment:
+      NPM_COMMAND=${NPM_COMMAND}
+    restart: always
