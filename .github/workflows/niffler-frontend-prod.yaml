@@ -19,8 +19,8 @@ jobs:
       - name: deploy
         working-directory: ./niffler-frontend
         env:
-         IMAGE_NAME: ${{ env.IMAGE_NAME_FRONTEND }}
-         NPM_COMMAND: ${{ env.NPM_COMMAND_FRONTEND }}
+         IMAGE_NAME: ${{ vars.IMAGE_NAME_FRONTEND }}
+         NPM_COMMAND: ${{ vars.NPM_COMMAND_FRONTEND }}
         run: |
          pwd
          docker stop niffler-fronend 
