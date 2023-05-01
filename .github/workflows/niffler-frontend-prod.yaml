@@ -2,7 +2,7 @@ name: frontend_deploy_prod
 on:
   push:
     branches: 
-      - main
+      - master
     paths:
       - 'niffler-frontend/**'
       
