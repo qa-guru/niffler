@@ -9,3 +9,4 @@ services:
     environment:
       NPM_COMMAND=${NPM_COMMAND}
     restart: always
+    
