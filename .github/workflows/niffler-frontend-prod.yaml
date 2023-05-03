@@ -23,9 +23,10 @@ jobs:
          NPM_COMMAND: ${{ vars.NPM_COMMAND_FRONTEND }}
         run: |
          pwd
+         env > .env
          docker system prune -a -f
          docker build . -t ${IMAGE_NAME}:latest
          docker stop niffler-fronend 
-         docker-compose up -d
+         docker-compose up --env-file .env -d
          echo "done"
         
