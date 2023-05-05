@@ -116,3 +116,4 @@ volumes:
 networks:
   niffler-network:
     driver: bridge
+
