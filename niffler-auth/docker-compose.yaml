@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  niffler-auth:
+    container_name: niffler-auth
+    image: dtuchs/niffler-auth:latest
+    ports:
+      - "9000:9000"
+    restart: always
