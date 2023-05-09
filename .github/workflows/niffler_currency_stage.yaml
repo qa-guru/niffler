@@ -1,0 +1,30 @@
+name: currency_deploy_stage
+on:
+  push:
+    branches: 
+      - develop
+    paths:
+      - 'niffler-currency/**'
+      
+jobs:
+  checkout:
+    runs-on: stage-runner  
+    steps:
+      - uses: actions/checkout@v3
+
+  deploy:
+    runs-on: stage-runner
+    needs: checkout
+    steps:  
+      - name: deploy
+        working-directory: ./niffler-currency
+        env:
+          DOCKER: eclipse-temurin:19-jdk
+          APP_VER: 0.0.3-SNAPSHOT
+        run: |
+         pwd
+         docker system prune -a -f
+         docker build -t niffler-currency:latest --build-arg DOCKER=${DOCKER} --build-arg APP_VER=${APP_VER} .
+         docker stop niffler-currency
+         docker-compose up -d
+         echo "done"
