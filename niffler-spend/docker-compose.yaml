@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  niffler-spend:
+    container_name: niffler-spend
+    image: dtuchs/niffler-spend:latest
+    expose:
+      - "8093"
+    restart: always
