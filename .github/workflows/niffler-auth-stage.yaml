@@ -19,13 +19,12 @@ jobs:
       - name: deploy
         working-directory: ./niffler-auth
         env:
-          DOCKER: eclipse-temurin:19-jdk
+          #DOCKER: eclipse-temurin:19-jdk
           APP_VER: 0.0.3-SNAPSHOT
         run: |
-         pwd
-         docker system prune -a -f
+         
          gradle build
-         docker build -t niffler-auth:latest --build-arg DOCKER=${DOCKER} --build-arg APP_VER=${APP_VER} .
+         docker build -t niffler-auth:latest --build-arg APP_VER=${APP_VER} .
          docker stop niffler-auth
       - name: deploy
         run : |
