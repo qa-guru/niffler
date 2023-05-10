@@ -24,6 +24,7 @@ jobs:
         run: |
          pwd
          docker system prune -a -f
+         gradle dockerTag
          docker build -t niffler-auth:latest --build-arg DOCKER=${DOCKER} --build-arg APP_VER=${APP_VER} .
          docker stop niffler-auth
          docker-compose up -d
