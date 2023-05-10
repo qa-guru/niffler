@@ -2,7 +2,7 @@ name: auth_deploy_prod
 on:
   push:
     branches: 
-      - develop
+      - master
     paths:
       - 'niffler-auth/**'
       
