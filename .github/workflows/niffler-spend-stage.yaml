@@ -1,0 +1,31 @@
+name: spend_deploy_stage
+on:
+  push:
+    branches: 
+      - develop
+    paths:
+      - 'niffler-spend/**'
+      
+jobs:
+  checkout:
+    runs-on: stage-runner  
+    steps:
+      - uses: actions/checkout@v3
+
+  deploy:
+    runs-on: stage-runner
+    needs: checkout
+    steps:  
+      - name: deploy
+        working-directory: ./niffler-spend
+        env:
+          DOCKER: eclipse-temurin:19-jdk
+          APP_VER: 0.0.3-SNAPSHOT
+        run: |
+         pwd
+         docker system prune -a -f
+         gradle build
+         docker build -t niffler-spend:latest --build-arg DOCKER=${DOCKER} --build-arg APP_VER=${APP_VER} .
+         docker stop niffler-spend
+         docker-compose up -d
+         echo "done"
