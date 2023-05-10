@@ -22,7 +22,7 @@ jobs:
           #DOCKER: eclipse-temurin:19-jdk
           APP_VER: 0.0.3-SNAPSHOT
         run: |
-         gradle build
+         gradle dockerTag
          docker build -t niffler-auth:latest --build-arg APP_VER=${APP_VER} .
          docker stop niffler-auth
       - name: deploy
