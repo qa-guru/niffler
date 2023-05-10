@@ -1,9 +1,0 @@
-version: '3.7'
-
-services:
-  niffler-gateway:
-    container_name: niffler-gateway
-    image: dtuchs/niffler-gateway:latest
-    ports:
-      - "8090:8090"
-    restart: always
