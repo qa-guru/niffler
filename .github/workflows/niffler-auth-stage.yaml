@@ -2,7 +2,7 @@ name: auth_deploy_stage
 on:
   push:
     branches: 
-      - develop
+      - ci
     paths:
       - 'niffler-auth/**'
       
