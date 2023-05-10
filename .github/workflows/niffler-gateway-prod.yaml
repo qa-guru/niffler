@@ -24,6 +24,7 @@ jobs:
         run: |
          pwd
          docker system prune -a -f
+         gradle build
          docker build -t niffler-gateway:latest --build-arg DOCKER=${DOCKER} --build-arg APP_VER=${APP_VER} .
          docker stop niffler-gateway
          docker-compose up -d
