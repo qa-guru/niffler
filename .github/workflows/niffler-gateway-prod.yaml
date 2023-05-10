@@ -1,0 +1,30 @@
+name: gateway_deploy_prod
+on:
+  push:
+    branches: 
+      - master
+    paths:
+      - 'niffler-gateway/**'
+      
+jobs:
+  checkout:
+    runs-on: prod-runner  
+    steps:
+      - uses: actions/checkout@v3
+
+  deploy:
+    runs-on: prod-runner
+    needs: checkout
+    steps:  
+      - name: deploy
+        working-directory: ./niffler-gateway
+        env:
+          DOCKER: eclipse-temurin:19-jdk
+          APP_VER: 0.0.3-SNAPSHOT
+        run: |
+         pwd
+         docker system prune -a -f
+         docker build -t niffler-gateway:latest --build-arg DOCKER=${DOCKER} --build-arg APP_VER=${APP_VER} .
+         docker stop niffler-gateway
+         docker-compose up -d
+         echo "done"
