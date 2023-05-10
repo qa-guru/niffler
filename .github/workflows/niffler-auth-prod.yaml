@@ -27,5 +27,7 @@ jobs:
          gradle build
          docker build -t niffler-auth:latest --build-arg DOCKER=${DOCKER} --build-arg APP_VER=${APP_VER} .
          docker stop niffler-auth
-         docker-compose up -d
+      - name: deploy
+        run : |
+         docker-compose up -d niffler-auth
          echo "done"
