@@ -16,7 +16,7 @@ jobs:
     runs-on: stage-runner
     needs: checkout
     steps:  
-      - name: deploy
+      - name: build
         working-directory: ./niffler-spend
         env:
           DOCKER: eclipse-temurin:19-jdk
@@ -27,5 +27,7 @@ jobs:
          gradle build
          docker build -t niffler-spend:latest --build-arg DOCKER=${DOCKER} --build-arg APP_VER=${APP_VER} .
          docker stop niffler-spend
-         docker-compose up -d
+      - name: deploy
+        run : |
+         docker-compose up -d niffler-spend
          echo "done"
