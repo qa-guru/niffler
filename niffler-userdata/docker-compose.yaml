@@ -1,8 +1,0 @@
-version: '3.9'
-
-services:
-  niffler-userdata:
-    container_name: niffler-userdata
-    image: dtuchs/niffler-userdata:latest
-    expose:
-      - "8089"
