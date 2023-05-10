@@ -30,6 +30,9 @@ jobs:
          env > .env
          docker system prune -a -f
          docker build . --build-arg NPM_COMMAND=${NPM_COMMAND} -t ${IMAGE_NAME}:latest
-         docker stop niffler-fronend 
-         docker-compose --env-file .env up -d
+         docker stop niffler-frontend 
+      - name: deploy
+        run : |
+         docker-compose up -d niffler-frontend
          echo "done"
+
