@@ -24,7 +24,7 @@ jobs:
          pwd
          gradle build docker
          cd build/docker
-         docker build -t dtuchs/niffler-auth:latest --build-arg APP_VER=${APP_VER} .
+         docker build -t dtuchs/niffler-auth:0.0.3-SNAPSHOT --build-arg APP_VER=${APP_VER} .
          docker-compose up -d --force-recreate niffler-auth
          docker rmi -f $(docker images | grep 'niffler-auth')
       - name: deploy
