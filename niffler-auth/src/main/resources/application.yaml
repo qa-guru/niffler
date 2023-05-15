@@ -21,7 +21,7 @@ spring:
       max-lifetime: 1000
       auto-commit: true
     username: postgres
-    password: secret
+    password: 6Dm476&0
   jpa:
     properties:
       hibernate:
@@ -63,7 +63,7 @@ spring:
     activate:
       on-profile: 'docker'
   datasource:
-    url: 'jdbc:postgresql://niffler-all-db:5432/niffler-auth'
+    url: 'jdbc:postgresql://localhost:5432/niffler-auth'
   jpa:
     hibernate:
       ddl-auto: validate
