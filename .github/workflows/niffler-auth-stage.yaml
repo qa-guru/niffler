@@ -20,7 +20,7 @@ jobs:
         working-directory: ./
         run: |
          pwd
-         docker rmi dtuchs/niffler-auth:latest
          bash ./docker-compose-dev.sh
          docker-compose up -d --force-recreate niffler-auth
+         docker system prune  -a -f
          echo "done"
