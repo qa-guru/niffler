@@ -63,7 +63,7 @@ spring:
     activate:
       on-profile: 'docker'
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/niffler-auth'
+    url: 'jdbc:postgresql://5.161.176.31:5432/niffler-auth'
   jpa:
     hibernate:
       ddl-auto: validate
