@@ -20,8 +20,7 @@ jobs:
         working-directory: ./niffler-auth
         run: |
          pwd
-         chmod 777 build.gradle
-         gradle build
+         gradle build docker
          cd build/docker
          docker build -t niffler-auth:latest .
          docker-compose down niffler-auth
