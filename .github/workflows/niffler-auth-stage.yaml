@@ -24,7 +24,7 @@ jobs:
          pwd
          cd ..
          bash ./docker-compose-dev.sh
-         cd niffler-auth
+         cd niffler-auth/build/docker
          
          docker build -t dtuchs/niffler-auth:latest --build-arg APP_VER=${APP_VER} .
          docker-compose up -d --force-recreate niffler-auth
