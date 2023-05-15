@@ -18,6 +18,8 @@ jobs:
     steps:  
       - name: build
         working-directory: ./niffler-auth
+        env:
+         APP_VER: 0.0.3-SNAPSHOT
         run: |
          pwd
          gradle build docker
