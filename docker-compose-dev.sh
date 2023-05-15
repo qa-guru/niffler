@@ -5,11 +5,13 @@ java --version
 echo '### Gradle version ###'
 gradle --version
 
-docker-compose down
+#docker-compose down
+
 #docker stop $(docker ps -a -q)
 #docker rm $(docker ps -a -q)
-docker ps -a
-docker rmi -f $(docker images | grep 'niffler')
+
+#docker ps -a
+#docker rmi -f $(docker images | grep 'niffler')
 
 if [[ $1 = "gql" ]]; then a="$c"; else a="$d"; fi
 
@@ -29,6 +31,6 @@ else
 fi
 
 cd ../
-docker images
-docker-compose up -d
-docker ps -a
+#docker images
+#docker-compose up -d
+#docker ps -a
