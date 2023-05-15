@@ -17,17 +17,10 @@ jobs:
     needs: checkout
     steps:  
       - name: build
-        working-directory: ./niffler-auth
-        env:
-         APP_VER: 0.0.3-SNAPSHOT
+        working-directory: ./
         run: |
          pwd
-         cd ..
-         bash ./docker-compose-dev.sh
-         cd niffler-auth/build/docker
          docker rmi dtuchs/niffler-auth:latest
-         docker build -t dtuchs/niffler-auth:latest --build-arg APP_VER=${APP_VER} .
+         bash ./docker-compose-dev.sh
          docker-compose up -d --force-recreate niffler-auth
-      - name: deploy
-        run : |
          echo "done"
