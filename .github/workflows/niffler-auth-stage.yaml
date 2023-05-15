@@ -19,6 +19,7 @@ jobs:
       - name: build
         working-directory: ./niffler-auth
         run: |
+         pwd
          gradle build
          cd build/docker
          docker build -t niffler-auth:latest .
