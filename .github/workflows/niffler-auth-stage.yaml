@@ -25,7 +25,7 @@ jobs:
          cd ..
          bash ./docker-compose-dev.sh
          cd niffler-auth
-#        docker rmi -f $(docker images | grep 'niffler-auth')
+         
          docker build -t dtuchs/niffler-auth:latest --build-arg APP_VER=${APP_VER} .
          docker-compose up -d --force-recreate niffler-auth
       - name: deploy
