@@ -11,3 +11,4 @@ CMD java -jar -Dspring.profiles.active=docker $JAVA_OPTS niffler-auth-$VER.jar
 
 
 
+
