@@ -16,15 +16,14 @@ jobs:
     runs-on: stage-runner
     needs: checkout
     steps:  
-      - name: deploy
+      - name: build
         working-directory: ./niffler-auth
-        env:
-          #DOCKER: eclipse-temurin:19-jdk
-          APP_VER: 0.0.3-SNAPSHOT
         run: |
-         gradle dockerTag
-         docker build -t niffler-auth:latest --build-arg APP_VER=${APP_VER} .
-         docker stop niffler-auth
+         gradle build
+         cd build/docker
+         docker build -t niffler-auth:latest .
+         docker-compose down niffler-auth
+         docker rmi -f $(docker images | grep 'niffler-auth')
       - name: deploy
         run : |
          docker-compose up -d niffler-auth
