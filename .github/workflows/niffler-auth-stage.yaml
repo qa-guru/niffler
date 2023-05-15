@@ -29,5 +29,4 @@ jobs:
          docker rmi -f $(docker images | grep 'niffler-auth')
       - name: deploy
         run : |
-         docker-compose up -d niffler-auth
          echo "done"
