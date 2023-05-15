@@ -25,7 +25,7 @@ jobs:
          gradle build docker
          cd build/docker
          docker build -t dtuchs/niffler-auth:0.0.3-SNAPSHOT --build-arg APP_VER=${APP_VER} .
-         docker rmi -f $(docker images | grep 'niffler-auth')
+         
       - name: deploy
         run : |
          echo "done"
