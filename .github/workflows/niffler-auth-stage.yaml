@@ -22,10 +22,11 @@ jobs:
          APP_VER: 0.0.3-SNAPSHOT
         run: |
          pwd
-         gradle build docker
-         cd build/docker
+         cd ..
+         bash ./docker-compose-dev.sh
+         cd niffler-auth
          docker rmi -f $(docker images | grep 'niffler-auth')
-         docker build -t dtuchs/niffler-auth:0.0.3-SNAPSHOT --build-arg APP_VER=${APP_VER} .
+         docker build -t dtuchs/niffler-auth:latest --build-arg APP_VER=${APP_VER} .
          docker-compose up -d --force-recreate niffler-auth
       - name: deploy
         run : |
