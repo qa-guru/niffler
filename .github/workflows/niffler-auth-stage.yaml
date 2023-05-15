@@ -19,7 +19,7 @@ jobs:
       - name: build
         working-directory: ./niffler-auth
         run: |
-         sudo gradle build
+         gradle build
          cd build/docker
          docker build -t niffler-auth:latest .
          docker-compose down niffler-auth
