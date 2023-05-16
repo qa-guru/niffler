@@ -8,3 +8,4 @@ COPY niffler-gateway-$VER.jar ./
 
 EXPOSE 8090
 CMD java -jar -Dspring.profiles.active=docker $JAVA_OPTS niffler-gateway-$VER.jar
+
