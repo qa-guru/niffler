@@ -27,10 +27,10 @@ jobs:
          REACT_APP_GATEWAY_URL: http://${{ vars.STAGE_ENDPOINT }}:8090
         run: |
          pwd
-         REACT_APP_ENV=dev >> .env.dev
-         REACT_APP_FRONT_URL=http://${{ vars.STAGE_ENDPOINT }} >> .env.dev
-         REACT_APP_AUTH_URL=http://${{ vars.STAGE_ENDPOINT }}:9000 >> .env.dev
-         REACT_APP_GATEWAY_URL=http://${{ vars.STAGE_ENDPOINT }}:8090 >> .env.dev
+         echo "REACT_APP_ENV=dev" >> .env.dev
+         echo "REACT_APP_FRONT_URL=http://${{ vars.STAGE_ENDPOINT }}" >> .env.dev
+         echo "REACT_APP_AUTH_URL=http://${{ vars.STAGE_ENDPOINT }}:9000" >> .env.dev
+         echo "REACT_APP_GATEWAY_URL=http://${{ vars.STAGE_ENDPOINT }}:8090" >> .env.dev
          docker system prune -a -f
          docker build . --build-arg NPM_COMMAND=${NPM_COMMAND} -t ${IMAGE_NAME}:latest
          docker stop niffler-frontend 
