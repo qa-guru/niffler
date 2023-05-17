@@ -27,7 +27,7 @@ jobs:
          REACT_APP_GATEWAY_URL: http://${{ vars.STAGE_ENDPOINT }}:8090
         run: |
          pwd
-         env > .env
+         env > .env.dev
          docker system prune -a -f
          docker build . --build-arg NPM_COMMAND=${NPM_COMMAND} -t ${IMAGE_NAME}:latest
          docker stop niffler-frontend 
