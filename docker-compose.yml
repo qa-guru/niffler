@@ -32,9 +32,9 @@ services:
       timeout: 5s
       retries: 10
     restart: always
-    depends_on:
-      niffler-all-db:
-        condition: service_healthy
+    #depends_on:
+      #niffler-all-db:
+        #condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
@@ -46,9 +46,9 @@ services:
       - "8091"
       - "8092"
     restart: always
-    depends_on:
-      niffler-all-db:
-        condition: service_healthy
+    #depends_on:
+      #niffler-all-db:
+        #condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
@@ -76,9 +76,9 @@ services:
     expose:
       - "8093"
     restart: always
-    depends_on:
-      niffler-all-db:
-        condition: service_healthy
+    #depends_on:
+      #niffler-all-db:
+        #condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
@@ -89,9 +89,9 @@ services:
     expose:
       - "8089"
     restart: always
-    depends_on:
-      niffler-all-db:
-        condition: service_healthy
+    #depends_on:
+      #niffler-all-db:
+        #condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
