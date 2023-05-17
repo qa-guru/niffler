@@ -21,7 +21,7 @@ jobs:
         env:
          IMAGE_NAME: ${{ vars.IMAGE_NAME_FRONTEND }}
          NPM_COMMAND: ${{ vars.NPM_COMMAND_FRONTEND }}
-         REACT_APP_ENV: dev
+         REACT_APP_ENV: test
          REACT_APP_FRONT_URL: http://${{ vars.STAGE_ENDPOINT }}
          REACT_APP_AUTH_URL: http://${{ vars.STAGE_ENDPOINT }}:9000
          REACT_APP_GATEWAY_URL: http://${{ vars.STAGE_ENDPOINT }}:8090
