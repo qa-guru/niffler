@@ -27,7 +27,7 @@ jobs:
          REACT_APP_GATEWAY_URL: http://${{ vars.STAGE_ENDPOINT }}:8090
         run: |
          pwd
-         echo "REACT_APP_ENV=dev" >> .env.dev
+         echo "REACT_APP_ENV=test" >> .env.dev
          echo "REACT_APP_FRONT_URL=http://${{ vars.STAGE_ENDPOINT }}" >> .env.dev
          echo "REACT_APP_AUTH_URL=http://${{ vars.STAGE_ENDPOINT }}:9000" >> .env.dev
          echo "REACT_APP_GATEWAY_URL=http://${{ vars.STAGE_ENDPOINT }}:8090" >> .env.dev
