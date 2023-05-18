@@ -17,17 +17,10 @@ jobs:
     needs: checkout
     steps:  
       - name: deploy
-        working-directory: ./niffler-auth
-        env:
-          DOCKER: eclipse-temurin:19-jdk
-          APP_VER: 0.0.3-SNAPSHOT
+        working-directory: ./
         run: |
          pwd
-         docker system prune -a -f
-         gradle build
-         docker build -t niffler-auth:latest --build-arg DOCKER=${DOCKER} --build-arg APP_VER=${APP_VER} .
-         docker stop niffler-auth
-      - name: deploy
-        run : |
-         docker-compose up -d niffler-auth
+         bash ./docker-compose-dev.sh
+         docker-compose up -d --force-recreate niffler-auth
+         docker system prune  -a -f
          echo "done"
