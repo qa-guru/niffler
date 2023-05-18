@@ -21,13 +21,13 @@ jobs:
         env:
          IMAGE_NAME: ${{ vars.IMAGE_NAME_FRONTEND }}
          NPM_COMMAND: ${{ vars.NPM_COMMAND_FRONTEND }}
-         REACT_APP_ENV: test
-         REACT_APP_FRONT_URL: http://niffler-frontend
-         REACT_APP_AUTH_URL: http://niffler-auth:9000
-         REACT_APP_GATEWAY_URL: http://niffler-gateway:8090
         run: |
          pwd
-         env > .env
+         echo "REACT_APP_ENV=test" >> .env.dev
+         echo "REACT_APP_FRONT_URL=http://${{ vars.PROD_ENDPOINT }}" >> .env.dev
+         echo "REACT_APP_AUTH_URL=http://${{ vars.PROD_ENDPOINT }}:9000" >> .env.dev
+         echo "REACT_APP_GATEWAY_URL=http://${{ vars.PROD_ENDPOINT }}:8090" >> .env.dev
+         cp .env.dev .env.test
          docker system prune -a -f
          docker build . --build-arg NPM_COMMAND=${NPM_COMMAND} -t ${IMAGE_NAME}:latest
          docker stop niffler-frontend 
@@ -35,4 +35,5 @@ jobs:
         run : |
          docker-compose up -d niffler-frontend
          echo "done"
+
         
