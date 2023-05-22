@@ -1,0 +1,118 @@
+version: '3.9'
+
+services:
+  niffler-all-db:
+    container_name: niffler-all-db
+    image: postgres:15.1
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    expose:
+      - "5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-auth:
+    container_name: niffler-auth
+    image: dtuchs/niffler-auth:latest
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    depends_on:
+      niffler-all-db:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-currency:
+    container_name: niffler-currency
+    image: dtuchs/niffler-currency:latest
+    expose:
+      - "8091"
+      - "8092"
+    restart: always
+    depends_on:
+      niffler-all-db:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-gateway:
+    container_name: niffler-gateway
+    image: dtuchs/niffler-gateway:latest
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: "wget --spider http://localhost:8090/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    depends_on:
+      - niffler-auth
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-spend:
+    container_name: niffler-spend
+    image: dtuchs/niffler-spend:latest
+    expose:
+      - "8093"
+    restart: always
+    depends_on:
+      niffler-all-db:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-userdata:
+    container_name: niffler-userdata
+    image: dtuchs/niffler-userdata:latest
+    expose:
+      - "8089"
+    restart: always
+    depends_on:
+      niffler-all-db:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+  niffler-frontend:
+    container_name: niffler-frontend
+    image: dtuchs/niffler-frontend:latest
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      niffler-gateway:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+volumes:
+  pgdata:
+    external: true
+
+networks:
+  niffler-network:
+    driver: bridge
