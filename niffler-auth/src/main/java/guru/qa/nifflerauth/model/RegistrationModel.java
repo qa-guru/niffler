@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 public class RegistrationModel {
     @NotNull(message = "Username can not be null")
     @NotEmpty(message = "Username can not be empty")
-    @Size(max = 50, message = "Username can`t be longer than 50 characters")
+    @Size(min = 3, max = 50, message = "Allowed username length should be from 3 to 50 characters")
     private String username;
     @NotNull(message = "Password can not be null")
     @Size(min = 3, max = 12, message = "Allowed password length should be from 3 to 12 characters")

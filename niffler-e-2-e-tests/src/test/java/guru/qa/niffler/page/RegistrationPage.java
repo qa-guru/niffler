@@ -15,6 +15,7 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
   private final SelenideElement passwordInput = $("#password");
   private final SelenideElement passwordSubmitInput = $("#passwordSubmit");
   private final SelenideElement signUpBtn = $("button[type='submit']");
+  private final SelenideElement formError = $(".form__error");
 
   @Override
   public RegistrationPage checkThatPageLoaded() {
@@ -31,7 +32,7 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
   }
 
   public RegistrationPage checkErrorMessage(String expectedMessage) {
-    $(".form__error").shouldHave(text(expectedMessage));
+    formError.shouldHave(text(expectedMessage));
     return this;
   }
 }

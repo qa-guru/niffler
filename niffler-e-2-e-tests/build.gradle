@@ -3,7 +3,6 @@ buildscript {
         protobufVersion = '3.21.12'
         grpcVersion = '1.52.1'
         allureVersion = '2.21.0'
-        aspectjVersion = '1.9.19'
         selenideVersion = '6.13.0'
         retrofitVersion = '2.9.0'
         springComponentsVersion = '6.0.3'
@@ -26,7 +25,7 @@ repositories {
 allure {
     version.set("${allureVersion}")
     adapter {
-        aspectjVersion.set("${aspectjVersion}")
+        aspectjVersion.set('1.9.19')
         autoconfigure.set(true)
         aspectjWeaver.set(true)
     }
