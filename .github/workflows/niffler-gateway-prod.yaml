@@ -24,3 +24,8 @@ jobs:
          docker-compose up -d --force-recreate niffler-gateway
          docker system prune  -a -f
          echo "done"
+      - name: push
+        run: |
+         docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
+         docker tag dtuchs/niffler-gateway:latest ${{ vars.DOCKER_HUB_ACC }}/niffler-gateway:${{github.run_number}}
+         docker push ${{ vars.DOCKER_HUB_ACC }}/niffler-gateway:${{github.run_number}}         
