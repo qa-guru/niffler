@@ -26,6 +26,6 @@ jobs:
          echo "done"
       - name: push
         run: |
-         docker login --username ${{ vars.DOCKER_HUB_ACC }} --password ${{ secrets.DOCKER_HUB_PASSWORD }}
+         docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
          docker tag dtuchs/niffler-auth:latest ${{ vars.DOCKER_HUB_ACC }}/niffler-auth:${{github.run_number}}
          docker push ${{ vars.DOCKER_HUB_ACC }}/niffler-auth:${{github.run_number}}
