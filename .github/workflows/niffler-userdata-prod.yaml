@@ -20,7 +20,7 @@ jobs:
         working-directory: ./
         run: |
          pwd
-         bash ./docker-compose-dev.sh
+         bash ./docker-compose-dev-ci.sh
          docker-compose up -d --force-recreate niffler-userdata
          docker system prune  -a -f
          echo "done"
