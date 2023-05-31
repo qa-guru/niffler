@@ -1,8 +1,8 @@
-name: currency_deploy_stage
+name: currency_deploy_prod
 on:
   push:
     branches: 
-      - master
+      - ci-prod
     paths:
       - 'niffler-currency/**'
       
