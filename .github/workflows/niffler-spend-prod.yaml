@@ -2,7 +2,7 @@ name: spend_deploy_prod
 on:
   push:
     branches: 
-      - master
+      - ci-prod
     paths:
       - 'niffler-spend/**'
       
