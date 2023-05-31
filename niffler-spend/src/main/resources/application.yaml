@@ -16,7 +16,7 @@ spring:
       max-lifetime: 1000
       auto-commit: true
     username: postgres
-    password: secret
+    password: 82^Pn4so
   jpa:
     properties:
       hibernate:
