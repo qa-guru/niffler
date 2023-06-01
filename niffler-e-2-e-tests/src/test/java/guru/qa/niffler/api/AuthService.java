@@ -7,7 +7,6 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface AuthService {
@@ -24,7 +23,7 @@ public interface AuthService {
   // &code_challenge=fN_9Pve8mA4W6UhUT-4cjJ9uM6TtfshA0AYPj5OHEyk
   // &code_challenge_method=S256
 
-  @GET("/authorize")
+  @GET("/oauth2/authorize")
   Call<Void> authorize(
       @Query("response_type") String responseType,
       @Query("client_id") String clientId,
@@ -61,6 +60,9 @@ public interface AuthService {
   // 302 на http://127.0.0.1:3000/authorized?code=HObxU7Ujv3C0e66Wy67M_Ocr5Y4HBV44ge95fzOERkRhWD28QE22hVVpoACUN90dWNQgpD1EF5To5Dt-DvpLcagMQ2-Vo5zhpKI7EA3ygua8gslv2fK7Y6ayyr2Ii2-b
   // http://127.0.0.1:3000/authorized?code=HObxU7Ujv3C0e66Wy67M_Ocr5Y4HBV44ge95fzOERkRhWD28QE22hVVpoACUN90dWNQgpD1EF5To5Dt-DvpLcagMQ2-Vo5zhpKI7EA3ygua8gslv2fK7Y6ayyr2Ii2-b
   // 200 OK
+
+  // http://127.0.0.1:3000/authorized?code=Gcmjn964ul1Hr5zQ45vGopPIu-MV1xmg_lo_POHmZYl7R-m89b1F0wl90tt2ZhdIILHTqq125FEzlD5QtVFY07S-_H6oWz8skbRZGlLYRngChVyngDbxTFrMrwreAqa3
+  // http://127.0.0.1:3000/authorized?code=QMTm4K5SYAISqf1eUnIkspr-R6Am0n38_E3gedD_aMVcp6Qb1iPfB6Q-yurTwQh4Zf1Ilwom1EmyuaHSrbjgd1X66PC_hAyF_hg-2TFnyleGmXumUUG0xfLyAhOkDlam
 
   @POST("/oauth2/token")
   Call<JsonNode> token(

@@ -6,6 +6,7 @@ import guru.qa.niffler.api.AuthClient;
 import guru.qa.niffler.api.context.CookieContext;
 import guru.qa.niffler.api.context.SessionContext;
 import guru.qa.niffler.api.util.OauthUtils;
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.Cookie;
 
 public class ApiLoginExtension implements BeforeEachCallback, AfterTestExecutionCallback {
+
+  protected static final Config CFG = Config.getConfig();
 
   private final AuthClient authClient = new AuthClient();
   private static final String JSESSIONID = "JSESSIONID";
@@ -36,6 +39,7 @@ public class ApiLoginExtension implements BeforeEachCallback, AfterTestExecution
     authClient.authorizePreRequest();
     authClient.login(username, password);
     final String token = authClient.getToken();
+    Selenide.open(CFG.getFrontUrl());
     Selenide.sessionStorage().setItem("id_token", token);
     Selenide.sessionStorage().setItem("codeChallenge", sessionContext.getCodeChallenge());
     Selenide.sessionStorage().setItem("codeVerifier", sessionContext.getCodeVerifier());
