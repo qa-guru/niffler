@@ -12,12 +12,11 @@ import guru.qa.niffler.data.CurrencyEntity;
 import guru.qa.niffler.data.repository.CurrencyRepository;
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.Nonnull;
-import net.devh.boot.grpc.server.service.GrpcService;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @GrpcService
 public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurrencyServiceImplBase {
@@ -60,7 +59,7 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
         responseObserver.onCompleted();
     }
 
-    private @Nonnull
+    @Nonnull
     BigDecimal convertSpendTo(double spend,
                               @Nonnull CurrencyValues spendCurrency,
                               @Nonnull CurrencyValues desiredCurrency,
@@ -72,7 +71,7 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
         return spendInUsd.divide(courseForCurrency(desiredCurrency, currencyRates), 2, RoundingMode.HALF_UP);
     }
 
-    private @Nonnull
+    @Nonnull
     BigDecimal courseForCurrency(@Nonnull CurrencyValues currency,
                                  @Nonnull List<CurrencyEntity> currencyRates) {
         return BigDecimal.valueOf(

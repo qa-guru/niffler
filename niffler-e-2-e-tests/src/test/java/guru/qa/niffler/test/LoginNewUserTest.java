@@ -16,10 +16,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class LoginNewUserTest extends BaseWebTest {
 
   private static Faker faker = new Faker();
@@ -31,7 +29,7 @@ public class LoginNewUserTest extends BaseWebTest {
   @BeforeEach
   void createUserForTest() {
     ue = new UserEntity();
-    ue.setUsername("valentin3");
+    ue.setUsername("valentin4");
     ue.setPassword(TEST_PWD);
     ue.setEnabled(true);
     ue.setAccountNonExpired(true);
@@ -61,7 +59,6 @@ public class LoginNewUserTest extends BaseWebTest {
     $("input[name='password']").setValue(TEST_PWD);
     $("button[type='submit']").click();
 
-    $("a[href*='friends']").click();
     $(".header").should(visible).shouldHave(text("Niffler. The coin keeper."));
   }
 

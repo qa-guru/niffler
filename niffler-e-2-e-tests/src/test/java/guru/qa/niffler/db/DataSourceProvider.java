@@ -1,5 +1,6 @@
 package guru.qa.niffler.db;
 
+import com.p6spy.engine.spy.P6DataSource;
 import guru.qa.niffler.config.Config;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +18,7 @@ public enum DataSourceProvider {
       sds.setURL(serviceDB.getJdbcUrl());
       sds.setUser(Config.getConfig().getDBLogin());
       sds.setPassword(Config.getConfig().getDBPassword());
-      return sds;
+      return new P6DataSource(sds);
     });
   }
 
