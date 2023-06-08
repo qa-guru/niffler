@@ -36,4 +36,14 @@ public class LocalConfig implements Config {
   public String getAuthUrl() {
     return "http://127.0.0.1:9000";
   }
+
+  @Override
+  public String getCurrencyGrpcAddress() {
+    return "localhost";
+  }
+
+  @Override
+  public int getCurrencyGrpcPort() {
+    return 8092;
+  }
 }

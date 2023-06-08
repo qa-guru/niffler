@@ -14,7 +14,7 @@ service NifflerCurrencyService {
 }
 
 message CurrencyResponse {
-  repeated Currency allCurrencies = 1;
+  repeated Currency currencies = 1;
 }
 
 message Currency {

@@ -22,4 +22,8 @@ public interface Config {
   String getFrontUrl();
 
   String getAuthUrl();
+
+  String getCurrencyGrpcAddress();
+
+  int getCurrencyGrpcPort();
 }
