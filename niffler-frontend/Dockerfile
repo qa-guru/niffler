@@ -10,5 +10,5 @@ RUN npm run ${NPM_COMMAND}
 FROM nginx:1.23.3-alpine as release
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/build /usr/share/nginx/html/
-EXPOSE 80
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
