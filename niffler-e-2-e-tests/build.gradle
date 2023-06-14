@@ -74,6 +74,9 @@ dependencies {
     // SOAP
     testImplementation 'com.sun.xml.messaging.saaj:saaj-impl:3.0.1'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    // Wiremock
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.0'
+    testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
 }
 
 test {

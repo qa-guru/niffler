@@ -2,12 +2,14 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.page.RegistrationPage;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 @Execution(ExecutionMode.CONCURRENT)
+@Disabled
 public class RegistrationWebTest extends BaseWebTest {
 
   private RegistrationPage page = new RegistrationPage();

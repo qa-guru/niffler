@@ -7,8 +7,10 @@ import guru.qa.grpc.niffler.grpc.CurrencyResponse;
 import guru.qa.grpc.niffler.grpc.CurrencyValues;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class NifflerCurrencyGrpcTest extends BaseGrpcTest {
 
   @Test

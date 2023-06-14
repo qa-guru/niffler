@@ -3,10 +3,11 @@ package guru.qa.niffler.config;
 public interface Config {
 
   static Config getConfig() {
-    if ("docker".equals(System.getProperty("env"))) {
-      return new DockerConfig();
-    }
-    return new LocalConfig();
+    if ("docker".equals(System.getProperty("test.env"))) {
+      return DockerConfig.INSTANCE;
+    } else if ("local".equals(System.getProperty("test.env"))) {
+      return LocalConfig.INSTANCE;
+    } else throw new IllegalStateException("Can`t read 'test.env' System property");
   }
 
   String getDBHost();

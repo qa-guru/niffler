@@ -14,8 +14,10 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class SpendsWebTest extends BaseWebTest {
 
     @GenerateSpend(

@@ -71,11 +71,6 @@ class GrpcCurrencyServiceTest {
     BigDecimal result = grpcCurrencyService.convertSpendTo(spend, spendCurrency,
         desiredCurrency, testCurrencies);
 
-    BigDecimal expected = BigDecimal.valueOf(expectedResult);
-    Assertions.assertEquals(expected, result);
-  }
-
-  @Test
-  void courseForCurrency() {
+    Assertions.assertEquals(expectedResult, result.doubleValue());
   }
 }
