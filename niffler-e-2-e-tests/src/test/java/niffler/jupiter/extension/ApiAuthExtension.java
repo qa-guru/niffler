@@ -12,7 +12,6 @@ import niffler.config.Config;
 import niffler.jupiter.annotation.ApiLogin;
 import niffler.jupiter.annotation.GenerateUser;
 import niffler.model.rest.UserJson;
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.Cookie;
@@ -47,15 +46,21 @@ public class ApiAuthExtension implements BeforeEachCallback {
             userToLogin.setUsername(apiLoginAnnotation.username());
             userToLogin.setPassword(apiLoginAnnotation.password());
         }
-        apiLogin(userToLogin.getUsername(), userToLogin.getPassword());
-        Selenide.open(CFG.frontUrl());
-        com.codeborne.selenide.SessionStorage sessionStorage = Selenide.sessionStorage();
-        sessionStorage.setItem("codeChallenge", SessionStorageHolder.getInstance().getCodeChallenge());
-        sessionStorage.setItem("id_token", SessionStorageHolder.getInstance().getToken());
-        sessionStorage.setItem("codeVerifier", SessionStorageHolder.getInstance().getCodeVerifier());
+        try {
+            apiLogin(userToLogin.getUsername(), userToLogin.getPassword());
+            Selenide.open(CFG.frontUrl());
+            com.codeborne.selenide.SessionStorage sessionStorage = Selenide.sessionStorage();
+            sessionStorage.setItem("codeChallenge", SessionStorageHolder.getInstance().getCodeChallenge());
+            sessionStorage.setItem("id_token", SessionStorageHolder.getInstance().getToken());
+            sessionStorage.setItem("codeVerifier", SessionStorageHolder.getInstance().getCodeVerifier());
 
-        WebDriverRunner.getWebDriver().manage()
-                .addCookie(new Cookie("JSESSIONID", CookieHolder.getInstance().getCookieValueByPart("JSESSIONID")));
+            WebDriverRunner.getWebDriver().manage()
+                    .addCookie(new Cookie("JSESSIONID", CookieHolder.getInstance().getCookieValueByPart("JSESSIONID")));
+        } catch (Exception e) {
+            CookieHolder.getInstance().flushAll();
+            SessionStorageHolder.getInstance().flushAll();
+            throw e;
+        }
     }
 
     private void apiLogin(String username, String password) throws Exception {

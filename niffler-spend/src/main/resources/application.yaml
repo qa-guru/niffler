@@ -71,11 +71,11 @@ spring:
 grpc:
   client:
     grpcCurrencyClient:
-      address: 'static://niffler-currency:8092'
+      address: 'static://currency.niffler.dc:8092'
       negotiationType: PLAINTEXT
 
 niffler-currency:
-  base-uri: 'http://niffler-currency:8091'
+  base-uri: 'http://currency.niffler.dc:8091'
 niffler-userdata:
-  base-uri: 'http://niffler-userdata:8089'
+  base-uri: 'http://userdata.niffler.dc:8089'
 ---

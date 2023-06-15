@@ -166,7 +166,10 @@ Dmitriis-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.act
 
 #### 3. Выполнить docker login с созданным access_token (в инструкции это описано)
 
-#### 4. Прописать в etc/hosts элиас для Docker-имени фронтенда:  127.0.0.1 niffler-frontend
+#### 4. Прописать в etc/hosts элиас для Docker-имени 
+#### frontend:  127.0.0.1 frontend.niffler.dc, 
+#### auth:      127.0.0.1 auth.niffler.dc
+#### gateway:   127.0.0.1 gateway.niffler.dc
 
 ```posh
 Dmitriis-MacBook-Pro niffler % vi /etc/hosts
@@ -180,7 +183,9 @@ Dmitriis-MacBook-Pro niffler % vi /etc/hosts
 # when the system is booting.  Do not change this entry.
 ##
 127.0.0.1       localhost
-127.0.0.1       niffler-frontend
+127.0.0.1       frontend.niffler.dc
+127.0.0.1       auth.niffler.dc
+127.0.0.1       gateway.niffler.dc
 ```
 
 #### 5. Перейти в корневой каталог проекта

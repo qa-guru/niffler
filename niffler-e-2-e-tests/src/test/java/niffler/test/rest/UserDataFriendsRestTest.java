@@ -12,6 +12,7 @@ import niffler.jupiter.annotation.User;
 import niffler.model.rest.FriendJson;
 import niffler.model.rest.FriendState;
 import niffler.model.rest.UserJson;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -131,16 +132,34 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             incomeInvitations = @IncomeInvitations(count = 1)
     )
     void acceptInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        FriendJson fj = new FriendJson();
-        fj.setUsername(user.getInvitationsJsons().get(0).getUsername());
+        final String currentUser = user.getUsername();
+        final String incomeInvitation = user.getInvitationsJsons().get(0).getUsername();
 
-        final List<UserJson> friends = nus.acceptInvitation(user.getUsername(), fj);
+        FriendJson fj = new FriendJson();
+        fj.setUsername(incomeInvitation);
+
+        final List<UserJson> friends = nus.acceptInvitation(currentUser, fj);
         UserJson friend = friends.get(0);
 
         step("Check friend in response", () -> {
             assertEquals(user.getInvitationsJsons().get(0).getUsername(), friend.getUsername());
             assertEquals(FriendState.FRIEND, friend.getFriendState());
         });
+
+        step("Check that friends present in GET /friends request for both users", () ->
+                Assertions.assertAll(
+                        () -> assertEquals(
+                                1,
+                                nus.friends(currentUser, false).size(),
+                                "Current user should have friend after accepting"
+                        ),
+                        () -> assertEquals(
+                                1,
+                                nus.friends(incomeInvitation, false).size(),
+                                "Target friend should have friend after accepting"
+                        )
+                )
+        );
     }
 
     @Test
@@ -151,12 +170,27 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             incomeInvitations = @IncomeInvitations(count = 1)
     )
     void declineInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        FriendJson fj = new FriendJson();
-        fj.setUsername(user.getInvitationsJsons().get(0).getUsername());
+        final String currentUser = user.getUsername();
+        final String incomeInvitation = user.getInvitationsJsons().get(0).getUsername();
 
-        final List<UserJson> invitations = nus.declineInvitation(user.getUsername(), fj);
+        FriendJson fj = new FriendJson();
+        fj.setUsername(incomeInvitation);
+
+        final List<UserJson> invitations = nus.declineInvitation(currentUser, fj);
 
         step("Check that no invitation present in response", () -> assertTrue(invitations.isEmpty()));
+
+        step("Check that friends request & income invitation removed for both users", () ->
+                Assertions.assertAll(
+                        () -> assertTrue(
+                                nus.invitations(currentUser).isEmpty(),
+                                "Current user should not have invitations after declining"),
+                        () -> assertTrue(
+                                nus.friends(incomeInvitation, true).isEmpty(),
+                                "Inviter should not have pending friend after declining"
+                        )
+                )
+        );
     }
 
     @Test
@@ -168,18 +202,32 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             @GenerateUser
     })
     void addFriendTest(@User(selector = METHOD) UserJson[] users) throws Exception {
-        final UserJson currentUser = users[0];
-        final UserJson friend = users[1];
+        final String currentUser = users[0].getUsername();
+        final String friendWillBeAdded = users[1].getUsername();
 
         FriendJson fj = new FriendJson();
-        fj.setUsername(friend.getUsername());
+        fj.setUsername(friendWillBeAdded);
 
-        final UserJson invitation = nus.addFriend(currentUser.getUsername(), fj);
+        final UserJson invitation = nus.addFriend(currentUser, fj);
 
         step("Check invitation in response", () -> {
-            assertEquals(friend.getUsername(), invitation.getUsername());
+            assertEquals(friendWillBeAdded, invitation.getUsername());
             assertEquals(FriendState.INVITE_SENT, invitation.getFriendState());
         });
+
+        step("Check that friends request & income invitation present for both users", () ->
+                Assertions.assertAll(
+                        () -> assertEquals(
+                                1,
+                                nus.friends(currentUser, true).size(),
+                                "Current user should have pending friend after adding"),
+                        () -> assertEquals(
+                                1,
+                                nus.invitations(friendWillBeAdded).size(),
+                                "Target friend should have 1 invitation"
+                        )
+                )
+        );
     }
 
     @Test
@@ -190,10 +238,23 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             friends = @Friends(count = 1)
     )
     void removeFriendTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<UserJson> friends = nus.removeFriend(user.getUsername(), user.getFriendsJsons().get(0).getUsername());
+        final String currentUsername = user.getUsername();
+        final String friendUsername = user.getFriendsJsons().get(0).getUsername();
+        final List<UserJson> friends = nus.removeFriend(currentUsername, friendUsername);
 
-        step("Check that no friends present in response", () -> {
-            assertTrue(friends.isEmpty());
-        });
+        step("Check that no friends present in response", () -> assertTrue(friends.isEmpty()));
+
+        step("Check that no friends present in GET /friends request for both users", () ->
+                Assertions.assertAll(
+                        () -> assertTrue(
+                                nus.friends(currentUsername, false).isEmpty(),
+                                "Current user should not have friend after removing"
+                        ),
+                        () -> assertTrue(
+                                nus.friends(friendUsername, false).isEmpty(),
+                                "Target friend should not have friend after removing"
+                        )
+                )
+        );
     }
 }

@@ -8,9 +8,8 @@ echo '### Gradle version ###'
 gradle --version
 
 docker-compose -f docker-compose.test.yml down
-#docker stop $(docker ps -a -q)
-#docker rm $(docker ps -a -q)
-docker ps -a
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
 docker rmi -f $(docker images | grep 'niffler')
 
 ARCH=$(uname -m)
