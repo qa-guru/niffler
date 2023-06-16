@@ -54,7 +54,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: 'http://niffler-auth:9000'
+          issuer-uri: 'https://auth.niffler.qa.guru'
 
 grpc:
   client:
@@ -63,11 +63,11 @@ grpc:
       negotiationType: PLAINTEXT
 
 niffler-currency:
-  base-uri: 'http:/niffler-currency:8091'
+  base-uri: 'http://niffler-currency:8091'
 niffler-userdata:
   base-uri: 'http://niffler-userdata:8089'
 niffler-spend:
   base-uri: 'http://niffler-spend:8093'
 niffler-front:
-  base-uri: 'http://niffler-frontend'
+  base-uri: 'https://niffler.qa.guru'
 ---
