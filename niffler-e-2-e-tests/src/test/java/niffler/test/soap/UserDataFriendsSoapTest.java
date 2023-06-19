@@ -24,6 +24,7 @@ import niffler.userdata.wsdl.InvitationsResponse;
 import niffler.userdata.wsdl.RemoveFriendRequest;
 import niffler.userdata.wsdl.RemoveFriendResponse;
 import niffler.ws.NifflerUserdataWsService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -53,9 +54,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListWithoutInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        FriendsRequest fr = new FriendsRequest();
-        fr.setUsername(user.getUsername());
-        fr.setIncludePending(false);
+        FriendsRequest fr = friendsRequest(user.getUsername(), false);
 
         final FriendsResponse friendsResponse = nus.friendsRequest(fr);
 
@@ -92,9 +91,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListWithInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        FriendsRequest fr = new FriendsRequest();
-        fr.setUsername(user.getUsername());
-        fr.setIncludePending(true);
+        FriendsRequest fr = friendsRequest(user.getUsername(), true);
 
         final FriendsResponse friendsResponse = nus.friendsRequest(fr);
 
@@ -160,11 +157,10 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             incomeInvitations = @IncomeInvitations(count = 1)
     )
     void acceptInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        AcceptInvitationRequest air = new AcceptInvitationRequest();
-        air.setUsername(user.getUsername());
-        Friend fr = new Friend();
-        fr.setUsername(user.getInvitationsJsons().get(0).getUsername());
-        air.setInvitation(fr);
+        final String currentUser = user.getUsername();
+        final String incomeInvitation = user.getInvitationsJsons().get(0).getUsername();
+
+        AcceptInvitationRequest air = acceptInvitationRequest(currentUser, incomeInvitation);
 
         final AcceptInvitationResponse acceptInvitationResponse = nus.acceptInvitationRequest(air);
 
@@ -174,6 +170,25 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             assertEquals(user.getInvitationsJsons().get(0).getUsername(), friend.getUsername());
             assertEquals(FriendState.FRIEND, friend.getFriendState());
         });
+
+        step("Check that friends present in GET /friends request for both users", () ->
+                Assertions.assertAll(
+                        () -> assertEquals(
+                                1,
+                                nus.friendsRequest(friendsRequest(currentUser, false))
+                                        .getUser()
+                                        .size(),
+                                "Current user should have friend after accepting"
+                        ),
+                        () -> assertEquals(
+                                1,
+                                nus.friendsRequest(friendsRequest(incomeInvitation, false))
+                                        .getUser()
+                                        .size(),
+                                "Target friend should have friend after accepting"
+                        )
+                )
+        );
     }
 
     @Test
@@ -184,17 +199,32 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             incomeInvitations = @IncomeInvitations(count = 1)
     )
     void declineInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        DeclineInvitationRequest dir = new DeclineInvitationRequest();
-        dir.setUsername(user.getUsername());
-        Friend fr = new Friend();
-        fr.setUsername(user.getInvitationsJsons().get(0).getUsername());
-        dir.setInvitation(fr);
+        final String currentUser = user.getUsername();
+        final String incomeInvitation = user.getInvitationsJsons().get(0).getUsername();
+
+        DeclineInvitationRequest dir = declineInvitationRequest(currentUser, incomeInvitation);
 
         final DeclineInvitationResponse declineInvitationResponse = nus.declineInvitationRequest(dir);
 
         List<niffler.userdata.wsdl.User> invitations = declineInvitationResponse.getUser();
 
         step("Check that no invitation present in response", () -> assertTrue(invitations.isEmpty()));
+
+        step("Check that friends request & income invitation removed for both users", () ->
+                Assertions.assertAll(
+                        () -> assertTrue(
+                                nus.invitationsRequest(invitationsRequest(currentUser))
+                                        .getUser()
+                                        .isEmpty(),
+                                "Current user should not have invitations after declining"),
+                        () -> assertTrue(
+                                nus.friendsRequest(friendsRequest(incomeInvitation, true))
+                                        .getUser()
+                                        .isEmpty(),
+                                "Inviter should not have pending friend after declining"
+                        )
+                )
+        );
     }
 
     @Test
@@ -206,23 +236,37 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             @GenerateUser
     })
     void addFriendTest(@User(selector = METHOD) UserJson[] users) throws Exception {
-        final UserJson currentUser = users[0];
-        final UserJson friend = users[1];
+        final String currentUser = users[0].getUsername();
+        final String friendWillBeAdded = users[1].getUsername();
 
-        AddFriendRequest afr = new AddFriendRequest();
-        afr.setUsername(currentUser.getUsername());
-        Friend fr = new Friend();
-        fr.setUsername(friend.getUsername());
-        afr.setFriend(fr);
+        AddFriendRequest afr = addFriendRequest(currentUser, friendWillBeAdded);
 
         final AddFriendResponse addFriendResponse = nus.addFriendRequest(afr);
 
         niffler.userdata.wsdl.User invitation = addFriendResponse.getUser();
 
         step("Check invitation in response", () -> {
-            assertEquals(friend.getUsername(), invitation.getUsername());
+            assertEquals(friendWillBeAdded, invitation.getUsername());
             assertEquals(FriendState.INVITE_SENT, invitation.getFriendState());
         });
+
+        step("Check that friends request & income invitation present for both users", () ->
+                Assertions.assertAll(
+                        () -> assertEquals(
+                                1,
+                                nus.friendsRequest(friendsRequest(currentUser, true))
+                                        .getUser()
+                                        .size(),
+                                "Current user should have pending friend after adding"),
+                        () -> assertEquals(
+                                1,
+                                nus.invitationsRequest(invitationsRequest(friendWillBeAdded))
+                                        .getUser()
+                                        .size(),
+                                "Target friend should have 1 invitation"
+                        )
+                )
+        );
     }
 
     @Test
@@ -233,6 +277,9 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             friends = @Friends(count = 1)
     )
     void removeFriendTest(@User(selector = METHOD) UserJson user) throws Exception {
+        final String currentUsername = user.getUsername();
+        final String friendUsername = user.getFriendsJsons().get(0).getUsername();
+
         RemoveFriendRequest rfr = new RemoveFriendRequest();
         rfr.setUsername(user.getUsername());
         rfr.setFriendUsername(user.getFriendsJsons().get(0).getUsername());
@@ -241,8 +288,63 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         List<niffler.userdata.wsdl.User> friends = removeFriendResponse.getUser();
 
-        step("Check that no friends present in response", () -> {
-            assertTrue(friends.isEmpty());
-        });
+        step("Check that no friends present in response", () -> assertTrue(friends.isEmpty()));
+
+        step("Check that no friends present in GET /friends request for both users", () ->
+                Assertions.assertAll(
+                        () -> assertTrue(
+                                nus.friendsRequest(friendsRequest(currentUsername, false))
+                                        .getUser()
+                                        .isEmpty(),
+                                "Current user should not have friend after removing"
+                        ),
+                        () -> assertTrue(
+                                nus.friendsRequest(friendsRequest(friendUsername, false))
+                                        .getUser()
+                                        .isEmpty(),
+                                "Target friend should not have friend after removing"
+                        )
+                )
+        );
+    }
+
+    private FriendsRequest friendsRequest(String username, boolean includePending) {
+        FriendsRequest fr = new FriendsRequest();
+        fr.setUsername(username);
+        fr.setIncludePending(includePending);
+        return fr;
+    }
+
+    private AddFriendRequest addFriendRequest(String username, String friendUsername) {
+        AddFriendRequest afr = new AddFriendRequest();
+        afr.setUsername(username);
+        Friend fr = new Friend();
+        fr.setUsername(friendUsername);
+        afr.setFriend(fr);
+        return afr;
+    }
+
+    private InvitationsRequest invitationsRequest(String username) {
+        InvitationsRequest ir = new InvitationsRequest();
+        ir.setUsername(username);
+        return ir;
+    }
+
+    private DeclineInvitationRequest declineInvitationRequest(String username, String inviterUsername) {
+        DeclineInvitationRequest dir = new DeclineInvitationRequest();
+        dir.setUsername(username);
+        Friend fr = new Friend();
+        fr.setUsername(inviterUsername);
+        dir.setInvitation(fr);
+        return dir;
+    }
+
+    private AcceptInvitationRequest acceptInvitationRequest(String username, String inviterUsername) {
+        AcceptInvitationRequest air = new AcceptInvitationRequest();
+        air.setUsername(username);
+        Friend fr = new Friend();
+        fr.setUsername(inviterUsername);
+        air.setInvitation(fr);
+        return air;
     }
 }

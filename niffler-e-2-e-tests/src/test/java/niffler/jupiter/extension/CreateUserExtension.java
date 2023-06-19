@@ -54,7 +54,7 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
     public void beforeEach(ExtensionContext context) throws Exception {
         final String testId = getTestId(context);
         Map<Selector, List<GenerateUser>> userAnnotations = extractGenerateUserAnnotations(context);
-        for (Map.Entry<Selector,  List<GenerateUser>> entry : userAnnotations.entrySet()) {
+        for (Map.Entry<Selector, List<GenerateUser>> entry : userAnnotations.entrySet()) {
             UserJson[] resultCollector = new UserJson[entry.getValue().size()];
             List<GenerateUser> value = entry.getValue();
             for (int i = 0; i < value.size(); i++) {

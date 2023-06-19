@@ -4,6 +4,11 @@ import com.codeborne.selenide.Configuration;
 
 public class DockerConfig implements Config {
 
+    static final DockerConfig INSTANCE = new DockerConfig();
+
+    private DockerConfig() {
+    }
+
     static {
         Configuration.browserSize = "1920x1200";
         Configuration.remote = "http://selenoid:4444/wd/hub";
@@ -12,22 +17,22 @@ public class DockerConfig implements Config {
 
     @Override
     public String frontUrl() {
-        return "http://niffler-frontend/";
+        return "http://frontend.niffler.dc/";
     }
 
     @Override
     public String gatewayUrl() {
-        return "http://niffler-gateway:8090/";
+        return "http://gateway.niffler.dc:8090/";
     }
 
     @Override
     public String userdataUrl() {
-        return "http://niffler-userdata:8089/";
+        return "http://userdata.niffler.dc:8089/";
     }
 
     @Override
     public String currencyGrpcAddress() {
-        return "niffler-currency";
+        return "currency.niffler.dc";
     }
 
     @Override
@@ -37,12 +42,12 @@ public class DockerConfig implements Config {
 
     @Override
     public String spendUrl() {
-        return "http://niffler-spend:8093/";
+        return "http://spend.niffler.dc:8093/";
     }
 
     @Override
     public String authUrl() {
-        return "http://niffler-auth:9000/";
+        return "http://auth.niffler.dc:9000/";
     }
 
     @Override

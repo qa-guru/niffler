@@ -68,7 +68,7 @@ spring:
     hibernate:
       ddl-auto: validate
 niffler-front:
-  base-uri: 'http://niffler-frontend'
+  base-uri: 'http://frontend.niffler.dc'
 niffler-auth:
-  base-uri: 'http://niffler-auth:9000'
+  base-uri: 'http://auth.niffler.dc:9000'
 ---

@@ -10,9 +10,9 @@ public interface Config {
 
     static Config getConfig() {
         if ("docker".equals(System.getProperty("test.env"))) {
-            return new DockerConfig();
+            return DockerConfig.INSTANCE;
         } else if ("local".equals(System.getProperty("test.env"))) {
-            return new LocalConfig();
+            return LocalConfig.INSTANCE;
         } else {
             throw new IllegalStateException();
         }

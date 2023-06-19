@@ -1,5 +1,6 @@
 package niffler.data;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -97,7 +98,7 @@ public class UserEntity {
         this.photo = photo;
     }
 
-    public List<FriendsEntity> getFriends() {
+    public @Nonnull List<FriendsEntity> getFriends() {
         return friends;
     }
 
@@ -105,7 +106,7 @@ public class UserEntity {
         this.friends = friends;
     }
 
-    public List<FriendsEntity> getInvites() {
+    public @Nonnull List<FriendsEntity> getInvites() {
         return invites;
     }
 
