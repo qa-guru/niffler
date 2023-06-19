@@ -6,9 +6,8 @@ echo '### Gradle version ###'
 gradle --version
 
 docker-compose down
-#docker stop $(docker ps -a -q)
-#docker rm $(docker ps -a -q)
-docker ps -a
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
 docker rmi -f $(docker images | grep 'niffler')
 
 if [[ $1 = "gql" ]]; then a="$c"; else a="$d"; fi

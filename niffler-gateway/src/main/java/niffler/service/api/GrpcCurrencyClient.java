@@ -28,7 +28,7 @@ public class GrpcCurrencyClient {
     public @Nonnull
     List<CurrencyJson> getAllCurrencies() {
         try {
-            return nifflerCurrencyServiceStub.getAllCurrencies(EMPTY).getCurrenciesList()
+            return nifflerCurrencyServiceStub.getAllCurrencies(EMPTY).getAllCurrenciesList()
                     .stream().map(CurrencyJson::fromGrpcMessage)
                     .collect(Collectors.toList());
         } catch (StatusRuntimeException e) {

@@ -4,11 +4,11 @@ import com.codeborne.selenide.SelenideElement;
 
 public abstract class BaseComponent<T extends BaseComponent> {
 
-  protected final SelenideElement self;
+    protected final SelenideElement self;
 
-  public BaseComponent(SelenideElement self) {
-    this.self = self;
-  }
+    public BaseComponent(SelenideElement self) {
+        this.self = self;
+    }
 
-  public abstract T checkThatComponentDisplayed();
+    public abstract T checkThatComponentDisplayed();
 }

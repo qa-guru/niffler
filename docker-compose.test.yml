@@ -25,8 +25,8 @@ services:
       - test-network
     dns_search: .
 
-  niffler-auth:
-    container_name: niffler-auth
+  auth.niffler.dc:
+    container_name: auth.niffler.dc
     image: dtuchs/niffler-auth:latest
     ports:
       - "9000:9000"
@@ -42,8 +42,8 @@ services:
       - test-network
     dns_search: .
 
-  niffler-currency:
-    container_name: niffler-currency
+  currency.niffler.dc:
+    container_name: currency.niffler.dc
     image: dtuchs/niffler-currency:latest
     expose:
       - "8091"
@@ -55,20 +55,20 @@ services:
       - test-network
     dns_search: .
 
-  niffler-gateway:
-    container_name: niffler-gateway
+  gateway.niffler.dc:
+    container_name: gateway.niffler.dc
     image: dtuchs/niffler-gateway:latest
     ports:
       - "8090:8090"
     depends_on:
-      niffler-auth:
+      auth.niffler.dc:
         condition: service_started
     networks:
       - test-network
     dns_search: .
 
-  niffler-spend:
-    container_name: niffler-spend
+  spend.niffler.dc:
+    container_name: spend.niffler.dc
     image: dtuchs/niffler-spend:latest
     expose:
       - "8093"
@@ -79,8 +79,8 @@ services:
       - test-network
     dns_search: .
 
-  niffler-userdata:
-    container_name: niffler-userdata
+  userdata.niffler.dc:
+    container_name: userdata.niffler.dc
     image: dtuchs/niffler-userdata:latest
     expose:
       - "8089"
@@ -91,13 +91,13 @@ services:
       - test-network
     dns_search: .
 
-  niffler-frontend:
-    container_name: niffler-frontend
+  frontend.niffler.dc:
+    container_name: frontend.niffler.dc
     image: dtuchs/niffler-frontend-test:latest
     ports:
       - "80:80"
     depends_on:
-      niffler-gateway:
+      gateway.niffler.dc:
         condition: service_started
     networks:
       - test-network
@@ -105,7 +105,8 @@ services:
 
   selenoid:
     container_name: selenoid
-    image: aerokube/selenoid:1.10.10
+    image: aerokube/selenoid:1.10.12
+    platform: "${ARCH}"
     volumes:
       - ./selenoid:/etc/selenoid
       - /var/run/docker.sock:/var/run/docker.sock
@@ -134,7 +135,7 @@ services:
     container_name: niffler-e-2-e
     image: dtuchs/niffler-e-2-e-tests
     depends_on:
-      niffler-frontend:
+      frontend.niffler.dc:
         condition: service_started
     networks:
       - test-network

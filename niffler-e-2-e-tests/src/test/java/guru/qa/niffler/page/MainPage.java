@@ -4,9 +4,9 @@ import guru.qa.niffler.page.component.Header;
 
 public class MainPage {
 
-  private final Header header = new Header();
+    private final Header header = new Header();
 
-  public Header getHeader() {
-    return header;
-  }
+    public Header getHeader() {
+        return header;
+    }
 }

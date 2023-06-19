@@ -21,8 +21,8 @@ services:
       - niffler-network
     dns_search: .
 
-  niffler-auth:
-    container_name: niffler-auth
+  auth.niffler.dc:
+    container_name: auth.niffler.dc
     image: dtuchs/niffler-auth:latest
     ports:
       - "9000:9000"
@@ -39,8 +39,8 @@ services:
       - niffler-network
     dns_search: .
 
-  niffler-currency:
-    container_name: niffler-currency
+  currency.niffler.dc:
+    container_name: currency.niffler.dc
     image: dtuchs/niffler-currency:latest
     expose:
       - "8091"
@@ -53,8 +53,8 @@ services:
       - niffler-network
     dns_search: .
 
-  niffler-gateway:
-    container_name: niffler-gateway
+  gateway.niffler.dc:
+    container_name: gateway.niffler.dc
     image: dtuchs/niffler-gateway:latest
     ports:
       - "8090:8090"
@@ -65,13 +65,13 @@ services:
       retries: 10
     restart: always
     depends_on:
-      - niffler-auth
+      - auth.niffler.dc
     networks:
       - niffler-network
     dns_search: .
 
-  niffler-spend:
-    container_name: niffler-spend
+  spend.niffler.dc:
+    container_name: spend.niffler.dc
     image: dtuchs/niffler-spend:latest
     expose:
       - "8093"
@@ -83,8 +83,8 @@ services:
       - niffler-network
     dns_search: .
 
-  niffler-userdata:
-    container_name: niffler-userdata
+  userdata.niffler.dc:
+    container_name: userdata.niffler.dc
     image: dtuchs/niffler-userdata:latest
     expose:
       - "8089"
@@ -96,14 +96,14 @@ services:
       - niffler-network
     dns_search: .
 
-  niffler-frontend:
-    container_name: niffler-frontend
+  frontend.niffler.dc:
+    container_name: frontend.niffler.dc
     image: dtuchs/niffler-frontend:latest
     ports:
       - "80:80"
     restart: always
     depends_on:
-      niffler-gateway:
+      gateway.niffler.dc:
         condition: service_healthy
     networks:
       - niffler-network

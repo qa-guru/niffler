@@ -12,42 +12,42 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 @Disabled
 public class RegistrationWebTest extends BaseWebTest {
 
-  private RegistrationPage page = new RegistrationPage();
+    private final RegistrationPage page = new RegistrationPage();
 
-  @Test
-  @ResourceLock("TEST_LOCK")
-  public void errorMessageShouldBeVisibleInCaseThatPasswordsAreDifferent() {
-    Selenide.open(RegistrationPage.URL);
+    @Test
+    @ResourceLock("TEST_LOCK")
+    public void errorMessageShouldBeVisibleInCaseThatPasswordsAreDifferent() {
+        Selenide.open(RegistrationPage.URL);
 
-    page.checkThatPageLoaded()
-        .fillRegistrationForm("wdfsdasfs", "123", "12345")
-        .checkErrorMessage("Passwords should be equal");
-  }
+        page.checkThatPageLoaded()
+                .fillRegistrationForm("wdfsdasfs", "123", "12345")
+                .checkErrorMessage("Passwords should be equal");
+    }
 
-  @Test
-  @ResourceLock("TEST_LOCK")
-  public void errorMessageShouldBeVisibleInCaseThatUsernameNotUniq() {
-    final String username = "dima";
+    @Test
+    @ResourceLock("TEST_LOCK")
+    public void errorMessageShouldBeVisibleInCaseThatUsernameNotUniq() {
+        final String username = "dima";
 
-    Selenide.open(RegistrationPage.URL);
-    page.checkThatPageLoaded()
-        .fillRegistrationForm(username, "12345", "12345")
-        .checkErrorMessage("Username `" + username + "` already exists");
-  }
+        Selenide.open(CFG.getFrontUrl() + RegistrationPage.URL);
+        page.checkThatPageLoaded()
+                .fillRegistrationForm(username, "12345", "12345")
+                .checkErrorMessage("Username `" + username + "` already exists");
+    }
 
-  @Test
-  public void errorMessageShouldBeVisibleInCaseThatPasswordsLessThan3Symbols() {
-    Selenide.open(RegistrationPage.URL);
-    page.checkThatPageLoaded()
-        .fillRegistrationForm("wdfsdadfdaasfs", "1", "1")
-        .checkErrorMessage("Allowed password length should be from 3 to 12 characters");
-  }
+    @Test
+    public void errorMessageShouldBeVisibleInCaseThatPasswordsLessThan3Symbols() {
+        Selenide.open(CFG.getFrontUrl() + RegistrationPage.URL);
+        page.checkThatPageLoaded()
+                .fillRegistrationForm("wdfsdadfdaasfs", "1", "1")
+                .checkErrorMessage("Allowed password length should be from 3 to 12 characters");
+    }
 
-  @Test
-  public void errorMessageShouldBeVisibleInCaseThatUsernameLessThan3Symbols() {
-    Selenide.open(RegistrationPage.URL);
-    page.checkThatPageLoaded()
-        .fillRegistrationForm("g", "12345", "12345")
-        .checkErrorMessage("Allowed username length should be from 3 to 50 characters");
-  }
+    @Test
+    public void errorMessageShouldBeVisibleInCaseThatUsernameLessThan3Symbols() {
+        Selenide.open(CFG.getFrontUrl() + RegistrationPage.URL);
+        page.checkThatPageLoaded()
+                .fillRegistrationForm("g", "12345", "12345")
+                .checkErrorMessage("Allowed username length should be from 3 to 50 characters");
+    }
 }

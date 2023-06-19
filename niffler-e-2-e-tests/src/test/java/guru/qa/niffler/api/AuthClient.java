@@ -2,9 +2,9 @@ package guru.qa.niffler.api;
 
 public interface AuthClient {
 
-  void authorizePreRequest();
+    void authorizePreRequest();
 
-  void login(String username, String password);
+    void login(String username, String password);
 
-  String getToken();
+    String getToken();
 }

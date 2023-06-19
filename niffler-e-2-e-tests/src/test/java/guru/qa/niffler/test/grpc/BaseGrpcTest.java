@@ -12,18 +12,18 @@ import io.qameta.allure.grpc.AllureGrpc;
 @GrpcTest
 public class BaseGrpcTest {
 
-  protected static final Config CFG = Config.getConfig();
-  protected static final Empty EMPTY = Empty.getDefaultInstance();
-  private static Channel channel;
+    protected static final Config CFG = Config.getConfig();
+    protected static final Empty EMPTY = Empty.getDefaultInstance();
+    private static Channel channel;
 
-  static {
-    channel = ManagedChannelBuilder
-        .forAddress(CFG.getCurrencyGrpcAddress(), CFG.getCurrencyGrpcPort())
-        .intercept(new AllureGrpc())
-        .usePlaintext()
-        .build();
-  }
+    static {
+        channel = ManagedChannelBuilder
+                .forAddress(CFG.getCurrencyGrpcAddress(), CFG.getCurrencyGrpcPort())
+                .intercept(new AllureGrpc())
+                .usePlaintext()
+                .build();
+    }
 
-  protected final NifflerCurrencyServiceBlockingStub currencyStub
-      = NifflerCurrencyServiceGrpc.newBlockingStub(channel);
+    protected final NifflerCurrencyServiceBlockingStub currencyStub
+            = NifflerCurrencyServiceGrpc.newBlockingStub(channel);
 }

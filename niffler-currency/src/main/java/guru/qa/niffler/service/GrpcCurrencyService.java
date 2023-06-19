@@ -12,11 +12,12 @@ import guru.qa.niffler.data.CurrencyEntity;
 import guru.qa.niffler.data.repository.CurrencyRepository;
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.Nonnull;
+import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import net.devh.boot.grpc.server.service.GrpcService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @GrpcService
 public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurrencyServiceImplBase {
@@ -33,7 +34,7 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
         List<CurrencyEntity> all = currencyRepository.findAll();
 
         CurrencyResponse response = CurrencyResponse.newBuilder()
-                .addAllCurrencies(all.stream().map(e -> Currency.newBuilder()
+                .addAllAllCurrencies(all.stream().map(e -> Currency.newBuilder()
                                 .setCurrency(CurrencyValues.valueOf(e.getCurrency().name()))
                                 .setCurrencyRate(e.getCurrencyRate())
                                 .build())

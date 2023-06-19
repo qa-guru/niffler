@@ -1,58 +1,63 @@
 package guru.qa.niffler.test.web;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
+import guru.qa.niffler.jupiter.annotation.GenerateUserInAuthDb;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import io.qameta.allure.AllureId;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
+import static guru.qa.niffler.condition.SpendCondition.spends;
 
 @Disabled
 public class SpendsWebTest extends BaseWebTest {
 
+    private static final String TEST_USERNAME = "dima";
+    private static final String TEST_PWD = "12345";
+
+    @GenerateUserInAuthDb(username = TEST_USERNAME, password = TEST_PWD)
     @GenerateSpend(
-        username = "dima",
-        description = "QA GURU ADVANCED VOL 2",
-        currency = CurrencyValues.RUB,
-        amount = 52000.00,
-        category = "Обучение"
+            username = TEST_USERNAME,
+            description = "QA GURU ADVANCED VOL 2",
+            currency = CurrencyValues.RUB,
+            amount = 52000.00,
+            category = "Обучение"
     )
-    @ApiLogin(username = "dima", password = "12345")
+    @ApiLogin(username = TEST_USERNAME, password = TEST_PWD)
     @AllureId("101")
     @Test
     void spendShouldBeDeletedByActionInTable(UserJson user, SpendJson spend) {
         Selenide.open(CFG.getFrontUrl() + "/main");
 
         $(".spendings-table tbody").$$("tr")
-            .find(text(spend.getDescription()))
-            .$$("td").first()
-            .scrollTo()
-            .click();
+                .find(text(spend.getDescription()))
+                .$$("td").first()
+                .scrollTo()
+                .click();
 
         $$(".button_type_small").find(text("Delete selected"))
-            .click();
+                .click();
 
         $(".spendings-table tbody")
-            .$$("tr")
-            .shouldHave(CollectionCondition.size(0));
+                .$$("tr")
+                .shouldHave(CollectionCondition.size(0));
     }
 
+    @GenerateUserInAuthDb(username = TEST_USERNAME, password = TEST_PWD)
     @GenerateSpend(
-        username = "dima",
-        description = "QA GURU ADVANCED VOL 2",
-        currency = CurrencyValues.RUB,
-        amount = 52000.00,
-        category = "Обучение"
+            username = "dima",
+            description = "QA GURU ADVANCED VOL 2",
+            currency = CurrencyValues.RUB,
+            amount = 52000.00,
+            category = "Обучение"
     )
     @ApiLogin(username = "dima", password = "12345")
     @AllureId("101")
@@ -61,19 +66,7 @@ public class SpendsWebTest extends BaseWebTest {
         Selenide.open(CFG.getFrontUrl() + "/main");
 
         $(".spendings-table tbody")
-            .$$("tr")
-//            .shouldHave(spends(spend));
-            .shouldHave(CollectionCondition.size(1));
-    }
-
-
-    void checkThatSpendEqual(SelenideElement spendRow, SpendJson spend) {
-        Assertions.assertEquals(spend.getSpendDate().toString(),
-            spendRow.$$("td").get(1).getText());
-        Assertions.assertEquals(spend.getAmount().toString(), spendRow.$$("td").get(2).getText());
-        Assertions.assertEquals(spend.getCurrency().toString(), spendRow.$$("td").get(3).getText());
-        Assertions.assertEquals(spend.getCategory().toString(), spendRow.$$("td").get(4).getText());
-        Assertions.assertEquals(spend.getDescription().toString(),
-            spendRow.$$("td").get(5).getText());
+                .$$("tr")
+                .shouldHave(spends(spend));
     }
 }
