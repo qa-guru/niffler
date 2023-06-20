@@ -43,6 +43,11 @@ spring:
   config:
     activate:
       on-profile: 'local'
+  kafka:
+    bootstrap-servers: 'localhost:9092'
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
   datasource:
     url: 'jdbc:postgresql://localhost:5432/niffler-userdata'
   jpa:
@@ -53,6 +58,11 @@ spring:
   config:
     activate:
       on-profile: 'docker'
+  kafka:
+    bootstrap-servers: 'kafka:9092'
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
   datasource:
     url: 'jdbc:postgresql://niffler-all-db:5432/niffler-userdata'
   jpa:

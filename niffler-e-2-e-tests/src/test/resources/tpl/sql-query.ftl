@@ -1,5 +1,5 @@
 <html>
-<#-- @ftlvariable name="data" type="niffler.data.logging.SqlRequestAttachment" -->
+<#-- @ftlvariable name="data" type="guru.qa.niffler.data.logging.SqlRequestAttachment" -->
 <head>
     <meta http-equiv="content-type" content="text/html; charset = UTF-8">
     <script src="https://yastatic.net/jquery/2.2.3/jquery.min.js" crossorigin="anonymous"></script>

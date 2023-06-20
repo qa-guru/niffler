@@ -51,19 +51,23 @@ Dmitriis-MacBook-Pro ~ % docker -v
 Docker version 20.10.14, build a224086
 ```
 
-#### 2. Спуллить контейнер postgres версии 15.1
+#### 2. Спуллить контейнер postgres:15.1, zookeeper и kafka версии 7.3.2
 
 ```posh
 docker pull postgres:15.1
+docker pull confluentinc/cp-zookeeper:7.3.2
+docker pull confluentinc/cp-kafka:7.3.2
 ```
 
 После `pull` вы увидите спуленный image командой `docker images`
 
 ```posh
 mitriis-MacBook-Pro ~ % docker images            
-REPOSITORY                 TAG       IMAGE ID       CREATED        SIZE
-postgres                   15.1      9f3ec01f884d   10 days ago    379MB
-postgres                   latest    9f3ec01f884d   10 days ago    379MB
+REPOSITORY                 TAG              IMAGE ID       CREATED         SIZE
+postgres                   15.1             9f3ec01f884d   10 days ago     379MB
+confluentinc/cp-kafka      7.3.2            db97697f6e28   12 months ago   457MB
+confluentinc/cp-zookeeper  7.3.2            6fe5551964f5   7 years ago     451MB
+
 ```
 
 #### 3. Создать volume для сохранения данных из БД в docker на вашем компьютере
@@ -72,11 +76,18 @@ postgres                   latest    9f3ec01f884d   10 days ago    379MB
 docker volume create pgdata
 ```
 
-#### 4. Запустить БД командой
+#### 4. Запустить БД, zookeeper и kafka командой
 
 ```posh
 docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -d postgres:15.1
+docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -e ZOOKEEPER_TICK_TIME=2000 -p 2181:2181 -d confluentinc/cp-zookeeper
+Zookeeper_Server_IP=$(docker inspect zookeeper --format='{{ .NetworkSettings.IPAddress }}')
+docker run --name=kafka -e KAFKA_BROKER_ID=1 -e KAFKA_ZOOKEEPER_CONNECT=${Zookeeper_Server_IP}:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 -p 9092:9092 -d confluentinc/cp-kafka:7.3.2
 ```
+
+
+
+https://github.com/confluentinc/cp-docker-images/issues/801#issuecomment-692085103
 
 #### 5. Установить одну из программ для визуальной работы с Postgres
 

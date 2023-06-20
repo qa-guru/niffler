@@ -21,6 +21,28 @@ services:
       - niffler-network
     dns_search: .
 
+  zookeeper:
+    container_name: zookeeper
+    image: wurstmeister/zookeeper:3.4.6
+    ports:
+      - "2181:2181"
+    networks:
+      - niffler-network
+
+  kafka:
+    container_name: kafka
+    image: wurstmeister/kafka:2.13-2.8.1
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+    networks:
+      - niffler-network
+
   auth.niffler.dc:
     container_name: auth.niffler.dc
     image: dtuchs/niffler-auth:latest
