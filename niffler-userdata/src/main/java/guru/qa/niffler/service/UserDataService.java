@@ -39,15 +39,19 @@ public class UserDataService {
         this.userRepository = userRepository;
     }
 
-    @KafkaListener(topics = "users")
+    @KafkaListener(topics = "users", groupId = "userdata")
     public void listener(@Payload UserJson user, ConsumerRecord<String, UserJson> cr) {
-        LOG.info("Kafka topic [users] received message: " + user.getUsername());
-        LOG.info(cr.toString());
+        LOG.info("### Kafka topic [users] received message: " + user.getUsername());
+        LOG.info("### Kafka consumer record: " + cr.toString());
         UserEntity userDataEntity = new UserEntity();
         userDataEntity.setUsername(user.getUsername());
         userDataEntity.setCurrency(DEFAULT_USER_CURRENCY);
-        userRepository.save(userDataEntity);
-        LOG.info("User successfully saved to database");
+        UserEntity userEntity = userRepository.save(userDataEntity);
+        LOG.info(String.format(
+                "### User '%s' successfully saved to database with id: %s",
+                user.getUsername(),
+                userEntity.getId()
+        ));
     }
 
     public @Nonnull
@@ -61,7 +65,6 @@ public class UserDataService {
         userEntity.setCurrency(user.getCurrency());
         userEntity.setPhoto(user.getPhoto() != null ? user.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
         UserEntity saved = userRepository.save(userEntity);
-
         return UserJson.fromEntity(saved);
     }
 

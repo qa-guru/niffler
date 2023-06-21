@@ -1,5 +1,6 @@
 package guru.qa.niffler.jupiter.extension;
 
+import com.google.common.base.Stopwatch;
 import guru.qa.niffler.api.NifflerAuthClient;
 import guru.qa.niffler.api.NifflerSpendClient;
 import guru.qa.niffler.api.NifflerUserdataClient;
@@ -34,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static guru.qa.niffler.utils.DataUtils.generateRandomPassword;
 import static guru.qa.niffler.utils.DataUtils.generateRandomUsername;
@@ -204,13 +206,25 @@ public class CreateUserExtension implements BeforeEachCallback, ParameterResolve
     }
 
     private UserJson apiRegister(String username, String password) throws Exception {
-        authClient.authorize();
         Response<Void> res = authClient.register(username, password);
         if (res.code() != 201) {
             throw new RuntimeException("User is not registered");
         }
-        UserJson currentUser = userdataClient.getCurrentUser(username);
+        UserJson currentUser = waitWhileUserToBeConsumed(username, 10000L);
         currentUser.setPassword(password);
         return currentUser;
+    }
+
+    private UserJson waitWhileUserToBeConsumed(String username, long maxWaitTime) throws Exception {
+        Stopwatch sw = Stopwatch.createStarted();
+        while (sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
+            UserJson userJson = userdataClient.getCurrentUser(username);
+            if (userJson != null) {
+                return userJson;
+            } else {
+                Thread.sleep(100);
+            }
+        }
+        throw new IllegalStateException("Can`t obtain user from niffler-userdata");
     }
 }

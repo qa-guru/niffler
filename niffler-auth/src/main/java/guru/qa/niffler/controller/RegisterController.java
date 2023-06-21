@@ -71,7 +71,7 @@ public class RegisterController {
                 UserJson user = new UserJson();
                 user.setUsername(registrationModel.getUsername());
                 kafkaTemplate.send("users", user);
-
+                LOG.info("### Kafka topic [users] sent message: " + user.getUsername());
             } catch (DataIntegrityViolationException e) {
                 LOG.error("### Error while registration user: " + e.getMessage());
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

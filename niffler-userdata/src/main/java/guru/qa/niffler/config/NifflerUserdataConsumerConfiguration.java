@@ -1,5 +1,6 @@
 package guru.qa.niffler.config;
 
+import guru.qa.niffler.model.UserJson;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -21,16 +22,16 @@ public class NifflerUserdataConsumerConfiguration {
     }
 
     @Bean
-    public ConsumerFactory<String, Object> consumerFactory() {
-        final JsonDeserializer<Object> jsonDeserializer = new JsonDeserializer<>();
+    public ConsumerFactory<String, UserJson> consumerFactory() {
+        final JsonDeserializer<UserJson> jsonDeserializer = new JsonDeserializer<>();
         jsonDeserializer.addTrustedPackages("*");
         return new DefaultKafkaConsumerFactory<>(kafkaProperties.buildConsumerProperties(), new StringDeserializer(), jsonDeserializer);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Object> concurrentKafkaListenerContainerFactory
-                = new ConcurrentKafkaListenerContainerFactory();
+    public ConcurrentKafkaListenerContainerFactory<String, UserJson> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, UserJson> concurrentKafkaListenerContainerFactory
+                = new ConcurrentKafkaListenerContainerFactory<>();
         concurrentKafkaListenerContainerFactory.setConsumerFactory(consumerFactory());
         return concurrentKafkaListenerContainerFactory;
     }

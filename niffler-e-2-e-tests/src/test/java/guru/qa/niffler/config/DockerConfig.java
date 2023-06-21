@@ -54,4 +54,9 @@ public class DockerConfig implements Config {
     public String databaseAddress() {
         return "niffler-all-db:5432";
     }
+
+    @Override
+    public String kafkaAddress() {
+        return "kafka:9092";
+    }
 }

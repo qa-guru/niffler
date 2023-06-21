@@ -3,6 +3,8 @@ package guru.qa.niffler.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public interface Config {
 
     Logger LOG = LoggerFactory.getLogger(Config.class);
@@ -33,4 +35,10 @@ public interface Config {
     String spendUrl();
 
     String databaseAddress();
+
+    String kafkaAddress();
+
+    default List<String> kafkaTopics() {
+        return List.of("users");
+    }
 }

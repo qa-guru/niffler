@@ -38,10 +38,12 @@ public interface NifflerAuthApi {
             @Field("username") String username,
             @Field("password") String password);
 
+    @GET("/register")
+    Call<Void> requestRegisterForm();
+
     @POST("/register")
     @FormUrlEncoded
     Call<Void> register(
-            @Header("Cookie") String jsessionidCookie,
             @Header("Cookie") String csrfCookie,
             @Field("_csrf") String csrf,
             @Field("username") String username,

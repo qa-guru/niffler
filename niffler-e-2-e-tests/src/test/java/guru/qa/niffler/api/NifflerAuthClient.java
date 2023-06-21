@@ -23,7 +23,7 @@ public class NifflerAuthClient {
 
     private static final OkHttpClient httpClient = new OkHttpClient.Builder()
             .followRedirects(true)
-            .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE))
             .addNetworkInterceptor(new ReceivedCookieRespInterceptor())
             .addNetworkInterceptor(new AddCookiesReqInterceptor())
             .addNetworkInterceptor(new ExtractCodeFromRespInterceptor())
@@ -76,8 +76,8 @@ public class NifflerAuthClient {
 
     @Step("Send REST POST('/register') request to niffler-auth")
     public Response<Void> register(String username, String password) throws Exception {
+        nifflerAuthApi.requestRegisterForm().execute();
         return nifflerAuthApi.register(
-                CookieHolder.getInstance().getCookieByPart("JSESSIONID"),
                 CookieHolder.getInstance().getCookieByPart("XSRF-TOKEN"),
                 CookieHolder.getInstance().getCookieValueByPart("XSRF-TOKEN"),
                 username,
