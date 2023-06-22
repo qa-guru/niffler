@@ -7,6 +7,7 @@
 - [Spring actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html)
 - [Spring gRPC by https://github.com/yidongnan](https://yidongnan.github.io/grpc-spring-boot-starter/en/server/getting-started.html)
 - [Spring web-services](https://docs.spring.io/spring-ws/docs/current/reference/html/)
+- [Apache Kafka](https://developer.confluent.io/quickstart/kafka-docker/)
 - [Docker](https://www.docker.com/resources/what-container/)
 - [Docker-compose](https://docs.docker.com/compose/)
 - [Postgres](https://www.postgresql.org/about/)
