@@ -52,7 +52,7 @@ public class UserGraphqlController {
     public List<UserJsonGQL> users(@AuthenticationPrincipal Jwt principal) {
         String username = principal.getClaim("sub");
         return restUserDataClient.allUsers(username).stream()
-                .map(friend -> UserJsonGQL.fromUserJson(friend))
+                .map(UserJsonGQL::fromUserJson)
                 .collect(Collectors.toList());
     }
 
@@ -71,8 +71,7 @@ public class UserGraphqlController {
         String username = principal.getClaim("sub");
         FriendJson friend = new FriendJson();
         friend.setUsername(friendUsername);
-        UserJsonGQL userJsonGQL = UserJsonGQL.fromUserJson(restUserDataClient.addFriend(username, friend));
-        return userJsonGQL;
+        return UserJsonGQL.fromUserJson(restUserDataClient.addFriend(username, friend));
     }
 
     @MutationMapping
@@ -113,14 +112,14 @@ public class UserGraphqlController {
     private List<UserJsonGQL> getFriends(String username) {
         return restUserDataClient.friends(username, false)
                 .stream()
-                .map(friend -> UserJsonGQL.fromUserJson(friend))
+                .map(UserJsonGQL::fromUserJson)
                 .collect(Collectors.toList());
     }
 
     private List<UserJsonGQL> getInvitations(String username) {
         return restUserDataClient.invitations(username)
                 .stream()
-                .map(friend -> UserJsonGQL.fromUserJson(friend))
+                .map(UserJsonGQL::fromUserJson)
                 .collect(Collectors.toList());
     }
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 public enum DataSourceContext {
     INSTANCE;
 
-    private Map<DataBase, DataSource> dsContext = new HashMap<>();
+    private final Map<DataBase, DataSource> dsContext = new HashMap<>();
 
     public synchronized DataSource getDatatSource(DataBase dataBase) {
         if (dsContext.get(dataBase) == null) {

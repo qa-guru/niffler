@@ -21,7 +21,7 @@ public class LoginUtils {
             bytes = codeVerifier.getBytes(StandardCharsets.US_ASCII);
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException();
         }
         messageDigest.update(bytes, 0, bytes.length);
         byte[] digest = messageDigest.digest();

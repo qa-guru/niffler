@@ -11,7 +11,7 @@ import java.util.Map;
 public enum EmfContext {
     INSTANCE;
 
-    private Map<DataBase, EntityManagerFactory> emfContext = new HashMap<>();
+    private final Map<DataBase, EntityManagerFactory> emfContext = new HashMap<>();
 
     public synchronized EntityManagerFactory getEmf(DataBase dataBase) {
         if (emfContext.get(dataBase) == null) {

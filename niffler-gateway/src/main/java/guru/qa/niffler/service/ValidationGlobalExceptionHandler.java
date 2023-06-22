@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.annotation.Nonnull;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,10 +20,10 @@ import java.util.stream.Collectors;
 public class ValidationGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers,
-                                                                  HttpStatusCode status,
-                                                                  WebRequest request) {
+    protected @Nonnull ResponseEntity<Object> handleMethodArgumentNotValid(@Nonnull MethodArgumentNotValidException ex,
+                                                                           @Nonnull HttpHeaders headers,
+                                                                           @Nonnull HttpStatusCode status,
+                                                                           @Nonnull WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", status.value());

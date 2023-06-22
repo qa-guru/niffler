@@ -12,7 +12,7 @@ public interface AroundAllTestsExtension extends BeforeAllCallback {
     }
 
     @Override
-    default void beforeAll(ExtensionContext context) throws Exception {
+    default void beforeAll(ExtensionContext context) {
         context.getRoot().getStore(ExtensionContext.Namespace.GLOBAL).
                 getOrComputeIfAbsent(this.getClass(),
                         k -> {

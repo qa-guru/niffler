@@ -108,7 +108,7 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
     }
 
     @Override
-    public UserJson acceptInvitationAndReturnFriend(String username, FriendJson invitation) {
+    public @Nonnull UserJson acceptInvitationAndReturnFriend(@Nonnull String username, @Nonnull FriendJson invitation) {
         return acceptInvitation(username, invitation).stream()
                 .filter(friend -> friend.getUsername().equals(invitation.getUsername()))
                 .findFirst()
@@ -130,8 +130,8 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
     }
 
     @Override
-    public UserJson addFriend(@Nonnull String username,
-                              @Nonnull FriendJson friend) {
+    public @Nonnull UserJson addFriend(@Nonnull String username,
+                                       @Nonnull FriendJson friend) {
         AddFriendRequest request = new AddFriendRequest();
         request.setUsername(username);
         request.setFriend(friend.toJaxbFriend());

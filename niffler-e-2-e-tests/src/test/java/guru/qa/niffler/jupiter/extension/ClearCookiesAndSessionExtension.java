@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 public class ClearCookiesAndSessionExtension implements AfterTestExecutionCallback {
 
     @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
+    public void afterTestExecution(ExtensionContext context) {
         CookieHolder.getInstance().flushAll();
         SessionStorageHolder.getInstance().flushAll();
     }

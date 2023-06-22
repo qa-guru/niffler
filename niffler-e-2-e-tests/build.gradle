@@ -33,7 +33,7 @@ configurations {
     jaxb
 }
 
-task genJaxb {
+tasks.register('genJaxb') {
     ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
     ext.classesDir = "${buildDir}/classes/jaxb"
     ext.schema = "userdata.wsdl"
@@ -123,7 +123,10 @@ dependencies {
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb 'org.glassfish.jaxb:jaxb-xjc:4.0.1'
     // Kafka
-    implementation 'org.apache.kafka:kafka-clients:3.5.0'
+    testImplementation 'org.apache.kafka:kafka-clients:3.5.0'
+    // Wiremock
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.0'
+    testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
 }
 
 test {

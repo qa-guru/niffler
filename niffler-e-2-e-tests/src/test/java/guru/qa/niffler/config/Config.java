@@ -30,7 +30,9 @@ public interface Config {
 
     String currencyGrpcAddress();
 
-    int currencyGrpcPort();
+    default int currencyGrpcPort() {
+        return 8092;
+    }
 
     String spendUrl();
 

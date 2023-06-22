@@ -34,7 +34,7 @@ public abstract class SoapService {
 
     protected static final Config CFG = Config.getConfig();
 
-    private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
+    private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE))
             .addInterceptor(new AllureOkHttp3())
             .build();

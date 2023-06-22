@@ -35,10 +35,10 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private CurrencyValues currency;
 
-    @Column(nullable = true)
+    @Column()
     private String firstname;
 
-    @Column(nullable = true)
+    @Column()
     private String surname;
 
     @Column(name = "photo", columnDefinition = "bytea")

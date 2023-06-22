@@ -24,7 +24,7 @@ public class PeopleTable extends BaseComponent<PeopleTable> {
         table.shouldBe(Condition.visible);
         return allRows
                 .stream()
-                .filter(r -> username.equals(getUsernameCell(r)))
+                .filter(r -> getUsernameCell(r).is(Condition.text(username)))
                 .findFirst()
                 .orElseThrow();
     }

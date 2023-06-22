@@ -34,7 +34,7 @@ public class UsersQueueExtension implements
     }
 
     @Override
-    public void beforeTestExecution(ExtensionContext context) throws Exception {
+    public void beforeTestExecution(ExtensionContext context) {
         String id = getTestId(context);
         User.UserType desiredUserType = Arrays.stream(context.getRequiredTestMethod()
                         .getParameters())
@@ -57,7 +57,8 @@ public class UsersQueueExtension implements
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
+    @SuppressWarnings("unchecked")
+    public void afterTestExecution(ExtensionContext context) {
         String id = getTestId(context);
         Map<User.UserType, UserModel> map = context.getStore(NAMESPACE).get(id, Map.class);
         if (map.containsKey(User.UserType.ADMIN)) {

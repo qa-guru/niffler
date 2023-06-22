@@ -27,10 +27,10 @@ public abstract class BaseGRPCTest {
                 .build();
     }
 
-    protected NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub nifflerCurrencyBlockingStub =
+    protected final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub nifflerCurrencyBlockingStub =
             NifflerCurrencyServiceGrpc.newBlockingStub(channel);
 
-    protected NifflerCurrencyServiceGrpc.NifflerCurrencyServiceStub nifflerCurrencyStub =
+    protected final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceStub nifflerCurrencyStub =
             NifflerCurrencyServiceGrpc.newStub(channel);
 
 }

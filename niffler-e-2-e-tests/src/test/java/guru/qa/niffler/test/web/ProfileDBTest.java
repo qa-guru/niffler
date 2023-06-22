@@ -26,7 +26,7 @@ public class ProfileDBTest extends BaseWebTest {
     @DAO
     private UsersDAO usersDAO;
 
-    private CurrencyValues testedCurrency = CurrencyValues.KZT;
+    private final CurrencyValues testedCurrency = CurrencyValues.KZT;
 
     @BeforeEach
     void changeCurrencyBeforeTest(@User(selector = NESTED) UserJson user) {

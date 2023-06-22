@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DAOResolver implements TestInstancePostProcessor {
 
@@ -18,7 +17,7 @@ public class DAOResolver implements TestInstancePostProcessor {
         List<Field> fields = Arrays.stream(testInstance.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(DAO.class))
                 .peek(field -> field.setAccessible(true))
-                .collect(Collectors.toList());
+                .toList();
 
         for (Field field : fields) {
             field.set(testInstance, System.getProperty("dao", "jpa").equals("jpa")

@@ -27,7 +27,7 @@ public class PostgresHibernateUsersDAO extends JpaService implements UsersDAO {
     @Step("Remove user from database using Hibernate")
     @Override
     public void remove(UsersEntity user) {
-        remove(user);
+        super.remove(user);
     }
 
     @Step("Get user from database by username '{username}' using Hibernate")

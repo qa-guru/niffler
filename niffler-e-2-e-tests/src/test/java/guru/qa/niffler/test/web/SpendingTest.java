@@ -49,7 +49,7 @@ public class SpendingTest extends BaseWebTest {
         spendingToCheck.setSpendDate(currentDate);
         spendingToCheck.setCategory(category);
         spendingToCheck.setDescription(description);
-        spendingToCheck.setAmount(Double.valueOf(amount));
+        spendingToCheck.setAmount((double) amount);
 
         Selenide.open(MainPage.URL, MainPage.class)
                 .waitForPageLoaded()
@@ -170,7 +170,7 @@ public class SpendingTest extends BaseWebTest {
                     amount = 650.0
             )
     ))
-    void checkLastWeekSpendingTest(@User UserJson user) throws Exception {
+    void checkLastWeekSpendingTest(@User UserJson user) {
         Selenide.open(MainPage.URL, MainPage.class)
                 .getSpendingTable()
                 .clickByButton("Last week")

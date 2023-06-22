@@ -12,6 +12,7 @@ import okhttp3.RequestBody;
 import org.w3c.dom.Document;
 import retrofit2.Converter;
 
+import javax.annotation.Nonnull;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLOutputFactory;
@@ -29,7 +30,7 @@ final class JaxbRequestConverter<T> implements Converter<T, RequestBody> {
     }
 
     @Override
-    public RequestBody convert(final T value) throws IOException {
+    public @Nonnull RequestBody convert(@Nonnull final T value) throws IOException {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             Marshaller marshaller = context.createMarshaller();

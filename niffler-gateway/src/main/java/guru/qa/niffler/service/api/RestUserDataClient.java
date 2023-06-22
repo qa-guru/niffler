@@ -148,8 +148,8 @@ public class RestUserDataClient implements UserDataClient {
     }
 
     @Override
-    public UserJson addFriend(@Nonnull String username,
-                              @Nonnull FriendJson friend) {
+    public @Nonnull UserJson addFriend(@Nonnull String username,
+                                       @Nonnull FriendJson friend) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/addFriend").queryParams(params).build().toUri();

@@ -73,13 +73,15 @@ services:
 
   currency.niffler.dc:
     container_name: currency.niffler.dc
-    image: dtuchs/niffler-currency:latest
+    image: adven27/grpc-wiremock:latest              # https://github.com/Adven27/grpc-wiremock
+    volumes:
+      - ./wiremock/grpc:/wiremock                     #stubs
+      - ./niffler-grpc-common/src/main/proto:/proto   #proto
     expose:
-      - "8091"
-      - "8092"
-    depends_on:
-      niffler-all-db:
-        condition: service_healthy
+      - "8888:8888"                                   # wiremock port
+      - "8092:8092"                                   # gRPC port
+    environment:
+      - "GRPC_SERVER_PORT=8092"
     networks:
       - test-network
     dns_search: .
@@ -107,6 +109,19 @@ services:
     networks:
       - test-network
     dns_search: .
+
+#  userdata.niffler.dc:
+#    container_name: userdata.niffler.dc
+#    image: wiremock/wiremock:2.35.0
+#    ports:
+#      - "8089:8089"
+#    restart: always
+#    networks:
+#      - niffler-network
+#    command: [ "--port", "8089" ]
+#    volumes:
+#      - ./wiremock/rest:/home/wiremock
+#    dns_search: .
 
   userdata.niffler.dc:
     container_name: userdata.niffler.dc

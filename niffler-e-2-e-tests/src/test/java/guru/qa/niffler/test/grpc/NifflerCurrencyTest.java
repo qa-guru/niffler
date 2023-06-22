@@ -79,7 +79,7 @@ public class NifflerCurrencyTest extends BaseGRPCTest {
                 .setDesiredCurrency(desiredCurrency)
                 .build();
 
-        final CalculateResponse calculateResponse = step("Get all currencies", () ->
+        final CalculateResponse calculateResponse = step("Calculate rate", () ->
                 nifflerCurrencyBlockingStub.calculateRate(request)
         );
 

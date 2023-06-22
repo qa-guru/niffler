@@ -16,32 +16,32 @@ public class ExampleExtension implements AfterAllCallback,
         AfterTestExecutionCallback {
 
     @Override
-    public void afterAll(ExtensionContext context) throws Exception {
+    public void afterAll(ExtensionContext context) {
         System.out.println("### AfterAllCallback");
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) {
         System.out.println("      ### BeforeEachCallback");
     }
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(ExtensionContext context) {
         System.out.println("### BeforeAllCallback");
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterEach(ExtensionContext context) {
         System.out.println("      ### AfterEachCallback");
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
+    public void afterTestExecution(ExtensionContext context) {
         System.out.println("              ### BeforeTestExecutionCallback");
     }
 
     @Override
-    public void beforeTestExecution(ExtensionContext context) throws Exception {
+    public void beforeTestExecution(ExtensionContext context) {
         System.out.println("               ### AfterTestExecutionCallback");
     }
 }

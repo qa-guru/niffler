@@ -9,6 +9,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -33,10 +34,10 @@ public final class JaxbConverterFactory extends Converter.Factory {
 
     @Override
     public @Nullable Converter<?, RequestBody> requestBodyConverter(
-            Type type,
-            Annotation[] parameterAnnotations,
-            Annotation[] methodAnnotations,
-            Retrofit retrofit) {
+            @Nonnull Type type,
+            @Nonnull Annotation[] parameterAnnotations,
+            @Nonnull Annotation[] methodAnnotations,
+            @Nonnull Retrofit retrofit) {
         if (type instanceof Class && ((Class<?>) type).isAnnotationPresent(XmlRootElement.class)) {
             return new JaxbRequestConverter<>(contextForType((Class<?>) type), (Class<?>) type);
         }
@@ -45,7 +46,9 @@ public final class JaxbConverterFactory extends Converter.Factory {
 
     @Override
     public @Nullable Converter<ResponseBody, ?> responseBodyConverter(
-            Type type, Annotation[] annotations, Retrofit retrofit) {
+            @Nonnull Type type,
+            @Nonnull Annotation[] annotations,
+            @Nonnull Retrofit retrofit) {
         if (type instanceof Class && ((Class<?>) type).isAnnotationPresent(XmlRootElement.class)) {
             return new JaxbResponseConverter<>(contextForType((Class<?>) type), (Class<?>) type);
         }

@@ -56,10 +56,7 @@ public class UserDataService {
 
     public @Nonnull
     UserJson update(@Nonnull UserJson user) {
-        UserEntity userEntity = userRepository.findByUsername(user.getUsername());
-        if (userEntity == null) {
-            throw new NotFoundException("Can`t find user by username: " + user.getUsername());
-        }
+        UserEntity userEntity = getRequiredUser(user.getUsername());
         userEntity.setFirstname(user.getFirstname());
         userEntity.setSurname(user.getSurname());
         userEntity.setCurrency(user.getCurrency());
@@ -70,12 +67,7 @@ public class UserDataService {
 
     public @Nonnull
     UserJson getCurrentUser(@Nonnull String username) {
-        UserEntity userDataEntity = userRepository.findByUsername(username);
-        if (userDataEntity == null) {
-            throw new NotFoundException("Can`t find user by username: " + username);
-        } else {
-            return UserJson.fromEntity(userDataEntity);
-        }
+        return UserJson.fromEntity(getRequiredUser(username));
     }
 
     public @Nonnull
@@ -116,11 +108,7 @@ public class UserDataService {
 
     public @Nonnull
     List<UserJson> friends(@Nonnull String username, boolean includePending) {
-        UserEntity userEntity = userRepository.findByUsername(username);
-        if (userEntity == null) {
-            throw new NotFoundException("Can`t find user by username: " + username);
-        }
-        return userEntity
+        return getRequiredUser(username)
                 .getFriends()
                 .stream()
                 .filter(fe -> includePending || !fe.isPending())
@@ -132,11 +120,7 @@ public class UserDataService {
 
     public @Nonnull
     List<UserJson> invitations(@Nonnull String username) {
-        UserEntity userEntity = userRepository.findByUsername(username);
-        if (userEntity == null) {
-            throw new NotFoundException("Can`t find user by username: " + username);
-        }
-        return userEntity
+        return getRequiredUser(username)
                 .getInvites()
                 .stream()
                 .filter(FriendsEntity::isPending)
@@ -145,14 +129,9 @@ public class UserDataService {
     }
 
     public UserJson addFriend(@Nonnull String username, @Nonnull FriendJson friend) {
-        UserEntity currentUser = userRepository.findByUsername(username);
-        UserEntity friendEntity = userRepository.findByUsername(friend.getUsername());
-        if (currentUser == null) {
-            throw new NotFoundException("Can`t find user by username: " + username);
-        }
-        if (friendEntity == null) {
-            throw new NotFoundException("Can`t find user by username: " + friend.getUsername());
-        }
+        UserEntity currentUser = getRequiredUser(username);
+        UserEntity friendEntity = getRequiredUser(friend.getUsername());
+
         currentUser.addFriends(true, friendEntity);
         userRepository.save(currentUser);
         return UserJson.fromEntity(friendEntity, FriendState.INVITE_SENT);
@@ -160,14 +139,8 @@ public class UserDataService {
 
     public @Nonnull
     List<UserJson> acceptInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
-        UserEntity currentUser = userRepository.findByUsername(username);
-        UserEntity inviteUser = userRepository.findByUsername(invitation.getUsername());
-        if (currentUser == null) {
-            throw new NotFoundException("Can`t find user by username: " + username);
-        }
-        if (inviteUser == null) {
-            throw new NotFoundException("Can`t find user by username: " + invitation.getUsername());
-        }
+        UserEntity currentUser = getRequiredUser(username);
+        UserEntity inviteUser = getRequiredUser(invitation.getUsername());
 
         FriendsEntity invite = currentUser.getInvites()
                 .stream()
@@ -191,14 +164,8 @@ public class UserDataService {
     @Transactional
     public @Nonnull
     List<UserJson> declineInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
-        UserEntity currentUser = userRepository.findByUsername(username);
-        UserEntity friendToDecline = userRepository.findByUsername(invitation.getUsername());
-        if (currentUser == null) {
-            throw new NotFoundException("Can`t find user by username: " + username);
-        }
-        if (friendToDecline == null) {
-            throw new NotFoundException("Can`t find user by username: " + invitation.getUsername());
-        }
+        UserEntity currentUser = getRequiredUser(username);
+        UserEntity friendToDecline = getRequiredUser(invitation.getUsername());
 
         currentUser.removeInvites(friendToDecline);
         friendToDecline.removeFriends(currentUser);
@@ -216,14 +183,8 @@ public class UserDataService {
     @Transactional
     public @Nonnull
     List<UserJson> removeFriend(@Nonnull String username, @Nonnull String friendUsername) {
-        UserEntity currentUser = userRepository.findByUsername(username);
-        UserEntity friendToRemove = userRepository.findByUsername(friendUsername);
-        if (currentUser == null) {
-            throw new NotFoundException("Can`t find user by username: " + username);
-        }
-        if (friendToRemove == null) {
-            throw new NotFoundException("Can`t find user by username: " + friendToRemove);
-        }
+        UserEntity currentUser = getRequiredUser(username);
+        UserEntity friendToRemove = getRequiredUser(friendUsername);
 
         currentUser.removeFriends(friendToRemove);
         currentUser.removeInvites(friendToRemove);
@@ -240,5 +201,13 @@ public class UserDataService {
                         ? FriendState.INVITE_SENT
                         : FriendState.FRIEND))
                 .toList();
+    }
+
+    private @Nonnull UserEntity getRequiredUser(@Nonnull String username) {
+        UserEntity user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new NotFoundException("Can`t find user by username: " + username);
+        }
+        return user;
     }
 }

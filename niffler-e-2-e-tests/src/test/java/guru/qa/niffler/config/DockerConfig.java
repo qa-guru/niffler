@@ -36,11 +36,6 @@ public class DockerConfig implements Config {
     }
 
     @Override
-    public int currencyGrpcPort() {
-        return 8092;
-    }
-
-    @Override
     public String spendUrl() {
         return "http://spend.niffler.dc:8093/";
     }

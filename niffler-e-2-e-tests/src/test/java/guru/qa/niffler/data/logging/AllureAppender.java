@@ -39,9 +39,4 @@ public class AllureAppender extends StdoutLogger {
     public void logText(String sql) {
         super.logText(sql);
     }
-
-    @Override
-    public boolean isCategoryEnabled(Category category) {
-        return true;
-    }
 }

@@ -6,6 +6,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,8 @@ import java.util.stream.Collectors;
 public class AddCookiesReqInterceptor implements Interceptor {
 
     @Override
-    public Response intercept(Interceptor.Chain chain) throws IOException {
+    @Nonnull
+    public Response intercept(@Nonnull Interceptor.Chain chain) throws IOException {
         Map<String, List<String>> allStoredCookies = CookieHolder.getInstance().getAll();
         if (!allStoredCookies.isEmpty()) {
             Request original = chain.request();

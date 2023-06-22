@@ -4,13 +4,14 @@ import guru.qa.niffler.api.context.CookieHolder;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
 
 public class ReceivedCookieRespInterceptor implements Interceptor {
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public @Nonnull Response intercept(@Nonnull Chain chain) throws IOException {
         Response response = chain.proceed(chain.request());
         CookieHolder loginDataHolder = CookieHolder.getInstance();
         List<String> headers = response.headers("Set-Cookie");

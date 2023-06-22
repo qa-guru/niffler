@@ -34,11 +34,6 @@ public class LocalConfig implements Config {
     }
 
     @Override
-    public int currencyGrpcPort() {
-        return 8092;
-    }
-
-    @Override
     public String spendUrl() {
         return "http://127.0.0.1:8093/";
     }

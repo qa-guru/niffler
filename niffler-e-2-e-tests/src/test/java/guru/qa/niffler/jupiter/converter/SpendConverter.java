@@ -13,8 +13,8 @@ import java.util.Objects;
 
 public class SpendConverter implements ArgumentConverter {
 
-    private ClassLoader cl = this.getClass().getClassLoader();
-    private ObjectMapper om = new ObjectMapper();
+    private final ClassLoader cl = this.getClass().getClassLoader();
+    private final ObjectMapper om = new ObjectMapper();
 
     @Override
     public SpendJson convert(Object source, ParameterContext context) throws ArgumentConversionException {
