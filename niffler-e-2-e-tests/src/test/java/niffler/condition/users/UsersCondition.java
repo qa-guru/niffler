@@ -1,4 +1,4 @@
-package niffler.condition.friends;
+package niffler.condition.users;
 
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ex.ElementNotFound;
@@ -10,19 +10,19 @@ import org.openqa.selenium.WebElement;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class FriendCondition {
+public class UsersCondition {
 
-    public static CollectionCondition friends(List<UserJson> expectedFriends) {
+    public static CollectionCondition users(List<UserJson> expectedUsers) {
         return new CollectionCondition() {
             @Override
             public void fail(CollectionSource collection, @Nullable List<WebElement> elements, @Nullable Exception lastError, long timeoutMs) {
                 if (elements == null || elements.isEmpty()) {
                     ElementNotFound elementNotFound = new ElementNotFound(collection, List.of("Can`t find elements"), lastError);
                     throw elementNotFound;
-                } else if (elements.size() != expectedFriends.size()) {
-                    throw new FriendsSizeMismatch(collection, expectedFriends, bindElementsToFriend(elements), explanation, timeoutMs);
+                } else if (elements.size() != expectedUsers.size()) {
+                    throw new UsersSizeMismatch(collection, expectedUsers, bindElementsToUsers(elements), explanation, timeoutMs);
                 } else {
-                    throw new FriendsMismatch(collection, expectedFriends, bindElementsToFriend(elements), explanation, timeoutMs);
+                    throw new UsersMismatch(collection, expectedUsers, bindElementsToUsers(elements), explanation, timeoutMs);
                 }
             }
 
@@ -33,22 +33,22 @@ public class FriendCondition {
 
             @Override
             public boolean test(List<WebElement> elements) {
-                if (elements.size() != expectedFriends.size()) {
+                if (elements.size() != expectedUsers.size()) {
                     return false;
                 }
-                for (int i = 0; i < expectedFriends.size(); i++) {
+                for (int i = 0; i < expectedUsers.size(); i++) {
                     WebElement row = elements.get(i);
-                    UserJson expectedFriend = expectedFriends.get(i);
+                    UserJson expectedUser = expectedUsers.get(i);
                     List<WebElement> cells = row.findElements(By.cssSelector("td"));
 
-                    if (!cells.get(1).getText().equals(expectedFriend.getUsername())) {
+                    if (!cells.get(1).getText().equals(expectedUser.getUsername())) {
                         return false;
                     }
                 }
                 return true;
             }
 
-            private List<UserJson> bindElementsToFriend(List<WebElement> elements) {
+            private List<UserJson> bindElementsToUsers(List<WebElement> elements) {
                 return elements.stream()
                         .map(e -> {
                             List<WebElement> cells = e.findElements(By.cssSelector("td"));
