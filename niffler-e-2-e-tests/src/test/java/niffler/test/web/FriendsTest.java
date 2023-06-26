@@ -23,9 +23,18 @@ public class FriendsTest extends BaseWebTest {
     @Tag("WEB")
     @ApiLogin(nifflerUser = @GenerateUser(friends = @Friends(count = 2)))
     void shouldViewExistingFriendsInTable(@User UserJson user) {
+        user.getFriendsJsons().remove(0);
+        user.getFriendsJsons().add(user);
         Selenide.open(MainPage.URL, MainPage.class)
                 .getHeader()
                 .toFriendsPage()
-                .checkExistingFriendsCount(user.getFriendsJsons().size());
+                .checkExistingFriends(user.getFriendsJsons());
     }
+
+    //todo: add friend (send invitation)
+    //todo delete friend from two pages
+    //todo: see invitations on two pages
+    //todo: accept invitation from two pages
+    //todo: decline invitation from two pages
+
 }

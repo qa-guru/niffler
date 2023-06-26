@@ -4,10 +4,14 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import niffler.model.rest.UserJson;
+
+import java.util.List;
 
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static niffler.condition.friends.FriendCondition.friends;
 
 public class FriendsPage extends BasePage<FriendsPage> {
 
@@ -25,6 +29,12 @@ public class FriendsPage extends BasePage<FriendsPage> {
     @Step("Check that friends count is equal to {expectedCount}")
     public FriendsPage checkExistingFriendsCount(int expectedCount) {
         friendRows.shouldHave(size(expectedCount));
+        return this;
+    }
+
+    @Step("Check that friends list contains data {0}")
+    public FriendsPage checkExistingFriends(List<UserJson> expectedFriends) {
+        friendRows.shouldHave(friends(expectedFriends));
         return this;
     }
 }
