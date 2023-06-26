@@ -20,6 +20,7 @@ public class FriendsPage extends BasePage<FriendsPage> {
     private final SelenideElement tableContainer = $(".people-content");
     private final PeopleTable table = new PeopleTable($(".table"));
 
+    @Step("Check that the page is loaded")
     @Override
     public FriendsPage waitForPageLoaded() {
         tableContainer.shouldBe(Condition.visible);

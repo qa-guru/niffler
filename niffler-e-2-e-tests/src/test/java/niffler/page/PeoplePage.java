@@ -15,6 +15,7 @@ public class PeoplePage extends BasePage<PeoplePage> {
     private final SelenideElement tableContainer = $(".people-content");
     private final PeopleTable table = new PeopleTable($(".table"));
 
+    @Step("Check that the page is loaded")
     @Override
     public PeoplePage waitForPageLoaded() {
         tableContainer.shouldBe(Condition.visible);
