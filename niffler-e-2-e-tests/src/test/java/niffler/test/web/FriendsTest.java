@@ -8,6 +8,7 @@ import niffler.model.rest.UserJson;
 import niffler.page.FriendsPage;
 import niffler.page.MainPage;
 import niffler.page.PeoplePage;
+import niffler.utils.SuccessMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -39,10 +40,13 @@ public class FriendsTest extends BaseWebTest {
     @GenerateUser()
     void shouldSendInvitation(@User(selector = NESTED) UserJson currentUser,
                               @User(selector = METHOD) UserJson userToSendInvitation) {
-        Selenide.open(PeoplePage.URL, PeoplePage.class)
+        PeoplePage peoplePage = Selenide.open(PeoplePage.URL, PeoplePage.class)
                 .waitForPageLoaded()
-                .sendFriendInvitationToUser(userToSendInvitation.getUsername())
-                .checkInvitationSentToUser(userToSendInvitation.getUsername());
+                .sendFriendInvitationToUser(userToSendInvitation.getUsername());
+
+        Selenide.refresh();
+
+        peoplePage.checkInvitationSentToUser(userToSendInvitation.getUsername());
     }
 
     @Test
@@ -52,11 +56,14 @@ public class FriendsTest extends BaseWebTest {
     @ApiLogin(nifflerUser = @GenerateUser(friends = @Friends(count = 2)))
     void shouldRemoveFriend(@User(selector = NESTED) UserJson user) {
         UserJson userToRemove = user.getFriendsJsons().remove(0);
-        Selenide.open(FriendsPage.URL, FriendsPage.class)
+        FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
                 .waitForPageLoaded()
                 .removeFriend(userToRemove.getUsername())
-                .checkToasterMessage("Friend is deleted!")
-                .checkExistingFriends(user.getFriendsJsons());
+                .checkToasterMessage(SuccessMessage.FRIEND_DELETED.content);
+
+        Selenide.refresh();
+
+        friendsPage.checkExistingFriends(user.getFriendsJsons());
     }
 
     @Test
@@ -67,11 +74,14 @@ public class FriendsTest extends BaseWebTest {
     void shouldAcceptInvitation(@User UserJson user) {
         UserJson userToAcceptInvitation = user.getInvitationsJsons().remove(0);
         user.getFriendsJsons().add(userToAcceptInvitation);
-        Selenide.open(FriendsPage.URL, FriendsPage.class)
+        FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
                 .waitForPageLoaded()
                 .acceptFriendInvitationFromUser(userToAcceptInvitation.getUsername())
-                .checkToasterMessage("Invitation is accepted!")
-                .checkExistingFriends(user.getFriendsJsons());
+                .checkToasterMessage(SuccessMessage.INVITATION_ACCEPTED.content);
+
+        Selenide.refresh();
+
+        friendsPage.checkExistingFriends(user.getFriendsJsons());
     }
 
     @Test
@@ -81,11 +91,14 @@ public class FriendsTest extends BaseWebTest {
     @ApiLogin(nifflerUser = @GenerateUser(incomeInvitations = @IncomeInvitations(count = 2)))
     void shouldDeclineInvitation(@User UserJson user) {
         UserJson userToDeclineInvitation = user.getInvitationsJsons().get(0);
-        Selenide.open(FriendsPage.URL, FriendsPage.class)
+        FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
                 .waitForPageLoaded()
                 .removeFriend(userToDeclineInvitation.getUsername())
-                .checkToasterMessage("Invitation is declined!")
-                .checkExistingFriends(user.getFriendsJsons());
+                .checkToasterMessage(SuccessMessage.INVITATION_DECLINED.content);
+
+        Selenide.refresh();
+
+        friendsPage.checkExistingFriends(user.getFriendsJsons());
     }
 
 }
