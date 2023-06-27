@@ -36,15 +36,22 @@ public class UsersCondition {
                 if (elements.size() != expectedUsers.size()) {
                     return false;
                 }
-                for (int i = 0; i < expectedUsers.size(); i++) {
-                    WebElement row = elements.get(i);
-                    UserJson expectedUser = expectedUsers.get(i);
-                    List<WebElement> cells = row.findElements(By.cssSelector("td"));
 
-                    if (!cells.get(1).getText().equals(expectedUser.getUsername())) {
+                for (UserJson expectedUser : expectedUsers) {
+                    boolean found = false;
+                    for (WebElement row : elements) {
+                        List<WebElement> cells = row.findElements(By.cssSelector("td"));
+                        if (cells.get(1).getText().equals(expectedUser.getUsername())) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
                         return false;
                     }
                 }
+
                 return true;
             }
 
