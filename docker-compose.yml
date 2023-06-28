@@ -21,6 +21,35 @@ services:
       - niffler-network
     dns_search: .
 
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:7.3.2
+    expose:
+      - "2181"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    networks:
+      - niffler-network
+
+  kafka:
+    container_name: kafka
+    image: confluentinc/cp-kafka:7.3.2
+    expose:
+      - "9092"
+    depends_on:
+      zookeeper:
+        condition: service_started
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+    networks:
+      - niffler-network
+
   auth.niffler.dc:
     container_name: auth.niffler.dc
     image: dtuchs/niffler-auth:latest
@@ -35,6 +64,8 @@ services:
     depends_on:
       niffler-all-db:
         condition: service_healthy
+      kafka:
+        condition: service_started
     networks:
       - niffler-network
     dns_search: .
@@ -65,7 +96,8 @@ services:
       retries: 10
     restart: always
     depends_on:
-      - auth.niffler.dc
+      auth.niffler.dc:
+        condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
@@ -90,7 +122,7 @@ services:
       - "8089"
     restart: always
     depends_on:
-      niffler-all-db:
+      auth.niffler.dc:
         condition: service_healthy
     networks:
       - niffler-network

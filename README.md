@@ -7,6 +7,7 @@
 - [Spring actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html)
 - [Spring gRPC by https://github.com/yidongnan](https://yidongnan.github.io/grpc-spring-boot-starter/en/server/getting-started.html)
 - [Spring web-services](https://docs.spring.io/spring-ws/docs/current/reference/html/)
+- [Apache Kafka](https://developer.confluent.io/quickstart/kafka-docker/)
 - [Docker](https://www.docker.com/resources/what-container/)
 - [Docker-compose](https://docs.docker.com/compose/)
 - [Postgres](https://www.postgresql.org/about/)
@@ -51,19 +52,23 @@ Dmitriis-MacBook-Pro ~ % docker -v
 Docker version 20.10.14, build a224086
 ```
 
-#### 2. Спуллить контейнер postgres версии 15.1
+#### 2. Спуллить контейнер postgres:15.1, zookeeper и kafka версии 7.3.2
 
 ```posh
 docker pull postgres:15.1
+docker pull confluentinc/cp-zookeeper:7.3.2
+docker pull confluentinc/cp-kafka:7.3.2
 ```
 
 После `pull` вы увидите спуленный image командой `docker images`
 
 ```posh
 mitriis-MacBook-Pro ~ % docker images            
-REPOSITORY                 TAG       IMAGE ID       CREATED        SIZE
-postgres                   15.1      9f3ec01f884d   10 days ago    379MB
-postgres                   latest    9f3ec01f884d   10 days ago    379MB
+REPOSITORY                 TAG              IMAGE ID       CREATED         SIZE
+postgres                   15.1             9f3ec01f884d   10 days ago     379MB
+confluentinc/cp-kafka      7.3.2            db97697f6e28   12 months ago   457MB
+confluentinc/cp-zookeeper  7.3.2            6fe5551964f5   7 years ago     451MB
+
 ```
 
 #### 3. Создать volume для сохранения данных из БД в docker на вашем компьютере
@@ -72,11 +77,25 @@ postgres                   latest    9f3ec01f884d   10 days ago    379MB
 docker volume create pgdata
 ```
 
-#### 4. Запустить БД командой
+#### 4. Запустить БД, zookeeper и kafka 4-мя последовательными командами:
 
 ```posh
 docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -d postgres:15.1
+
+docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -e ZOOKEEPER_TICK_TIME=2000 -p 2181:2181 -d confluentinc/cp-zookeeper:7.3.2
+
+Zookeeper_Server_IP=$(docker inspect zookeeper --format='{{ .NetworkSettings.IPAddress }}')
+
+docker run --name=kafka -e KAFKA_BROKER_ID=1 \
+-e KAFKA_ZOOKEEPER_CONNECT=${Zookeeper_Server_IP}:2181 \
+-e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
+-e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+-e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
+-e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
+-p 9092:9092 -d confluentinc/cp-kafka:7.3.2
 ```
+
+https://github.com/confluentinc/cp-docker-images/issues/801#issuecomment-692085103
 
 #### 5. Установить одну из программ для визуальной работы с Postgres
 
@@ -86,13 +105,13 @@ docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata
 
 ```sql
 create
-database "niffler-userdata" with owner postgres;
+    database "niffler-userdata" with owner postgres;
 create
-database "niffler-spend" with owner postgres;
+    database "niffler-spend" with owner postgres;
 create
-database "niffler-currency" with owner postgres;
+    database "niffler-currency" with owner postgres;
 create
-database "niffler-auth" with owner postgres;
+    database "niffler-auth" with owner postgres;
 ```
 
 #### 7. Установить Java версии 17 или новее. Это необходимо, т.к. проект не поддерживает версии <17
@@ -166,9 +185,12 @@ Dmitriis-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.act
 
 #### 3. Выполнить docker login с созданным access_token (в инструкции это описано)
 
-#### 4. Прописать в etc/hosts элиас для Docker-имени 
-#### frontend:  127.0.0.1 frontend.niffler.dc, 
+#### 4. Прописать в etc/hosts элиас для Docker-имени
+
+#### frontend:  127.0.0.1 frontend.niffler.dc,
+
 #### auth:      127.0.0.1 auth.niffler.dc
+
 #### gateway:   127.0.0.1 gateway.niffler.dc
 
 ```posh
