@@ -2,6 +2,7 @@ package niffler.page;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import niffler.config.Config;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -14,6 +15,7 @@ public abstract class BasePage<T extends BasePage> {
 
     public abstract T waitForPageLoaded();
 
+    @Step("Check that success message appears: {expectedText}")
     @SuppressWarnings("unchecked")
     public T checkToasterMessage(String expectedText) {
         tostifyAlert.should(Condition.visible).should(Condition.text(expectedText));
