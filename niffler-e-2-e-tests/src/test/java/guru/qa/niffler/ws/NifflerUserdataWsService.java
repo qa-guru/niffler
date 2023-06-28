@@ -1,25 +1,25 @@
 package guru.qa.niffler.ws;
 
+import guru.qa.niffler.userdata.wsdl.AcceptInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.AcceptInvitationResponse;
+import guru.qa.niffler.userdata.wsdl.AddFriendRequest;
+import guru.qa.niffler.userdata.wsdl.AddFriendResponse;
+import guru.qa.niffler.userdata.wsdl.AllUsersRequest;
+import guru.qa.niffler.userdata.wsdl.AllUsersResponse;
+import guru.qa.niffler.userdata.wsdl.CurrentUserRequest;
+import guru.qa.niffler.userdata.wsdl.CurrentUserResponse;
+import guru.qa.niffler.userdata.wsdl.DeclineInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.DeclineInvitationResponse;
+import guru.qa.niffler.userdata.wsdl.FriendsRequest;
+import guru.qa.niffler.userdata.wsdl.FriendsResponse;
+import guru.qa.niffler.userdata.wsdl.InvitationsRequest;
+import guru.qa.niffler.userdata.wsdl.InvitationsResponse;
+import guru.qa.niffler.userdata.wsdl.RemoveFriendRequest;
+import guru.qa.niffler.userdata.wsdl.RemoveFriendResponse;
+import guru.qa.niffler.userdata.wsdl.UpdateUserInfoRequest;
+import guru.qa.niffler.userdata.wsdl.UpdateUserInfoResponse;
 import guru.qa.niffler.ws.service.SoapService;
 import io.qameta.allure.Step;
-import niffler.userdata.wsdl.AcceptInvitationRequest;
-import niffler.userdata.wsdl.AcceptInvitationResponse;
-import niffler.userdata.wsdl.AddFriendRequest;
-import niffler.userdata.wsdl.AddFriendResponse;
-import niffler.userdata.wsdl.AllUsersRequest;
-import niffler.userdata.wsdl.AllUsersResponse;
-import niffler.userdata.wsdl.CurrentUserRequest;
-import niffler.userdata.wsdl.CurrentUserResponse;
-import niffler.userdata.wsdl.DeclineInvitationRequest;
-import niffler.userdata.wsdl.DeclineInvitationResponse;
-import niffler.userdata.wsdl.FriendsRequest;
-import niffler.userdata.wsdl.FriendsResponse;
-import niffler.userdata.wsdl.InvitationsRequest;
-import niffler.userdata.wsdl.InvitationsResponse;
-import niffler.userdata.wsdl.RemoveFriendRequest;
-import niffler.userdata.wsdl.RemoveFriendResponse;
-import niffler.userdata.wsdl.UpdateUserInfoRequest;
-import niffler.userdata.wsdl.UpdateUserInfoResponse;
 
 public class NifflerUserdataWsService extends SoapService {
     public NifflerUserdataWsService() {

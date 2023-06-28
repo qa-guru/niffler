@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.graphql.UpdateUserInfoInput;
+import guru.qa.niffler.userdata.wsdl.Currency;
+import guru.qa.niffler.userdata.wsdl.User;
 import jakarta.validation.constraints.Size;
-import niffler.userdata.wsdl.Currency;
-import niffler.userdata.wsdl.User;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -110,8 +110,8 @@ public class UserJson {
         u.setCurrency(Currency.valueOf(getCurrency().name()));
         u.setPhoto(getPhoto());
         u.setFriendState(getFriendState() == null ?
-                niffler.userdata.wsdl.FriendState.VOID :
-                niffler.userdata.wsdl.FriendState.valueOf(getFriendState().name()));
+                guru.qa.niffler.userdata.wsdl.FriendState.VOID :
+                guru.qa.niffler.userdata.wsdl.FriendState.valueOf(getFriendState().name()));
         return u;
     }
 

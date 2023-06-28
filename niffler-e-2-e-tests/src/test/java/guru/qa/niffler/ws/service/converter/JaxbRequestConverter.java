@@ -9,17 +9,17 @@ import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
 import jakarta.xml.soap.SOAPPart;
 import okhttp3.RequestBody;
+import okhttp3.internal.annotations.EverythingIsNonNull;
 import org.w3c.dom.Document;
 import retrofit2.Converter;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLOutputFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 final class JaxbRequestConverter<T> implements Converter<T, RequestBody> {
-    final XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+
     final JAXBContext context;
     final Class<T> type;
 
@@ -29,6 +29,7 @@ final class JaxbRequestConverter<T> implements Converter<T, RequestBody> {
     }
 
     @Override
+    @EverythingIsNonNull
     public RequestBody convert(final T value) throws IOException {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();

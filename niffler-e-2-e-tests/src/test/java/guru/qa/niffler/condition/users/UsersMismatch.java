@@ -1,8 +1,8 @@
-package niffler.condition.users;
+package guru.qa.niffler.condition.users;
 
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.CollectionSource;
-import niffler.model.rest.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;

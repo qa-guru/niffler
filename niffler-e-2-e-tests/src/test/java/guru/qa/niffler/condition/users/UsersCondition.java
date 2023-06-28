@@ -1,9 +1,9 @@
-package niffler.condition.users;
+package guru.qa.niffler.condition.users;
 
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.impl.CollectionSource;
-import niffler.model.rest.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 

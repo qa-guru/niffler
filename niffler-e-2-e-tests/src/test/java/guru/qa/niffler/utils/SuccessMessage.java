@@ -1,4 +1,4 @@
-package niffler.utils;
+package guru.qa.niffler.utils;
 
 public enum SuccessMessage {
     FRIEND_DELETED("Friend is deleted!"),

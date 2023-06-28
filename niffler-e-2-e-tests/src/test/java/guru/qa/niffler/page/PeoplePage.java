@@ -1,9 +1,9 @@
-package niffler.page;
+package guru.qa.niffler.page;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.component.PeopleTable;
 import io.qameta.allure.Step;
-import niffler.page.component.PeopleTable;
 
 import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.Condition.text;

@@ -2,16 +2,16 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.model.rest.UserJson;
+import guru.qa.niffler.page.component.PeopleTable;
 import io.qameta.allure.Step;
-import niffler.model.rest.UserJson;
-import niffler.page.component.PeopleTable;
 
 import java.util.List;
 
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
-import static niffler.condition.users.UsersCondition.users;
+import static guru.qa.niffler.condition.users.UsersCondition.users;
 
 public class FriendsPage extends BasePage<FriendsPage> {
 

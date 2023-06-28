@@ -32,7 +32,7 @@ public class NifflerGatewayServiceConfig {
     @Bean
     public Jaxb2Marshaller marshaller() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setContextPath("niffler.userdata.wsdl");
+        marshaller.setContextPath("guru.qa.niffler.userdata.wsdl");
         return marshaller;
     }
 

@@ -1,8 +1,8 @@
-package niffler.page.component;
+package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.FriendsPage;
 import io.qameta.allure.Step;
-import niffler.page.FriendsPage;
 
 import static com.codeborne.selenide.Selenide.$;
 
