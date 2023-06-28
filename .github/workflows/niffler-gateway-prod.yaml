@@ -2,7 +2,7 @@ name: gateway_deploy_prod
 on:
   push:
     branches: 
-      - ci-prod
+      - master
     paths:
       - 'niffler-gateway/**'
       
@@ -21,7 +21,7 @@ jobs:
         run: |
          pwd
          bash ./docker-compose-dev-ci.sh
-         docker-compose up -d --force-recreate niffler-gateway
+         docker-compose up -d --force-recreate gateway.niffler.dc
          docker system prune  -a -f
          echo "done"
       - name: push
