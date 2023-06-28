@@ -4,6 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
@@ -20,13 +21,8 @@ public class PeopleTable extends BaseComponent<PeopleTable> {
     public SelenideElement getRowByUsername(String username) {
         ElementsCollection allRows = getAllRows();
         SelenideElement table = $(".table");
-        String s = table.innerHtml();
         table.shouldBe(Condition.visible);
-        return allRows
-                .stream()
-                .filter(r -> username.equals(getUsernameCell(r)))
-                .findFirst()
-                .orElseThrow();
+        return allRows.find(text(username));
     }
 
     public SelenideElement getUsernameCell(SelenideElement row) {
