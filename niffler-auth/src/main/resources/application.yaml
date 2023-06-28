@@ -38,9 +38,10 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
+    org.springframework.kafka: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
 #    org.springframework.boot.autoconfigure: DEBUG
 
 ---
@@ -48,6 +49,9 @@ spring:
   config:
     activate:
       on-profile: 'local'
+  kafka:
+    bootstrap-servers: 'localhost:9092'
+
   datasource:
     url: 'jdbc:postgresql://localhost:5432/niffler-auth'
   jpa:
@@ -62,6 +66,8 @@ spring:
   config:
     activate:
       on-profile: 'docker'
+  kafka:
+    bootstrap-servers: 'kafka:9092'
   datasource:
     url: 'jdbc:postgresql://5.161.223.157:5432/niffler-auth'
   jpa:

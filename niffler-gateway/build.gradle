@@ -1,12 +1,12 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.1'
+    id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'com.palantir.docker' version '0.34.0'
 }
 
 group 'guru.qa'
-version '0.0.3-SNAPSHOT'
+version '0.0.5-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -16,7 +16,7 @@ configurations {
     jaxb
 }
 
-task genJaxb {
+tasks.register('genJaxb') {
     ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
     ext.classesDir = "${buildDir}/classes/jaxb"
     ext.schema = "userdata.wsdl"
@@ -31,7 +31,7 @@ task genJaxb {
             mkdir(dir: classesDir)
 
             xjc(destdir: sourcesDir, schema: schema,
-                    package: "niffler.userdata.wsdl") {
+                    package: "guru.qa.niffler.userdata.wsdl") {
                 arg(value: "-wsdl")
                 produces(dir: sourcesDir, includes: "**/*.java")
             }
@@ -96,7 +96,7 @@ docker {
     noCache true
 }
 
-task dockerRmi(type: Exec) {
+tasks.register('dockerRmi', Exec) {
     workingDir "${buildDir}"
     commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'niffler')\n"
 }

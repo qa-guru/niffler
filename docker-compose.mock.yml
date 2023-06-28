@@ -1,0 +1,204 @@
+version: '3.9'
+
+services:
+  niffler-all-db:
+    container_name: niffler-all-db
+    image: postgres:15.1
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES="niffler-auth","niffler-currency","niffler-spend","niffler-userdata"
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    expose:
+      - "5432"
+    networks:
+      - test-network
+    dns_search: .
+
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:7.3.2
+    expose:
+      - "2181"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    networks:
+      - test-network
+    dns_search: .
+
+  kafka:
+    container_name: kafka
+    image: confluentinc/cp-kafka:7.3.2
+    expose:
+      - "9092"
+    depends_on:
+      zookeeper:
+        condition: service_started
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+    networks:
+      - test-network
+    dns_search: .
+
+  auth.niffler.dc:
+    container_name: auth.niffler.dc
+    image: dtuchs/niffler-auth:latest
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      niffler-all-db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - test-network
+    dns_search: .
+
+  currency.niffler.dc:
+    container_name: currency.niffler.dc
+    image: adven27/grpc-wiremock:latest              # https://github.com/Adven27/grpc-wiremock
+    volumes:
+      - ./wiremock/grpc:/wiremock                     #stubs
+      - ./niffler-grpc-common/src/main/proto:/proto   #proto
+    expose:
+      - "8888:8888"                                   # wiremock port
+      - "8092:8092"                                   # gRPC port
+    environment:
+      - "GRPC_SERVER_PORT=8092"
+    networks:
+      - test-network
+    dns_search: .
+
+  gateway.niffler.dc:
+    container_name: gateway.niffler.dc
+    image: dtuchs/niffler-gateway:latest
+    ports:
+      - "8090:8090"
+    depends_on:
+      auth.niffler.dc:
+        condition: service_healthy
+    networks:
+      - test-network
+    dns_search: .
+
+  spend.niffler.dc:
+    container_name: spend.niffler.dc
+    image: dtuchs/niffler-spend:latest
+    expose:
+      - "8093"
+    depends_on:
+      niffler-all-db:
+        condition: service_healthy
+    networks:
+      - test-network
+    dns_search: .
+
+#  userdata.niffler.dc:
+#    container_name: userdata.niffler.dc
+#    image: wiremock/wiremock:2.35.0
+#    ports:
+#      - "8089:8089"
+#    restart: always
+#    networks:
+#      - niffler-network
+#    command: [ "--port", "8089" ]
+#    volumes:
+#      - ./wiremock/rest:/home/wiremock
+#    dns_search: .
+
+  userdata.niffler.dc:
+    container_name: userdata.niffler.dc
+    image: dtuchs/niffler-userdata:latest
+    expose:
+      - "8089"
+    depends_on:
+      auth.niffler.dc:
+        condition: service_healthy
+    networks:
+      - test-network
+    dns_search: .
+
+  frontend.niffler.dc:
+    container_name: frontend.niffler.dc
+    image: dtuchs/niffler-frontend-test:latest
+    ports:
+      - "80:80"
+    depends_on:
+      gateway.niffler.dc:
+        condition: service_started
+    networks:
+      - test-network
+    dns_search: .
+
+  selenoid:
+    container_name: selenoid
+    image: aerokube/selenoid:1.10.12
+    platform: "${ARCH}"
+    volumes:
+      - ./selenoid:/etc/selenoid
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    command: [ "-conf", "/etc/selenoid/browsers.json", "-limit", "4", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "niffler_test-network" ]
+    ports:
+      - "4444:4444"
+    networks:
+      - test-network
+    dns_search: .
+
+  selenoid-ui:
+    container_name: selenoid-ui
+    image: aerokube/selenoid-ui:1.10.9
+    depends_on:
+      - selenoid
+    restart: unless-stopped
+    ports:
+      - "9090:8080"
+    command: [ "--selenoid-uri", "http://selenoid:4444" ]
+    networks:
+      - test-network
+    dns_search: .
+
+  niffler-e-2-e:
+    container_name: niffler-e-2-e
+    image: dtuchs/niffler-e-2-e-tests
+    depends_on:
+      frontend.niffler.dc:
+        condition: service_started
+    networks:
+      - test-network
+    dns_search: .
+
+  allure:
+    container_name: allure
+    image: frankescobar/allure-docker-service
+    depends_on:
+      - niffler-e-2-e
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 3
+      KEEP_HISTORY: 0
+    ports:
+      - "5050:5050"
+    networks:
+      - test-network
+    dns_search: .
+
+networks:
+  test-network:
+    driver: bridge

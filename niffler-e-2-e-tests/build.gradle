@@ -14,7 +14,7 @@ plugins {
 }
 
 group 'guru.qa'
-version '0.0.3-SNAPSHOT'
+version '0.0.5-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -33,7 +33,7 @@ configurations {
     jaxb
 }
 
-task genJaxb {
+tasks.register('genJaxb') {
     ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
     ext.classesDir = "${buildDir}/classes/jaxb"
     ext.schema = "userdata.wsdl"
@@ -48,7 +48,7 @@ task genJaxb {
             mkdir(dir: classesDir)
 
             xjc(destdir: sourcesDir, schema: schema,
-                    package: "niffler.userdata.wsdl") {
+                    package: "guru.qa.niffler.userdata.wsdl") {
                 arg(value: "-wsdl")
                 produces(dir: sourcesDir, includes: "**/*.java")
             }
@@ -122,11 +122,18 @@ dependencies {
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb 'org.glassfish.jaxb:jaxb-xjc:4.0.1'
+    // Kafka
+    testImplementation 'org.apache.kafka:kafka-clients:3.5.0'
+    // Wiremock
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.0'
+    testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
 }
 
 test {
     options {
         systemProperties(System.getProperties())
     }
+    testLogging.showStandardStreams = true
+    testLogging.exceptionFormat = 'full'
     useJUnitPlatform()
 }
