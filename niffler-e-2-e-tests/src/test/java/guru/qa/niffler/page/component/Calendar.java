@@ -8,6 +8,7 @@ import io.qameta.allure.Step;
 import java.time.Month;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
 import static com.codeborne.selenide.Selenide.$;
 import static java.util.Calendar.DAY_OF_MONTH;
@@ -30,9 +31,10 @@ public class Calendar extends BaseComponent<Calendar> {
         java.util.Calendar cal = new GregorianCalendar();
         cal.setTime(date);
         input.click();
+        final int desiredMonthIndex = cal.get(MONTH);
         selectYear(cal.get(YEAR));
-        selectMonth(cal.get(MONTH));
-        selectDay(cal.get(DAY_OF_MONTH));
+        selectMonth(desiredMonthIndex);
+        selectDay(desiredMonthIndex, cal.get(DAY_OF_MONTH));
     }
 
     private void selectYear(int expectedYear) {
@@ -50,28 +52,30 @@ public class Calendar extends BaseComponent<Calendar> {
         }
     }
 
-    private void selectMonth(int desiredMonth) {
-        int actualMonth = getActualMonth();
+    private void selectMonth(int desiredMonthIndex) {
+        int actualMonth = getActualMonthIndex();
 
-        while (actualMonth > desiredMonth) {
+        while (actualMonth > desiredMonthIndex) {
             prevButton.click();
             Selenide.sleep(200);
-            actualMonth = getActualMonth();
+            actualMonth = getActualMonthIndex();
         }
-        while (actualMonth < desiredMonth) {
+        while (actualMonth < desiredMonthIndex) {
             nextButton.click();
             Selenide.sleep(200);
-            actualMonth = getActualMonth();
+            actualMonth = getActualMonthIndex();
         }
     }
 
-    private void selectDay(int desiredDay) {
+    private void selectDay(int desiredMonthIndex, int desiredDay) {
         ElementsCollection rows = self.findAll(".react-datepicker__week").snapshot();
 
         for (SelenideElement row : rows) {
             ElementsCollection days = row.$$(".react-datepicker__day").snapshot();
             for (SelenideElement day : days) {
-                if (Integer.parseInt(day.getText()) == desiredDay) {
+                if (Objects.requireNonNull(day.getAttribute("aria-label"))
+                        .toUpperCase()
+                        .contains(getMonthNameByIndex(desiredMonthIndex)) && Integer.parseInt(day.getText()) == desiredDay) {
                     day.click();
                     return;
                 }
@@ -79,7 +83,11 @@ public class Calendar extends BaseComponent<Calendar> {
         }
     }
 
-    private int getActualMonth() {
+    private String getMonthNameByIndex(int mothIndex) {
+        return Month.of(mothIndex + 1).name();
+    }
+
+    private int getActualMonthIndex() {
         return Month.valueOf(currentMonthAndYear.getText()
                         .split(" ")[0]
                         .toUpperCase())
