@@ -2,7 +2,7 @@ name: currency_deploy_prod
 on:
   push:
     branches: 
-      - ci-prod
+      - master
     paths:
       - 'niffler-currency/**'
       
@@ -21,7 +21,7 @@ jobs:
         run: |
          pwd
          bash ./docker-compose-dev-ci.sh
-         docker-compose up -d --force-recreate niffler-currency
+         docker-compose up -d --force-recreate currency.niffler.dc
          docker system prune  -a -f
          echo "done"
       - name: push
