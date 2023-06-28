@@ -30,10 +30,10 @@ jobs:
          cp .env.dev .env.test
          docker system prune -a -f
          docker build . --build-arg NPM_COMMAND=${NPM_COMMAND} -t ${IMAGE_NAME}:latest
-         docker stop niffler-frontend 
+         docker stop frontend.niffler.dc 
       - name: deploy
         run : |
-         docker-compose up -d niffler-frontend
+         docker-compose up -d frontend.niffler.dc
          echo "done"
       - name: push
         run: |
