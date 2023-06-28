@@ -82,7 +82,7 @@ docker volume create pgdata
 ```posh
 docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -d postgres:15.1
 
-docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -e ZOOKEEPER_TICK_TIME=2000 -p 2181:2181 -d confluentinc/cp-zookeeper
+docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -e ZOOKEEPER_TICK_TIME=2000 -p 2181:2181 -d confluentinc/cp-zookeeper:7.3.2
 
 Zookeeper_Server_IP=$(docker inspect zookeeper --format='{{ .NetworkSettings.IPAddress }}')
 
@@ -95,8 +95,6 @@ docker run --name=kafka -e KAFKA_BROKER_ID=1 \
 -p 9092:9092 -d confluentinc/cp-kafka:7.3.2
 ```
 
-
-
 https://github.com/confluentinc/cp-docker-images/issues/801#issuecomment-692085103
 
 #### 5. Установить одну из программ для визуальной работы с Postgres
@@ -107,13 +105,13 @@ https://github.com/confluentinc/cp-docker-images/issues/801#issuecomment-6920851
 
 ```sql
 create
-database "niffler-userdata" with owner postgres;
+    database "niffler-userdata" with owner postgres;
 create
-database "niffler-spend" with owner postgres;
+    database "niffler-spend" with owner postgres;
 create
-database "niffler-currency" with owner postgres;
+    database "niffler-currency" with owner postgres;
 create
-database "niffler-auth" with owner postgres;
+    database "niffler-auth" with owner postgres;
 ```
 
 #### 7. Установить Java версии 17 или новее. Это необходимо, т.к. проект не поддерживает версии <17
@@ -187,9 +185,12 @@ Dmitriis-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.act
 
 #### 3. Выполнить docker login с созданным access_token (в инструкции это описано)
 
-#### 4. Прописать в etc/hosts элиас для Docker-имени 
-#### frontend:  127.0.0.1 frontend.niffler.dc, 
+#### 4. Прописать в etc/hosts элиас для Docker-имени
+
+#### frontend:  127.0.0.1 frontend.niffler.dc,
+
 #### auth:      127.0.0.1 auth.niffler.dc
+
 #### gateway:   127.0.0.1 gateway.niffler.dc
 
 ```posh

@@ -33,7 +33,7 @@ final class JaxbResponseConverter<T> implements Converter<ResponseBody, T> {
 
     @Override
     @EverythingIsNonNull
-    public  @Nonnull T convert(ResponseBody value) throws IOException {
+    public @Nonnull T convert(ResponseBody value) throws IOException {
         try (value; Reader reader = value.charStream()) {
             SOAPMessage response = MessageFactory.newInstance().createMessage(null, new ReaderInputStream(reader, Charsets.UTF_8));
             Document responseDoc = response.getSOAPBody().extractContentAsDocument();
