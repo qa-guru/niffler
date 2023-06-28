@@ -7,23 +7,23 @@ import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.UserJson;
+import guru.qa.niffler.userdata.wsdl.AcceptInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.AcceptInvitationResponse;
+import guru.qa.niffler.userdata.wsdl.AddFriendRequest;
+import guru.qa.niffler.userdata.wsdl.AddFriendResponse;
+import guru.qa.niffler.userdata.wsdl.DeclineInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.DeclineInvitationResponse;
+import guru.qa.niffler.userdata.wsdl.Friend;
+import guru.qa.niffler.userdata.wsdl.FriendState;
+import guru.qa.niffler.userdata.wsdl.FriendsRequest;
+import guru.qa.niffler.userdata.wsdl.FriendsResponse;
+import guru.qa.niffler.userdata.wsdl.InvitationsRequest;
+import guru.qa.niffler.userdata.wsdl.InvitationsResponse;
+import guru.qa.niffler.userdata.wsdl.RemoveFriendRequest;
+import guru.qa.niffler.userdata.wsdl.RemoveFriendResponse;
 import guru.qa.niffler.ws.NifflerUserdataWsService;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
-import niffler.userdata.wsdl.AcceptInvitationRequest;
-import niffler.userdata.wsdl.AcceptInvitationResponse;
-import niffler.userdata.wsdl.AddFriendRequest;
-import niffler.userdata.wsdl.AddFriendResponse;
-import niffler.userdata.wsdl.DeclineInvitationRequest;
-import niffler.userdata.wsdl.DeclineInvitationResponse;
-import niffler.userdata.wsdl.Friend;
-import niffler.userdata.wsdl.FriendState;
-import niffler.userdata.wsdl.FriendsRequest;
-import niffler.userdata.wsdl.FriendsResponse;
-import niffler.userdata.wsdl.InvitationsRequest;
-import niffler.userdata.wsdl.InvitationsResponse;
-import niffler.userdata.wsdl.RemoveFriendRequest;
-import niffler.userdata.wsdl.RemoveFriendResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -58,17 +58,17 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         final FriendsResponse friendsResponse = nus.friendsRequest(fr);
 
-        List<niffler.userdata.wsdl.User> friends = friendsResponse.getUser();
+        List<guru.qa.niffler.userdata.wsdl.User> friends = friendsResponse.getUser();
 
         step("Check that response contains expected users", () ->
                 assertEquals(1, friends.size())
         );
 
-        Optional<niffler.userdata.wsdl.User> friend = friends.stream()
+        Optional<guru.qa.niffler.userdata.wsdl.User> friend = friends.stream()
                 .filter(u -> u.getFriendState() == FriendState.FRIEND)
                 .findFirst();
 
-        Optional<niffler.userdata.wsdl.User> invitation = friends.stream()
+        Optional<guru.qa.niffler.userdata.wsdl.User> invitation = friends.stream()
                 .filter(u -> u.getFriendState() == FriendState.INVITE_SENT)
                 .findFirst();
 
@@ -95,17 +95,17 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         final FriendsResponse friendsResponse = nus.friendsRequest(fr);
 
-        List<niffler.userdata.wsdl.User> friends = friendsResponse.getUser();
+        List<guru.qa.niffler.userdata.wsdl.User> friends = friendsResponse.getUser();
 
         step("Check that response contains expected users", () ->
                 assertEquals(2, friends.size())
         );
 
-        Optional<niffler.userdata.wsdl.User> friend = friends.stream()
+        Optional<guru.qa.niffler.userdata.wsdl.User> friend = friends.stream()
                 .filter(u -> u.getFriendState() == FriendState.FRIEND)
                 .findFirst();
 
-        Optional<niffler.userdata.wsdl.User> invitation = friends.stream()
+        Optional<guru.qa.niffler.userdata.wsdl.User> invitation = friends.stream()
                 .filter(u -> u.getFriendState() == FriendState.INVITE_SENT)
                 .findFirst();
 
@@ -135,13 +135,13 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         final InvitationsResponse invitationsResponse = nus.invitationsRequest(ir);
 
-        List<niffler.userdata.wsdl.User> invitations = invitationsResponse.getUser();
+        List<guru.qa.niffler.userdata.wsdl.User> invitations = invitationsResponse.getUser();
 
         step("Check that response contains expected invitations", () ->
                 assertEquals(1, invitations.size())
         );
 
-        niffler.userdata.wsdl.User invitation = invitationsResponse.getUser().get(0);
+        guru.qa.niffler.userdata.wsdl.User invitation = invitationsResponse.getUser().get(0);
 
         step("Check invitation in response", () -> {
             assertEquals(user.getInvitationsJsons().get(0).getUsername(), invitation.getUsername());
@@ -164,7 +164,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         final AcceptInvitationResponse acceptInvitationResponse = nus.acceptInvitationRequest(air);
 
-        niffler.userdata.wsdl.User friend = acceptInvitationResponse.getUser().get(0);
+        guru.qa.niffler.userdata.wsdl.User friend = acceptInvitationResponse.getUser().get(0);
 
         step("Check friend in response", () -> {
             assertEquals(user.getInvitationsJsons().get(0).getUsername(), friend.getUsername());
@@ -206,7 +206,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         final DeclineInvitationResponse declineInvitationResponse = nus.declineInvitationRequest(dir);
 
-        List<niffler.userdata.wsdl.User> invitations = declineInvitationResponse.getUser();
+        List<guru.qa.niffler.userdata.wsdl.User> invitations = declineInvitationResponse.getUser();
 
         step("Check that no invitation present in response", () -> assertTrue(invitations.isEmpty()));
 
@@ -243,7 +243,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         final AddFriendResponse addFriendResponse = nus.addFriendRequest(afr);
 
-        niffler.userdata.wsdl.User invitation = addFriendResponse.getUser();
+        guru.qa.niffler.userdata.wsdl.User invitation = addFriendResponse.getUser();
 
         step("Check invitation in response", () -> {
             assertEquals(friendWillBeAdded, invitation.getUsername());
@@ -286,7 +286,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         final RemoveFriendResponse removeFriendResponse = nus.removeFriendRequest(rfr);
 
-        List<niffler.userdata.wsdl.User> friends = removeFriendResponse.getUser();
+        List<guru.qa.niffler.userdata.wsdl.User> friends = removeFriendResponse.getUser();
 
         step("Check that no friends present in response", () -> assertTrue(friends.isEmpty()));
 

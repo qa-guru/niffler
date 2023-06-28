@@ -1,10 +1,10 @@
 package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import guru.qa.niffler.userdata.wsdl.Friend;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import niffler.userdata.wsdl.Friend;
 
 public class FriendJson {
     @NotNull(message = "Username can not be null")

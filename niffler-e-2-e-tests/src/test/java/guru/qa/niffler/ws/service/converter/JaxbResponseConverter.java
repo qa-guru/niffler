@@ -8,6 +8,7 @@ import jakarta.xml.soap.MessageFactory;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
 import okhttp3.ResponseBody;
+import okhttp3.internal.annotations.EverythingIsNonNull;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.w3c.dom.Document;
 import retrofit2.Converter;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 final class JaxbResponseConverter<T> implements Converter<ResponseBody, T> {
+
     final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
     final JAXBContext context;
     final Class<T> type;
@@ -30,7 +32,8 @@ final class JaxbResponseConverter<T> implements Converter<ResponseBody, T> {
     }
 
     @Override
-    public @Nonnull T convert(@Nonnull ResponseBody value) throws IOException {
+    @EverythingIsNonNull
+    public  @Nonnull T convert(ResponseBody value) throws IOException {
         try (value; Reader reader = value.charStream()) {
             SOAPMessage response = MessageFactory.newInstance().createMessage(null, new ReaderInputStream(reader, Charsets.UTF_8));
             Document responseDoc = response.getSOAPBody().extractContentAsDocument();

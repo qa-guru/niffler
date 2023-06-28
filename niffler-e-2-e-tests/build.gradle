@@ -48,7 +48,7 @@ tasks.register('genJaxb') {
             mkdir(dir: classesDir)
 
             xjc(destdir: sourcesDir, schema: schema,
-                    package: "niffler.userdata.wsdl") {
+                    package: "guru.qa.niffler.userdata.wsdl") {
                 arg(value: "-wsdl")
                 produces(dir: sourcesDir, includes: "**/*.java")
             }
