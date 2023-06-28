@@ -2,7 +2,7 @@ name: userdata_deploy_prod
 on:
   push:
     branches: 
-      - ci-prod
+      - master
     paths:
       - 'niffler-userdata/**'
       
@@ -21,7 +21,7 @@ jobs:
         run: |
          pwd
          bash ./docker-compose-dev-ci.sh
-         docker-compose up -d --force-recreate niffler-userdata
+         docker-compose up -d --force-recreate userdata.niffler.dc
          docker system prune  -a -f
          echo "done"
       - name: push
