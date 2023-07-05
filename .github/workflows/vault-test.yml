@@ -15,8 +15,6 @@ jobs:
           token: $ {{ secrets.VAULT_TOKEN }}
           tlsSkipVerify: true
           caCertificate: $ {{ secrets.VAULT_CA_CERT }}
-          secrets: |
-            /kv/secret anothersecret ;
       - name: show secrets
         run: |
           echo "${{ toJson(steps.import-secrets.outputs) }}"
