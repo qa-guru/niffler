@@ -16,8 +16,6 @@ jobs:
           tlsSkipVerify: true
           caCertificate: $ {{ secrets.VAULT_CA_CERT }}
           secrets: |
-            kv/secret/gh ;
-            kv/data/secret/gh ;
             kv/data/secret/gh ghsecret ;
             kv/secret/gh ghsecret ;
       - name: show secrets
