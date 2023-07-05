@@ -12,7 +12,7 @@ jobs:
         uses: hashicorp/vault-action@v2
         with:
           url: https://vault.qa.guru
-          token: \${{ secrets.VAULT_TOKEN }}
+          token: ${{ secrets.VAULT_TOKEN }}
           tlsSkipVerify: true
           secrets: |
             secret/data/ci app_secret
