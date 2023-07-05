@@ -16,7 +16,7 @@ jobs:
           tlsSkipVerify: true
           caCertificate: $ {{ secrets.VAULT_CA_CERT }}
           secrets: |
-            kv/secret/gh ghsecret | SECRET;
+            secret/sec wow | SECRET;
       - name: show secrets
         run: |
           echo $SECRET
