@@ -15,7 +15,6 @@ jobs:
           token: $ {{ secrets.VAULT_TOKEN }}
           caCertificate: $ {{ secrets.VAULT_CA_CERT }}
           secrets: |
-            kv/secret secret
             kv/data/secret secret
             kv/secret/data secret
       - name: show secrets
