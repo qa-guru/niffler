@@ -15,7 +15,7 @@ jobs:
           token: ${{ secrets.VAULT_TOKEN }}
           tlsSkipVerify: true
           secrets: |
-            secret/data/ci app_secret
+            secret/ci app_secret
       - name: show secrets
         run: |
           echo "${{ toJson(steps.import-secrets.outputs) }}"
