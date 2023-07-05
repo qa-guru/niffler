@@ -16,6 +16,12 @@ jobs:
           tlsSkipVerify: true
           caCertificate: $ {{ secrets.VAULT_CA_CERT }}
           secrets: |
+            /cubbyhole/data/path/secret secret;
+            /cubbyhole/path/secret secret;
+            /cubbyhole/path secret ;
+            /cubbyhole/data/path secret;
+            /cubbyhole/path/data/secret secret ;
+            /subbyhole/path/data secret;
             /kv/data/secret secret ;
       - name: show secrets
         run: |
