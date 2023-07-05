@@ -12,11 +12,10 @@ jobs:
         uses: hashicorp/vault-action@v2
         with:
           url: https://vault.qa.guru
-          token: $ {{ secrets.VAULT_TOKEN }}
-          caCertificate: $ {{ secrets.VAULT_CA_CERT }}
+          token: \${{ secrets.VAULT_TOKEN }}
+          tlsSkipVerify: true
           secrets: |
-            secret/sec wow | SECRET;
+            secret/data/ci app_secret
       - name: show secrets
         run: |
-          echo $SECRET
           echo "${{ toJson(steps.import-secrets.outputs) }}"
