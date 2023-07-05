@@ -9,6 +9,7 @@ jobs:
     runs-on: prod-runner
     steps:
       - name: import secrets
+        id: import-secrets
         uses: hashicorp/vault-action@v2
         with:
           url: https://vault.qa.guru
@@ -18,6 +19,7 @@ jobs:
             secret/ci app_secret | SECRET
       - name: show secrets
         run: |
+          echo "${{ steps.import-secrets.outputs.SECRET }}"
           touch secrets.json
           echo "${{ toJson(steps.import-secrets.outputs) }}" >> secrets.json
           cat secrets.json
