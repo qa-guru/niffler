@@ -1,0 +1,23 @@
+name: vault_test
+on:
+  push:
+    branches: 
+      - ci-prod
+      
+jobs:
+  build:
+    runs-on: prod-runner
+    steps:
+      - name: import secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: https://vault.qa.guru
+          token: $ {{ secrets.VAULT_TOKEN }}
+          caCertificate: $ {{ secrets.VAULT_CA_CERT }}
+          secrets: |
+            kv/secret secret
+            kv/data/secret secret
+            kv/secret/data secret
+      - name: show secrets
+        run: |
+          echo "${{ toJson(steps.import-secrets.outputs) }}"
