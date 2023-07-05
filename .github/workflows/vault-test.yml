@@ -13,7 +13,6 @@ jobs:
         with:
           url: https://vault.qa.guru
           token: $ {{ secrets.VAULT_TOKEN }}
-          tlsSkipVerify: true
           caCertificate: $ {{ secrets.VAULT_CA_CERT }}
           secrets: |
             secret/sec wow | SECRET;
