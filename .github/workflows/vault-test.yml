@@ -19,9 +19,9 @@ jobs:
             secret/ci app_secret | SECRET
       - name: show secrets
         run: |
-          echo "$ {{ env.SECRET }}"
-          echo "${{ steps.import-secrets.outputs.SECRET }}"
+          echo $ {{ env.SECRET }}
+          echo ${{ steps.import-secrets.outputs.SECRET }}
           touch secrets.json
-          echo "${{ toJson(steps.import-secrets.outputs) }}" >> secrets.json
+          echo ${{ toJson(steps.import-secrets.outputs) }} > secrets.json
           cat secrets.json
           echo $SECRET
