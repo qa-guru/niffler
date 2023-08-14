@@ -130,7 +130,7 @@ services:
 
   frontend.niffler.dc:
     container_name: frontend.niffler.dc
-    image: dtuchs/niffler-frontend:latest
+    image: "${FRONT_IMAGE}"
     ports:
       - "80:80"
     restart: always

@@ -110,18 +110,18 @@ services:
       - test-network
     dns_search: .
 
-#  userdata.niffler.dc:
-#    container_name: userdata.niffler.dc
-#    image: wiremock/wiremock:2.35.0
-#    ports:
-#      - "8089:8089"
-#    restart: always
-#    networks:
-#      - niffler-network
-#    command: [ "--port", "8089" ]
-#    volumes:
-#      - ./wiremock/rest:/home/wiremock
-#    dns_search: .
+  #  userdata.niffler.dc:
+  #    container_name: userdata.niffler.dc
+  #    image: wiremock/wiremock:2.35.0
+  #    ports:
+  #      - "8089:8089"
+  #    restart: always
+  #    networks:
+  #      - niffler-network
+  #    command: [ "--port", "8089" ]
+  #    volumes:
+  #      - ./wiremock/rest:/home/wiremock
+  #    dns_search: .
 
   userdata.niffler.dc:
     container_name: userdata.niffler.dc
@@ -137,7 +137,7 @@ services:
 
   frontend.niffler.dc:
     container_name: frontend.niffler.dc
-    image: dtuchs/niffler-frontend-test:latest
+    image: "${FRONT_IMAGE}"
     ports:
       - "80:80"
     depends_on:

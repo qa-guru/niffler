@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,13 +30,13 @@ public class SecurityConfigLocal {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         corsCustomizer.corsCustomizer(http);
 
-        http.csrf().disable().authorizeHttpRequests()
-                .requestMatchers("/actuator/health", "/graphiql/**", "/graphql/**", "/favicon.ico").permitAll()
-                .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
-                .anyRequest()
-                .authenticated().and()
-                .oauth2ResourceServer()
-                .jwt();
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(ahr ->
+                        ahr.requestMatchers("/actuator/health", "/graphiql/**", "/graphql/**", "/favicon.ico").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
+                                .anyRequest()
+                                .authenticated()
+                ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }
 }

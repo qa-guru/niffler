@@ -122,7 +122,7 @@ services:
 
   frontend.niffler.dc:
     container_name: frontend.niffler.dc
-    image: dtuchs/niffler-frontend-test:latest
+    image: "${FRONT_IMAGE}"
     ports:
       - "80:80"
     depends_on:
