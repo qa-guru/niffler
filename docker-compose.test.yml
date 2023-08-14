@@ -11,7 +11,7 @@ services:
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d
     healthcheck:
-      test: [ "CMD", "pg_isready -U postgres" ]
+      test: [ "CMD", "pg_isready" ]
       interval: 3s
       timeout: 3s
       retries: 5
