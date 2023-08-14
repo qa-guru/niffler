@@ -129,6 +129,10 @@ dependencies {
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
 }
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 test {
     options {
         systemProperties(System.getProperties())

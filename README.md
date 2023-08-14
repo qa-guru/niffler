@@ -34,6 +34,14 @@
 
 **Минимальные предусловия для работы с проектом Niffler**
 
+#### 0. Если у вас ОС Windows
+
+Во-первых, и в-главных, необходимо использовать bash terminal, а не powershell.
+Во-вторых, для запуска фронтенда локально необходимо использовать команду
+`npm run build:windows`, если не работает стандартная команда `npm run build:dev`
+В-третьих, если у вас что-то не работает - пишите в TG чат группы - будем вместе дополнять README, т.к. изначально
+проект разработан под nix
+
 #### 1. Установить docker (Если не установлен)
 
 Мы будем использовать docker для БД (Postgres), кроме того, будем запускать микросервисы в едином docker network при
@@ -87,7 +95,7 @@ docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -e ZOOKEEPER_TICK_TIME
 Zookeeper_Server_IP=$(docker inspect zookeeper --format='{{ .NetworkSettings.IPAddress }}')
 
 docker run --name=kafka -e KAFKA_BROKER_ID=1 \
--e KAFKA_ZOOKEEPER_CONNECT=${Zookeeper_Server_IP}:2181 \
+-e KAFKA_ZOOKEEPER_CONNECT=$(docker inspect zookeeper --format='{{ .NetworkSettings.IPAddress }}'):2181 \
 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
 -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
