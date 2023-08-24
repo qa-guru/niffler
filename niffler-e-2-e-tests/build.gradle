@@ -2,8 +2,8 @@ buildscript {
     ext {
         protobufVersion = '3.21.12'
         grpcVersion = '1.52.1'
-        allureVersion = '2.21.0'
-        selenideVersion = '6.13.0'
+        allureVersion = '2.23.0'
+        selenideVersion = '6.17.1'
     }
 }
 
@@ -102,7 +102,6 @@ dependencies {
         exclude group: 'com.codeborne'
     }
     testImplementation "io.qameta.allure:allure-okhttp3:${allureVersion}"
-    testImplementation "io.qameta.allure:allure-selenide:${allureVersion}"
     testImplementation "io.qameta.allure:allure-grpc:${allureVersion}"
     // WEB
     testImplementation "com.codeborne:selenide:${selenideVersion}"
