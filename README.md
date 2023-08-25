@@ -256,9 +256,10 @@ Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh
 ```posh
 Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh gql
 ```
+Текущая версия docker-compose-dev.sh удалит все старые Docker контейнеры в системе, поэтому если у вас есть созданные контейнеры для других проектов - отредактируйте строку ```posh docker rm $(docker ps -a -q)```, чтобы включить в grep только те контейнеры, что непосредственно относятся к niffler. 
 
-Niffler при запуске в докере будет работать для вас по адресу http://niffler-frontend:80/, этот порт НЕ НУЖНО указывать
-в браузере, таким образом переходить напрямую по ссылке http://niffler-frontend/
+Niffler при запуске в докере будет работать для вас по адресу http://frontend.niffler.dc:80, этот порт НЕ НУЖНО указывать
+в браузере, таким образом переходить напрямую по ссылке http://frontend.niffler.dc
 *ВАЖНО!* из docker-network Вам будут доступны только следующие порты:
 
 - порт 80 (все запросы с него перенаправляются nginx-ом на frontend)
