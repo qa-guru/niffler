@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.11.2'
+}
+
+group = 'com.github.dtitar'
+version = '0.0.6-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+def junitVersion = '5.9.2',
+    selenideVersion = '6.13.0',
+    retrofitVersion = '2.9.0',
+    loggingInterceptorVersion = '3.14.9',
+    ownerVersion = '1.0.12',
+    allureVersion = '2.21.0'
+
+allure {
+    version.set("${allureVersion}")
+    adapter {
+        aspectjVersion.set("1.9.19")
+        autoconfigure.set(true)
+        aspectjWeaver.set(true)
+    }
+}
+
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+    // CONFIG
+    testImplementation "org.aeonbits.owner:owner-java8:${ownerVersion}"
+    // REST
+    testImplementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    testImplementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
+    testImplementation "com.squareup.okhttp3:logging-interceptor:${loggingInterceptorVersion}"
+    // WEB
+    testImplementation "com.codeborne:selenide:${selenideVersion}"
+    //Allure
+    testImplementation "io.qameta.allure:allure-attachments:${allureVersion}"
+    testImplementation("io.qameta.allure:allure-junit5:${allureVersion}") {
+        exclude group: "org.junit.jupiter-api"
+        exclude group: "org.junit.platform"
+        exclude group: "org.junit.jupiter"
+    }
+    testImplementation "io.qameta.allure:allure-selenide:${allureVersion}"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    options {
+        systemProperties(System.getProperties())
+    }
+    testLogging.showStandardStreams = true
+    testLogging.exceptionFormat = 'full'
+    useJUnitPlatform()
+}
