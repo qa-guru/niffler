@@ -8,19 +8,23 @@ import org.aeonbits.owner.Config;
 })
 public interface AppConfig extends Config {
 
+    @Key("web.frontUrl")
     String frontUrl();
 
+    @Key("api.gatewayUrl")
     String gatewayUrl();
-
+    @Key("api.userdataUrl")
     String userdataUrl();
-
-    String currencyGrpcAddress();
-
+    @Key("api.spendUrl")
     String spendUrl();
-
+    @Key("api.authUrl")
     String authUrl();
 
-    String databaseAddress();
+    @Key("grpc.currencyAddress")
+    String currencyGrpcAddress();
 
+    @Key("db.address")
+    String databaseAddress();
+    @Key("kafka.address")
     String kafkaAddress();
 }

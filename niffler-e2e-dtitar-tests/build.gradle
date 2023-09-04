@@ -44,6 +44,7 @@ dependencies {
         exclude group: "org.junit.jupiter"
     }
     testImplementation "io.qameta.allure:allure-selenide:${allureVersion}"
+    testImplementation "io.qameta.allure:allure-okhttp3:${allureVersion}"
 }
 
 tasks.withType(JavaCompile) {
