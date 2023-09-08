@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'io.qameta.allure' version '2.11.2'
+    id 'io.qameta.allure-adapter' version '2.11.2'
 }
 
 group = 'com.github.dtitar'
@@ -11,11 +12,12 @@ repositories {
 }
 
 def junitVersion = '5.9.2',
-    selenideVersion = '6.13.0',
+    selenideVersion = '6.18.0',
     retrofitVersion = '2.9.0',
     loggingInterceptorVersion = '3.14.9',
     ownerVersion = '1.0.12',
-    allureVersion = '2.21.0'
+    allureVersion = '2.21.0',
+    javaFakerVersion = '1.0.2'
 
 allure {
     version.set("${allureVersion}")
@@ -45,6 +47,9 @@ dependencies {
     }
     testImplementation "io.qameta.allure:allure-selenide:${allureVersion}"
     testImplementation "io.qameta.allure:allure-okhttp3:${allureVersion}"
+
+    // Utils
+    testImplementation "com.github.javafaker:javafaker:${javaFakerVersion}"
 }
 
 tasks.withType(JavaCompile) {
