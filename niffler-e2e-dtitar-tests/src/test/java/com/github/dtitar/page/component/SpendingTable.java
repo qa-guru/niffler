@@ -9,16 +9,21 @@ import io.qameta.allure.Step;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.github.dtitar.condition.spend.SpendCondition.spends;
 
 public class SpendingTable extends BaseComponent<SpendingTable> {
 
     private final ElementsCollection spendingButtons = self.$$(".spendings__buttons button");
+    private final SelenideElement tableBody = self.$(".spendings__content tbody");
+    private final SelenideElement deleteSelectedButton = self.$(byText("Delete selected"));
 
     public SpendingTable() {
-        super($(".main-content__section-history"));
+        super($("section[class*='main-content__section-history']"));
     }
 
     @Step("Click by button {0}")
@@ -31,13 +36,16 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
 
     @Step("Check that table contains data {0}")
     public SpendingTable checkTableContains(SpendJson... expectedSpends) {
-        self.$$("tbody tr").should(spends(expectedSpends));
+        self.$$("tbody tr")
+                .should(spends(expectedSpends));
         return this;
     }
 
     public SpendingTable editSpending(int row, SpendJson editedSpending) {
-        SelenideElement rowElement = self.$$("tbody tr").get(row);
-        rowElement.$(".button-icon_type_edit").click();
+        SelenideElement rowElement = self.$$("tbody tr")
+                .get(row);
+        rowElement.$(".button-icon_type_edit")
+                .click();
         setSpendingAmount(rowElement, editedSpending.getAmount());
         setSpendingDescription(rowElement, editedSpending.getDescription());
         setSpendingCategory(rowElement, editedSpending.getCategory());
@@ -46,16 +54,26 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
         return this;
     }
 
-    public SpendingTable deleteSpending() {
+    public SpendingTable deleteSpending(String spendDescription) {
+        tableBody
+                .$$("tr")
+                .find(text(spendDescription))
+                .$$("td")
+                .first()
+                .scrollTo()
+                .click();
+        deleteSelectedButton.click();
         return this;
     }
 
     private void setSpendingAmount(SelenideElement row, Double amount) {
-        row.$("input[name=amount]").setValue(String.valueOf(amount));
+        row.$("input[name=amount]")
+                .setValue(String.valueOf(amount));
     }
 
     private void setSpendingDescription(SelenideElement row, String description) {
-        row.$("input[name=description]").setValue(String.valueOf(description));
+        row.$("input[name=description]")
+                .setValue(String.valueOf(description));
     }
 
     private void setSpendingDate(SelenideElement row, Date date) {
@@ -68,11 +86,23 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
     }
 
     private void setSpendingCategory(SelenideElement row, String category) {
-        row.$("input[id^='react-select']").scrollIntoView(false).setValue(category);
-        row.$$("div[id^='react-select']").find(exactText(category)).click();
+        row.$("input[id^='react-select']")
+                .scrollIntoView(false)
+                .setValue(category);
+        row.$$("div[id^='react-select']")
+                .find(exactText(category))
+                .click();
     }
 
     private void submitEditSpending(SelenideElement row) {
-        row.$(".button-icon_type_submit").click();
+        row.$(".button-icon_type_submit")
+                .click();
+    }
+
+    public SpendingTable checkSpendingTableIsEmpty() {
+        tableBody
+                .$$("tr")
+                .shouldHave(size(0));
+        return this;
     }
 }
