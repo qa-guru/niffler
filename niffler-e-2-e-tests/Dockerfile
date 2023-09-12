@@ -10,4 +10,4 @@ COPY ./niffler-grpc-common ./niffler-grpc-common
 COPY ./build.gradle ./
 COPY ./settings.gradle ./
 
-CMD chmod +x ./niffler-e-2-e-tests/send_results.sh; ./gradlew test -Dtest.env=docker; bash ./niffler-e-2-e-tests/send_results.sh
+CMD chmod +x ./niffler-e-2-e-tests/send_results.sh; ./gradlew test -Dtest.env=docker -Drepository=jpa; bash ./niffler-e-2-e-tests/send_results.sh

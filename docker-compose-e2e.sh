@@ -48,7 +48,7 @@ fi
 cd "$front" || exit
 bash ./docker-build.sh test
 cd ../ || exit
-docker pull selenoid/vnc_chrome:110.0
+docker pull selenoid/vnc_chrome:116.0
 docker images
 ARCH="$docker_arch" FRONT_IMAGE="$front_image" docker-compose -f docker-compose.test.yml up -d
 docker ps -a

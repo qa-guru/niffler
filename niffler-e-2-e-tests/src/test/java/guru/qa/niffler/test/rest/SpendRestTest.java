@@ -5,7 +5,6 @@ import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.Spend;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.extension.CreateUserExtension;
 import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
@@ -15,6 +14,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -36,7 +36,7 @@ public class SpendRestTest extends BaseRestTest {
     @DisplayName("REST: При создании нового spend возвращается ID из niffler-spend")
     @ParameterizedTest(name = "Тестовые данные для запроса: {0}")
     @Tag("REST")
-    void apiShouldReturnIdOfCreatedSpend(@Spend SpendJson spend, @User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void apiShouldReturnIdOfCreatedSpend(@Spend SpendJson spend, @User(selector = METHOD) UserJson user) throws Exception {
         spend.setUsername(user.getUsername());
         final SpendJson created = nsc.createSpend(spend);
 

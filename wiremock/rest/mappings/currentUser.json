@@ -1,14 +1,14 @@
 {
   "request": {
     "method": "GET",
-    "url": "/currentUser?username=valentin4"
+    "url": "/currentUser?username=dima"
   },
   "response": {
     "status": 200,
     "jsonBody": {
       "id": "229fc371-2821-4795-81a5-0b26d3cd417e",
-      "username": "valentin4",
-      "firstname": "Valentin",
+      "username": "dima",
+      "firstname": "dima",
       "surname": null,
       "currency": "RUB",
       "photo": null

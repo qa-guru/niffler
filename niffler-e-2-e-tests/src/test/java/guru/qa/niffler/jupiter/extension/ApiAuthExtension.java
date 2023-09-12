@@ -18,7 +18,7 @@ import org.openqa.selenium.Cookie;
 
 import java.util.Objects;
 
-import static guru.qa.niffler.jupiter.extension.CreateUserExtension.API_LOGIN_USERS_NAMESPACE;
+import static guru.qa.niffler.jupiter.extension.AbstractCreateUserExtension.API_LOGIN_USERS_NAMESPACE;
 
 public class ApiAuthExtension implements BeforeEachCallback {
 

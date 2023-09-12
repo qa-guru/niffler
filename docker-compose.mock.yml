@@ -110,30 +110,30 @@ services:
       - test-network
     dns_search: .
 
-  #  userdata.niffler.dc:
-  #    container_name: userdata.niffler.dc
-  #    image: wiremock/wiremock:2.35.0
-  #    ports:
-  #      - "8089:8089"
-  #    restart: always
-  #    networks:
-  #      - niffler-network
-  #    command: [ "--port", "8089" ]
-  #    volumes:
-  #      - ./wiremock/rest:/home/wiremock
-  #    dns_search: .
-
   userdata.niffler.dc:
     container_name: userdata.niffler.dc
-    image: dtuchs/niffler-userdata:latest
-    expose:
-      - "8089"
-    depends_on:
-      auth.niffler.dc:
-        condition: service_healthy
+    image: wiremock/wiremock:2.35.0
+    ports:
+      - "8089:8089"
+    restart: always
     networks:
       - test-network
+    command: [ "--port", "8089" ]
+    volumes:
+      - ./wiremock/rest:/home/wiremock
     dns_search: .
+
+  #  userdata.niffler.dc:
+  #    container_name: userdata.niffler.dc
+  #    image: dtuchs/niffler-userdata:latest
+  #    expose:
+  #      - "8089"
+  #    depends_on:
+  #      auth.niffler.dc:
+  #        condition: service_healthy
+  #    networks:
+  #      - test-network
+  #    dns_search: .
 
   frontend.niffler.dc:
     container_name: frontend.niffler.dc

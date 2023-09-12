@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @EnableWebSecurity
 @Configuration
 @Profile("local")
@@ -32,8 +34,13 @@ public class SecurityConfigLocal {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(ahr ->
-                        ahr.requestMatchers("/actuator/health", "/graphiql/**", "/graphql/**", "/favicon.ico").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
+                        ahr.requestMatchers(
+                                        antMatcher("/actuator/health"),
+                                        antMatcher("/graphiql/**"),
+                                        antMatcher("/graphql/**"),
+                                        antMatcher("/favicon.ico"),
+                                        antMatcher(HttpMethod.POST, "/graphql")
+                                ).permitAll()
                                 .anyRequest()
                                 .authenticated()
                 ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));

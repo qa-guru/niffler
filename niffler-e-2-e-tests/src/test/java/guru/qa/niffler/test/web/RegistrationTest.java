@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
+import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static guru.qa.niffler.utils.DataUtils.generateRandomPassword;
 import static guru.qa.niffler.utils.DataUtils.generateRandomUsername;
 import static guru.qa.niffler.utils.Error.PASSWORDS_SHOULD_BE_EQUAL;

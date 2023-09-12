@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static guru.qa.niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
+import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

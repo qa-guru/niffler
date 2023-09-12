@@ -17,8 +17,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.jupiter.extension.CreateUserExtension.Selector.METHOD;
-import static guru.qa.niffler.jupiter.extension.CreateUserExtension.Selector.NESTED;
+import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
+import static guru.qa.niffler.jupiter.annotation.User.Selector.NESTED;
 
 
 @Epic("[WEB][niffler-frontend]: Друзья")

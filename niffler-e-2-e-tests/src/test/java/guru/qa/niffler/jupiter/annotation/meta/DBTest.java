@@ -1,7 +1,7 @@
 package guru.qa.niffler.jupiter.annotation.meta;
 
-import guru.qa.niffler.jupiter.extension.DAOResolver;
 import guru.qa.niffler.jupiter.extension.JpaExtension;
+import guru.qa.niffler.jupiter.extension.UserRepositoryResolver;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.ElementType;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@ExtendWith({JpaExtension.class, DAOResolver.class})
+@ExtendWith({JpaExtension.class, UserRepositoryResolver.class})
 public @interface DBTest {
 
 }
