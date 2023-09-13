@@ -82,6 +82,10 @@ sourceSets {
 }
 
 dependencies {
+    // Logs
+    testImplementation 'ch.qos.logback:logback-classic:1.4.11'
+    testImplementation 'org.slf4j:slf4j-api:2.0.9'
+    // JUnit
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     // REST
     testImplementation 'com.squareup.retrofit2:retrofit:2.9.0'

@@ -1,6 +1,7 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.data.dao.UserdataUsersDAO;
+import guru.qa.niffler.data.entity.ud.FriendsEntity;
 import guru.qa.niffler.data.entity.ud.UserEntity;
 import guru.qa.niffler.data.jpa.EmfContext;
 import guru.qa.niffler.data.jpa.JpaService;
@@ -32,6 +33,13 @@ public class HibernateUserdataUsersDAO extends JpaService implements UserdataUse
     @Step("Remove user from userdata database using Hibernate")
     @Override
     public void deleteUser(UserEntity user) {
+        if (!user.getFriends().isEmpty()) {
+            for (FriendsEntity friend : user.getFriends()) {
+                UserEntity myFriend = em.find(UserEntity.class, friend.getFriend().getId());
+                myFriend.getFriends().clear();
+                updateUser(myFriend);
+            }
+        }
         remove(user);
     }
 
