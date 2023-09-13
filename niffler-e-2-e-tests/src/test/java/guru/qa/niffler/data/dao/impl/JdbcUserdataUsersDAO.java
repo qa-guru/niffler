@@ -88,10 +88,25 @@ public class JdbcUserdataUsersDAO implements UserdataUsersDAO {
     @Step("Remove user from userdata database using jdbc")
     @Override
     public void deleteUser(UserEntity user) {
-        try (Connection conn = userdataDs.getConnection();
-             PreparedStatement usersPs = conn.prepareStatement("DELETE FROM users WHERE id = ?")) {
-            usersPs.setObject(1, user.getId());
-            usersPs.executeUpdate();
+        try (Connection conn = userdataDs.getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement usersPs = conn.prepareStatement("DELETE FROM users WHERE id = ?");
+                 PreparedStatement friendsPs = conn.prepareStatement("DELETE FROM friends WHERE user_id = ?");
+                 PreparedStatement invitesPs = conn.prepareStatement("DELETE FROM friends WHERE friend_id = ?")
+            ) {
+                usersPs.setObject(1, user.getId());
+                friendsPs.setObject(1, user.getId());
+                invitesPs.setObject(1, user.getId());
+                friendsPs.executeUpdate();
+                invitesPs.executeUpdate();
+                usersPs.executeUpdate();
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

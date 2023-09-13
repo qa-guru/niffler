@@ -81,7 +81,12 @@ public class SpringJdbcUserdataUsersDAO implements UserdataUsersDAO {
     @Step("Remove user from userdata database using Spring-jdbc")
     @Override
     public void deleteUser(UserEntity user) {
-        userdataJdbcTpl.update("DELETE FROM users WHERE id = ?", user.getId());
+        userdataTransactionTpl.execute(status -> {
+            userdataJdbcTpl.update("DELETE FROM friends WHERE user_id = ?", user.getId());
+            userdataJdbcTpl.update("DELETE FROM friends WHERE friend_id = ?", user.getId());
+            userdataJdbcTpl.update("DELETE FROM users WHERE id = ?", user.getId());
+            return null;
+        });
     }
 
     @Step("Find user in userdata database by username '{username}' using Spring-jdbc")
