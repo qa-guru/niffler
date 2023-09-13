@@ -4,6 +4,9 @@ buildscript {
         grpcVersion = '1.58.0'
         allureVersion = '2.24.0'
         selenideVersion = '6.18.0'
+        userdataWsdlUrl = System.getProperty("test.env") == "docker"
+                ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
+                : "http://127.0.0.1:8089/ws/userdata.wsdl"
     }
 }
 
@@ -36,7 +39,7 @@ configurations {
 tasks.register('genJaxb') {
     ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
     ext.classesDir = "${buildDir}/classes/jaxb"
-    ext.schema = "userdata.wsdl"
+    ext.schema = "${userdataWsdlUrl}"
 
     outputs.dir classesDir
 
@@ -47,8 +50,7 @@ tasks.register('genJaxb') {
             mkdir(dir: sourcesDir)
             mkdir(dir: classesDir)
 
-            xjc(destdir: sourcesDir, schema: schema,
-                    package: "guru.qa.niffler.userdata.wsdl") {
+            xjc(destdir: sourcesDir, schema: schema, package: "guru.qa.niffler.userdata.wsdl") {
                 arg(value: "-wsdl")
                 produces(dir: sourcesDir, includes: "**/*.java")
             }
@@ -95,8 +97,6 @@ dependencies {
     // Allure
     testImplementation "io.qameta.allure:allure-attachments:${allureVersion}"
     testImplementation("io.qameta.allure:allure-junit5:${allureVersion}") {
-        exclude group: "org.junit.jupiter-api"
-        exclude group: "org.junit.platform"
         exclude group: "org.junit.jupiter"
     }
     testImplementation("io.qameta.allure:allure-selenide:${allureVersion}") {

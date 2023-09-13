@@ -21,8 +21,8 @@ import java.io.IOException;
 
 final class JaxbRequestConverter<T> implements Converter<T, RequestBody> {
 
-    final JAXBContext context;
-    final Class<T> type;
+    private final JAXBContext context;
+    private final Class<T> type;
 
     JaxbRequestConverter(JAXBContext context, Class<T> type) {
         this.context = context;

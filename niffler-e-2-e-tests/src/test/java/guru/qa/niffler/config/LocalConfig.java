@@ -1,6 +1,7 @@
 package guru.qa.niffler.config;
 
 import com.codeborne.selenide.Configuration;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class LocalConfig implements Config {
 
@@ -11,6 +12,8 @@ public class LocalConfig implements Config {
 
     static {
         Configuration.browserSize = "1980x1024";
+        Configuration.browser = "chrome";
+        Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
     }
 
     @Override

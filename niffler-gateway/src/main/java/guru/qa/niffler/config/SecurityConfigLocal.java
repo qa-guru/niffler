@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
@@ -32,9 +33,9 @@ public class SecurityConfigLocal {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         corsCustomizer.corsCustomizer(http);
 
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(ahr ->
-                        ahr.requestMatchers(
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(customizer ->
+                        customizer.requestMatchers(
                                         antMatcher("/actuator/health"),
                                         antMatcher("/graphiql/**"),
                                         antMatcher("/graphql/**"),

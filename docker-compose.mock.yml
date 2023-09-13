@@ -6,7 +6,7 @@ services:
     image: postgres:15.1
     environment:
       - POSTGRES_MULTIPLE_DATABASES="niffler-auth","niffler-currency","niffler-spend","niffler-userdata"
-      - POSTGRES_USER=postgres
+      - PGUSER=postgres
       - POSTGRES_PASSWORD=secret
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d
@@ -149,7 +149,7 @@ services:
 
   selenoid:
     container_name: selenoid
-    image: aerokube/selenoid:1.10.12
+    image: aerokube/selenoid:1.11.0
     platform: "${ARCH}"
     volumes:
       - ./selenoid:/etc/selenoid
@@ -164,7 +164,7 @@ services:
 
   selenoid-ui:
     container_name: selenoid-ui
-    image: aerokube/selenoid-ui:1.10.9
+    image: aerokube/selenoid-ui:1.10.10
     depends_on:
       - selenoid
     restart: unless-stopped

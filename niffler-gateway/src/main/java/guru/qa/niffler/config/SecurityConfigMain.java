@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @EnableWebSecurity
 @Configuration
 @Profile("!local")
@@ -29,11 +31,10 @@ public class SecurityConfigMain {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         corsCustomizer.corsCustomizer(http);
 
-        http.authorizeHttpRequests(
-                ahr ->
-                        ahr.requestMatchers("/actuator/health").permitAll()
-                                .anyRequest()
-                                .authenticated()
+        http.authorizeHttpRequests(customizer ->
+                customizer.requestMatchers(antMatcher("/actuator/health")).permitAll()
+                        .anyRequest()
+                        .authenticated()
         ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }

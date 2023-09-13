@@ -35,7 +35,7 @@ fi
 
 ARCH=$(uname -m)
 
-bash ./gradlew clean build dockerTagLatest -x :niffler-e-2-e-tests:test
+bash ./gradlew clean build dockerTagLatest -x :niffler-e-2-e-tests:build
 
 if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
   docker_arch="linux/arm64/v8"

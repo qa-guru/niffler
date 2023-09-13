@@ -33,8 +33,9 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework.kafka: DEBUG
+    org.springframework.kafka: INFO
     org.springframework.web: INFO
+    org.springframework.ws: INFO
 #    org.springframework.boot.autoconfigure: DEBUG
 
 ---
@@ -52,6 +53,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+niffler-userdata:
+  base-uri: 'http://127.0.0.1:8089'
 ---
 spring:
   config:
@@ -67,4 +70,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+niffler-userdata:
+  base-uri: 'http://userdata.niffler.dc:8089'
 ---

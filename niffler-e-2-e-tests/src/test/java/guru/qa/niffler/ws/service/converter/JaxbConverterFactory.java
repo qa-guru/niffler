@@ -14,25 +14,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Objects;
 
 public final class JaxbConverterFactory extends Converter.Factory {
 
     static final MediaType XML = MediaType.get("application/xml; charset=utf-8");
 
-    public static JaxbConverterFactory create() {
-        return new JaxbConverterFactory(null);
-    }
-
     public static JaxbConverterFactory create(JAXBContext context) {
-        if (context == null) {
-            throw new NullPointerException("context == null");
-        }
-        return new JaxbConverterFactory(context);
+        return new JaxbConverterFactory(Objects.requireNonNull(context));
     }
 
     private final @Nullable JAXBContext context;
 
-    private JaxbConverterFactory(@Nullable JAXBContext context) {
+    private JaxbConverterFactory(@Nonnull JAXBContext context) {
         this.context = context;
     }
 
