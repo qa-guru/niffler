@@ -2,7 +2,6 @@ package guru.qa.niffler.test.soap;
 
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.extension.CreateUserExtension;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.userdata.wsdl.AllUsersRequest;
 import guru.qa.niffler.userdata.wsdl.AllUsersResponse;
@@ -19,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -36,7 +36,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100001")
     @Tag("SOAP")
     @GenerateUser()
-    void currentUserTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         CurrentUserRequest cur = new CurrentUserRequest();
         cur.setUsername(user.getUsername());
 
@@ -61,7 +61,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100002")
     @Tag("SOAP")
     @GenerateUser()
-    void updateUserTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String firstName = "Pizzly";
         final String secondName = "Pizzlyvich";
 
@@ -97,7 +97,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100003")
     @Tag("SOAP")
     @GenerateUser()
-    void allUsersTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
         AllUsersRequest aur = new AllUsersRequest();
         aur.setUsername(user.getUsername());
 

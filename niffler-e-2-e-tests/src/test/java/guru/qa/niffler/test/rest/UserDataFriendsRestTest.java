@@ -7,7 +7,6 @@ import guru.qa.niffler.jupiter.annotation.GenerateUsers;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.extension.CreateUserExtension;
 import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.FriendState;
 import guru.qa.niffler.model.rest.UserJson;
@@ -21,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
+import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -41,7 +41,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             friends = @Friends(count = 1),
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
-    void getAllFriendsListWithoutInvitationTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void getAllFriendsListWithoutInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
         final List<UserJson> friends = nus.friends(user.getUsername(), false);
 
         step("Check that response contains expected users", () ->
@@ -74,7 +74,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             friends = @Friends(count = 1),
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
-    void getAllFriendsListWithInvitationTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void getAllFriendsListWithInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
         final List<UserJson> friends = nus.friends(user.getUsername(), true);
 
         step("Check that response contains expected users", () ->
@@ -109,7 +109,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
     @GenerateUser(
             incomeInvitations = @IncomeInvitations(count = 1)
     )
-    void getInvitationTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void getInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
         final List<UserJson> invitations = nus.invitations(user.getUsername());
 
         step("Check that response contains expected invitations", () ->
@@ -131,7 +131,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
     @GenerateUser(
             incomeInvitations = @IncomeInvitations(count = 1)
     )
-    void acceptInvitationTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void acceptInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String currentUser = user.getUsername();
         final String incomeInvitation = user.getInvitationsJsons().get(0).getUsername();
 
@@ -169,7 +169,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
     @GenerateUser(
             incomeInvitations = @IncomeInvitations(count = 1)
     )
-    void declineInvitationTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void declineInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String currentUser = user.getUsername();
         final String incomeInvitation = user.getInvitationsJsons().get(0).getUsername();
 
@@ -201,7 +201,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             @GenerateUser,
             @GenerateUser
     })
-    void addFriendTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson[] users) throws Exception {
+    void addFriendTest(@User(selector = METHOD) UserJson[] users) throws Exception {
         final String currentUser = users[0].getUsername();
         final String friendWillBeAdded = users[1].getUsername();
 
@@ -237,7 +237,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
     @GenerateUser(
             friends = @Friends(count = 1)
     )
-    void removeFriendTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void removeFriendTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String currentUsername = user.getUsername();
         final String friendUsername = user.getFriendsJsons().get(0).getUsername();
         final List<UserJson> friends = nus.removeFriend(currentUsername, friendUsername);

@@ -1,9 +1,12 @@
 buildscript {
     ext {
-        protobufVersion = '3.21.12'
-        grpcVersion = '1.52.1'
-        allureVersion = '2.23.0'
-        selenideVersion = '6.17.1'
+        protobufVersion = '3.24.3'
+        grpcVersion = '1.58.0'
+        allureVersion = '2.24.0'
+        selenideVersion = '6.18.0'
+        userdataWsdlUrl = System.getProperty("test.env") == "docker"
+                ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
+                : "http://127.0.0.1:8089/ws/userdata.wsdl"
     }
 }
 
@@ -14,7 +17,7 @@ plugins {
 }
 
 group 'guru.qa'
-version '0.0.6-SNAPSHOT'
+version '0.0.7-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -36,7 +39,7 @@ configurations {
 tasks.register('genJaxb') {
     ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
     ext.classesDir = "${buildDir}/classes/jaxb"
-    ext.schema = "userdata.wsdl"
+    ext.schema = "${userdataWsdlUrl}"
 
     outputs.dir classesDir
 
@@ -47,8 +50,7 @@ tasks.register('genJaxb') {
             mkdir(dir: sourcesDir)
             mkdir(dir: classesDir)
 
-            xjc(destdir: sourcesDir, schema: schema,
-                    package: "guru.qa.niffler.userdata.wsdl") {
+            xjc(destdir: sourcesDir, schema: schema, package: "guru.qa.niffler.userdata.wsdl") {
                 arg(value: "-wsdl")
                 produces(dir: sourcesDir, includes: "**/*.java")
             }
@@ -80,22 +82,25 @@ sourceSets {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    // Logs
+    testImplementation 'ch.qos.logback:logback-classic:1.4.11'
+    testImplementation 'org.slf4j:slf4j-api:2.0.9'
+    // JUnit
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     // REST
     testImplementation 'com.squareup.retrofit2:retrofit:2.9.0'
     testImplementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
     testImplementation 'com.squareup.okhttp3:logging-interceptor:3.14.9'
     // DB
-    testImplementation 'org.springframework:spring-jdbc:6.0.4'
+    testImplementation 'org.springframework:spring-jdbc:6.0.11'
     testImplementation 'org.postgresql:postgresql:42.5.3'
     testImplementation 'p6spy:p6spy:3.9.1'
-    testImplementation 'org.hibernate:hibernate-core:6.1.7.Final'
+    testImplementation 'org.hibernate:hibernate-core:6.3.0.Final'
     testImplementation 'com.github.vertical-blank:sql-formatter:2.0.3'
+    testImplementation 'org.springframework.security:spring-security-crypto:6.1.0'
     // Allure
     testImplementation "io.qameta.allure:allure-attachments:${allureVersion}"
     testImplementation("io.qameta.allure:allure-junit5:${allureVersion}") {
-        exclude group: "org.junit.jupiter-api"
-        exclude group: "org.junit.platform"
         exclude group: "org.junit.jupiter"
     }
     testImplementation("io.qameta.allure:allure-selenide:${allureVersion}") {
@@ -122,7 +127,7 @@ dependencies {
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb 'org.glassfish.jaxb:jaxb-xjc:4.0.1'
     // Kafka
-    testImplementation 'org.apache.kafka:kafka-clients:3.5.0'
+    testImplementation 'org.apache.kafka:kafka-clients:3.5.1'
     // Wiremock
     testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.0'
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'

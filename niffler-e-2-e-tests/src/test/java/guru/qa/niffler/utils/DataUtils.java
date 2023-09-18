@@ -23,7 +23,7 @@ public class DataUtils {
     }
 
     public static String generateNewCategory() {
-        return faker.book().title();
+        return faker.food().fruit();
     }
 
     public static String generateRandomSentence(int wordsCount) {

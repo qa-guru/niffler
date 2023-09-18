@@ -1,6 +1,7 @@
 package guru.qa.niffler.config;
 
 import com.codeborne.selenide.Configuration;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class DockerConfig implements Config {
 
@@ -13,6 +14,9 @@ public class DockerConfig implements Config {
         Configuration.browserSize = "1920x1200";
         Configuration.remote = "http://selenoid:4444/wd/hub";
         Configuration.timeout = 10000;
+        Configuration.browser = "chrome";
+        Configuration.browserVersion = "116.0";
+        Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
     }
 
     @Override

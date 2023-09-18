@@ -2,7 +2,7 @@ package guru.qa.niffler.jupiter.annotation;
 
 
 import guru.qa.niffler.jupiter.extension.ClearCookiesAndSessionExtension;
-import guru.qa.niffler.jupiter.extension.CreateUserExtension;
+import guru.qa.niffler.jupiter.extension.DatabaseCreateUserExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.ElementType;
@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
-@ExtendWith({CreateUserExtension.class, ClearCookiesAndSessionExtension.class})
+@ExtendWith({DatabaseCreateUserExtension.class, ClearCookiesAndSessionExtension.class})
 public @interface GenerateUsers {
 
     GenerateUser[] value();

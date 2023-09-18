@@ -3,7 +3,6 @@ package guru.qa.niffler.test.rest;
 import guru.qa.niffler.api.NifflerUserdataClient;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.extension.CreateUserExtension;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -31,7 +31,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @AllureId("200001")
     @Tag("REST")
     @GenerateUser()
-    void currentUserTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final UserJson currentUserResponse = nus.getCurrentUser(user.getUsername());
 
         step("Check that response contains ID (GUID)", () ->
@@ -50,7 +50,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @AllureId("200002")
     @Tag("REST")
     @GenerateUser()
-    void updateUserTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String firstName = "Pizzly";
         final String secondName = "Pizzlyvich";
 
@@ -84,7 +84,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @AllureId("200003")
     @Tag("REST")
     @GenerateUser()
-    void allUsersTest(@User(selector = CreateUserExtension.Selector.METHOD) UserJson user) throws Exception {
+    void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
         final List<UserJson> allUsersResponse = nus.allUsers(user.getUsername());
 
         step("Check that all users list is not empty", () ->

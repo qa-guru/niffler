@@ -15,6 +15,8 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @Configuration
 public class SecurityConfig {
 
@@ -29,9 +31,14 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         corsCustomizer.corsCustomizer(http);
 
-        http.authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/register", "/images/**", "/styles/**", "/fonts/**", "/actuator/health")
-                                .permitAll()
+        http.authorizeHttpRequests(customizer ->
+                        customizer.requestMatchers(
+                                        antMatcher("/register"),
+                                        antMatcher("/images/**"),
+                                        antMatcher("/styles/**"),
+                                        antMatcher("/fonts/**"),
+                                        antMatcher("/actuator/health")
+                                ).permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )

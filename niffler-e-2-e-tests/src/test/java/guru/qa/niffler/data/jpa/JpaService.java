@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public abstract class JpaService {
 
@@ -13,16 +14,16 @@ public abstract class JpaService {
         this.em = em;
     }
 
-    public void persist(Object entity) {
+    protected <T> void persist(T entity) {
         tx(em -> em.persist(entity));
     }
 
-    public void remove(Object entity) {
+    protected <T> void remove(T entity) {
         tx(em -> em.remove(entity));
     }
 
-    public void merge(Object entity) {
-        tx(em -> em.merge(entity));
+    protected <T> T merge(T entity) {
+        return txWithResult(em -> em.merge(entity));
     }
 
     private void tx(Consumer<EntityManager> consumer) {
@@ -31,6 +32,19 @@ public abstract class JpaService {
             transaction.begin();
             consumer.accept(em);
             transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
+    }
+
+    private <T> T txWithResult(Function<EntityManager, T> action) {
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        try {
+            T result = action.apply(em);
+            transaction.commit();
+            return result;
         } catch (Exception e) {
             transaction.rollback();
             throw e;

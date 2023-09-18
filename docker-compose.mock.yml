@@ -6,7 +6,7 @@ services:
     image: postgres:15.1
     environment:
       - POSTGRES_MULTIPLE_DATABASES="niffler-auth","niffler-currency","niffler-spend","niffler-userdata"
-      - POSTGRES_USER=postgres
+      - PGUSER=postgres
       - POSTGRES_PASSWORD=secret
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d
@@ -110,30 +110,30 @@ services:
       - test-network
     dns_search: .
 
-  #  userdata.niffler.dc:
-  #    container_name: userdata.niffler.dc
-  #    image: wiremock/wiremock:2.35.0
-  #    ports:
-  #      - "8089:8089"
-  #    restart: always
-  #    networks:
-  #      - niffler-network
-  #    command: [ "--port", "8089" ]
-  #    volumes:
-  #      - ./wiremock/rest:/home/wiremock
-  #    dns_search: .
-
   userdata.niffler.dc:
     container_name: userdata.niffler.dc
-    image: dtuchs/niffler-userdata:latest
-    expose:
-      - "8089"
-    depends_on:
-      auth.niffler.dc:
-        condition: service_healthy
+    image: wiremock/wiremock:2.35.0
+    ports:
+      - "8089:8089"
+    restart: always
     networks:
       - test-network
+    command: [ "--port", "8089" ]
+    volumes:
+      - ./wiremock/rest:/home/wiremock
     dns_search: .
+
+  #  userdata.niffler.dc:
+  #    container_name: userdata.niffler.dc
+  #    image: dtuchs/niffler-userdata:latest
+  #    expose:
+  #      - "8089"
+  #    depends_on:
+  #      auth.niffler.dc:
+  #        condition: service_healthy
+  #    networks:
+  #      - test-network
+  #    dns_search: .
 
   frontend.niffler.dc:
     container_name: frontend.niffler.dc
@@ -149,7 +149,7 @@ services:
 
   selenoid:
     container_name: selenoid
-    image: aerokube/selenoid:1.10.12
+    image: aerokube/selenoid:1.11.0
     platform: "${ARCH}"
     volumes:
       - ./selenoid:/etc/selenoid
@@ -164,7 +164,7 @@ services:
 
   selenoid-ui:
     container_name: selenoid-ui
-    image: aerokube/selenoid-ui:1.10.9
+    image: aerokube/selenoid-ui:1.10.10
     depends_on:
       - selenoid
     restart: unless-stopped

@@ -16,28 +16,28 @@ public class GraphQLClient extends RestService {
 
     private final GraphQLApi graphQLApi = retrofit.create(GraphQLApi.class);
 
-    @Step("Send SOAP POST('/graphql') request to niffler-gateway, query: CurrentUser")
+    @Step("Send POST('/graphql') request to niffler-gateway, query: CurrentUser")
     public UserDataGql currentUser(JsonNode request) throws Exception {
         return graphQLApi.currentUser("Bearer " + SessionStorageHolder.getInstance().getToken(), request)
                 .execute()
                 .body();
     }
 
-    @Step("Send SOAP POST('/graphql') request to niffler-gateway, mutation: UpdateUser")
+    @Step("Send POST('/graphql') request to niffler-gateway, mutation: UpdateUser")
     public UpdateUserDataGql updateUser(JsonNode request) throws Exception {
         return graphQLApi.updateUser("Bearer " + SessionStorageHolder.getInstance().getToken(), request)
                 .execute()
                 .body();
     }
 
-    @Step("Send SOAP POST('/graphql') request to niffler-gateway, query: Users")
+    @Step("Send POST('/graphql') request to niffler-gateway, query: Users")
     public UsersDataGql allUsers(JsonNode request) throws Exception {
         return graphQLApi.allUsers("Bearer " + SessionStorageHolder.getInstance().getToken(), request)
                 .execute()
                 .body();
     }
 
-    @Step("Send SOAP POST('/graphql') request to niffler-gateway, query: Friends")
+    @Step("Send POST('/graphql') request to niffler-gateway, query: Friends")
     public UserDataGql friends(JsonNode request) throws Exception {
         return graphQLApi.frieds("Bearer " + SessionStorageHolder.getInstance().getToken(), request)
                 .execute()

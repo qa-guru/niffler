@@ -14,28 +14,27 @@ import org.w3c.dom.Document;
 import retrofit2.Converter;
 
 import javax.annotation.Nonnull;
-import javax.xml.stream.XMLInputFactory;
 import java.io.IOException;
 import java.io.Reader;
 
 final class JaxbResponseConverter<T> implements Converter<ResponseBody, T> {
 
-    final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-    final JAXBContext context;
-    final Class<T> type;
+    private final JAXBContext context;
+    private final Class<T> type;
 
     JaxbResponseConverter(JAXBContext context, Class<T> type) {
         this.context = context;
         this.type = type;
-        xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
     }
 
     @Override
     @EverythingIsNonNull
     public @Nonnull T convert(ResponseBody value) throws IOException {
         try (value; Reader reader = value.charStream()) {
-            SOAPMessage response = MessageFactory.newInstance().createMessage(null, new ReaderInputStream(reader, Charsets.UTF_8));
+            SOAPMessage response = MessageFactory.newInstance().createMessage(
+                    null,
+                    new ReaderInputStream(reader, Charsets.UTF_8)
+            );
             Document responseDoc = response.getSOAPBody().extractContentAsDocument();
             Unmarshaller unmarshaller = context.createUnmarshaller();
             return unmarshaller.unmarshal(responseDoc, type).getValue();

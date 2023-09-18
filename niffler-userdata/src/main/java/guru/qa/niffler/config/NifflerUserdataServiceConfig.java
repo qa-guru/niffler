@@ -1,5 +1,6 @@
 package guru.qa.niffler.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,13 @@ import org.springframework.xml.xsd.XsdSchema;
 @EnableWs
 @Configuration
 public class NifflerUserdataServiceConfig {
+
+    private final String nifflerUserdataBaseUri;
+
+    public NifflerUserdataServiceConfig(@Value("${niffler-userdata.base-uri}") String nifflerUserdataBaseUri) {
+        this.nifflerUserdataBaseUri = nifflerUserdataBaseUri;
+    }
+
     @Bean
     public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext applicationContext) {
         MessageDispatcherServlet servlet = new MessageDispatcherServlet();
@@ -26,7 +34,7 @@ public class NifflerUserdataServiceConfig {
     public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema userdataSchema) {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName("NifflerUserdataPort");
-        wsdl11Definition.setLocationUri("/ws");
+        wsdl11Definition.setLocationUri(nifflerUserdataBaseUri + "/ws");
         wsdl11Definition.setTargetNamespace("niffler-userdata");
         wsdl11Definition.setSchema(userdataSchema);
         return wsdl11Definition;

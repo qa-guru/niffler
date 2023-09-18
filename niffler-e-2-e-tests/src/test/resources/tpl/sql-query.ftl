@@ -20,11 +20,7 @@
 </head>
 <body>
 
-<h5>Statement</h5>
-<div>
-    <pre><code>${data.preparedStatement}</code></pre>
-</div>
-<h5>Query</h5>
+<h5>SQL Query</h5>
 <div>
     <pre><code>${data.sql}</code></pre>
 </div>

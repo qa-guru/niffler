@@ -5,17 +5,18 @@ services:
     container_name: niffler-all-db
     image: postgres:15.1
     environment:
-      - POSTGRES_USER=postgres
+      - POSTGRES_MULTIPLE_DATABASES="niffler-auth","niffler-currency","niffler-spend","niffler-userdata"
+      - PGUSER=postgres
       - POSTGRES_PASSWORD=secret
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 3s
       timeout: 3s
       retries: 5
-    expose:
-      - "5432"
+    ports:
+      - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./postgres:/docker-entrypoint-initdb.d
     restart: always
     networks:
       - niffler-network
@@ -24,8 +25,8 @@ services:
   zookeeper:
     container_name: zookeeper
     image: confluentinc/cp-zookeeper:7.3.2
-    expose:
-      - "2181"
+    ports:
+      - "2181:2181"
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
@@ -35,8 +36,8 @@ services:
   kafka:
     container_name: kafka
     image: confluentinc/cp-kafka:7.3.2
-    expose:
-      - "9092"
+    ports:
+      - "9092:9092"
     depends_on:
       zookeeper:
         condition: service_started
@@ -73,9 +74,9 @@ services:
   currency.niffler.dc:
     container_name: currency.niffler.dc
     image: dtuchs/niffler-currency:latest
-    expose:
-      - "8091"
-      - "8092"
+    ports:
+      - "8091:8091"
+      - "8092:8092"
     restart: always
     depends_on:
       niffler-all-db:
@@ -105,8 +106,8 @@ services:
   spend.niffler.dc:
     container_name: spend.niffler.dc
     image: dtuchs/niffler-spend:latest
-    expose:
-      - "8093"
+    ports:
+      - "8093:8093"
     restart: always
     depends_on:
       niffler-all-db:
@@ -118,8 +119,8 @@ services:
   userdata.niffler.dc:
     container_name: userdata.niffler.dc
     image: dtuchs/niffler-userdata:latest
-    expose:
-      - "8089"
+    ports:
+      - "8089:8089"
     restart: always
     depends_on:
       auth.niffler.dc:
