@@ -50,5 +50,5 @@ bash ./docker-build.sh test
 cd ../ || exit
 docker pull selenoid/vnc_chrome:116.0
 docker images
-ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" docker-compose -f docker-compose.test.yml up -d
+ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" docker-compose -f docker-compose.mock.yml up -d
 docker ps -a
