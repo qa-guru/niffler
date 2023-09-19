@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '0.0.7-SNAPSHOT'
+version = '0.0.8-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
@@ -15,6 +15,9 @@ subprojects {
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64v8/eclipse-temurin:19-jre"
                 : "eclipse-temurin:19-jre"
+        dockerArch = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
+                ? "arm64"
+                : "amd64"
     }
 }
 

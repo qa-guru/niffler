@@ -17,7 +17,7 @@ plugins {
 }
 
 group 'guru.qa'
-version '0.0.7-SNAPSHOT'
+version '0.0.8-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -70,6 +70,10 @@ tasks.register('genJaxb') {
             }
         }
     }
+}
+
+genJaxb.onlyIf {
+    !project.hasProperty("skipjaxb")
 }
 
 sourceSets {

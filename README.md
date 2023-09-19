@@ -85,9 +85,15 @@ confluentinc/cp-zookeeper  7.3.2            6fe5551964f5   7 years ago     451MB
 docker volume create pgdata
 ```
 
-#### 4. Запустить БД, zookeeper и kafka 4-мя последовательными командами:
+#### 4. Запустить БД, zookeeper и kafka 3-мя последовательными командами:
 
-Для *nix:
+Запустив скрипт
+
+```posh
+Dmitriis-MacBook-Pro  niffler % bash localenv.sh
+```
+
+Или выполнив последовательно команды, для *nix:
 
 ```posh
 docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -d postgres:15.1
@@ -256,9 +262,13 @@ Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh
 ```posh
 Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh gql
 ```
-Текущая версия docker-compose-dev.sh удалит все старые Docker контейнеры в системе, поэтому если у вас есть созданные контейнеры для других проектов - отредактируйте строку ```posh docker rm $(docker ps -a -q)```, чтобы включить в grep только те контейнеры, что непосредственно относятся к niffler. 
 
-Niffler при запуске в докере будет работать для вас по адресу http://frontend.niffler.dc:80, этот порт НЕ НУЖНО указывать
+Текущая версия docker-compose-dev.sh удалит все старые Docker контейнеры в системе, поэтому если у вас есть созданные
+контейнеры для других проектов - отредактируйте строку ```posh docker rm $(docker ps -a -q)```, чтобы включить в grep
+только те контейнеры, что непосредственно относятся к niffler.
+
+Niffler при запуске в докере будет работать для вас по адресу http://frontend.niffler.dc:80, этот порт НЕ НУЖНО
+указывать
 в браузере, таким образом переходить напрямую по ссылке http://frontend.niffler.dc
 *ВАЖНО!* из docker-network Вам будут доступны только следующие порты:
 
