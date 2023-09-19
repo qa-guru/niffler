@@ -16,13 +16,6 @@ plugins {
     id 'io.qameta.allure-adapter' version '2.11.2'
 }
 
-group 'guru.qa'
-version '0.0.8-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
 allure {
     version.set("${allureVersion}")
     adapter {

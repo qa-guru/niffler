@@ -52,7 +52,7 @@ services:
 
   auth.niffler.dc:
     container_name: auth.niffler.dc
-    image: dtuchs/niffler-auth:latest
+    image: ${PREFIX}/niffler-auth:latest
     ports:
       - "9000:9000"
     healthcheck:
@@ -72,7 +72,7 @@ services:
 
   currency.niffler.dc:
     container_name: currency.niffler.dc
-    image: dtuchs/niffler-currency:latest
+    image: ${PREFIX}/niffler-currency:latest
     ports:
       - "8091:8091"
       - "8092:8092"
@@ -86,7 +86,7 @@ services:
 
   gateway.niffler.dc:
     container_name: gateway.niffler.dc
-    image: dtuchs/niffler-gateway:latest
+    image: ${PREFIX}/niffler-gateway:latest
     ports:
       - "8090:8090"
     healthcheck:
@@ -104,7 +104,7 @@ services:
 
   spend.niffler.dc:
     container_name: spend.niffler.dc
-    image: dtuchs/niffler-spend:latest
+    image: ${PREFIX}/niffler-spend:latest
     ports:
       - "8093:8093"
     restart: always
@@ -117,7 +117,7 @@ services:
 
   userdata.niffler.dc:
     container_name: userdata.niffler.dc
-    image: dtuchs/niffler-userdata:latest
+    image: ${PREFIX}/niffler-userdata:latest
     ports:
       - "8089:8089"
     restart: always
