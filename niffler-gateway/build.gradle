@@ -5,13 +5,6 @@ plugins {
     id 'com.google.cloud.tools.jib' version '3.3.2'
 }
 
-group 'guru.qa'
-version '0.0.8-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
 configurations {
     jaxb
 }
@@ -103,8 +96,8 @@ jib {
         }
     }
     to {
-        image = "dtuchs/${project.name}"
-        tags = ['latest', "${project.version}"]
+        image = "${project.ext.dockerHubName}/${project.name}"
+        tags = ['latest', "${rootProject.version}"]
     }
 }
 

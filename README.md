@@ -270,12 +270,18 @@ Dmitriis-MacBook-Pro  niffler % bash docker-compose-dev.sh gql
 Niffler при запуске в докере будет работать для вас по адресу http://frontend.niffler.dc:80, этот порт НЕ НУЖНО
 указывать
 в браузере, таким образом переходить напрямую по ссылке http://frontend.niffler.dc
-*ВАЖНО!* из docker-network Вам будут доступны только следующие порты:
 
-- порт 80 (все запросы с него перенаправляются nginx-ом на frontend)
-- порт 9000 (сервис niffler-auth)
-- порт 8090 (сервис niffler-gateway)
-- порт 5432 (бд niffler-all)
+Если при выполнении скрипта вы получили ошибку
+
+```
+* What went wrong:
+Execution failed for task ':niffler-auth:jibDockerBuild'.
+> com.google.cloud.tools.jib.plugins.common.BuildStepsExecutionException: 
+Build to Docker daemon failed, perhaps you should make sure your credentials for 'registry-1.docker.io...
+```
+
+То необходимо убедиться, что в `$USER/.docker/config.json` файле отсутствует запись `"credsStore": "desktop"`
+При наличии такого ключа в json, его надо удалить
 
 # Создание своего docker repository для форка Niffler и сборка своих докер контейнеров
 
@@ -291,25 +297,21 @@ Niffler при запуске в докере будет работать для
 
 Допустим, что ваш username на https://hub.docker.com - *foobazz*
 
-#### 2. заменить в проекте все имена image dtuchs/niffler на foobazz/niffler
+#### 2. заменить в файле docker.properties (в корне проекта) IMAGE_PREFIX=qaguru на IMAGE_PREFIX=foobazz
 
 - где foobazz - ваш юзернэйм на https://hub.docker.com/
 
-!К замене надо отнестись внимательно, вот список мест на текущий момент:!
+#### 3. заменить в файле build.gradle (в корне проекта) dockerHubName = "qaguru" на dockerHubName = "foobazz"
 
-- build.gradle всех сервисов Spring
-- docker-compose.yaml в корне проекта
-- docker-compose.test.yaml в корне проекта
-- docker.properties в модуле niffler-frontend
-- docker.properties в модуле niffler-frontend-gql
+- где foobazz - ваш юзернэйм на https://hub.docker.com/
 
-#### 3. Перейти в корневой каталог проекта
+#### 4. Перейти в корневой каталог проекта
 
 ```posh
 Dmitriis-MacBook-Pro niffler % cd niffler
 ```
 
-#### 4. Собрать все имеджи, запушить и запустить niffler одной командой, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
+#### 5. Собрать все имеджи, запушить и запустить niffler одной командой, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
 
 для REST:
 

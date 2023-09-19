@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./niffler-e-2-e-tests/docker.properties
+source ./docker.properties
 
 echo '### Java version ###'
 java --version
@@ -12,13 +12,13 @@ front_image=""
 docker_arch=""
 if [[ "$1" = "gql" ]]; then
   front="./niffler-frontend-gql/";
-  front_image="dtuchs/niffler-frontend-gql-test:latest";
+  front_image="${IMAGE_PREFIX}/${FRONT_IMAGE_NAME_GQL}-test:latest";
 else
   front="./niffler-frontend/";
-  front_image="dtuchs/niffler-frontend-test:latest";
+  front_image="$IMAGE_PREFIX/${FRONT_IMAGE_NAME}-test:latest";
 fi
 
-ARCH="$docker_arch" FRONT_IMAGE="$front_image" docker-compose -f docker-compose.mock.yml down
+ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" docker-compose -f docker-compose.mock.yml down
 
 docker_containers="$(docker ps -a -q)"
 docker_images="$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'niffler')"
@@ -38,11 +38,11 @@ ARCH=$(uname -m)
 bash ./gradlew clean build dockerTagLatest -x :niffler-e-2-e-tests:build
 
 if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
-  docker_arch="linux/arm64/v8"
-  docker build --build-arg DOCKER=arm64v8/eclipse-temurin:19-jdk -t "${IMAGE_NAME}":"${VERSION}" -t "${IMAGE_NAME}":latest -f ./niffler-e-2-e-tests/Dockerfile .
+  docker_arch="linux/arm64"
+  docker build --build-arg DOCKER=arm64v8/eclipse-temurin:19-jdk -t "${IMAGE_PREFIX}/${TEST_IMAGE_NAME}":"${VERSION}" -t "${IMAGE_PREFIX}/${TEST_IMAGE_NAME}":latest -f ./niffler-e-2-e-tests/Dockerfile .
 else
   docker_arch="linux/amd64"
-  docker build --build-arg DOCKER=eclipse-temurin:19-jdk -t "${IMAGE_NAME}":"${VERSION}" -t "${IMAGE_NAME}":latest -f ./niffler-e-2-e-tests/Dockerfile .
+  docker build --build-arg DOCKER=eclipse-temurin:19-jdk -t "${IMAGE_PREFIX}/${TEST_IMAGE_NAME}":"${VERSION}" -t "${IMAGE_PREFIX}/${TEST_IMAGE_NAME}":latest -f ./niffler-e-2-e-tests/Dockerfile .
 fi
 
 cd "$front" || exit
@@ -50,5 +50,5 @@ bash ./docker-build.sh test
 cd ../ || exit
 docker pull selenoid/vnc_chrome:116.0
 docker images
-ARCH="$docker_arch" FRONT_IMAGE="$front_image" docker-compose -f docker-compose.mock.yml up -d
+ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" docker-compose -f docker-compose.test.yml up -d
 docker ps -a
