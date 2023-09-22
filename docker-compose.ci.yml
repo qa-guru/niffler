@@ -1,0 +1,126 @@
+version: '3.9'
+
+services:
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:7.3.2
+    ports:
+      - "2181:2181"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    networks:
+      - niffler-network
+
+  kafka:
+    container_name: kafka
+    image: confluentinc/cp-kafka:7.3.2
+    ports:
+      - "9092:9092"
+    depends_on:
+      zookeeper:
+        condition: service_started
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+    networks:
+      - niffler-network
+
+  auth.niffler.dc:
+    container_name: auth.niffler.dc
+    image: ${PREFIX}/niffler-auth-${PROFILE}:latest
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    depends_on:
+      niffler-all-db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - niffler-network
+    dns_search: .
+
+  currency.niffler.dc:
+    container_name: currency.niffler.dc
+    image: ${PREFIX}/niffler-currency-${PROFILE}:latest
+    ports:
+      - "8091:8091"
+      - "8092:8092"
+    restart: always
+    depends_on:
+      niffler-all-db:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+  gateway.niffler.dc:
+    container_name: gateway.niffler.dc
+    image: ${PREFIX}/niffler-gateway-${PROFILE}:latest
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: "wget --spider http://localhost:8090/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    depends_on:
+      auth.niffler.dc:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+  spend.niffler.dc:
+    container_name: spend.niffler.dc
+    image: ${PREFIX}/niffler-spend-${PROFILE}:latest
+    ports:
+      - "8093:8093"
+    restart: always
+    depends_on:
+      niffler-all-db:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+  userdata.niffler.dc:
+    container_name: userdata.niffler.dc
+    image: ${PREFIX}/niffler-userdata-${PROFILE}:latest
+    ports:
+      - "8089:8089"
+    restart: always
+    depends_on:
+      auth.niffler.dc:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+  frontend.niffler.dc:
+    container_name: frontend.niffler.dc
+    image: "${FRONT_IMAGE}"
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      gateway.niffler.dc:
+        condition: service_healthy
+    networks:
+      - niffler-network
+    dns_search: .
+
+networks:
+  niffler-network:
+    driver: bridge
