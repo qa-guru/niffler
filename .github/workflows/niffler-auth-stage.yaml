@@ -1,26 +1,27 @@
-# name: auth_deploy_stage
-# on:
-#   push:
-#     branches: 
-#       - ci
-#     paths:
-#       - 'niffler-auth/**'
+name: auth_deploy_stage
+on:
+  push:
+    branches: 
+      - ci
+    paths:
+      - 'niffler-auth/**'
       
-# jobs:
-#   checkout:
-#     runs-on: stage-runner  
-#     steps:
-#       - uses: actions/checkout@v3
+jobs:
+  checkout:
+    runs-on: stage-runner  
+    steps:
+      - uses: actions/checkout@v3
 
-#   deploy:
-#     runs-on: stage-runner
-#     needs: checkout
-#     steps:  
-#       - name: build
-#         working-directory: ./
-#         run: |
-#          pwd
-#          bash ./docker-compose-dev.sh
-#          docker-compose up -d --force-recreate niffler-auth
-#          docker system prune  -a -f
-#          echo "done"
+  deploy:
+    runs-on: stage-runner
+    needs: checkout
+    steps:  
+      - name: build
+        working-directory: ./
+        run: |
+          pwd
+          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
+          bash ./docker-compose-ci.sh staging
+          PREFIX=${{ vars.DOCKER_HUB_ACC }} PROFILE=staging docker-compose -f docker-compose.ci.yml up -d --force-recreate auth.niffler.dc
+          docker system prune  -a -f
+          echo "done"
