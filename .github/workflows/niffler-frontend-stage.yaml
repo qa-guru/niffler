@@ -1,42 +1,29 @@
 name: frontend_deploy_stage
 on:
   push:
-    branches: 
+    branches:
       - ci
     paths:
       - 'niffler-frontend/**'
-      
+
 jobs:
   checkout:
-    runs-on: stage-runner  
+    runs-on: stage-runner
     steps:
       - uses: actions/checkout@v3
 
   deploy:
     runs-on: stage-runner
     needs: checkout
-    steps:  
+    steps:
       - name: deploy
         working-directory: ./niffler-frontend
-        env:
-         IMAGE_NAME: ${{ vars.IMAGE_NAME_FRONTEND }}
-         NPM_COMMAND: ${{ vars.NPM_COMMAND_FRONTEND }}
-         REACT_APP_ENV: test
-         REACT_APP_FRONT_URL: http://${{ vars.STAGE_ENDPOINT }}
-         REACT_APP_AUTH_URL: http://${{ vars.STAGE_ENDPOINT }}:9000
-         REACT_APP_GATEWAY_URL: http://${{ vars.STAGE_ENDPOINT }}:8090
         run: |
-         pwd
-         echo "REACT_APP_ENV=test" >> .env.dev
-         echo "REACT_APP_FRONT_URL=http://${{ vars.STAGE_ENDPOINT }}" >> .env.dev
-         echo "REACT_APP_AUTH_URL=http://${{ vars.STAGE_ENDPOINT }}:9000" >> .env.dev
-         echo "REACT_APP_GATEWAY_URL=http://${{ vars.STAGE_ENDPOINT }}:8090" >> .env.dev
-         cp .env.dev .env.test
-         docker system prune -a -f
-         docker build . --build-arg NPM_COMMAND=${NPM_COMMAND} -t ${IMAGE_NAME}:latest
-         docker stop niffler-frontend 
+          pwd
+          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
+          bash ./docker-compose-ci.sh staging push
       - name: deploy
-        run : |
-         docker-compose up -d niffler-frontend
-         echo "done"
-
+        run: |
+          PREFIX=${{ vars.DOCKER_HUB_ACC }} PROFILE=staging FRONT_IMAGE=${{ vars.DOCKER_HUB_ACC }}/niffler-frontend-staging docker-compose -f docker-compose.ci.yml up -d --force-recreate frontend.niffler.dc
+          docker system prune  -a -f
+          echo "done"
