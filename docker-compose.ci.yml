@@ -42,8 +42,6 @@ services:
       retries: 10
     restart: always
     depends_on:
-      niffler-all-db:
-        condition: service_healthy
       kafka:
         condition: service_started
     networks:
@@ -57,9 +55,6 @@ services:
       - "8091:8091"
       - "8092:8092"
     restart: always
-    depends_on:
-      niffler-all-db:
-        condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
@@ -88,9 +83,6 @@ services:
     ports:
       - "8093:8093"
     restart: always
-    depends_on:
-      niffler-all-db:
-        condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
