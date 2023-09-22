@@ -17,7 +17,7 @@ jobs:
     needs: checkout
     steps:
       - name: deploy
-        working-directory: ./niffler-frontend
+        working-directory: ./
         run: |
           pwd
           docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
