@@ -1,8 +1,8 @@
 name: currency_deploy_stage
 on:
   push:
-    branches:
-      - prod_configs
+    branches-ignore:
+      - master
     paths:
       - 'niffler-currency/**'
 

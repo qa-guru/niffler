@@ -1,8 +1,8 @@
 name: frontend_gql_deploy_stage
 on:
   push:
-    branches:
-      - prod_configs
+    branches-ignore:
+      - master
     paths:
       - 'niffler-frontend-gql/**'
 
