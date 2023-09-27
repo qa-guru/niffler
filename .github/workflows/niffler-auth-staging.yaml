@@ -62,10 +62,8 @@ jobs:
           echo "### niffler-spend version will be used: ${{ env.SPEND_VER }}"
           echo "### niffler-userdata version will be used: ${{ env.USERDATA_VER }}"
           echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER}}"
-          echo "### PREFIX will be used: ${{ env.PREFIX }}"
-          echo "### PROFILE will be used: ${{ env.PROFILE }}"
           bash ./gradlew :niffler-auth:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
-          docker-compose -f docker-compose.ci.yml pull
-          docker-compose -f docker-compose.ci.yml up --detach --force-recreate
+          docker-compose -f docker-compose.ci.yml pull auth.niffler.dc
+          docker-compose -f docker-compose.ci.yml stop auth.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps auth.niffler.dc
           docker system prune -a -f
-          echo "done!"
+          echo "Done!"

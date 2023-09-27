@@ -53,11 +53,6 @@ jobs:
           echo "FRONT_IMAGE=niffler-frontend" >> $GITHUB_ENV
       - name: deploy
         working-directory: ./
-        env:
-          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
-          PROFILE: prod
-          PREFIX: ${{ vars.DOCKER_HUB_ACC }}
-          FRONT_IMAGE: ${{ vars.DOCKER_HUB_ACC }}/niffler-frontend-prod:${FRONT_VERSION}
         run: |
           pwd
           docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
@@ -67,10 +62,8 @@ jobs:
           echo "### niffler-spend version will be used: ${{ env.SPEND_VER }}"
           echo "### niffler-userdata version will be used: ${{ env.USERDATA_VER }}"
           echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER}}"
-          echo "### PREFIX will be used: ${{ env.PREFIX }}"
-          echo "### PROFILE will be used: ${{ env.PROFILE }}"
           bash ./gradlew :niffler-currency:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
           docker-compose -f docker-compose.ci.yml pull currency.niffler.dc
           docker-compose -f docker-compose.ci.yml stop currency.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps currency.niffler.dc
           docker system prune  -a -f
-          echo "done"
+          echo "Done!"
