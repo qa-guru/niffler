@@ -10,7 +10,7 @@ grpc:
 
 spring:
   application:
-    name: niffler-cyrrency
+    name: niffler-currency
   datasource:
     hikari:
       connection-timeout: 20000
