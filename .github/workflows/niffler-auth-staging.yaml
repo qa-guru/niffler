@@ -65,8 +65,7 @@ jobs:
           echo "### PREFIX will be used: ${{ env.PREFIX }}"
           echo "### PROFILE will be used: ${{ env.PROFILE }}"
           bash ./gradlew :niffler-auth:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
-          docker-compose -f docker-compose.ci.yml down
           docker-compose -f docker-compose.ci.yml pull
-          docker-compose -f docker-compose.ci.yml pull up -d
-          docker system prune  -a -f
-          echo "done WITHOUT DOCKER_COMPOSE!"
+          docker-compose -f docker-compose.ci.yml up --detach --force-recreate
+          docker system prune -a -f
+          echo "done!"
