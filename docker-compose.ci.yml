@@ -1,26 +1,6 @@
 version: '3.9'
 
 services:
-  niffler-all-db:
-    container_name: niffler-all-db
-    image: postgres:15.1
-    environment:
-      - POSTGRES_MULTIPLE_DATABASES="niffler-auth","niffler-currency","niffler-spend","niffler-userdata"
-      - PGUSER=postgres
-      - POSTGRES_PASSWORD=secret
-    volumes:
-      - ./postgres:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: [ "CMD", "pg_isready" ]
-      interval: 3s
-      timeout: 3s
-      retries: 5
-    ports:
-      - "5432:5432"
-    networks:
-      - niffler-network
-    dns_search: .
-
   zookeeper:
     container_name: zookeeper
     image: confluentinc/cp-zookeeper:7.3.2
@@ -52,7 +32,9 @@ services:
 
   auth.niffler.dc:
     container_name: auth.niffler.dc
-    image: ${PREFIX}/niffler-auth-${PROFILE}:latest
+    image: ${PREFIX}/niffler-auth-${PROFILE}:${AUTH_VER}
+    environment:
+      - VAULT_TOKEN=${VAULT_TOKEN}
     ports:
       - "9000:9000"
     healthcheck:
@@ -62,8 +44,6 @@ services:
       retries: 10
     restart: always
     depends_on:
-      niffler-all-db:
-        condition: service_healthy
       kafka:
         condition: service_started
     networks:
@@ -72,21 +52,22 @@ services:
 
   currency.niffler.dc:
     container_name: currency.niffler.dc
-    image: ${PREFIX}/niffler-currency-${PROFILE}:latest
+    image: ${PREFIX}/niffler-currency-${PROFILE}:${CURRENCY_VER}
+    environment:
+      - VAULT_TOKEN=${VAULT_TOKEN}
     ports:
       - "8091:8091"
       - "8092:8092"
     restart: always
-    depends_on:
-      niffler-all-db:
-        condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
 
   gateway.niffler.dc:
     container_name: gateway.niffler.dc
-    image: ${PREFIX}/niffler-gateway-${PROFILE}:latest
+    image: ${PREFIX}/niffler-gateway-${PROFILE}:${GATEWAY_VER}
+    environment:
+      - VAULT_TOKEN=${VAULT_TOKEN}
     ports:
       - "8090:8090"
     healthcheck:
@@ -104,20 +85,21 @@ services:
 
   spend.niffler.dc:
     container_name: spend.niffler.dc
-    image: ${PREFIX}/niffler-spend-${PROFILE}:latest
+    image: ${PREFIX}/niffler-spend-${PROFILE}:${SPEND_VER}
+    environment:
+      - VAULT_TOKEN=${VAULT_TOKEN}
     ports:
       - "8093:8093"
     restart: always
-    depends_on:
-      niffler-all-db:
-        condition: service_healthy
     networks:
       - niffler-network
     dns_search: .
 
   userdata.niffler.dc:
     container_name: userdata.niffler.dc
-    image: ${PREFIX}/niffler-userdata-${PROFILE}:latest
+    image: ${PREFIX}/niffler-userdata-${PROFILE}:${USERDATA_VER}
+    environment:
+      - VAULT_TOKEN=${VAULT_TOKEN}
     ports:
       - "8089:8089"
     restart: always
@@ -130,9 +112,9 @@ services:
 
   frontend.niffler.dc:
     container_name: frontend.niffler.dc
-    image: "${FRONT_IMAGE}"
+    image: ${PREFIX}/${FRONT_IMAGE}-${PROFILE}:${FRONT_VER}
     ports:
-      - "80:80"
+      - "8000:80"
     restart: always
     depends_on:
       gateway.niffler.dc:
@@ -140,10 +122,6 @@ services:
     networks:
       - niffler-network
     dns_search: .
-
-volumes:
-  pgdata:
-    external: true
 
 networks:
   niffler-network:

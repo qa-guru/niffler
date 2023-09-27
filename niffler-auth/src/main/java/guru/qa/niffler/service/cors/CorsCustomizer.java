@@ -14,10 +14,13 @@ import java.util.List;
 public class CorsCustomizer {
 
     private final String nifflerFrontUri;
+    private final String nifflerAuthUri;
 
     @Autowired
-    public CorsCustomizer(@Value("${niffler-front.base-uri}") String nifflerFrontUri) {
+    public CorsCustomizer(@Value("${niffler-front.base-uri}") String nifflerFrontUri,
+                          @Value("${niffler-auth.base-uri}") String nifflerAuthUri) {
         this.nifflerFrontUri = nifflerFrontUri;
+        this.nifflerAuthUri = nifflerAuthUri;
     }
 
     public void corsCustomizer(@Nonnull HttpSecurity http) throws Exception {
@@ -25,7 +28,7 @@ public class CorsCustomizer {
             CorsConfigurationSource source = s -> {
                 CorsConfiguration cc = new CorsConfiguration();
                 cc.setAllowCredentials(true);
-                cc.setAllowedOrigins(List.of(nifflerFrontUri));
+                cc.setAllowedOrigins(List.of(nifflerFrontUri, nifflerAuthUri));
                 cc.setAllowedHeaders(List.of("*"));
                 cc.setAllowedMethods(List.of("*"));
                 return cc;

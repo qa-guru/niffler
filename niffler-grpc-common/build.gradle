@@ -12,6 +12,9 @@ plugins {
     id 'com.google.protobuf' version "${protobufPluginVersion}"
 }
 
+group = 'guru.qa'
+version = '1.0.0'
+
 repositories {
     mavenCentral()
 }
@@ -40,6 +43,12 @@ protobuf {
         all()*.plugins {
             grpc {}
         }
+    }
+}
+
+tasks.register('printVersion') {
+    doLast {
+        println project.version
     }
 }
 

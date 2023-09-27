@@ -5,6 +5,9 @@ plugins {
     id 'com.google.cloud.tools.jib' version '3.3.2'
 }
 
+group = 'guru.qa'
+version = '1.0.0'
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -14,6 +17,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.1.2'
     implementation 'org.springframework.kafka:spring-kafka:3.0.11'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:4.0.1'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -21,7 +25,8 @@ dependencies {
 jib {
     container {
         ports = ['9000']
-        jvmFlags = ['-Dspring.profiles.active=docker']
+        jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
+        environment = ['VAULT_TOKEN': "${System.env.VAULT_TOKEN}".toString()]
         creationTime = 'USE_CURRENT_TIMESTAMP'
     }
     from {
@@ -34,8 +39,14 @@ jib {
         }
     }
     to {
-        image = "${project.ext.dockerHubName}/${project.name}"
-        tags = ['latest', "${rootProject.version}"]
+        image = "${project.ext.dockerHubName}/${project.name}-${System.env.PROFILE}"
+        tags = ['latest', "${project.version}"]
+    }
+}
+
+tasks.register('printVersion') {
+    doLast {
+        println project.version
     }
 }
 

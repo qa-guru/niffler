@@ -54,7 +54,7 @@ services:
 
   auth.niffler.dc:
     container_name: auth.niffler.dc
-    image: ${PREFIX}/niffler-auth:latest
+    image: ${PREFIX}/niffler-auth-${PROFILE}:latest
     ports:
       - "9000:9000"
     healthcheck:
@@ -88,7 +88,7 @@ services:
 
   gateway.niffler.dc:
     container_name: gateway.niffler.dc
-    image: ${PREFIX}/niffler-gateway:latest
+    image: ${PREFIX}/niffler-gateway-${PROFILE}:latest
     ports:
       - "8090:8090"
     depends_on:
@@ -100,7 +100,7 @@ services:
 
   spend.niffler.dc:
     container_name: spend.niffler.dc
-    image: ${PREFIX}/niffler-spend:latest
+    image: ${PREFIX}/niffler-spend-${PROFILE}:latest
     expose:
       - "8093"
     depends_on:
@@ -125,7 +125,7 @@ services:
 
   #  userdata.niffler.dc:
   #    container_name: userdata.niffler.dc
-  #    image: ${PREFIX}/niffler-userdata:latest
+  #    image: ${PREFIX}/niffler-userdata-${PROFILE}:latest
   #    expose:
   #      - "8089"
   #    depends_on:
@@ -177,7 +177,7 @@ services:
 
   niffler-e-2-e:
     container_name: niffler-e-2-e
-    image: ${PREFIX}/niffler-e-2-e-tests
+    image: ${PREFIX}/niffler-e-2-e-tests:latest
     depends_on:
       frontend.niffler.dc:
         condition: service_started

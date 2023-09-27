@@ -1,24 +1,22 @@
 #!/bin/bash
-
 source ./docker.properties
+export PROFILE=docker
 
 echo '### Java version ###'
 java --version
-echo '### Gradle version ###'
-gradle --version
 
 front=""
 front_image=""
 docker_arch=""
 if [[ "$1" = "gql" ]]; then
   front="./niffler-frontend-gql/";
-  front_image="${IMAGE_PREFIX}/${FRONT_IMAGE_NAME_GQL}-test:latest";
+  front_image="${IMAGE_PREFIX}/${FRONT_IMAGE_NAME_GQL}-${PROFILE}:latest";
 else
   front="./niffler-frontend/";
-  front_image="$IMAGE_PREFIX/${FRONT_IMAGE_NAME}-test:latest";
+  front_image="$IMAGE_PREFIX/${FRONT_IMAGE_NAME}-${PROFILE}:latest";
 fi
 
-ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" docker-compose -f docker-compose.test.yml down
+ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" PROFILE="${PROFILE}" docker-compose -f docker-compose.test.yml down
 
 docker_containers="$(docker ps -a -q)"
 docker_images="$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'niffler')"
@@ -46,9 +44,9 @@ else
 fi
 
 cd "$front" || exit
-bash ./docker-build.sh test
+bash ./docker-build.sh ${PROFILE}
 cd ../ || exit
 docker pull selenoid/vnc_chrome:116.0
 docker images
-ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" docker-compose -f docker-compose.test.yml up -d
+ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" PROFILE="${PROFILE}" docker-compose -f docker-compose.test.yml up -d
 docker ps -a
