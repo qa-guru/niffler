@@ -3,7 +3,6 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '0.0.8-SNAPSHOT'
 sourceCompatibility = '17'
 
 subprojects {

@@ -15,9 +15,9 @@ spring:
       idle-timeout: 10000
       max-lifetime: 1000
       auto-commit: true
-    username: postgres
-    password: secret
   jpa:
+    hibernate:
+      ddl-auto: validate
     properties:
       hibernate:
         jdbc:
@@ -43,6 +43,11 @@ spring:
   config:
     activate:
       on-profile: 'local'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
     bootstrap-servers: 'localhost:9092'
     consumer:
@@ -50,9 +55,8 @@ spring:
       auto-offset-reset: earliest
   datasource:
     url: 'jdbc:postgresql://localhost:5432/niffler-userdata'
-  jpa:
-    hibernate:
-      ddl-auto: validate
+    username: postgres
+    password: secret
 niffler-userdata:
   base-uri: 'http://127.0.0.1:8089'
 ---
@@ -60,6 +64,11 @@ spring:
   config:
     activate:
       on-profile: 'docker'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
     bootstrap-servers: 'kafka:9092'
     consumer:
@@ -67,9 +76,58 @@ spring:
       auto-offset-reset: earliest
   datasource:
     url: 'jdbc:postgresql://niffler-all-db:5432/niffler-userdata'
-  jpa:
-    hibernate:
-      ddl-auto: validate
+    username: postgres
+    password: secret
 niffler-userdata:
   base-uri: 'http://userdata.niffler.dc:8089'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'prod'
+    import: vault://
+  cloud:
+    vault:
+      authentication: TOKEN
+      host: vault.qa.guru
+      port: 443
+      scheme: https
+      uri: https://vault.qa.guru:443
+      token: ${VAULT_TOKEN}
+  kafka:
+    bootstrap-servers: ${kafka.url}
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+niffler-userdata:
+  base-uri: ${niffler-userdata.url}
+---
+spring:
+  config:
+    activate:
+      on-profile: 'staging'
+    import: vault://
+  cloud:
+    vault:
+      authentication: TOKEN
+      host: vault.qa.guru
+      port: 443
+      scheme: https
+      uri: https://vault.qa.guru:443
+      token: ${VAULT_TOKEN}
+  kafka:
+    bootstrap-servers: ${kafka.url}
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+niffler-userdata:
+  base-uri: ${niffler-userdata.url}
 ---

@@ -14,6 +14,7 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
+    net.devh.boot.grpc: DEBUG
 #    org.springframework.boot.autoconfigure: DEBUG
 
 ---
@@ -21,6 +22,11 @@ spring:
   config:
     activate:
       on-profile: 'local'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   security:
     oauth2:
       resourceserver:
@@ -44,12 +50,16 @@ niffler-spend:
   base-uri: 'http://127.0.0.1:8093'
 niffler-front:
   base-uri: 'http://127.0.0.1:3000'
-
 ---
 spring:
   config:
     activate:
       on-profile: 'docker'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   security:
     oauth2:
       resourceserver:
@@ -70,4 +80,72 @@ niffler-spend:
   base-uri: 'http://spend.niffler.dc:8093'
 niffler-front:
   base-uri: 'http://frontend.niffler.dc'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'prod'
+    import: vault://
+  cloud:
+    vault:
+      authentication: TOKEN
+      host: vault.qa.guru
+      port: 443
+      scheme: https
+      uri: https://vault.qa.guru:443
+      token: ${VAULT_TOKEN}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'https://auth.niffler.qa.guru'
+
+grpc:
+  client:
+    grpcCurrencyClient:
+      address: ${niffler-currency.grpc.url}
+      negotiationType: PLAINTEXT
+
+niffler-currency:
+  base-uri: ${niffler-currency.url}
+niffler-userdata:
+  base-uri: ${niffler-userdata.url}
+niffler-spend:
+  base-uri: ${niffler-spend.url}
+niffler-front:
+  base-uri: 'https://niffler.qa.guru'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'staging'
+    import: vault://
+  cloud:
+    vault:
+      authentication: TOKEN
+      host: vault.qa.guru
+      port: 443
+      scheme: https
+      uri: https://vault.qa.guru:443
+      token: ${VAULT_TOKEN}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'https://auth.niffler-stage.qa.guru'
+
+grpc:
+  client:
+    grpcCurrencyClient:
+      address: ${niffler-currency.grpc.url}
+      negotiationType: PLAINTEXT
+
+niffler-currency:
+  base-uri: ${niffler-currency.url}
+niffler-userdata:
+  base-uri: ${niffler-userdata.url}
+niffler-spend:
+  base-uri: ${niffler-spend.url}
+niffler-front:
+  base-uri: 'https://niffler-stage.qa.guru'
 ---

@@ -20,9 +20,9 @@ spring:
       idle-timeout: 10000
       max-lifetime: 1000
       auto-commit: true
-    username: postgres
-    password: secret
   jpa:
+    hibernate:
+      ddl-auto: validate
     properties:
       hibernate:
         jdbc:
@@ -38,10 +38,11 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework.kafka: DEBUG
+    org.springframework.kafka: INFO
     org.springframework.web: INFO
     org.springframework.security: INFO
     org.springframework.security.oauth2: INFO
+    org.springframework.web.cors: DEBUG
 #    org.springframework.boot.autoconfigure: DEBUG
 
 ---
@@ -49,32 +50,99 @@ spring:
   config:
     activate:
       on-profile: 'local'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
     bootstrap-servers: 'localhost:9092'
-
   datasource:
     url: 'jdbc:postgresql://localhost:5432/niffler-auth'
-  jpa:
-    hibernate:
-      ddl-auto: validate
+    username: postgres
+    password: secret
 niffler-front:
   base-uri: 'http://127.0.0.1:3000'
 niffler-auth:
   base-uri: 'http://127.0.0.1:9000'
+oauth2:
+  client-id: 'client'
+  client-secret: '{noop}secret'
 ---
 spring:
   config:
     activate:
       on-profile: 'docker'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
     bootstrap-servers: 'kafka:9092'
   datasource:
     url: 'jdbc:postgresql://niffler-all-db:5432/niffler-auth'
-  jpa:
-    hibernate:
-      ddl-auto: validate
+    username: postgres
+    password: secret
 niffler-front:
   base-uri: 'http://frontend.niffler.dc'
 niffler-auth:
   base-uri: 'http://auth.niffler.dc:9000'
+oauth2:
+  client-id: 'client'
+  client-secret: '{noop}secret'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'prod'
+    import: vault://
+  cloud:
+    vault:
+      authentication: TOKEN
+      host: vault.qa.guru
+      port: 443
+      scheme: https
+      uri: https://vault.qa.guru:443
+      token: ${VAULT_TOKEN}
+  kafka:
+    bootstrap-servers: ${kafka.url}
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+niffler-front:
+  base-uri: 'https://niffler.qa.guru'
+niffler-auth:
+  base-uri: 'https://auth.niffler.qa.guru'
+oauth2:
+  client-id: ${oauth2.client-id}
+  client-secret: ${oauth2.client-secret}
+---
+spring:
+  config:
+    activate:
+      on-profile: 'staging'
+    import: vault://
+  cloud:
+    vault:
+      authentication: TOKEN
+      host: vault.qa.guru
+      port: 443
+      scheme: https
+      uri: https://vault.qa.guru:443
+      token: ${VAULT_TOKEN}
+  kafka:
+    bootstrap-servers: ${kafka.url}
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+niffler-front:
+  base-uri: 'https://niffler-stage.qa.guru'
+niffler-auth:
+  base-uri: 'https://auth.niffler-stage.qa.guru'
+oauth2:
+  client-id: ${oauth2.client-id}
+  client-secret: ${oauth2.client-secret}
 ---

@@ -1,22 +1,21 @@
 #!/bin/bash
 source ./docker.properties
+export PROFILE="${PROFILE:=docker}"
 
 echo '### Java version ###'
 java --version
-echo '### Gradle version ###'
-gradle --version
 
 front=""
 front_image=""
 if [[ "$1" = "gql" ]]; then
   front="./niffler-frontend-gql/";
-  front_image="${IMAGE_PREFIX}/${FRONT_IMAGE_NAME_GQL}:latest";
+  front_image="${IMAGE_PREFIX}/${FRONT_IMAGE_NAME_GQL}-${PROFILE}:latest";
 else
   front="./niffler-frontend/";
-  front_image="${IMAGE_PREFIX}/${FRONT_IMAGE_NAME}:latest";
+  front_image="${IMAGE_PREFIX}/${FRONT_IMAGE_NAME}-${PROFILE}:latest";
 fi
 
-FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" docker-compose down
+FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" PROFILE="${PROFILE}" docker-compose down
 
 docker_containers="$(docker ps -a -q)"
 docker_images="$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'niffler')"
@@ -35,15 +34,15 @@ if [ "$1" = "push" ] || [ "$2" = "push" ]; then
   echo "### Build & push images (front: $front) ###"
   bash ./gradlew -Pskipjaxb jib -x :niffler-e-2-e-tests:test
   cd "$front" || exit
-  bash ./docker-build.sh dev push
+  bash ./docker-build.sh ${PROFILE} push
 else
   echo "### Build images (front: $front) ###"
   bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
   cd "$front" || exit
-  bash ./docker-build.sh dev
+  bash ./docker-build.sh ${PROFILE}
 fi
 
 cd ../
 docker images
-FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" docker-compose up -d
+FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" PROFILE="${PROFILE}" docker-compose up -d
 docker ps -a

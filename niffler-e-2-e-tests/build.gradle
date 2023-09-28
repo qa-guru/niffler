@@ -16,6 +16,9 @@ plugins {
     id 'io.qameta.allure-adapter' version '2.11.2'
 }
 
+group = 'guru.qa'
+version = '1.0.0'
+
 allure {
     version.set("${allureVersion}")
     adapter {
@@ -132,6 +135,12 @@ dependencies {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+tasks.register('printVersion') {
+    doLast {
+        println project.version
+    }
 }
 
 test {

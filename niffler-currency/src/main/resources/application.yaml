@@ -10,7 +10,7 @@ grpc:
 
 spring:
   application:
-    name: niffler-cyrrency
+    name: niffler-currency
   datasource:
     hikari:
       connection-timeout: 20000
@@ -19,9 +19,9 @@ spring:
       idle-timeout: 10000
       max-lifetime: 1000
       auto-commit: true
-    username: postgres
-    password: secret
   jpa:
+    hibernate:
+      ddl-auto: validate
     properties:
       hibernate:
         jdbc:
@@ -47,19 +47,63 @@ spring:
   config:
     activate:
       on-profile: 'local'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   datasource:
+    username: postgres
+    password: secret
     url: 'jdbc:postgresql://localhost:5432/niffler-currency'
-  jpa:
-    hibernate:
-      ddl-auto: validate
 ---
 spring:
   config:
     activate:
       on-profile: 'docker'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   datasource:
+    username: postgres
+    password: secret
     url: 'jdbc:postgresql://niffler-all-db:5432/niffler-currency'
-  jpa:
-    hibernate:
-      ddl-auto: validate
+---
+spring:
+  config:
+    activate:
+      on-profile: 'prod'
+    import: vault://
+  cloud:
+    vault:
+      authentication: TOKEN
+      host: vault.qa.guru
+      port: 443
+      scheme: https
+      uri: https://vault.qa.guru:443
+      token: ${VAULT_TOKEN}
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+---
+spring:
+  config:
+    activate:
+      on-profile: 'staging'
+    import: vault://
+  cloud:
+    vault:
+      authentication: TOKEN
+      host: vault.qa.guru
+      port: 443
+      scheme: https
+      uri: https://vault.qa.guru:443
+      token: ${VAULT_TOKEN}
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
 ---

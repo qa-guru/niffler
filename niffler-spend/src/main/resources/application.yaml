@@ -15,9 +15,9 @@ spring:
       idle-timeout: 10000
       max-lifetime: 1000
       auto-commit: true
-    username: postgres
-    password: secret
   jpa:
+    hibernate:
+      ddl-auto: validate
     properties:
       hibernate:
         jdbc:
@@ -43,11 +43,15 @@ spring:
   config:
     activate:
       on-profile: 'local'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   datasource:
     url: 'jdbc:postgresql://localhost:5432/niffler-spend'
-  jpa:
-    hibernate:
-      ddl-auto: validate
+    username: postgres
+    password: secret
 grpc:
   client:
     grpcCurrencyClient:
@@ -63,11 +67,15 @@ spring:
   config:
     activate:
       on-profile: 'docker'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   datasource:
     url: 'jdbc:postgresql://niffler-all-db:5432/niffler-spend'
-  jpa:
-    hibernate:
-      ddl-auto: validate
+    username: postgres
+    password: secret
 grpc:
   client:
     grpcCurrencyClient:
@@ -78,4 +86,62 @@ niffler-currency:
   base-uri: 'http://currency.niffler.dc:8091'
 niffler-userdata:
   base-uri: 'http://userdata.niffler.dc:8089'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'prod'
+    import: vault://
+  cloud:
+    vault:
+      authentication: TOKEN
+      host: vault.qa.guru
+      port: 443
+      scheme: https
+      uri: https://vault.qa.guru:443
+      token: ${VAULT_TOKEN}
+
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+grpc:
+  client:
+    grpcCurrencyClient:
+      address: ${niffler-currency.grpc.url}
+      negotiationType: PLAINTEXT
+
+niffler-currency:
+  base-uri: ${niffler-currency.url}
+niffler-userdata:
+  base-uri: ${niffler-userdata.url}
+---
+spring:
+  config:
+    activate:
+      on-profile: 'staging'
+    import: vault://
+  cloud:
+    vault:
+      authentication: TOKEN
+      host: vault.qa.guru
+      port: 443
+      scheme: https
+      uri: https://vault.qa.guru:443
+      token: ${VAULT_TOKEN}
+
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+grpc:
+  client:
+    grpcCurrencyClient:
+      address: ${niffler-currency.grpc.url}
+      negotiationType: PLAINTEXT
+
+niffler-currency:
+  base-uri: ${niffler-currency.url}
+niffler-userdata:
+  base-uri: ${niffler-userdata.url}
 ---

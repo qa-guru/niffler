@@ -40,15 +40,22 @@ public class NifflerAuthServiceConfig {
     private final KeyManager keyManager;
     private final String nifflerFrontUri;
     private final String nifflerAuthUri;
+    private final String clientId;
+    private final String clientSecret;
     private final CorsCustomizer corsCustomizer;
 
     @Autowired
     public NifflerAuthServiceConfig(KeyManager keyManager,
                                     @Value("${niffler-front.base-uri}") String nifflerFrontUri,
-                                    @Value("${niffler-auth.base-uri}") String nifflerAuthUri, CorsCustomizer corsCustomizer) {
+                                    @Value("${niffler-auth.base-uri}") String nifflerAuthUri,
+                                    @Value("${oauth2.client-id}") String clientId,
+                                    @Value("${oauth2.client-secret}") String clientSecret,
+                                    CorsCustomizer corsCustomizer) {
         this.keyManager = keyManager;
         this.nifflerFrontUri = nifflerFrontUri;
         this.nifflerAuthUri = nifflerAuthUri;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
         this.corsCustomizer = corsCustomizer;
     }
 
@@ -59,20 +66,18 @@ public class NifflerAuthServiceConfig {
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
 
-        http.exceptionHandling(exceptions ->
-                        exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-                )
+        http.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
                 .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
 
         corsCustomizer.corsCustomizer(http);
-        return http.formLogin(Customizer.withDefaults()).build();
+        return http.build();
     }
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("client")
-                .clientSecret("{noop}secret")
+                .clientId(clientId)
+                .clientSecret(clientSecret)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
@@ -81,7 +86,7 @@ public class NifflerAuthServiceConfig {
                 .clientSettings(ClientSettings.builder()
                         .requireAuthorizationConsent(true).build())
                 .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofHours(10))
+                        .accessTokenTimeToLive(Duration.ofHours(1))
                         .refreshTokenTimeToLive(Duration.ofHours(10))
                         .build())
                 .build();
