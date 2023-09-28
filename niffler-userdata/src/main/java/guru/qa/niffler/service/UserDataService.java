@@ -41,26 +41,26 @@ public class UserDataService {
 
     @KafkaListener(topics = "users", groupId = "userdata")
     public void listener(@Payload UserJson user, ConsumerRecord<String, UserJson> cr) {
-        LOG.info("### Kafka topic [users] received message: " + user.getUsername());
+        LOG.info("### Kafka topic [users] received message: " + user.username());
         LOG.info("### Kafka consumer record: " + cr.toString());
         UserEntity userDataEntity = new UserEntity();
-        userDataEntity.setUsername(user.getUsername());
+        userDataEntity.setUsername(user.username());
         userDataEntity.setCurrency(DEFAULT_USER_CURRENCY);
         UserEntity userEntity = userRepository.save(userDataEntity);
         LOG.info(String.format(
                 "### User '%s' successfully saved to database with id: %s",
-                user.getUsername(),
+                user.username(),
                 userEntity.getId()
         ));
     }
 
     public @Nonnull
     UserJson update(@Nonnull UserJson user) {
-        UserEntity userEntity = getRequiredUser(user.getUsername());
-        userEntity.setFirstname(user.getFirstname());
-        userEntity.setSurname(user.getSurname());
-        userEntity.setCurrency(user.getCurrency());
-        userEntity.setPhoto(user.getPhoto() != null ? user.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
+        UserEntity userEntity = getRequiredUser(user.username());
+        userEntity.setFirstname(user.firstname());
+        userEntity.setSurname(user.surname());
+        userEntity.setCurrency(user.currency());
+        userEntity.setPhoto(user.photo() != null ? user.photo().getBytes(StandardCharsets.UTF_8) : null);
         UserEntity saved = userRepository.save(userEntity);
         return UserJson.fromEntity(saved);
     }
@@ -130,7 +130,7 @@ public class UserDataService {
 
     public UserJson addFriend(@Nonnull String username, @Nonnull FriendJson friend) {
         UserEntity currentUser = getRequiredUser(username);
-        UserEntity friendEntity = getRequiredUser(friend.getUsername());
+        UserEntity friendEntity = getRequiredUser(friend.username());
 
         currentUser.addFriends(true, friendEntity);
         userRepository.save(currentUser);
@@ -140,7 +140,7 @@ public class UserDataService {
     public @Nonnull
     List<UserJson> acceptInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = getRequiredUser(username);
-        UserEntity inviteUser = getRequiredUser(invitation.getUsername());
+        UserEntity inviteUser = getRequiredUser(invitation.username());
 
         FriendsEntity invite = currentUser.getInvites()
                 .stream()
@@ -165,7 +165,7 @@ public class UserDataService {
     public @Nonnull
     List<UserJson> declineInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = getRequiredUser(username);
-        UserEntity friendToDecline = getRequiredUser(invitation.getUsername());
+        UserEntity friendToDecline = getRequiredUser(invitation.username());
 
         currentUser.removeInvites(friendToDecline);
         friendToDecline.removeFriends(currentUser);

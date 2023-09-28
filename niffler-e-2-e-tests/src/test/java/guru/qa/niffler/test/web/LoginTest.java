@@ -28,7 +28,7 @@ public class LoginTest extends BaseWebTest {
     void mainPageShouldBeDisplayedAfterSuccessLogin(@User(selector = METHOD) UserJson user) {
         Selenide.open(WelcomePage.URL, WelcomePage.class)
                 .doLogin()
-                .fillLoginPage(user.getUsername(), user.getPassword())
+                .fillLoginPage(user.username(), user.testData().password())
                 .submit(new MainPage())
                 .waitForPageLoaded();
     }
@@ -41,7 +41,7 @@ public class LoginTest extends BaseWebTest {
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials(@User(selector = METHOD) UserJson user) {
         LoginPage loginPage = Selenide.open(WelcomePage.URL, WelcomePage.class)
                 .doLogin()
-                .fillLoginPage(user.getUsername(), user.getPassword() + "BAD");
+                .fillLoginPage(user.username(), user.testData().password() + "BAD");
 
         loginPage.submit(loginPage)
                 .checkError(BAD_CREDENTIALS.content);

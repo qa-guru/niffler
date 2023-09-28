@@ -15,8 +15,11 @@ import guru.qa.niffler.ws.NifflerUserdataWsService;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static io.qameta.allure.Allure.step;
@@ -26,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("[SOAP][niffler-userdata]: Пользователи")
 @DisplayName("[SOAP][niffler-userdata]: Пользователи")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserDataUsersSoapTest extends BaseSoapTest {
 
     private static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
@@ -36,9 +40,10 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100001")
     @Tag("SOAP")
     @GenerateUser()
+    @Order(1)
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         CurrentUserRequest cur = new CurrentUserRequest();
-        cur.setUsername(user.getUsername());
+        cur.setUsername(user.username());
 
         final CurrentUserResponse currentUserResponse = nus.currentUser(cur);
 
@@ -46,7 +51,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
                 assertTrue(currentUserResponse.getUser().getId().matches(ID_REGEXP))
         );
         step("Check that response contains username", () ->
-                assertEquals(user.getUsername(), currentUserResponse.getUser().getUsername())
+                assertEquals(user.username(), currentUserResponse.getUser().getUsername())
         );
         step("Check that response contains default currency (RUB)", () ->
                 assertEquals(Currency.RUB, currentUserResponse.getUser().getCurrency())
@@ -61,13 +66,14 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100002")
     @Tag("SOAP")
     @GenerateUser()
+    @Order(2)
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String firstName = "Pizzly";
         final String secondName = "Pizzlyvich";
 
         UpdateUserInfoRequest uir = new UpdateUserInfoRequest();
         guru.qa.niffler.userdata.wsdl.User xmlUser = new guru.qa.niffler.userdata.wsdl.User();
-        xmlUser.setUsername(user.getUsername());
+        xmlUser.setUsername(user.username());
         xmlUser.setCurrency(Currency.USD);
         xmlUser.setFirstname(firstName);
         xmlUser.setSurname(secondName);
@@ -79,7 +85,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
                 assertTrue(updateUserInfoResponse.getUser().getId().matches(ID_REGEXP))
         );
         step("Check that response contains username", () ->
-                assertEquals(user.getUsername(), updateUserInfoResponse.getUser().getUsername())
+                assertEquals(user.username(), updateUserInfoResponse.getUser().getUsername())
         );
         step("Check that response contains updated currency (USD)", () ->
                 assertEquals(Currency.USD, updateUserInfoResponse.getUser().getCurrency())
@@ -97,9 +103,10 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100003")
     @Tag("SOAP")
     @GenerateUser()
+    @Order(3)
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
         AllUsersRequest aur = new AllUsersRequest();
-        aur.setUsername(user.getUsername());
+        aur.setUsername(user.username());
 
         final AllUsersResponse allUsersResponse = nus.allUsersRequest(aur);
 

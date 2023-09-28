@@ -45,19 +45,19 @@ public class SpendCondition {
                     SpendJson expectedSpending = expectedSpends[i];
                     List<WebElement> cells = row.findElements(By.cssSelector("td"));
 
-                    if (!cells.get(1).getText().equals(DateUtils.getDateAsString(expectedSpending.getSpendDate()))) {
+                    if (!cells.get(1).getText().equals(DateUtils.getDateAsString(expectedSpending.spendDate()))) {
                         return false;
                     }
-                    if (!Double.valueOf(cells.get(2).getText()).equals(expectedSpending.getAmount())) {
+                    if (!Double.valueOf(cells.get(2).getText()).equals(expectedSpending.amount())) {
                         return false;
                     }
-                    if (!cells.get(3).getText().equals(expectedSpending.getCurrency().name())) {
+                    if (!cells.get(3).getText().equals(expectedSpending.currency().name())) {
                         return false;
                     }
-                    if (!cells.get(4).getText().equals(expectedSpending.getCategory())) {
+                    if (!cells.get(4).getText().equals(expectedSpending.category())) {
                         return false;
                     }
-                    if (!cells.get(5).getText().equals(expectedSpending.getDescription())) {
+                    if (!cells.get(5).getText().equals(expectedSpending.description())) {
                         return false;
                     }
                 }
@@ -68,13 +68,15 @@ public class SpendCondition {
                 return elements.stream()
                         .map(e -> {
                             List<WebElement> cells = e.findElements(By.cssSelector("td"));
-                            SpendJson actual = new SpendJson();
-                            actual.setSpendDate(DateUtils.fromString(cells.get(1).getText()));
-                            actual.setAmount(Double.valueOf(cells.get(2).getText()));
-                            actual.setCurrency(CurrencyValues.valueOf(cells.get(3).getText()));
-                            actual.setCategory(cells.get(4).getText());
-                            actual.setDescription(cells.get(5).getText());
-                            return actual;
+                            return new SpendJson(
+                                    null,
+                                    DateUtils.fromString(cells.get(1).getText()),
+                                    Double.valueOf(cells.get(2).getText()),
+                                    CurrencyValues.valueOf(cells.get(3).getText()),
+                                    cells.get(4).getText(),
+                                    cells.get(5).getText(),
+                                    null
+                            );
                         })
                         .collect(Collectors.toList());
             }

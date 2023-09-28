@@ -39,7 +39,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     @GenerateUser
     void currentUserTest(@User(selector = METHOD) UserJson user,
                          @GqlReq("gql/currentUserQuery.json") JsonNode query) throws Exception {
-        apiLogin(user.getUsername(), user.getPassword());
+        apiLogin(user.username(), user.testData().password());
 
         UserDataGql currentUserResponse = gqlClient.currentUser(query);
 
@@ -49,7 +49,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
                 assertTrue(userGql.getId().toString().matches(ID_REGEXP))
         );
         step("Check that response contains username", () ->
-                assertEquals(user.getUsername(), userGql.getUsername())
+                assertEquals(user.username(), userGql.getUsername())
         );
         step("Check that response contains default currency (RUB)", () ->
                 assertEquals(CurrencyValues.RUB, userGql.getCurrency())
@@ -63,7 +63,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     @GenerateUser()
     void updateUserTest(@User(selector = METHOD) UserJson user,
                         @GqlReq("gql/updateUserQuery.json") JsonNode query) throws Exception {
-        apiLogin(user.getUsername(), user.getPassword());
+        apiLogin(user.username(), user.testData().password());
 
         UpdateUserDataGql updateUserResponse = gqlClient.updateUser(query);
 
@@ -73,7 +73,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
                 assertTrue(userGql.getId().toString().matches(ID_REGEXP))
         );
         step("Check that response contains username", () ->
-                assertEquals(user.getUsername(), userGql.getUsername())
+                assertEquals(user.username(), userGql.getUsername())
         );
         step("Check that response contains updated currency (EUR)", () ->
                 assertEquals(CurrencyValues.EUR, userGql.getCurrency())
@@ -97,7 +97,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     void allUsersTest(@User(selector = METHOD) UserJson[] users,
                       @GqlReq("gql/usersQuery.json") JsonNode query) throws Exception {
         final UserJson currentUser = users[0];
-        apiLogin(currentUser.getUsername(), currentUser.getPassword());
+        apiLogin(currentUser.username(), currentUser.testData().password());
 
         UsersDataGql usersDataGql = gqlClient.allUsers(query);
 

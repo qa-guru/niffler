@@ -3,28 +3,17 @@ package guru.qa.niffler.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import niffler_userdata.Friend;
 
-public class FriendJson {
+public record FriendJson(
+        @JsonProperty("username")
+        String username) {
 
-    @JsonProperty("username")
-    private String username;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public Friend toJaxbFriend() {
+        Friend jaxbFriend = new Friend();
+        jaxbFriend.setUsername(username());
+        return jaxbFriend;
     }
 
     public static FriendJson fromJaxb(Friend jaxbFriend) {
-        FriendJson friend = new FriendJson();
-        friend.setUsername(jaxbFriend.getUsername());
-        return friend;
-    }
-
-    public Friend toJaxbFriend() {
-        Friend f = new Friend();
-        f.setUsername(getUsername());
-        return f;
+        return new FriendJson(jaxbFriend.getUsername());
     }
 }

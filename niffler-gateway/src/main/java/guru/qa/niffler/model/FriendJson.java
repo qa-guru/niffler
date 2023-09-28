@@ -6,30 +6,22 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class FriendJson {
-    @NotNull(message = "Username can not be null")
-    @NotEmpty(message = "Username can not be empty")
-    @Size(max = 50, message = "Username can`t be longer than 50 characters")
-    @JsonProperty("username")
-    private String username;
+import javax.annotation.Nonnull;
 
-    public String getUsername() {
-        return username;
+public record FriendJson(
+        @NotNull(message = "Username can not be null")
+        @NotEmpty(message = "Username can not be empty")
+        @Size(max = 50, message = "Username can`t be longer than 50 characters")
+        @JsonProperty("username")
+        String username) {
+
+    public static @Nonnull FriendJson fromJaxb(@Nonnull Friend jaxbFriend) {
+        return new FriendJson(jaxbFriend.getUsername());
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public static FriendJson fromJaxb(Friend jaxbFriend) {
-        FriendJson friend = new FriendJson();
-        friend.setUsername(jaxbFriend.getUsername());
-        return friend;
-    }
-
-    public Friend toJaxbFriend() {
-        Friend f = new Friend();
-        f.setUsername(getUsername());
-        return f;
+    public @Nonnull Friend toJaxbFriend() {
+        Friend jaxbFriend = new Friend();
+        jaxbFriend.setUsername(username);
+        return jaxbFriend;
     }
 }

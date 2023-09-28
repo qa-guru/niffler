@@ -4,13 +4,13 @@ package guru.qa.niffler.controller;
 import guru.qa.niffler.model.FriendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,21 +48,21 @@ public class FriendsController {
 
     @PostMapping("/acceptInvitation")
     public List<UserJson> acceptInvitation(@AuthenticationPrincipal Jwt principal,
-                                           @Validated @RequestBody FriendJson invitation) {
+                                           @Valid @RequestBody FriendJson invitation) {
         String username = principal.getClaim("sub");
         return userDataClient.acceptInvitation(username, invitation);
     }
 
     @PostMapping("/declineInvitation")
     public List<UserJson> declineInvitation(@AuthenticationPrincipal Jwt principal,
-                                            @Validated @RequestBody FriendJson invitation) {
+                                            @Valid @RequestBody FriendJson invitation) {
         String username = principal.getClaim("sub");
         return userDataClient.declineInvitation(username, invitation);
     }
 
     @PostMapping("/addFriend")
     public UserJson addFriend(@AuthenticationPrincipal Jwt principal,
-                              @Validated @RequestBody FriendJson friend) {
+                              @Valid @RequestBody FriendJson friend) {
         String username = principal.getClaim("sub");
         return userDataClient.addFriend(username, friend);
     }

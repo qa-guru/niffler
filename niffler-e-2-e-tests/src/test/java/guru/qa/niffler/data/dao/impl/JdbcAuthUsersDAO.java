@@ -208,9 +208,7 @@ public class JdbcAuthUsersDAO implements AuthUsersDAO {
             AuthorityEntity authority = new AuthorityEntity();
             authority.setId(resultSet.getObject(8, UUID.class));
             authority.setAuthority(Authority.valueOf(resultSet.getString(10)));
-            authority.setUser(user);
-
-            user.getAuthorities().add(authority);
+            user.addAuthorities(authority);
         }
         return userNotSet ? Optional.empty() : Optional.of(user);
     }

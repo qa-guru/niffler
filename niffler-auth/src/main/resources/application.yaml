@@ -31,6 +31,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     generate-ddl: true
+    open-in-view: false
   sql:
     init:
       mode: always

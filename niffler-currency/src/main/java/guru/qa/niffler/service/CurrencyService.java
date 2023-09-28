@@ -5,6 +5,7 @@ import guru.qa.niffler.model.CurrencyJson;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ public class CurrencyService {
         this.currencyRepository = currencyRepository;
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull
     List<CurrencyJson> getAllCurrencies() {
         return currencyRepository.findAll().stream()

@@ -1,7 +1,6 @@
 package guru.qa.niffler.controller;
 
 import guru.qa.niffler.model.RegistrationModel;
-import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserService;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -33,22 +31,18 @@ public class RegisterController {
     private static final String REG_MODEL_ERROR_BEAN_NAME = "org.springframework.validation.BindingResult.registrationModel";
 
     private final UserService userService;
-
-    private final KafkaTemplate<String, UserJson> kafkaTemplate;
-
     private final String nifflerFrontUri;
 
     @Autowired
     public RegisterController(UserService userService,
-                              KafkaTemplate<String, UserJson> kafkaTemplate, @Value("${niffler-front.base-uri}") String nifflerFrontUri) {
+                              @Value("${niffler-front.base-uri}") String nifflerFrontUri) {
         this.userService = userService;
-        this.kafkaTemplate = kafkaTemplate;
         this.nifflerFrontUri = nifflerFrontUri;
     }
 
     @GetMapping("/register")
-    public String getRegisterPage(Model model) {
-        model.addAttribute(MODEL_REG_FORM_ATTR, new RegistrationModel());
+    public String getRegisterPage(@Nonnull Model model) {
+        model.addAttribute(MODEL_REG_FORM_ATTR, new RegistrationModel(null, null, null));
         model.addAttribute(MODEL_FRONT_URI_ATTR, nifflerFrontUri + "/redirect");
         return REGISTRATION_VIEW_NAME;
     }
@@ -62,23 +56,18 @@ public class RegisterController {
             final String registeredUserName;
             try {
                 registeredUserName = userService.registerUser(
-                        registrationModel.getUsername(),
-                        registrationModel.getPassword()
+                        registrationModel.username(),
+                        registrationModel.password()
                 );
                 response.setStatus(HttpServletResponse.SC_CREATED);
                 model.addAttribute(MODEL_USERNAME_ATTR, registeredUserName);
-
-                UserJson user = new UserJson();
-                user.setUsername(registrationModel.getUsername());
-                kafkaTemplate.send("users", user);
-                LOG.info("### Kafka topic [users] sent message: " + user.getUsername());
             } catch (DataIntegrityViolationException e) {
                 LOG.error("### Error while registration user: " + e.getMessage());
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 addErrorToRegistrationModel(
                         registrationModel,
                         model,
-                        "username", "Username `" + registrationModel.getUsername() + "` already exists"
+                        "username", "Username `" + registrationModel.username() + "` already exists"
                 );
             }
         } else {

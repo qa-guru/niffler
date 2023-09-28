@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("[REST][niffler-spend]: Траты")
@@ -37,11 +38,13 @@ public class SpendRestTest extends BaseRestTest {
     @ParameterizedTest(name = "Тестовые данные для запроса: {0}")
     @Tag("REST")
     void apiShouldReturnIdOfCreatedSpend(@Spend SpendJson spend, @User(selector = METHOD) UserJson user) throws Exception {
-        spend.setUsername(user.getUsername());
-        final SpendJson created = nsc.createSpend(spend);
+        final SpendJson created = nsc.createSpend(spend.addUsername(user.username()));
 
         step("Check that response contains ID (GUID)", () ->
-                assertTrue(created.getId().toString().matches(ID_REGEXP))
+                assertTrue(created.id().toString().matches(ID_REGEXP))
+        );
+        step("Check that response contains username", () ->
+                assertEquals(user.username(), created.username())
         );
     }
 }

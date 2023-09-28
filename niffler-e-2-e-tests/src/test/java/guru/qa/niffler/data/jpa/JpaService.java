@@ -28,8 +28,8 @@ public abstract class JpaService {
 
     private void tx(Consumer<EntityManager> consumer) {
         EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
         try {
-            transaction.begin();
             consumer.accept(em);
             transaction.commit();
         } catch (Exception e) {

@@ -30,7 +30,7 @@ public class ProfileDBTest extends BaseWebTest {
 
     @BeforeEach
     void changeCurrencyBeforeTest(@User(selector = NESTED) UserJson user) {
-        UserEntity testUserFromUserdata = userRepository.getTestUserFromUserdata(user.getUsername());
+        UserEntity testUserFromUserdata = userRepository.getTestUserFromUserdata(user.username());
         testUserFromUserdata.setCurrency(guru.qa.niffler.data.entity.ud.CurrencyValues.valueOf(testedCurrency.name()));
         userRepository.updateUserForTest(testUserFromUserdata);
     }

@@ -139,12 +139,12 @@ public class KafkaConsumerService implements Runnable {
         try {
             UserJson userJson = OM.readValue(recordValue, UserJson.class);
 
-            if (userJson == null || userJson.getUsername() == null) {
+            if (userJson == null || userJson.username() == null) {
                 LOG.info("### Empty username in message ###");
                 return;
             }
 
-            MESSAGES.provide(userJson.getUsername(), userJson);
+            MESSAGES.provide(userJson.username(), userJson);
         } catch (JsonProcessingException e) {
             LOG.warning("### Parse message fail: " + e.getMessage());
         }

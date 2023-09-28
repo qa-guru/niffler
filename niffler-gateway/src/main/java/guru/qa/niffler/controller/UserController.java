@@ -3,13 +3,13 @@ package guru.qa.niffler.controller;
 
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,10 +32,9 @@ public class UserController {
 
     @PostMapping("/updateUserInfo")
     public UserJson updateUserInfo(@AuthenticationPrincipal Jwt principal,
-                                   @Validated @RequestBody UserJson user) {
+                                   @Valid @RequestBody UserJson user) {
         String username = principal.getClaim("sub");
-        user.setUsername(username);
-        return userDataClient.updateUserInfo(user);
+        return userDataClient.updateUserInfo(user.addUsername(username));
     }
 
     @GetMapping("/currentUser")

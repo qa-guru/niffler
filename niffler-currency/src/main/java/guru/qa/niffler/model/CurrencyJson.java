@@ -4,52 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.CurrencyEntity;
 import guru.qa.niffler.data.CurrencyValues;
 
-import java.util.Objects;
+import javax.annotation.Nonnull;
 
-public class CurrencyJson {
-    @JsonProperty("currency")
-    private CurrencyValues currency;
-    @JsonProperty("currencyRate")
-    private Double currencyRate;
+public record CurrencyJson(
+        @JsonProperty("currency")
+        CurrencyValues currency,
+        @JsonProperty("currencyRate")
+        Double currencyRate) {
 
-    public CurrencyJson(CurrencyValues currency, Double currencyRate) {
-        this.currency = currency;
-        this.currencyRate = currencyRate;
-    }
-
-    public CurrencyJson() {
-    }
-
-    public CurrencyValues getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(CurrencyValues currency) {
-        this.currency = currency;
-    }
-
-    public Double getCurrencyRate() {
-        return currencyRate;
-    }
-
-    public void setCurrencyRate(Double currencyRate) {
-        this.currencyRate = currencyRate;
-    }
-
-    public static CurrencyJson fromEntity(CurrencyEntity entity) {
+    public static @Nonnull CurrencyJson fromEntity(@Nonnull CurrencyEntity entity) {
         return new CurrencyJson(entity.getCurrency(), entity.getCurrencyRate());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CurrencyJson currency1 = (CurrencyJson) o;
-        return currency == currency1.currency && Objects.equals(currencyRate, currency1.currencyRate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(currency, currencyRate);
     }
 }

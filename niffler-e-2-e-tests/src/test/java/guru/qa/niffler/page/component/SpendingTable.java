@@ -38,9 +38,9 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
     public SpendingTable editSpending(int row, SpendJson editedSpending) {
         SelenideElement rowElement = self.$$("tbody tr").get(row);
         rowElement.$(".button-icon_type_edit").click();
-        setSpendingAmount(rowElement, editedSpending.getAmount());
-        setSpendingDescription(rowElement, editedSpending.getDescription());
-        setSpendingCategory(rowElement, editedSpending.getCategory());
+        setSpendingAmount(rowElement, editedSpending.amount());
+        setSpendingDescription(rowElement, editedSpending.description());
+        setSpendingCategory(rowElement, editedSpending.category());
 //        setSpendingDate(rowElement, editedSpending.getSpendDate());
         submitEditSpending(rowElement);
         return this;

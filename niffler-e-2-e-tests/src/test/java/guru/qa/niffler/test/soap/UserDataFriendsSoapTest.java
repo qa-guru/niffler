@@ -54,7 +54,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListWithoutInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        FriendsRequest fr = friendsRequest(user.getUsername(), false);
+        FriendsRequest fr = friendsRequest(user.username(), false);
 
         final FriendsResponse friendsResponse = nus.friendsRequest(fr);
 
@@ -74,7 +74,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         step("Check friend in response", () -> {
             assertTrue(friend.isPresent());
-            assertEquals(user.getFriendsJsons().get(0).getUsername(), friend.get().getUsername());
+            assertEquals(user.testData().friendsJsons().get(0).username(), friend.get().getUsername());
             assertEquals(FriendState.FRIEND, friend.get().getFriendState());
         });
 
@@ -91,7 +91,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListWithInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        FriendsRequest fr = friendsRequest(user.getUsername(), true);
+        FriendsRequest fr = friendsRequest(user.username(), true);
 
         final FriendsResponse friendsResponse = nus.friendsRequest(fr);
 
@@ -111,13 +111,13 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         step("Check friend in response", () -> {
             assertTrue(friend.isPresent());
-            assertEquals(user.getFriendsJsons().get(0).getUsername(), friend.get().getUsername());
+            assertEquals(user.testData().friendsJsons().get(0).username(), friend.get().getUsername());
             assertEquals(FriendState.FRIEND, friend.get().getFriendState());
         });
 
         step("Check invitation in response", () -> {
             assertTrue(invitation.isPresent());
-            assertEquals(user.getInvitationsJsons().get(0).getUsername(), invitation.get().getUsername());
+            assertEquals(user.testData().invitationsJsons().get(0).username(), invitation.get().getUsername());
             assertEquals(FriendState.INVITE_SENT, invitation.get().getFriendState());
         });
     }
@@ -131,7 +131,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
     )
     void getInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
         InvitationsRequest ir = new InvitationsRequest();
-        ir.setUsername(user.getUsername());
+        ir.setUsername(user.username());
 
         final InvitationsResponse invitationsResponse = nus.invitationsRequest(ir);
 
@@ -144,7 +144,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
         guru.qa.niffler.userdata.wsdl.User invitation = invitationsResponse.getUser().get(0);
 
         step("Check invitation in response", () -> {
-            assertEquals(user.getInvitationsJsons().get(0).getUsername(), invitation.getUsername());
+            assertEquals(user.testData().invitationsJsons().get(0).username(), invitation.getUsername());
             assertEquals(FriendState.INVITE_RECEIVED, invitation.getFriendState());
         });
     }
@@ -157,8 +157,8 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             incomeInvitations = @IncomeInvitations(count = 1)
     )
     void acceptInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String currentUser = user.getUsername();
-        final String incomeInvitation = user.getInvitationsJsons().get(0).getUsername();
+        final String currentUser = user.username();
+        final String incomeInvitation = user.testData().invitationsJsons().get(0).username();
 
         AcceptInvitationRequest air = acceptInvitationRequest(currentUser, incomeInvitation);
 
@@ -167,7 +167,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
         guru.qa.niffler.userdata.wsdl.User friend = acceptInvitationResponse.getUser().get(0);
 
         step("Check friend in response", () -> {
-            assertEquals(user.getInvitationsJsons().get(0).getUsername(), friend.getUsername());
+            assertEquals(user.testData().invitationsJsons().get(0).username(), friend.getUsername());
             assertEquals(FriendState.FRIEND, friend.getFriendState());
         });
 
@@ -199,8 +199,8 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             incomeInvitations = @IncomeInvitations(count = 1)
     )
     void declineInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String currentUser = user.getUsername();
-        final String incomeInvitation = user.getInvitationsJsons().get(0).getUsername();
+        final String currentUser = user.username();
+        final String incomeInvitation = user.testData().invitationsJsons().get(0).username();
 
         DeclineInvitationRequest dir = declineInvitationRequest(currentUser, incomeInvitation);
 
@@ -236,8 +236,8 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             @GenerateUser
     })
     void addFriendTest(@User(selector = METHOD) UserJson[] users) throws Exception {
-        final String currentUser = users[0].getUsername();
-        final String friendWillBeAdded = users[1].getUsername();
+        final String currentUser = users[0].username();
+        final String friendWillBeAdded = users[1].username();
 
         AddFriendRequest afr = addFriendRequest(currentUser, friendWillBeAdded);
 
@@ -277,12 +277,12 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             friends = @Friends(count = 1)
     )
     void removeFriendTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String currentUsername = user.getUsername();
-        final String friendUsername = user.getFriendsJsons().get(0).getUsername();
+        final String currentUsername = user.username();
+        final String friendUsername = user.testData().friendsJsons().get(0).username();
 
         RemoveFriendRequest rfr = new RemoveFriendRequest();
-        rfr.setUsername(user.getUsername());
-        rfr.setFriendUsername(user.getFriendsJsons().get(0).getUsername());
+        rfr.setUsername(user.username());
+        rfr.setFriendUsername(user.testData().friendsJsons().get(0).username());
 
         final RemoveFriendResponse removeFriendResponse = nus.removeFriendRequest(rfr);
 

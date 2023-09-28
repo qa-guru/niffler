@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {postData} from "../../api/api";
 import {MAX_TEXT_INPUT_FIELD_LENGTH} from "../../constants/const";
 import {showError, showSuccess} from "../../toaster/toaster";
@@ -7,12 +7,14 @@ import {Button} from "../Button/index";
 import {FormCalendar} from "../FormCalendar";
 import {FormInput} from "../FormInput";
 import {FormSelect} from "../FormSelect";
+import {UserContext} from "../../contexts/UserContext";
 
 const initialSpendingState = {
     amount: "",
     description: "",
     category: null,
     spendDate: new Date(),
+    currency: null,
 };
 
 const initialErrorState = {
@@ -24,6 +26,7 @@ const initialErrorState = {
 
 export const AddSpending = ({categories, addSpendingCallback}) => {
     const [data, setData] = useState(initialSpendingState);
+    const {user, setUser} = useContext(UserContext);
     const [formErrors, setFormErrors] = useState(initialErrorState);
 
     const validateCategory = () => {
@@ -76,7 +79,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
     const handleAddSpendingSubmit = (e) => {
         e.preventDefault();
         if (isFormValid()) {
-            const dataToSend = {...data, category: data.category?.value};
+            const dataToSend = {...data, category: data.category?.value, currency: user?.currency};
             postData({
                 path: "/addSpend",
                 data: dataToSend,

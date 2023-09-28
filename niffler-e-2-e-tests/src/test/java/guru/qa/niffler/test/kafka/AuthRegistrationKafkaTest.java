@@ -42,7 +42,7 @@ public class AuthRegistrationKafkaTest extends BaseKafkaTest {
         );
 
         step("Check message content", () ->
-                assertEquals(username, messageFromKafka.getUsername())
+                assertEquals(username, messageFromKafka.username())
         );
     }
 }

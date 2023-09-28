@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull
     List<CategoryJson> getAllCategories(@Nonnull String username) {
         return categoryRepository.findAllByUsername(username)
@@ -35,10 +37,11 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public @Nonnull
     CategoryJson addCategory(@Nonnull CategoryJson category) {
-        final String username = category.getUsername();
-        final String categoryName = category.getCategory();
+        final String username = category.username();
+        final String categoryName = category.category();
 
         if (categoryRepository.findAllByUsername(username).size() > MAX_CATEGORIES_SIZE) {
             LOG.error("### Can`t add over than 7 categories for user: " + username);

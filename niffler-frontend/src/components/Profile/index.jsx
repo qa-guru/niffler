@@ -41,7 +41,7 @@ export const Profile = () => {
             data: dataToSend,
             onSuccess: (data) => {
                 setUser(data);
-                showSuccess("Profile updated!");
+                showSuccess("Profile successfully updated");
             },
             onFail: (err) => {
                 console.log(err);

@@ -8,107 +8,66 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.UUID;
 
-public class SpendJson {
-    @JsonProperty("id")
-    private UUID id;
-    @JsonProperty("spendDate")
-    @NotNull(message = "Spend date can not be null")
-    @PastOrPresent(message = "Spend date must not be future")
-    private Date spendDate;
-    @JsonProperty("category")
-    @NotNull(message = "Category can not be null")
-    @NotEmpty(message = "Category can not be empty")
-    private String category;
-    @JsonProperty("currency")
-    private CurrencyValues currency;
-    @JsonProperty("amount")
-    @NotNull(message = "Amount can not be null")
-    @DecimalMin(value = "0.01", message = "Amount should be greater than 0.01")
-    private Double amount;
-    @JsonProperty("description")
-    private String description;
-    @JsonProperty("username")
-    private String username;
+public record SpendJson(
+        @JsonProperty("id")
+        UUID id,
+        @JsonProperty("spendDate")
+        @NotNull(message = "Spend date can not be null")
+        @PastOrPresent(message = "Spend date must not be future")
+        Date spendDate,
+        @JsonProperty("category")
+        @NotNull(message = "Category can not be null")
+        @NotEmpty(message = "Category can not be empty")
+        String category,
+        @JsonProperty("currency")
+        CurrencyValues currency,
+        @JsonProperty("amount")
+        @NotNull(message = "Amount can not be null")
+        @DecimalMin(value = "0.01", message = "Amount should be greater than 0.01")
+        Double amount,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("username")
+        String username) {
 
-    public SpendJson() {
+    public @Nonnull SpendJson addUsername(@Nonnull String username) {
+        return new SpendJson(id, spendDate, category, currency, amount, description, username);
     }
 
-    public UUID getId() {
-        return id;
+    public static SpendJson fromSpendInput(@Nonnull SpendInput input) {
+        return fromSpendInput(input, null);
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public static SpendJson fromSpendInput(@Nonnull SpendInput input, @Nullable String username) {
+        return new SpendJson(
+                null,
+                input.spendDate(),
+                input.category(),
+                input.currency(),
+                input.amount(),
+                input.description(),
+                username
+        );
     }
 
-    public Date getSpendDate() {
-        return spendDate;
+    public static @Nonnull SpendJson fromUpdateSpendInput(@Nonnull UpdateSpendInput input) {
+        return fromUpdateSpendInput(input, null);
     }
 
-    public void setSpendDate(Date spendDate) {
-        this.spendDate = spendDate;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public CurrencyValues getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(CurrencyValues currency) {
-        this.currency = currency;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public static SpendJson fromSpendInput(SpendInput input) {
-        SpendJson spendJson = new SpendJson();
-        spendJson.setAmount(input.getAmount());
-        spendJson.setSpendDate(input.getSpendDate());
-        spendJson.setCategory(input.getCategory());
-        spendJson.setDescription(input.getDescription());
-        return spendJson;
-    }
-
-    public static SpendJson fromUpdateSpendInput(UpdateSpendInput input) {
-        SpendJson spendJson = new SpendJson();
-        spendJson.setId(input.getId());
-        spendJson.setAmount(input.getAmount());
-        spendJson.setSpendDate(input.getSpendDate());
-        spendJson.setCategory(input.getCategory());
-        spendJson.setCurrency(input.getCurrency());
-        spendJson.setDescription(input.getDescription());
-        return spendJson;
+    public static @Nonnull SpendJson fromUpdateSpendInput(@Nonnull UpdateSpendInput input, @Nullable String username) {
+        return new SpendJson(
+                input.id(),
+                input.spendDate(),
+                input.category(),
+                input.currency(),
+                input.amount(),
+                input.description(),
+                username
+        );
     }
 }

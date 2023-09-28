@@ -47,7 +47,7 @@ public class RegistrationTest extends BaseWebTest {
     @Tag("WEB")
     @GenerateUser()
     void shouldNotRegisterUserWithExistingUsername(@User(selector = METHOD) UserJson existingUser) {
-        String username = existingUser.getUsername();
+        String username = existingUser.username();
         String password = generateRandomPassword();
         Selenide.open(WelcomePage.URL, WelcomePage.class)
                 .waitForPageLoaded()

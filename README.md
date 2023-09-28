@@ -26,11 +26,21 @@
 - [Gradle 7.6](https://docs.gradle.org/7.6/release-notes.html)
 - And much more:)
 
-Рекомендуемые материалы к просмотру:
+Рекомендуемые материалы к просмотру (прочтению):
 
 - [Implementing an OAuth 2 authorization server with Spring Security - the new way! by Laurentiu Spilca](https://youtu.be/DaUGKnA7aro)
+- [Full Stack OAuth 2 - With Spring Security / React / Angular Part 1](https://youtu.be/SfNIjS_2H4M)
+- [Full Stack OAuth 2 - With Spring Security / React / Angular Part 2](https://youtu.be/3bGer6-6mdY)
 - [Spring Data? Да, та! by Евгений Борисов](https://youtu.be/nwM7A4TwU3M)
+- [Spring – Глубоко и не очень by Евгений Борисов](https://youtu.be/nGfeSo52_8A)
+- [Spring-потрошитель, часть 1 by Евгений Борисов](https://youtu.be/BmBr5diz8WA)
+- [Spring-потрошитель, часть 2 by Евгений Борисов](https://youtu.be/cou_qomYLNU)
+- [Spring-построитель by Евгений Борисов](https://youtu.be/rd6wxPzXQvo)
 - [Перенимаем опыт Google в построении микросервисов с gRPC by Александр Борисов](https://youtu.be/zPbaKUIcFx0)
+- [Designing a friendships database structure: Should I use a multivalued column?](https://dba.stackexchange.com/questions/135941/designing-a-friendships-database-structure-should-i-use-a-multivalued-column)
+- [Гонсалвес Э.: Изучаем Java EE 7, глава "Глава 4. Java.Persistence.API"](https://www.litres.ru/book/entoni-gonsalves/izuchaem-java-ee-7-8480934/otzivi/)
+- [(Hopefully) the final article about equals and hashCode for JPA entities with DB-generated IDs](https://jpa-buddy.com/blog/hopefully-the-final-article-about-equals-and-hashcode-for-jpa-entities-with-db-generated-ids/)
+-
 
 **Минимальные предусловия для работы с проектом Niffler**
 
@@ -301,7 +311,7 @@ Build to Docker daemon failed, perhaps you should make sure your credentials for
 
 - где foobazz - ваш юзернэйм на https://hub.docker.com/
 
-#### 3. заменить в файле build.gradle (в корне проекта) dockerHubName = "qaguru" на dockerHubName = "foobazz"
+#### 3. заменить в файле build.gradle (в корне проекта) imagePrefix = "qaguru" на imagePrefix = "foobazz"
 
 - где foobazz - ваш юзернэйм на https://hub.docker.com/
 

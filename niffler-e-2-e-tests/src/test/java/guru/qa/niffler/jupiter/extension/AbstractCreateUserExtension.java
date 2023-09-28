@@ -88,14 +88,16 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
         GenerateSpend[] spends = generateUser.spends();
         if (spends != null) {
             for (GenerateSpend spend : spends) {
-                SpendJson sj = new SpendJson();
-                sj.setUsername(createdUser.getUsername());
-                sj.setCategory(spend.spendCategory());
-                sj.setAmount(spend.amount());
-                sj.setCurrency(spend.currency());
-                sj.setDescription(spend.spendName());
-                sj.setSpendDate(DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()));
-                createdUser.getSpendJsons().add(spendClient.createSpend(sj));
+                SpendJson sj = new SpendJson(
+                        null,
+                        DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()),
+                        spend.amount(),
+                        spend.currency(),
+                        spend.spendCategory(),
+                        spend.spendName(),
+                        createdUser.username()
+                );
+                createdUser.testData().spendJsons().add(spendClient.createSpend(sj));
             }
         }
     }
@@ -104,10 +106,8 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
         GenerateCategory[] categories = generateUser.categories();
         if (categories != null) {
             for (GenerateCategory category : categories) {
-                CategoryJson cj = new CategoryJson();
-                cj.setUsername(createdUser.getUsername());
-                cj.setCategory(category.value());
-                createdUser.getCategoryJsons().add(spendClient.createCategory(cj));
+                CategoryJson cj = new CategoryJson(null, category.value(), createdUser.username());
+                createdUser.testData().categoryJsons().add(spendClient.createCategory(cj));
             }
         }
     }
