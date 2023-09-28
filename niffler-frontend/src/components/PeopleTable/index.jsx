@@ -6,6 +6,7 @@ import {AbstractTable} from "../AbstractTable";
 export const PeopleTable = ({}) => {
 
     const [allUsers, setAllUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleUpdateFriendStatus = ({username, newStatus}) => {
         const uArray = [...allUsers]
@@ -25,19 +26,25 @@ export const PeopleTable = ({}) => {
     }
 
     useEffect(() => {
+        setIsLoading(true);
         getData({
                 path: "/allUsers",
                 onSuccess: (data) => {
                     setAllUsers(data);
+                    setIsLoading(false);
                 },
                 onFail: (err) => {
                     console.log(err);
                     setAllUsers([]);
+                    setIsLoading(false);
                 }
             }
         );
     }, []);
 
+    if (isLoading) {
+        return (<div className="loader"></div>)
+    }
 
     return (
         <>
