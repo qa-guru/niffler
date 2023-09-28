@@ -56,7 +56,7 @@ jobs:
         run: |
           pwd
           docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
-          echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER}}"
+          echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
           bash ./docker-build.sh staging push
       - name: deploy
         run: |

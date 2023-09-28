@@ -61,7 +61,7 @@ jobs:
           echo "### niffler-gateway version will be used: ${{ env.GATEWAY_VER }}"
           echo "### niffler-spend version will be used: ${{ env.SPEND_VER }}"
           echo "### niffler-userdata version will be used: ${{ env.USERDATA_VER }}"
-          echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER}}"
+          echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
           bash ./gradlew :niffler-userdata:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
           docker-compose -f docker-compose.ci.yml pull userdata.niffler.dc
           docker-compose -f docker-compose.ci.yml stop userdata.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps userdata.niffler.dc
