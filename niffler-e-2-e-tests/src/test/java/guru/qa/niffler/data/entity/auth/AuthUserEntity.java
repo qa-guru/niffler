@@ -23,7 +23,7 @@ import static jakarta.persistence.FetchType.EAGER;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"")
 public class AuthUserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

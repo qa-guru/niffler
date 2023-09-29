@@ -16,7 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "friends")
+@Table(name = "friendship")
 @IdClass(FriendsId.class)
 public class FriendsEntity {
 

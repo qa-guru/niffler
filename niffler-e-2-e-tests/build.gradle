@@ -108,7 +108,6 @@ dependencies {
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
     testImplementation "p6spy:p6spy:${p6spyVersion}"
     testImplementation "org.hibernate:hibernate-core:${hibernateVersion}"
-    testImplementation 'com.github.vertical-blank:sql-formatter:2.0.3'
     testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
     // Allure
     testImplementation "io.qameta.allure:allure-attachments:${allureVersion}"
@@ -126,6 +125,7 @@ dependencies {
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation 'commons-io:commons-io:2.11.0'
     testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
+    testImplementation 'com.github.vertical-blank:sql-formatter:2.0.3'
     // gRPC
     testImplementation "io.grpc:grpc-protobuf:${grpcVersion}"
     testImplementation "io.grpc:grpc-stub:${grpcVersion}"
@@ -145,7 +145,7 @@ dependencies {
     testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
     // Lombok
     testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
 }
 
 tasks.withType(JavaCompile) {

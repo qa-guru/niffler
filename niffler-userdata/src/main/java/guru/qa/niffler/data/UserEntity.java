@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
