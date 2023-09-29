@@ -20,11 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Set;
 
 @Component
 public class UserDataService {
@@ -39,6 +38,7 @@ public class UserDataService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     @KafkaListener(topics = "users", groupId = "userdata")
     public void listener(@Payload UserJson user, ConsumerRecord<String, UserJson> cr) {
         LOG.info("### Kafka topic [users] received message: " + user.username());
@@ -54,6 +54,7 @@ public class UserDataService {
         ));
     }
 
+    @Transactional
     public @Nonnull
     UserJson update(@Nonnull UserJson user) {
         UserEntity userEntity = getRequiredUser(user.username());
@@ -65,14 +66,16 @@ public class UserDataService {
         return UserJson.fromEntity(saved);
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull
     UserJson getCurrentUser(@Nonnull String username) {
         return UserJson.fromEntity(getRequiredUser(username));
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull
     List<UserJson> allUsers(@Nonnull String username) {
-        Map<UUID, UserJson> result = new HashMap<>();
+        Set<UserJson> result = new HashSet<>();
         for (UserEntity user : userRepository.findByUsernameNot(username)) {
             List<FriendsEntity> sendInvites = user.getFriends();
             List<FriendsEntity> receivedInvites = user.getInvites();
@@ -88,24 +91,24 @@ public class UserDataService {
 
                 if (inviteToMe.isPresent()) {
                     FriendsEntity invite = inviteToMe.get();
-                    result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
+                    result.add(UserJson.fromEntity(user, invite.isPending()
                             ? FriendState.INVITE_RECEIVED
                             : FriendState.FRIEND));
                 }
                 if (inviteFromMe.isPresent()) {
                     FriendsEntity invite = inviteFromMe.get();
-                    result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
+                    result.add(UserJson.fromEntity(user, invite.isPending()
                             ? FriendState.INVITE_SENT
                             : FriendState.FRIEND));
                 }
-            }
-            if (!result.containsKey(user.getId())) {
-                result.put(user.getId(), UserJson.fromEntity(user));
+            } else {
+                result.add(UserJson.fromEntity(user));
             }
         }
-        return new ArrayList<>(result.values());
+        return new ArrayList<>(result);
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull
     List<UserJson> friends(@Nonnull String username, boolean includePending) {
         return getRequiredUser(username)
@@ -118,6 +121,7 @@ public class UserDataService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull
     List<UserJson> invitations(@Nonnull String username) {
         return getRequiredUser(username)
@@ -128,6 +132,7 @@ public class UserDataService {
                 .toList();
     }
 
+    @Transactional
     public UserJson addFriend(@Nonnull String username, @Nonnull FriendJson friend) {
         UserEntity currentUser = getRequiredUser(username);
         UserEntity friendEntity = getRequiredUser(friend.username());
@@ -137,6 +142,7 @@ public class UserDataService {
         return UserJson.fromEntity(friendEntity, FriendState.INVITE_SENT);
     }
 
+    @Transactional
     public @Nonnull
     List<UserJson> acceptInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = getRequiredUser(username);
