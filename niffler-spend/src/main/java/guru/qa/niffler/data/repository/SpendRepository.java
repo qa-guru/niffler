@@ -25,4 +25,6 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
     List<SpendEntity> findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(@Nonnull String username,
                                                                                              @Nonnull Date dateFrom,
                                                                                              @Nonnull Date dateTo);
+
+    void deleteByUsernameAndIdIn(@Nonnull String username, @Nonnull List<UUID> ids);
 }

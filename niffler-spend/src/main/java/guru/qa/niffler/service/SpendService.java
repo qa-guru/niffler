@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -99,17 +100,12 @@ public class SpendService {
                                      @Nullable Date dateTo) {
         return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo)
                 .map(SpendJson::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
     public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
-        for (String id : ids) {
-            spendRepository.delete(getSpendsEntityForUser(username, null, null, null)
-                    .filter(se -> se.getId().toString().equals(id))
-                    .findFirst()
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Spend not found by given id: " + id)));
-        }
+        spendRepository.deleteByUsernameAndIdIn(username, ids.stream().map(UUID::fromString).toList());
     }
 
     @Transactional(readOnly = true)

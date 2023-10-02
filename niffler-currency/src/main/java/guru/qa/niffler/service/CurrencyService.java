@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class CurrencyService {
@@ -25,6 +24,6 @@ public class CurrencyService {
     List<CurrencyJson> getAllCurrencies() {
         return currencyRepository.findAll().stream()
                 .map(CurrencyJson::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
