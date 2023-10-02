@@ -2,19 +2,19 @@
 
 create extension if not exists "uuid-ossp";
 
-create table if not exists "category"
+create table if not exists "categories"
 (
     id       UUID unique  not null default uuid_generate_v1() primary key,
     category varchar(255) not null,
     username varchar(50)  not null
 );
 
-alter table "category"
+alter table "categories"
     owner to postgres;
 
-create unique index if not exists ix_category_username on "category" (category, username);
+create unique index if not exists ix_category_username on "categories" (category, username);
 
-create table if not exists "spend"
+create table if not exists "spends"
 (
     id          UUID unique  not null default uuid_generate_v1() primary key,
     username    varchar(50)  not null,
@@ -23,20 +23,20 @@ create table if not exists "spend"
     amount      float        not null,
     description varchar(255) not null,
     category_id UUID         not null,
-    constraint fk_spend_category foreign key (category_id) references "category" (id)
+    constraint fk_spend_category foreign key (category_id) references "categories" (id)
 );
 
-alter table "spend"
+alter table "spends"
     owner to postgres;
 
--- delete from "category";
--- insert into "category" (category, username) values ('Рестораны', 'dima');
--- insert into "category" (category, username) values ('Продуктовые магазины', 'dima');
--- insert into "category" (category, username) values ('Обучение в QA.GURU ADVANCED', 'dima');
+-- delete from "categories";
+-- insert into "categories" (category, username) values ('Рестораны', 'dima');
+-- insert into "categories" (category, username) values ('Продуктовые магазины', 'dima');
+-- insert into "categories" (category, username) values ('Обучение в QA.GURU ADVANCED', 'dima');
 
--- insert into "spend" (id, username, spend_date, currency, amount, description, category_id)
+-- insert into "spends" (id, username, spend_date, currency, amount, description, category_id)
 -- values (uuid_generate_v1(), 'dima', date('2023-02-15'), 'RUB', 100.0, 'Радостная покупка', (select id from "category" where description = 'Обучение в QA.GURU ADVANCED'));
--- insert into "spend" (id, username, spend_date, currency, amount, description, category_id)
+-- insert into "spends" (id, username, spend_date, currency, amount, description, category_id)
 -- values (uuid_generate_v1(), 'dima', date('2023-02-15'), 'RUB', 500.0, 'Радостная покупка', (select id from "category" where description = 'Рестораны'));
--- insert into "spend" (id, username, spend_date, currency, amount, description, category_id)
+-- insert into "spends" (id, username, spend_date, currency, amount, description, category_id)
 -- values (uuid_generate_v1(), 'dima', date('2023-02-15'), 'RUB', 10000.0, 'Радостная покупка', (select id from "category" where description = 'Продуктовые магазины'));

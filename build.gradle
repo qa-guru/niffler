@@ -15,6 +15,7 @@ subprojects {
         lombokVersion = '1.18.30'
         springKafkaVersion = '3.0.11'
         postgresDriverVersion = '42.6.0'
+        flywayVersion = '9.22.2'
         oauth2AuthorizationServerVersion = '1.1.2'
         oauth2ResourceServerVersion = '3.1.4'
         springVaultVersion = '4.0.1'
