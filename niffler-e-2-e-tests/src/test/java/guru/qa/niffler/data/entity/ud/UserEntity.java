@@ -17,13 +17,12 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
-
-import static java.util.Arrays.asList;
 
 @Getter
 @Setter
@@ -66,26 +65,39 @@ public class UserEntity implements Serializable {
                     fe.setPending(pending);
                     return fe;
                 }).toList();
-
         this.friends.addAll(friendsEntities);
     }
 
+    public void addInvitations(UserEntity... invitations) {
+        List<FriendsEntity> invitationsEntities = Stream.of(invitations)
+                .map(i -> {
+                    FriendsEntity fe = new FriendsEntity();
+                    fe.setUser(i);
+                    fe.setFriend(this);
+                    fe.setPending(true);
+                    return fe;
+                }).toList();
+        this.invites.addAll(invitationsEntities);
+    }
+
     public void removeFriends(UserEntity... friends) {
-        for (Iterator<FriendsEntity> fi = this.friends.iterator(); fi.hasNext(); ) {
-            FriendsEntity nextFriend = fi.next();
-            if (asList(friends).contains(nextFriend.getFriend())) {
-                nextFriend.setUser(null);
-                fi.remove();
+        List<UUID> idsToBeRemoved = Arrays.stream(friends).map(UserEntity::getId).toList();
+        for (Iterator<FriendsEntity> i = getFriends().iterator(); i.hasNext(); ) {
+            FriendsEntity friendsEntity = i.next();
+            if (idsToBeRemoved.contains(friendsEntity.getFriend().getId())) {
+                friendsEntity.setFriend(null);
+                i.remove();
             }
         }
     }
 
-    public void removeInvites(UserEntity... invites) {
-        for (Iterator<FriendsEntity> ii = this.invites.iterator(); ii.hasNext(); ) {
-            FriendsEntity nextInvite = ii.next();
-            if (asList(invites).contains(nextInvite.getUser())) {
-                nextInvite.setFriend(null);
-                ii.remove();
+    public void removeInvites(UserEntity... invitations) {
+        List<UUID> idsToBeRemoved = Arrays.stream(invitations).map(UserEntity::getId).toList();
+        for (Iterator<FriendsEntity> i = getInvites().iterator(); i.hasNext(); ) {
+            FriendsEntity friendsEntity = i.next();
+            if (idsToBeRemoved.contains(friendsEntity.getUser().getId())) {
+                friendsEntity.setUser(null);
+                i.remove();
             }
         }
     }

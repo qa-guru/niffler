@@ -16,6 +16,8 @@ import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -62,19 +64,40 @@ public class UserEntity {
                     fe.setPending(pending);
                     return fe;
                 }).toList();
-
         this.friends.addAll(friendsEntities);
     }
 
+    public void addInvitations(UserEntity... invitations) {
+        List<FriendsEntity> invitationsEntities = Stream.of(invitations)
+                .map(i -> {
+                    FriendsEntity fe = new FriendsEntity();
+                    fe.setUser(i);
+                    fe.setFriend(this);
+                    fe.setPending(true);
+                    return fe;
+                }).toList();
+        this.invites.addAll(invitationsEntities);
+    }
+
     public void removeFriends(UserEntity... friends) {
-        for (UserEntity friend : friends) {
-            getFriends().removeIf(f -> f.getFriend().getId().equals(friend.getId()));
+        List<UUID> idsToBeRemoved = Arrays.stream(friends).map(UserEntity::getId).toList();
+        for (Iterator<FriendsEntity> i = getFriends().iterator(); i.hasNext(); ) {
+            FriendsEntity friendsEntity = i.next();
+            if (idsToBeRemoved.contains(friendsEntity.getFriend().getId())) {
+                friendsEntity.setFriend(null);
+                i.remove();
+            }
         }
     }
 
     public void removeInvites(UserEntity... invitations) {
-        for (UserEntity invite : invitations) {
-            getInvites().removeIf(i -> i.getUser().getId().equals(invite.getId()));
+        List<UUID> idsToBeRemoved = Arrays.stream(invitations).map(UserEntity::getId).toList();
+        for (Iterator<FriendsEntity> i = getInvites().iterator(); i.hasNext(); ) {
+            FriendsEntity friendsEntity = i.next();
+            if (idsToBeRemoved.contains(friendsEntity.getUser().getId())) {
+                friendsEntity.setUser(null);
+                i.remove();
+            }
         }
     }
 
