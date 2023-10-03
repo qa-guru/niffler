@@ -55,7 +55,7 @@ spring:
   datasource:
     username: postgres
     password: secret
-    url: 'jdbc:postgresql://localhost:5432/niffler-currency'
+    url: 'jdbc:postgresql://localhost:5434/niffler-currency'
 ---
 spring:
   config:
@@ -69,7 +69,7 @@ spring:
   datasource:
     username: postgres
     password: secret
-    url: 'jdbc:postgresql://niffler-all-db:5432/niffler-currency'
+    url: 'jdbc:postgresql://niffler-all-db:5434/niffler-currency'
 ---
 spring:
   config:

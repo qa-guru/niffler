@@ -58,7 +58,7 @@ spring:
   kafka:
     bootstrap-servers: 'localhost:9092'
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/niffler-auth'
+    url: 'jdbc:postgresql://localhost:5434/niffler-auth'
     username: postgres
     password: secret
 niffler-front:
@@ -81,7 +81,7 @@ spring:
   kafka:
     bootstrap-servers: 'kafka:9092'
   datasource:
-    url: 'jdbc:postgresql://niffler-all-db:5432/niffler-auth'
+    url: 'jdbc:postgresql://niffler-all-db:5434/niffler-auth'
     username: postgres
     password: secret
 niffler-front:

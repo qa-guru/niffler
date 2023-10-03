@@ -49,7 +49,7 @@ spring:
       - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/niffler-spend'
+    url: 'jdbc:postgresql://localhost:5434/niffler-spend'
     username: postgres
     password: secret
 grpc:
@@ -73,7 +73,7 @@ spring:
       - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   datasource:
-    url: 'jdbc:postgresql://niffler-all-db:5432/niffler-spend'
+    url: 'jdbc:postgresql://niffler-all-db:5434/niffler-spend'
     username: postgres
     password: secret
 grpc:
