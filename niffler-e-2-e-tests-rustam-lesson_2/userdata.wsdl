@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="niffler-userdata"
+                  targetNamespace="niffler-userdata">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+                   targetNamespace="niffler-userdata">
+
+            <xs:element name="updateUserInfoRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="user" type="tns:user"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="updateUserInfoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="user" type="tns:user"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="currentUserRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="username" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="currentUserResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="user" type="tns:user"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="allUsersRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="username" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="allUsersResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="tns:user">
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="friendsRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="username" type="xs:string"/>
+                        <xs:element name="includePending" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="friendsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="tns:user">
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="invitationsRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="username" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="invitationsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="tns:user">
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="acceptInvitationRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="username" type="xs:string"/>
+                        <xs:element name="invitation" type="tns:friend"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="acceptInvitationResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="tns:user">
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="declineInvitationRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="username" type="xs:string"/>
+                        <xs:element name="invitation" type="tns:friend"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="declineInvitationResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="tns:user">
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="addFriendRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="username" type="xs:string"/>
+                        <xs:element name="friend" type="tns:friend"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="addFriendResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="user" type="tns:user"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="removeFriendRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="username" type="xs:string"/>
+                        <xs:element name="friendUsername" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="removeFriendResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="tns:user">
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:complexType name="user">
+                <xs:sequence>
+                    <xs:element name="id" type="xs:string"/>
+                    <xs:element name="username" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="firstname" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="surname" type="xs:string"/>
+                    <xs:element name="currency" type="tns:currency"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="photo" type="xs:string"/>
+                    <xs:element maxOccurs="1" minOccurs="0" name="friendState" type="tns:friendState"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="friend">
+                <xs:sequence>
+                    <xs:element name="username" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:simpleType name="currency">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="RUB"/>
+                    <xs:enumeration value="EUR"/>
+                    <xs:enumeration value="USD"/>
+                    <xs:enumeration value="KZT"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:simpleType name="friendState">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="INVITE_SENT"/>
+                    <xs:enumeration value="INVITE_RECEIVED"/>
+                    <xs:enumeration value="FRIEND"/>
+                    <xs:enumeration value="VOID"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="addFriendRequest">
+        <wsdl:part element="tns:addFriendRequest" name="addFriendRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="acceptInvitationResponse">
+        <wsdl:part element="tns:acceptInvitationResponse" name="acceptInvitationResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="acceptInvitationRequest">
+        <wsdl:part element="tns:acceptInvitationRequest" name="acceptInvitationRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="declineInvitationRequest">
+        <wsdl:part element="tns:declineInvitationRequest" name="declineInvitationRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="removeFriendResponse">
+        <wsdl:part element="tns:removeFriendResponse" name="removeFriendResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="updateUserInfoRequest">
+        <wsdl:part element="tns:updateUserInfoRequest" name="updateUserInfoRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="currentUserResponse">
+        <wsdl:part element="tns:currentUserResponse" name="currentUserResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="invitationsRequest">
+        <wsdl:part element="tns:invitationsRequest" name="invitationsRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="allUsersResponse">
+        <wsdl:part element="tns:allUsersResponse" name="allUsersResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="allUsersRequest">
+        <wsdl:part element="tns:allUsersRequest" name="allUsersRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="friendsRequest">
+        <wsdl:part element="tns:friendsRequest" name="friendsRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="friendsResponse">
+        <wsdl:part element="tns:friendsResponse" name="friendsResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="addFriendResponse">
+        <wsdl:part element="tns:addFriendResponse" name="addFriendResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="invitationsResponse">
+        <wsdl:part element="tns:invitationsResponse" name="invitationsResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="removeFriendRequest">
+        <wsdl:part element="tns:removeFriendRequest" name="removeFriendRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="updateUserInfoResponse">
+        <wsdl:part element="tns:updateUserInfoResponse" name="updateUserInfoResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="currentUserRequest">
+        <wsdl:part element="tns:currentUserRequest" name="currentUserRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="declineInvitationResponse">
+        <wsdl:part element="tns:declineInvitationResponse" name="declineInvitationResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="NifflerUserdataPort">
+        <wsdl:operation name="addFriend">
+            <wsdl:input message="tns:addFriendRequest" name="addFriendRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:addFriendResponse" name="addFriendResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="acceptInvitation">
+            <wsdl:input message="tns:acceptInvitationRequest" name="acceptInvitationRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:acceptInvitationResponse" name="acceptInvitationResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="declineInvitation">
+            <wsdl:input message="tns:declineInvitationRequest" name="declineInvitationRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:declineInvitationResponse" name="declineInvitationResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="removeFriend">
+            <wsdl:input message="tns:removeFriendRequest" name="removeFriendRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:removeFriendResponse" name="removeFriendResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="updateUserInfo">
+            <wsdl:input message="tns:updateUserInfoRequest" name="updateUserInfoRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:updateUserInfoResponse" name="updateUserInfoResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="currentUser">
+            <wsdl:input message="tns:currentUserRequest" name="currentUserRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:currentUserResponse" name="currentUserResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="invitations">
+            <wsdl:input message="tns:invitationsRequest" name="invitationsRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:invitationsResponse" name="invitationsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="allUsers">
+            <wsdl:input message="tns:allUsersRequest" name="allUsersRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:allUsersResponse" name="allUsersResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="friends">
+            <wsdl:input message="tns:friendsRequest" name="friendsRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:friendsResponse" name="friendsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="NifflerUserdataPortSoap11" type="tns:NifflerUserdataPort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="addFriend">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="addFriendRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="addFriendResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="acceptInvitation">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="acceptInvitationRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="acceptInvitationResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="declineInvitation">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="declineInvitationRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="declineInvitationResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="removeFriend">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="removeFriendRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="removeFriendResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="updateUserInfo">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="updateUserInfoRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="updateUserInfoResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="currentUser">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="currentUserRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="currentUserResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="invitations">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="invitationsRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="invitationsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="allUsers">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="allUsersRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="allUsersResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="friends">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="friendsRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="friendsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="NifflerUserdataPortService">
+        <wsdl:port binding="tns:NifflerUserdataPortSoap11" name="NifflerUserdataPortSoap11">
+            <soap:address location="http://127.0.0.1:8089/ws"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

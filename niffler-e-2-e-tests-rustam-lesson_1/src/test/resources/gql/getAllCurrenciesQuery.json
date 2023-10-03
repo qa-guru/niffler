@@ -1,0 +1,5 @@
+{
+  "operationName": "GetAllCurrencies",
+  "variables": {},
+  "query": "query GetAllCurrencies {\n  currencies {\n    currency\n    currencyRate\n    __typename\n  }\n}"
+}

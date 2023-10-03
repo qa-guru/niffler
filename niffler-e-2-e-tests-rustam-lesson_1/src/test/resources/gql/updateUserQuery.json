@@ -1,0 +1,11 @@
+{
+  "operationName": "UpdateUser",
+  "variables": {
+    "input": {
+      "firstname": "Pizzly",
+      "surname": "Pizzlyvich",
+      "currency": "EUR"
+    }
+  },
+  "query": "mutation UpdateUser($input: UpdateUserInfoInput!) {\n  updateUser(input: $input) {\n    id\n    username\n    firstname\n    surname\n    photo\n    currency\n    __typename\n  }\n}"
+}
