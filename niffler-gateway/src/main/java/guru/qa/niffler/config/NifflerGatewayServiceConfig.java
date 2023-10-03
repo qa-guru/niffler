@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class NifflerGatewayServiceConfig {
 
     public static final int TEN_MB = 10 * 1024 * 1024;
+    public static final int ONE_MB = 1024 * 1024;
 
     private final String nifflerUserdataBaseUri;
 

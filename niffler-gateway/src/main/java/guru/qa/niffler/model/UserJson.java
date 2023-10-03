@@ -24,7 +24,7 @@ public record UserJson(
         @JsonProperty("currency")
         CurrencyValues currency,
         @JsonProperty("photo")
-        @Size(max = NifflerGatewayServiceConfig.THREE_MB)
+        @Size(max = NifflerGatewayServiceConfig.ONE_MB)
         String photo,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonProperty("friendState")
