@@ -7,9 +7,9 @@ import java.util.Date;
 
 public record SessionJson(@JsonProperty("username")
                           String username,
-                          @JsonProperty("username")
+                          @JsonProperty("issuedAt")
                           Date issuedAt,
-                          @JsonProperty("username")
+                          @JsonProperty("expiresAt")
                           Date expiresAt) {
     public static @Nonnull SessionJson empty() {
         return new SessionJson(null, null, null);
