@@ -8,7 +8,7 @@ spring:
   application:
     name: niffler-gateway
   codec:
-    max-in-memory-size: 20MB
+    max-in-memory-size: 50MB
 
 logging:
   level:
