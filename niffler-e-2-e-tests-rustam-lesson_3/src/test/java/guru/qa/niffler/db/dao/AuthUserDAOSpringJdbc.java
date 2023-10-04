@@ -17,8 +17,8 @@ public class AuthUserDAOSpringJdbc implements AuthUserDAO, UserDataUserDAO {
   }
 
   @Override
-  public void updateUser(UserEntity user) {
-
+  public UserEntity updateUser(UserEntity user) {
+    return null;
   }
 
   @Override
@@ -32,17 +32,22 @@ public class AuthUserDAOSpringJdbc implements AuthUserDAO, UserDataUserDAO {
   }
 
   @Override
-  public int readUserInUserData(UserEntity user) {
-    return 0;
+  public UserDataEntity getUserdataInUserData(String username) {
+    return null;
   }
 
   @Override
-  public void updateUserInUserData(UserDataEntity userData) {
+  public UserDataEntity updateUserInUserData(UserDataEntity userData) {
+    return null;
+  }
+
+  @Override
+  public void deleteUserByIdInUserData(UUID userId) {
 
   }
 
   @Override
-  public void deleteUserByIdInUserData(UserEntity user) {
+  public void deleteUserByUsernameInUserData(String username) {
 
   }
 }

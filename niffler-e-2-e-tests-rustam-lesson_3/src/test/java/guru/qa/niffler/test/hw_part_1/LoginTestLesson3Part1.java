@@ -25,7 +25,6 @@ public class LoginTestLesson3Part1 extends BaseWebTest {
     @GenerateUser()
     @Test
     void mainPageShouldBeVisibleAfterLogin(UserEntity user) {
-//        authUserDAO.createUser(user);
         open("http://127.0.0.1:3000/main");
         $("a[href*='redirect']").click();
         $("input[name='username']").setValue(user.getUsername());

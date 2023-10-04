@@ -1,9 +1,6 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.db.dao.AuthUserDAO;
-import guru.qa.niffler.db.dao.AuthUserDAOHibernate;
-import guru.qa.niffler.db.dao.AuthUserDAOJdbc;
-import guru.qa.niffler.db.dao.AuthUserDAOSpringJdbc;
 import guru.qa.niffler.db.dao.UserDataUserDAO;
 import guru.qa.niffler.jupiter.annotation.DAO;
 import java.lang.reflect.Field;
@@ -21,16 +18,7 @@ public class DaoExtension implements TestInstancePostProcessor {
           && field.isAnnotationPresent(DAO.class)) {
         field.setAccessible(true);
 
-        AuthUserDAO dao;
-
-        if ("hibernate".equals(System.getProperty("db.impl"))) {
-          dao = new AuthUserDAOHibernate();
-        } else if ("spring".equals(System.getProperty("db.impl"))) {
-          dao = new AuthUserDAOSpringJdbc();
-        } else {
-          dao = new AuthUserDAOJdbc();
-        }
-        field.set(testInstance, dao);
+        field.set(testInstance, AuthUserDAO.getImpl());
       }
     }
   }
