@@ -4,6 +4,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
+import com.github.javafaker.Faker;
 import guru.qa.niffler.db.dao.AuthUserDAO;
 import guru.qa.niffler.db.dao.UserDataUserDAO;
 import guru.qa.niffler.db.model.Authority;
@@ -35,7 +36,7 @@ public class LoginTestLesson3 extends BaseWebTest {
     @BeforeEach
     void createUser() {
         user = new UserEntity();
-        user.setUsername("rashid_9");
+        user.setUsername(new Faker().name().username());
         user.setPassword("12345");
         user.setEnabled(true);
         user.setAccountNonExpired(true);
@@ -63,19 +64,20 @@ public class LoginTestLesson3 extends BaseWebTest {
         authUserDAO.updateUser(user);
 
         userdata = new UserDataEntity();
+        userdata.setUsername(user.getUsername());
         userdata.setCurrency(CurrencyValues.USD);
-        userdata.setFirstname("updated_firstname_1");
-        userdata.setSurname("updated_surname_1");
-        userdata.setPhoto("photos/photo_1.jpg");
+        userdata.setFirstname("updated_firstname_2");
+        userdata.setSurname("updated_surname_2");
+        userdata.setPhoto("photos/photo2.jpeg");
         userDataUserDAO.updateUserInUserData(userdata);
 
         UserEntity userById = authUserDAO.getUserById(user.getId());
-        int resultUserData = userDataUserDAO.readUserInUserData(user);
+        UserDataEntity resultUserData = userDataUserDAO.getUserdataInUserData(user.getUsername());
     }
 
     @AfterEach
     void deleteUser() {
-        userDataUserDAO.deleteUserByIdInUserData(user);
+        userDataUserDAO.deleteUserByIdInUserData(user.getId());
         authUserDAO.deleteUserById(user.getId());
     }
 

@@ -8,21 +8,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public interface UserDataUserDAO {
 
-//  static UserDataUserDAO getImpl() {
-//    if ("hibernate".equals(System.getProperty("db.impl"))) {
-//      return new AuthUserDAOHibernate();
-//    } else if ("spring".equals(System.getProperty("db.impl"))) {
-//      return new AuthUserDAOSpringJdbc();
-//    } else {
-//      return new AuthUserDAOJdbc();
-//    }
-//  }
+  static UserDataUserDAO getImpl() {
+    if ("hibernate".equals(System.getProperty("db.impl"))) {
+      return new AuthUserDAOHibernate();
+    } else if ("spring".equals(System.getProperty("db.impl"))) {
+      return new AuthUserDAOSpringJdbc();
+    } else {
+      return new AuthUserDAOJdbc();
+    }
+  }
 
   int createUserInUserData(UserEntity user);
 
-  int readUserInUserData(UserEntity user);
+  UserDataEntity getUserdataInUserData(String username);
 
-  void updateUserInUserData(UserDataEntity userData);
+  UserDataEntity updateUserInUserData(UserDataEntity userData);
 
-  void deleteUserByIdInUserData(UserEntity user);
+  void deleteUserByIdInUserData(UUID userId);
+  void deleteUserByUsernameInUserData(String username);
 }

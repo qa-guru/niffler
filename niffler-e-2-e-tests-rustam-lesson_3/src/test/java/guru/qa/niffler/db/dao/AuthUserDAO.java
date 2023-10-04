@@ -9,15 +9,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 // развязать реализацию с БД и бизнес логику
 public interface AuthUserDAO {
 
-//  static AuthUserDAO getImpl() {
-//    if ("hibernate".equals(System.getProperty("db.impl"))) {
-//      return new AuthUserDAOHibernate();
-//    } else if ("spring".equals(System.getProperty("db.impl"))) {
-//      return new AuthUserDAOSpringJdbc();
-//    } else {
-//      return new AuthUserDAOJdbc();
-//    }
-//  }
+  static AuthUserDAO getImpl() {
+    if ("hibernate".equals(System.getProperty("db.impl"))) {
+      return new AuthUserDAOHibernate();
+    } else if ("spring".equals(System.getProperty("db.impl"))) {
+      return new AuthUserDAOSpringJdbc();
+    } else {
+      return new AuthUserDAOJdbc();
+    }
+  }
 
   PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
@@ -25,7 +25,7 @@ public interface AuthUserDAO {
 
   UserEntity getUserById(UUID userId);
 
-  void updateUser(UserEntity user);
+  UserEntity updateUser(UserEntity user);
 
   void deleteUserById(UUID userId);
 }

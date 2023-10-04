@@ -24,16 +24,13 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
 public class RandomUserExtension implements
-//    TestInstancePostProcessor,
     BeforeEachCallback,
     AfterTestExecutionCallback,
     ParameterResolver
 {
 
-//  @DAO
-//  private AuthUserDAO authUserDAO = AuthUserDAO.getImpl();
-////  @DAO
-//  private UserDataUserDAO userDataUserDAO = UserDataUserDAO.getImpl();
+  private final AuthUserDAO authUserDAO = AuthUserDAO.getImpl();
+  private final UserDataUserDAO userDataUserDAO = UserDataUserDAO.getImpl();
   private UserEntity user;
 
   public static Namespace RANDOM_USER_NAMESPACE = Namespace.create(RandomUserExtension.class);
@@ -56,13 +53,6 @@ public class RandomUserExtension implements
             return ae;
           }).toList()
       );
-      Object testInstance = context.getRequiredTestInstance();
-      Field resultField1 = testInstance.getClass().getDeclaredField("authUserDAO");
-      resultField1.setAccessible(true);
-      AuthUserDAO authUserDAO = (AuthUserDAO) resultField1.get(testInstance);
-      Field resultField2 = testInstance.getClass().getDeclaredField("userDataUserDAO");
-      resultField2.setAccessible(true);
-      UserDataUserDAO userDataUserDAO = (UserDataUserDAO) resultField2.get(testInstance);
 
       authUserDAO.createUser(user);
       userDataUserDAO.createUserInUserData(user);
@@ -86,15 +76,7 @@ public class RandomUserExtension implements
 
   @Override
   public void afterTestExecution(ExtensionContext context) throws Exception {
-    Object testInstance = context.getRequiredTestInstance();
-    Field resultField1 = testInstance.getClass().getDeclaredField("authUserDAO");
-    resultField1.setAccessible(true);
-    AuthUserDAO authUserDAO = (AuthUserDAO) resultField1.get(testInstance);
-    Field resultField2 = testInstance.getClass().getDeclaredField("userDataUserDAO");
-    resultField2.setAccessible(true);
-    UserDataUserDAO userDataUserDAO = (UserDataUserDAO) resultField2.get(testInstance);
-
-    userDataUserDAO.deleteUserByIdInUserData(user);
+    userDataUserDAO.deleteUserByIdInUserData(user.getId());
     authUserDAO.deleteUserById(user.getId());
   }
 

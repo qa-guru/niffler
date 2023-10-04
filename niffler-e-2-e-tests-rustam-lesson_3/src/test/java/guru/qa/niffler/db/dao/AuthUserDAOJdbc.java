@@ -1,5 +1,7 @@
 package guru.qa.niffler.db.dao;
 
+import static org.springframework.util.Base64Utils.encodeToString;
+
 import guru.qa.niffler.db.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDB;
 import guru.qa.niffler.db.model.Authority;
@@ -7,7 +9,12 @@ import guru.qa.niffler.db.model.CurrencyValues;
 import guru.qa.niffler.db.model.UserDataEntity;
 import guru.qa.niffler.db.model.UserEntity;
 import guru.qa.niffler.jupiter.extension.DaoExtension;
+import io.netty.handler.codec.base64.Base64Encoder;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +22,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
 import java.util.UUID;
+import javax.imageio.ImageIO;
 import javax.sql.DataSource;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -80,8 +89,8 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
   @Override
   public UserEntity getUserById(UUID userId) {
     UserEntity user = new UserEntity();
-    try (Connection conn = authDs.getConnection()) {
-      try (PreparedStatement userPs = conn.prepareStatement(
+    try (Connection conn = authDs.getConnection();
+        PreparedStatement userPs = conn.prepareStatement(
           "SELECT * FROM users WHERE id = ?"
       )) {
         userPs.setObject(1, user.getId());
@@ -96,7 +105,6 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
           user.setAccountNonLocked(resultSet.getBoolean("account_not_locked"));
           user.setCredentialsNonExpired(resultSet.getBoolean("credentials_non_expired"));
         }
-      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -104,22 +112,22 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
   }
 
   @Override
-  public void updateUser(UserEntity user) {
+  public UserEntity updateUser(UserEntity user) {
 
-    try (Connection conn = authDs.getConnection()) {
-
-      try (PreparedStatement usersPs = conn.prepareStatement(
+    try (Connection conn = authDs.getConnection();
+      PreparedStatement usersPs = conn.prepareStatement(
           "UPDATE users SET(password, enabled, account_non_expired, "
-              + "account_non_locked, credentials_non_expired) = (?, ?, ?, ?, ?)")
-      ) {
+              + "account_non_locked, credentials_non_expired) = (?, ?, ?, ?, ?) WHERE id = ?")
+    ) {
         usersPs.setString(1, pe.encode(user.getPassword()));
         usersPs.setBoolean(2, user.getEnabled());
         usersPs.setBoolean(3, user.getAccountNonExpired());
         usersPs.setBoolean(4, user.getAccountNonLocked());
         usersPs.setBoolean(5, user.getAccountNonExpired());
+        usersPs.setObject(6, user.getId());
 
         usersPs.executeUpdate();
-      }
+        return getUserById(user.getId());
 
     } catch (SQLException e) {
       throw new RuntimeException(e);
@@ -177,65 +185,83 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
   }
 
   @Override
-  public int readUserInUserData(UserEntity user) {
-    int resultRows = 0;
-    try (Connection conn = userdataDs.getConnection()) {
-      try (PreparedStatement userdataPs = conn.prepareStatement(
-          "SELECT * FROM users WHERE username = ?"
-      )) {
-        userdataPs.setString(1, user.getUsername());
-        resultRows = userdataPs.executeQuery().findColumn("id");
+  public UserDataEntity getUserdataInUserData(String username) {
+    UserDataEntity userdata = new UserDataEntity();
+    try (Connection conn = userdataDs.getConnection();
+        PreparedStatement userPs = conn.prepareStatement(
+            "SELECT * FROM users WHERE username = ?"
+        )) {
+      userPs.setObject(1, username);
+      ResultSet resultSet = userPs.executeQuery();
+
+      if (resultSet.next()) {
+        userdata.setId(resultSet.getObject("id", UUID.class));
+        userdata.setUsername(resultSet.getString("username"));
+        userdata.setCurrency(CurrencyValues.valueOf(resultSet.getString("currency")));
+        userdata.setFirstname(resultSet.getString("firstname"));
+        userdata.setSurname(resultSet.getString("surname"));
+        userdata.setPhoto(resultSet.getString("photo"));
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
-    return resultRows;
+    return userdata;
   }
 
   @Override
-  public void updateUserInUserData(UserDataEntity userdata) {
+  public UserDataEntity updateUserInUserData(UserDataEntity userdata) {
 
-    try (Connection conn = userdataDs.getConnection()) {
+    try (Connection conn = userdataDs.getConnection();
+        PreparedStatement userdataPs = conn.prepareStatement(
+            "UPDATE users SET (currency, firstname, surname, photo) = (?, ?, ?, ?) WHERE username = ?")) {
 
-      try (PreparedStatement userdataPs = conn.prepareStatement(
-        "UPDATE users SET (currency, firstname, surname, photo) = (?, ?, ?, ?)")
+      ClassLoader classLoader = getClass().getClassLoader();
+      byte[] fileContent = FileUtils.readFileToByteArray(new File(classLoader
+          .getResource(userdata.getPhoto())
+          .getFile()));
+      String encodedString = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileContent);
+
+      userdataPs.setObject(1, userdata.getCurrency().name());
+      userdataPs.setString(2, userdata.getFirstname());
+      userdataPs.setString(3, userdata.getSurname());
+      userdataPs.setObject(4, encodedString.getBytes());
+      userdataPs.setObject(5, userdata.getUsername());
+
+      userdataPs.executeUpdate();
+      return getUserdataInUserData(userdata.getUsername());
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
+  @Override
+  public void deleteUserByIdInUserData(UUID userId) {
+
+    try (Connection connUserdata = userdataDs.getConnection();
+        PreparedStatement userdataPS = connUserdata.prepareStatement(
+          "DELETE FROM users WHERE id = ?");
       ) {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        File inputFile = new File(classLoader
-            .getResource(userdata.getPhoto())
-            .getFile());
-
-        byte[] fileContent = FileUtils.readFileToByteArray(inputFile);
-
-        userdataPs.setObject(1, userdata.getCurrency().name());
-        userdataPs.setObject(2, userdata.getFirstname());
-        userdataPs.setObject(3, userdata.getSurname());
-        userdataPs.setObject(4, fileContent);
-
-        userdataPs.executeUpdate();
-
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
+        userdataPS.setObject(1, userId);
+        userdataPS.executeUpdate();
 
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
-
   }
 
   @Override
-  public void deleteUserByIdInUserData(UserEntity user) {
+  public void deleteUserByUsernameInUserData(String username) {
 
-    try (Connection connUserdata = userdataDs.getConnection()) {
-
-      try (PreparedStatement userdataPS = connUserdata.prepareStatement(
+    try (Connection connUserdata = userdataDs.getConnection();
+        PreparedStatement userdataPS = connUserdata.prepareStatement(
           "DELETE FROM users WHERE username = ?");
       ) {
-        userdataPS.setString(1, user.getUsername());
+        userdataPS.setString(1, username);
         userdataPS.executeUpdate();
-      }
+
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
