@@ -51,7 +51,7 @@ jobs:
           echo "USERDATA_VER=${{ steps.userdata_version.outputs.version }}" >> $GITHUB_ENV
           echo "FRONT_VER=${{ steps.dotenv.outputs.front_version }}" >> $GITHUB_ENV
           echo "FRONT_IMAGE=niffler-frontend" >> $GITHUB_ENV
-      - name: deploy
+      - name: build
         working-directory: ./niffler-frontend
         run: |
           pwd
