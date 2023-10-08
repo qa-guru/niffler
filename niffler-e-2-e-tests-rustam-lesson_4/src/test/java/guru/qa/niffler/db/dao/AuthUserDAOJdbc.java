@@ -1,20 +1,12 @@
 package guru.qa.niffler.db.dao;
 
-import static org.springframework.util.Base64Utils.encodeToString;
-
 import guru.qa.niffler.db.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDB;
 import guru.qa.niffler.db.model.Authority;
 import guru.qa.niffler.db.model.CurrencyValues;
 import guru.qa.niffler.db.model.UserDataEntity;
 import guru.qa.niffler.db.model.UserEntity;
-import guru.qa.niffler.jupiter.extension.DaoExtension;
-import io.netty.handler.codec.base64.Base64Encoder;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,11 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
 import java.util.UUID;
-import javax.imageio.ImageIO;
 import javax.sql.DataSource;
-
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
 
@@ -34,7 +23,7 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
   private static DataSource userdataDs = DataSourceProvider.INSTANCE.getDataSource(ServiceDB.USERDATA);
 
   @Override
-  public int createUser(UserEntity user) {
+  public UserEntity createUser(UserEntity user) {
     int createdRows = 0;
     try (Connection conn = authDs.getConnection()) {
 
@@ -83,7 +72,7 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
       throw new RuntimeException(e);
     }
 
-    return createdRows;
+    return getUserById(user.getId());
   }
 
   @Override
@@ -167,20 +156,17 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
   @Override
   public int createUserInUserData(UserEntity user) {
     int createdRows = 0;
-    try (Connection conn = userdataDs.getConnection()) {
-
-      try (PreparedStatement usersPs = conn.prepareStatement(
+    try (Connection conn = userdataDs.getConnection();
+        PreparedStatement usersPs = conn.prepareStatement(
           "INSERT INTO users (username, currency) VALUES (?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)
       ) {
         usersPs.setString(1, user.getUsername());
         usersPs.setString(2, CurrencyValues.RUB.name());
 
         createdRows = usersPs.executeUpdate();
-      }
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
+      } catch (SQLException ex) {
+      throw new RuntimeException(ex);
     }
-
     return createdRows;
   }
 

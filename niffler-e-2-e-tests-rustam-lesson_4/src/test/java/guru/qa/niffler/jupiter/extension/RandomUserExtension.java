@@ -9,6 +9,8 @@ import guru.qa.niffler.db.dao.AuthUserDAOSpringJdbc;
 import guru.qa.niffler.db.dao.UserDataUserDAO;
 import guru.qa.niffler.db.model.Authority;
 import guru.qa.niffler.db.model.AuthorityEntity;
+import guru.qa.niffler.db.model.CurrencyValues;
+import guru.qa.niffler.db.model.UserDataEntity;
 import guru.qa.niffler.db.model.UserEntity;
 import guru.qa.niffler.jupiter.annotation.DAO;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
@@ -32,6 +34,7 @@ public class RandomUserExtension implements
   private final AuthUserDAO authUserDAO = AuthUserDAO.getImpl();
   private final UserDataUserDAO userDataUserDAO = UserDataUserDAO.getImpl();
   private UserEntity user;
+  private UserDataEntity userData;
 
   public static Namespace RANDOM_USER_NAMESPACE = Namespace.create(RandomUserExtension.class);
 
@@ -40,7 +43,8 @@ public class RandomUserExtension implements
     GenerateUser annotation = context.getRequiredTestMethod().getAnnotation(GenerateUser.class);
     if (annotation != null) {
       user = new UserEntity();
-      user.setUsername(new Faker().name().username());
+//      user.setUsername(new Faker().name().username());
+      user.setUsername("rashid_2");
       user.setPassword("12345");
       user.setEnabled(true);
       user.setAccountNonExpired(true);
@@ -56,6 +60,15 @@ public class RandomUserExtension implements
 
       authUserDAO.createUser(user);
       userDataUserDAO.createUserInUserData(user);
+
+      userData = new UserDataEntity();
+      userData.setUsername(user.getUsername());
+      userData.setCurrency(CurrencyValues.USD);
+      userData.setFirstname("updated_firstname_2");
+      userData.setSurname("updated_surname_2");
+      userData.setPhoto("photos/photo2.jpeg");
+
+      userDataUserDAO.updateUserInUserData(userData);
 
       context.getStore(RANDOM_USER_NAMESPACE).put("randomUser", user);
     }
@@ -76,7 +89,8 @@ public class RandomUserExtension implements
 
   @Override
   public void afterTestExecution(ExtensionContext context) throws Exception {
-    userDataUserDAO.deleteUserByIdInUserData(user.getId());
+    userDataUserDAO.getUserdataInUserData(user.getUsername());
+    userDataUserDAO.deleteUserByUsernameInUserData(user.getUsername());
     authUserDAO.deleteUserById(user.getId());
   }
 

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(DaoExtension.class)
-public class LoginTestLesson3Part1 extends BaseWebTest {
+public class LoginTestLesson4Part1 extends BaseWebTest {
 
     @DAO
     private AuthUserDAO authUserDAO;

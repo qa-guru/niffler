@@ -13,15 +13,15 @@ public interface AuthUserDAO {
     if ("hibernate".equals(System.getProperty("db.impl"))) {
       return new AuthUserDAOHibernate();
     } else if ("spring".equals(System.getProperty("db.impl"))) {
-      return new AuthUserDAOSpringJdbc();
-    } else {
       return new AuthUserDAOJdbc();
+    } else {
+      return new AuthUserDAOSpringJdbc();
     }
   }
 
   PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  int createUser(UserEntity user);
+  UserEntity createUser(UserEntity user);
 
   UserEntity getUserById(UUID userId);
 
