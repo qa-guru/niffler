@@ -90,6 +90,8 @@ public class RandomUserExtension implements
   @Override
   public void afterTestExecution(ExtensionContext context) throws Exception {
     userDataUserDAO.getUserdataInUserData(user.getUsername());
+    user.setEnabled(false);
+    authUserDAO.updateUser(user);
     userDataUserDAO.deleteUserByUsernameInUserData(user.getUsername());
     authUserDAO.deleteUserById(user.getId());
   }

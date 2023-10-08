@@ -116,7 +116,20 @@ public class AuthUserDAOSpringJdbc implements AuthUserDAO, UserDataUserDAO {
 
   @Override
   public UserEntity updateUser(UserEntity user) {
-    return null;
+
+    authJdbcTemplate.update(
+        "UPDATE users SET(password, enabled, account_non_expired, "
+            + "account_non_locked, credentials_non_expired) = (?, ?, ?, ?, ?) WHERE id = ?",
+
+        pe.encode(user.getPassword()),
+        user.getEnabled(),
+        user.getAccountNonExpired(),
+        user.getAccountNonLocked(),
+        user.getAccountNonExpired(),
+        user.getId()
+    );
+
+    return getUserById(user.getId());
   }
 
   @Override
@@ -148,19 +161,6 @@ public class AuthUserDAOSpringJdbc implements AuthUserDAO, UserDataUserDAO {
 
   @Override
   public UserDataEntity updateUserInUserData(UserDataEntity userData) {
-
-//    userdataJdbcTemplate.update(con -> {
-//      PreparedStatement userdataPs = con.prepareStatement(
-//          "UPDATE users SET (currency, firstname, surname, photo) = (?, ?, ?, ?) WHERE username = ?");
-//
-//      userdataPs.setObject(1, userData.getCurrency().name());
-//      userdataPs.setString(2, userData.getFirstname());
-//      userdataPs.setString(3, userData.getSurname());
-//      userdataPs.setObject(4, new UserdataHelper().getEncodingPhoto(userData).getBytes());
-//      userdataPs.setObject(5, userData.getUsername());
-//
-//      return userdataPs;
-//    });
 
     userdataJdbcTemplate.update(
         "UPDATE users SET (currency, firstname, surname, photo) = (?, ?, ?, ?) WHERE username = ?",
