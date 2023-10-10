@@ -10,7 +10,10 @@ import guru.qa.niffler.db.model.userdata.CurrencyValues;
 import guru.qa.niffler.db.model.userdata.UserDataEntity;
 import guru.qa.niffler.db.model.auth.UserEntity;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -18,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import wiremock.com.google.common.primitives.Bytes;
 
 public class RandomUsersExtension implements
     BeforeEachCallback,
@@ -38,7 +42,7 @@ public class RandomUsersExtension implements
     if (annotation != null) {
       user = new UserEntity();
       user.setUsername(new Faker().name().username());
-//      user.setUsername("rashid_7");
+
       user.setPassword("12345");
       user.setEnabled(true);
       user.setAccountNonExpired(true);
@@ -50,8 +54,19 @@ public class RandomUsersExtension implements
             ae.setAuthority(a);
             ae.setUser(user);
             return ae;
-          }).toList()
+          }).collect(Collectors.toList())
       );
+
+//      List<AuthorityEntity> authorityEntityList = new ArrayList<>();
+//      List<Authority> values = List.of(Authority.values());
+//      for (Authority value : values) {
+//        AuthorityEntity ae = new AuthorityEntity();
+//        ae.setAuthority(value);
+//        ae.setUser(user);
+//
+//        authorityEntityList.add(ae);
+//      }
+//      user.setAuthorities(authorityEntityList);
 
       authUserDAO.createUser(user);
 
@@ -60,7 +75,7 @@ public class RandomUsersExtension implements
       userData.setCurrency(CurrencyValues.USD);
       userData.setFirstname("updated_firstname_2");
       userData.setSurname("updated_surname_2");
-//      userData.setPhoto("photos/photo2.jpeg");
+      userData.setPhoto("photos/photo2.jpeg".getBytes());
 
       userDataUserDAO.createUserInUserData(userData);
 
@@ -92,8 +107,8 @@ public class RandomUsersExtension implements
     userData.setCurrency(CurrencyValues.KZT);
     userDataUserDAO.updateUserInUserData(userData);
 
-//    userDataUserDAO.deleteUserByUsernameInUserData(userData);
-//    authUserDAO.deleteUser(user);
+    userDataUserDAO.deleteUserByUsernameInUserData(userData);
+    authUserDAO.deleteUser(user);
   }
 
 }

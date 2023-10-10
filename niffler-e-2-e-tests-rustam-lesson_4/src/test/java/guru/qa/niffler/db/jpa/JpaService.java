@@ -1,5 +1,6 @@
 package guru.qa.niffler.db.jpa;
 
+
 import guru.qa.niffler.db.model.auth.UserEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -20,14 +21,14 @@ public abstract class JpaService {
   }
 
   protected <T> void remove(T entity) {
-    tx(em -> em.remove(em));
+    tx(em -> em.remove(entity));
   }
 
   protected <T> T merge(T entity) {
     return txWithResult(em -> em.merge(entity));
   }
 
-  protected UserEntity find(Class<UserEntity> entityManager, UUID primaryKey) {
+  protected <T> T find(Class<T> entityManager, UUID primaryKey) {
     return txWithResult(txWithResult -> txWithResult.find(entityManager, primaryKey));
   }
 

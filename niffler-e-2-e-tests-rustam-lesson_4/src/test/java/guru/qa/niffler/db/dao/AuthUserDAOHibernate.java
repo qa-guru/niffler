@@ -35,7 +35,6 @@ public class AuthUserDAOHibernate extends JpaService implements AuthUserDAO {
 
   @Override
   public UserEntity updateUser(UserEntity user) {
-//    user.setPassword(pe.encode(user.getPassword()));
     return merge(user);
   }
 

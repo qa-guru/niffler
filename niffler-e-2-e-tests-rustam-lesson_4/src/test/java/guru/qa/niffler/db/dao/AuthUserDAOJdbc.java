@@ -8,6 +8,7 @@ import guru.qa.niffler.db.model.userdata.UserDataEntity;
 import guru.qa.niffler.db.model.auth.UserEntity;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -186,7 +187,7 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
         userdata.setCurrency(CurrencyValues.valueOf(resultSet.getString("currency")));
         userdata.setFirstname(resultSet.getString("firstname"));
         userdata.setSurname(resultSet.getString("surname"));
-        userdata.setPhoto(resultSet.getString("photo").getBytes());
+//        userdata.setPhoto(resultSet.getString("photo").getBytes());
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
@@ -201,33 +202,23 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
         PreparedStatement userdataPs = conn.prepareStatement(
             "UPDATE users SET (currency, firstname, surname, photo) = (?, ?, ?, ?) WHERE username = ?")) {
 
-//      ClassLoader classLoader = getClass().getClassLoader();
-//      byte[] fileContent = FileUtils.readFileToByteArray(new File(classLoader
-//          .getResource(userdata.getPhoto())
-//          .getFile()));
-//      String encodedString = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileContent);
-//
-//      userdataPs.setObject(1, userdata.getCurrency().name());
-//      userdataPs.setString(2, userdata.getFirstname());
-//      userdataPs.setString(3, userdata.getSurname());
-//      userdataPs.setObject(4, encodedString.getBytes());
-//      userdataPs.setObject(5, userdata.getUsername());
-
-//      ClassLoader classLoader = getClass().getClassLoader();
-//      byte[] fileContent = FileUtils.readFileToByteArray(new File(classLoader
-//          .getResource(userdata.getPhoto())
-//          .getFile()));
-//      String encodedString = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileContent);
+      ClassLoader classLoader = getClass().getClassLoader();
+      byte[] fileContent = FileUtils.readFileToByteArray(new File(classLoader
+          .getResource(new String(userdata.getPhoto(), StandardCharsets.UTF_8))
+          .getFile()));
+      String encodedString = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileContent);
 
       userdataPs.setObject(1, userdata.getCurrency().name());
       userdataPs.setString(2, userdata.getFirstname());
       userdataPs.setString(3, userdata.getSurname());
-      userdataPs.setObject(4, Base64.getEncoder().encode(userdata.getPhoto()));
+      userdataPs.setObject(4, encodedString.getBytes());
       userdataPs.setObject(5, userdata.getUsername());
 
       userdataPs.executeUpdate();
       return getUserdataInUserData(userdata);
     } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
       throw new RuntimeException(e);
     }
 

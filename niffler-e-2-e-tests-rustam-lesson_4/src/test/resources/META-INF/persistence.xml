@@ -8,6 +8,7 @@
         <class>guru.qa.niffler.db.model.userdata.UserDataEntity</class>
         <class>guru.qa.niffler.db.model.userdata.FriendsEntity</class>
         <class>guru.qa.niffler.db.model.userdata.FriendsId</class>
+        <class>guru.qa.niffler.db.model.userdata.CurrencyValues</class>
     </persistence-unit>
 
 </persistence>

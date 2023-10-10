@@ -13,6 +13,8 @@ public interface UserDataUserDAO {
     } else if ("spring".equals(System.getProperty("db.impl"))) {
       return new AuthUserDAOJdbc();
     } else {
+//      return new AuthUserDAOJdbc();
+//      return new AuthUserDAOSpringJdbc();
       return new UserDataUserDAOHibernate();
     }
   }

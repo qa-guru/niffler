@@ -164,8 +164,7 @@ public class AuthUserDAOSpringJdbc implements AuthUserDAO, UserDataUserDAO {
         userData.getCurrency().name(),
         userData.getFirstname(),
         userData.getSurname(),
-        userData.getPhoto(),
-//        new UserdataHelper().getEncodingPhoto(userData).getBytes(),
+        new UserdataHelper().getEncodingPhoto(userData).getBytes(),
         userData.getUsername()
     );
 
