@@ -1,53 +1,46 @@
 package guru.qa.niffler.db.dao;
 
-import guru.qa.niffler.db.model.UserDataEntity;
-import guru.qa.niffler.db.model.UserEntity;
+import static com.codeborne.selenide.Selenide.sleep;
+
+import guru.qa.niffler.db.ServiceDB;
+import guru.qa.niffler.db.jpa.EntityManagerFactoryProvider;
+import guru.qa.niffler.db.jpa.JpaService;
+import guru.qa.niffler.db.model.auth.UserEntity;
 import java.util.UUID;
 
-public class AuthUserDAOHibernate implements AuthUserDAO, UserDataUserDAO {
+public class AuthUserDAOHibernate extends JpaService implements AuthUserDAO {
 
-  @Override
-  public UserEntity createUser(UserEntity user) {
-    return null;
+  public AuthUserDAOHibernate() {
+    super(EntityManagerFactoryProvider.INSTANCE.getEntityManagerFactory(ServiceDB.AUTH).createEntityManager());
   }
 
   @Override
+  public UserEntity createUser(UserEntity user) {
+    user.setPassword(pe.encode(user.getPassword()));
+    persist(user);
+    return user;
+  }
+
+//  @Override тоже работает
+//  public UserEntity getUserById(UUID userId) {
+//    return em.createQuery("select u from UserEntity u where u.id=:userId", UserEntity.class)
+//        .setParameter("userId", userId)
+//        .getSingleResult();
+//  }
+
+  @Override
   public UserEntity getUserById(UUID userId) {
-    return null;
+    return find(UserEntity.class, userId);
   }
 
   @Override
   public UserEntity updateUser(UserEntity user) {
-    return null;
+//    user.setPassword(pe.encode(user.getPassword()));
+    return merge(user);
   }
 
   @Override
-  public void deleteUserById(UUID userId) {
-
-  }
-
-  @Override
-  public int createUserInUserData(UserEntity user) {
-    return 0;
-  }
-
-  @Override
-  public UserDataEntity getUserdataInUserData(String username) {
-    return null;
-  }
-
-  @Override
-  public UserDataEntity updateUserInUserData(UserDataEntity userData) {
-    return null;
-  }
-
-  @Override
-  public void deleteUserByIdInUserData(UUID userId) {
-
-  }
-
-  @Override
-  public void deleteUserByUsernameInUserData(String username) {
-
+  public void deleteUser(UserEntity user) {
+    remove(user);
   }
 }

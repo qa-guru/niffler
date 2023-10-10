@@ -6,7 +6,7 @@ import static com.codeborne.selenide.Selenide.open;
 
 import guru.qa.niffler.db.dao.AuthUserDAO;
 import guru.qa.niffler.db.dao.UserDataUserDAO;
-import guru.qa.niffler.db.model.UserEntity;
+import guru.qa.niffler.db.model.auth.UserEntity;
 import guru.qa.niffler.jupiter.annotation.DAO;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.extension.DaoExtension;

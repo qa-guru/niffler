@@ -1,24 +1,19 @@
 package guru.qa.niffler.db.dao;
 
-import static guru.qa.niffler.db.model.CurrencyValues.RUB;
+import static guru.qa.niffler.db.model.userdata.CurrencyValues.RUB;
 
 import guru.qa.niffler.db.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDB;
 import guru.qa.niffler.db.mapper.UserEntityRowMapper;
 import guru.qa.niffler.db.mapper.UserdataEntityRowMapper;
 import guru.qa.niffler.db.mapper.UserdataHelper;
-import guru.qa.niffler.db.model.Authority;
-import guru.qa.niffler.db.model.UserDataEntity;
-import guru.qa.niffler.db.model.UserEntity;
-import java.io.File;
-import java.sql.Connection;
+import guru.qa.niffler.db.model.auth.Authority;
+import guru.qa.niffler.db.model.userdata.UserDataEntity;
+import guru.qa.niffler.db.model.auth.UserEntity;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Base64;
-import java.util.List;
 import java.util.UUID;
-import org.apache.commons.io.FileUtils;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -133,29 +128,31 @@ public class AuthUserDAOSpringJdbc implements AuthUserDAO, UserDataUserDAO {
   }
 
   @Override
-  public void deleteUserById(UUID userId) {
+  public void deleteUser(UserEntity user) {
     authTtmpl.execute(status -> {
-      authJdbcTemplate.update("DELETE FROM authorities WHERE user_id = ?", userId);
-      authJdbcTemplate.update("DELETE FROM users WHERE id = ?", userId);
+      authJdbcTemplate.update("DELETE FROM authorities WHERE user_id = ?", user.getId());
+      authJdbcTemplate.update("DELETE FROM users WHERE id = ?", user.getId());
       return null;
     });
   }
 
   @Override
-  public int createUserInUserData(UserEntity user) {
-    return userdataJdbcTemplate.update(
+  public UserDataEntity createUserInUserData(UserDataEntity userData) {
+     userdataJdbcTemplate.update(
         "INSERT INTO users (username, currency) VALUES (?, ?)",
-        user.getUsername(),
+        userData.getUsername(),
         RUB.name()
     );
+
+    return getUserdataInUserData(userData);
   }
 
   @Override
-  public UserDataEntity getUserdataInUserData(String username) {
+  public UserDataEntity getUserdataInUserData(UserDataEntity userData) {
     return userdataJdbcTemplate.queryForObject(
         "SELECT * FROM users WHERE username = ?",
         UserdataEntityRowMapper.instance,
-        username
+        userData.getUsername()
     );
   }
 
@@ -167,11 +164,12 @@ public class AuthUserDAOSpringJdbc implements AuthUserDAO, UserDataUserDAO {
         userData.getCurrency().name(),
         userData.getFirstname(),
         userData.getSurname(),
-        new UserdataHelper().getEncodingPhoto(userData).getBytes(),
+        userData.getPhoto(),
+//        new UserdataHelper().getEncodingPhoto(userData).getBytes(),
         userData.getUsername()
     );
 
-    return getUserdataInUserData(userData.getUsername());
+    return getUserdataInUserData(userData);
   }
 
   @Override
@@ -180,7 +178,7 @@ public class AuthUserDAOSpringJdbc implements AuthUserDAO, UserDataUserDAO {
   }
 
   @Override
-  public void deleteUserByUsernameInUserData(String username) {
-    userdataJdbcTemplate.update("DELETE FROM users WHERE username = ?", username);
+  public void deleteUserByUsernameInUserData(UserDataEntity userData) {
+    userdataJdbcTemplate.update("DELETE FROM users WHERE username = ?", userData.getUsername());
   }
 }

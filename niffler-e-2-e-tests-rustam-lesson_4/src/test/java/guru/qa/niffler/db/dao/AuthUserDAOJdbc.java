@@ -2,10 +2,10 @@ package guru.qa.niffler.db.dao;
 
 import guru.qa.niffler.db.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDB;
-import guru.qa.niffler.db.model.Authority;
-import guru.qa.niffler.db.model.CurrencyValues;
-import guru.qa.niffler.db.model.UserDataEntity;
-import guru.qa.niffler.db.model.UserEntity;
+import guru.qa.niffler.db.model.auth.Authority;
+import guru.qa.niffler.db.model.userdata.CurrencyValues;
+import guru.qa.niffler.db.model.userdata.UserDataEntity;
+import guru.qa.niffler.db.model.auth.UserEntity;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -124,7 +124,7 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
   }
 
   @Override
-  public void deleteUserById(UUID userId) {
+  public void deleteUser(UserEntity user) {
 
     try (Connection conn = authDs.getConnection()) {
       conn.setAutoCommit(false);
@@ -137,8 +137,8 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
           "DELETE FROM users WHERE id = ?");
       ) {
 
-        authPs.setObject(1, userId);
-        usersPs.setObject(1, userId);
+        authPs.setObject(1, user.getId());
+        usersPs.setObject(1, user.getId());
         authPs.executeUpdate();
         usersPs.executeUpdate();
         conn.commit();
@@ -154,30 +154,30 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
   }
 
   @Override
-  public int createUserInUserData(UserEntity user) {
+  public UserDataEntity createUserInUserData(UserDataEntity userData) {
     int createdRows = 0;
     try (Connection conn = userdataDs.getConnection();
         PreparedStatement usersPs = conn.prepareStatement(
           "INSERT INTO users (username, currency) VALUES (?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)
       ) {
-        usersPs.setString(1, user.getUsername());
+        usersPs.setString(1, userData.getUsername());
         usersPs.setString(2, CurrencyValues.RUB.name());
 
         createdRows = usersPs.executeUpdate();
       } catch (SQLException ex) {
       throw new RuntimeException(ex);
     }
-    return createdRows;
+    return getUserdataInUserData(userData);
   }
 
   @Override
-  public UserDataEntity getUserdataInUserData(String username) {
+  public UserDataEntity getUserdataInUserData(UserDataEntity userData) {
     UserDataEntity userdata = new UserDataEntity();
     try (Connection conn = userdataDs.getConnection();
         PreparedStatement userPs = conn.prepareStatement(
             "SELECT * FROM users WHERE username = ?"
         )) {
-      userPs.setObject(1, username);
+      userPs.setObject(1, userData.getUsername());
       ResultSet resultSet = userPs.executeQuery();
 
       if (resultSet.next()) {
@@ -186,7 +186,7 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
         userdata.setCurrency(CurrencyValues.valueOf(resultSet.getString("currency")));
         userdata.setFirstname(resultSet.getString("firstname"));
         userdata.setSurname(resultSet.getString("surname"));
-        userdata.setPhoto(resultSet.getString("photo"));
+        userdata.setPhoto(resultSet.getString("photo").getBytes());
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
@@ -201,23 +201,33 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
         PreparedStatement userdataPs = conn.prepareStatement(
             "UPDATE users SET (currency, firstname, surname, photo) = (?, ?, ?, ?) WHERE username = ?")) {
 
-      ClassLoader classLoader = getClass().getClassLoader();
-      byte[] fileContent = FileUtils.readFileToByteArray(new File(classLoader
-          .getResource(userdata.getPhoto())
-          .getFile()));
-      String encodedString = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileContent);
+//      ClassLoader classLoader = getClass().getClassLoader();
+//      byte[] fileContent = FileUtils.readFileToByteArray(new File(classLoader
+//          .getResource(userdata.getPhoto())
+//          .getFile()));
+//      String encodedString = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileContent);
+//
+//      userdataPs.setObject(1, userdata.getCurrency().name());
+//      userdataPs.setString(2, userdata.getFirstname());
+//      userdataPs.setString(3, userdata.getSurname());
+//      userdataPs.setObject(4, encodedString.getBytes());
+//      userdataPs.setObject(5, userdata.getUsername());
+
+//      ClassLoader classLoader = getClass().getClassLoader();
+//      byte[] fileContent = FileUtils.readFileToByteArray(new File(classLoader
+//          .getResource(userdata.getPhoto())
+//          .getFile()));
+//      String encodedString = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileContent);
 
       userdataPs.setObject(1, userdata.getCurrency().name());
       userdataPs.setString(2, userdata.getFirstname());
       userdataPs.setString(3, userdata.getSurname());
-      userdataPs.setObject(4, encodedString.getBytes());
+      userdataPs.setObject(4, Base64.getEncoder().encode(userdata.getPhoto()));
       userdataPs.setObject(5, userdata.getUsername());
 
       userdataPs.executeUpdate();
-      return getUserdataInUserData(userdata.getUsername());
+      return getUserdataInUserData(userdata);
     } catch (SQLException e) {
-      throw new RuntimeException(e);
-    } catch (IOException e) {
       throw new RuntimeException(e);
     }
 
@@ -239,13 +249,13 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
   }
 
   @Override
-  public void deleteUserByUsernameInUserData(String username) {
+  public void deleteUserByUsernameInUserData(UserDataEntity userData) {
 
     try (Connection connUserdata = userdataDs.getConnection();
         PreparedStatement userdataPS = connUserdata.prepareStatement(
           "DELETE FROM users WHERE username = ?");
       ) {
-        userdataPS.setString(1, username);
+        userdataPS.setString(1, userData.getUsername());
         userdataPS.executeUpdate();
 
     } catch (SQLException e) {

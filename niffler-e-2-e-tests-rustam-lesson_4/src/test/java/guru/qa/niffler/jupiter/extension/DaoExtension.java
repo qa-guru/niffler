@@ -13,13 +13,19 @@ public class DaoExtension implements TestInstancePostProcessor {
   public void postProcessTestInstance(Object testInstance, ExtensionContext context)
       throws Exception {
     for (Field field: testInstance.getClass().getDeclaredFields()) {
-      if (field.getType().isAssignableFrom(AuthUserDAO.class) || field.getType().isAssignableFrom(
-          UserDataUserDAO.class)
+      if (field.getType().isAssignableFrom(AuthUserDAO.class)
           && field.isAnnotationPresent(DAO.class)) {
         field.setAccessible(true);
 
         field.set(testInstance, AuthUserDAO.getImpl());
       }
+      if (field.getType().isAssignableFrom(UserDataUserDAO.class)
+          && field.isAnnotationPresent(DAO.class)) {
+        field.setAccessible(true);
+
+        field.set(testInstance, UserDataUserDAO.getImpl());
+      }
+
     }
   }
 }
