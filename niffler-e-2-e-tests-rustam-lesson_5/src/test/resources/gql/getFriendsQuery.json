@@ -1,0 +1,5 @@
+{
+  "operationName": "Friends",
+  "variables": {},
+  "query": "query Friends {\n  user {\n    friends {\n      id\n      username\n      firstname\n      surname\n      photo\n      friendState\n      friends {\n        id\n        username\n        friends {\n          id\n          username\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    invitations {\n      id\n      username\n      firstname\n      surname\n      photo\n      friendState\n      __typename\n    }\n    __typename\n  }\n}"
+}
