@@ -1,6 +1,6 @@
 package guru.qa.niffler.db.mapper;
 
-import guru.qa.niffler.db.model.auth.UserEntity;
+import guru.qa.niffler.db.entity.auth.UserEntity;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;

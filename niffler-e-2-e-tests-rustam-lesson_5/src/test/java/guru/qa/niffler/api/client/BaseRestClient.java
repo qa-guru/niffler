@@ -1,4 +1,4 @@
-package guru.qa.niffler.api;
+package guru.qa.niffler.api.client;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;

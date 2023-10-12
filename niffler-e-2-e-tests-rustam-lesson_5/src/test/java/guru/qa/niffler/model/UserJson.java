@@ -2,8 +2,8 @@ package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.niffler.enums.CurrencyValues;
-import guru.qa.niffler.enums.FriendState;
+import guru.qa.niffler.db.entity.userdata.CurrencyValues;
+import guru.qa.niffler.db.entity.userdata.FriendState;
 
 import java.util.Objects;
 import java.util.UUID;

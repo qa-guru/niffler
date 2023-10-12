@@ -1,7 +1,6 @@
 package guru.qa.niffler.db.jpa;
 
 
-import guru.qa.niffler.db.model.auth.UserEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import java.util.UUID;

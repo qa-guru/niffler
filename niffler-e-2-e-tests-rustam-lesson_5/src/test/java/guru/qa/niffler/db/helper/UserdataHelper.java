@@ -1,6 +1,6 @@
-package guru.qa.niffler.db.mapper;
+package guru.qa.niffler.db.helper;
 
-import guru.qa.niffler.db.model.userdata.UserDataEntity;
+import guru.qa.niffler.db.entity.userdata.UserDataEntity;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

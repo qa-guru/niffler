@@ -1,7 +1,7 @@
 package guru.qa.niffler.db.mapper;
 
-import guru.qa.niffler.db.model.userdata.CurrencyValues;
-import guru.qa.niffler.db.model.userdata.UserDataEntity;
+import guru.qa.niffler.db.entity.userdata.CurrencyValues;
+import guru.qa.niffler.db.entity.userdata.UserDataEntity;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;

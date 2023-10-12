@@ -1,5 +1,6 @@
-package guru.qa.niffler.api;
+package guru.qa.niffler.api.client;
 
+import guru.qa.niffler.api.service.SpendService;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.SpendJson;
 import java.io.IOException;

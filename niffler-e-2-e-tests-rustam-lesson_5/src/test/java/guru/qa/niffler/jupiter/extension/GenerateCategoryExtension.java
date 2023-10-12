@@ -1,6 +1,6 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.CategoryRestClient;
+import guru.qa.niffler.api.client.CategoryRestClient;
 import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.model.CategoryJson;
 import org.junit.jupiter.api.extension.BeforeEachCallback;

@@ -1,4 +1,4 @@
-package guru.qa.niffler.db.model.auth;
+package guru.qa.niffler.db.entity.auth;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,15 +1,15 @@
 package guru.qa.niffler.db.dao;
 
-import static guru.qa.niffler.db.model.userdata.CurrencyValues.RUB;
+import static guru.qa.niffler.db.entity.userdata.CurrencyValues.RUB;
 
 import guru.qa.niffler.db.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDB;
 import guru.qa.niffler.db.mapper.UserEntityRowMapper;
 import guru.qa.niffler.db.mapper.UserdataEntityRowMapper;
-import guru.qa.niffler.db.mapper.UserdataHelper;
-import guru.qa.niffler.db.model.auth.Authority;
-import guru.qa.niffler.db.model.userdata.UserDataEntity;
-import guru.qa.niffler.db.model.auth.UserEntity;
+import guru.qa.niffler.db.helper.UserdataHelper;
+import guru.qa.niffler.db.entity.auth.Authority;
+import guru.qa.niffler.db.entity.userdata.UserDataEntity;
+import guru.qa.niffler.db.entity.auth.UserEntity;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;

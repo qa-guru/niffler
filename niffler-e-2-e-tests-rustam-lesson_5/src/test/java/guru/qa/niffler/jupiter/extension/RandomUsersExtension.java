@@ -4,15 +4,13 @@ package guru.qa.niffler.jupiter.extension;
 import com.github.javafaker.Faker;
 import guru.qa.niffler.db.dao.AuthUserDAO;
 import guru.qa.niffler.db.dao.UserDataUserDAO;
-import guru.qa.niffler.db.model.auth.Authority;
-import guru.qa.niffler.db.model.auth.AuthorityEntity;
-import guru.qa.niffler.db.model.userdata.CurrencyValues;
-import guru.qa.niffler.db.model.userdata.UserDataEntity;
-import guru.qa.niffler.db.model.auth.UserEntity;
+import guru.qa.niffler.db.entity.auth.Authority;
+import guru.qa.niffler.db.entity.auth.AuthorityEntity;
+import guru.qa.niffler.db.entity.userdata.CurrencyValues;
+import guru.qa.niffler.db.entity.userdata.UserDataEntity;
+import guru.qa.niffler.db.entity.auth.UserEntity;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -21,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
-import wiremock.com.google.common.primitives.Bytes;
 
 public class RandomUsersExtension implements
     BeforeEachCallback,

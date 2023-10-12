@@ -1,11 +1,9 @@
 package guru.qa.niffler.db.dao;
 
-import static com.codeborne.selenide.Selenide.sleep;
-
 import guru.qa.niffler.db.ServiceDB;
 import guru.qa.niffler.db.jpa.EntityManagerFactoryProvider;
 import guru.qa.niffler.db.jpa.JpaService;
-import guru.qa.niffler.db.model.auth.UserEntity;
+import guru.qa.niffler.db.entity.auth.UserEntity;
 import java.util.UUID;
 
 public class AuthUserDAOHibernate extends JpaService implements AuthUserDAO {

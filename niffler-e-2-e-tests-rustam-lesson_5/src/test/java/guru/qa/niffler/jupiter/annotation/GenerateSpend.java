@@ -1,7 +1,7 @@
 package guru.qa.niffler.jupiter.annotation;
 
 
-import guru.qa.niffler.enums.CurrencyValues;
+import guru.qa.niffler.db.entity.userdata.CurrencyValues;
 import guru.qa.niffler.jupiter.extension.GenerateSpendExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 

@@ -1,5 +1,6 @@
-package guru.qa.niffler.api;
+package guru.qa.niffler.api.client;
 
+import guru.qa.niffler.api.service.CategoryService;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import java.io.IOException;

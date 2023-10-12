@@ -3,13 +3,9 @@ package guru.qa.niffler.db.dao;
 import guru.qa.niffler.db.ServiceDB;
 import guru.qa.niffler.db.jpa.EntityManagerFactoryProvider;
 import guru.qa.niffler.db.jpa.JpaService;
-import guru.qa.niffler.db.mapper.UserdataHelper;
-import guru.qa.niffler.db.model.auth.UserEntity;
-import guru.qa.niffler.db.model.userdata.UserDataEntity;
-import java.io.File;
-import java.util.Base64;
+import guru.qa.niffler.db.helper.UserdataHelper;
+import guru.qa.niffler.db.entity.userdata.UserDataEntity;
 import java.util.UUID;
-import org.apache.commons.io.FileUtils;
 
 public class UserDataUserDAOHibernate extends JpaService implements UserDataUserDAO {
 

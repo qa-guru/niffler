@@ -2,10 +2,10 @@ package guru.qa.niffler.db.dao;
 
 import guru.qa.niffler.db.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDB;
-import guru.qa.niffler.db.model.auth.Authority;
-import guru.qa.niffler.db.model.userdata.CurrencyValues;
-import guru.qa.niffler.db.model.userdata.UserDataEntity;
-import guru.qa.niffler.db.model.auth.UserEntity;
+import guru.qa.niffler.db.entity.auth.Authority;
+import guru.qa.niffler.db.entity.userdata.CurrencyValues;
+import guru.qa.niffler.db.entity.userdata.UserDataEntity;
+import guru.qa.niffler.db.entity.auth.UserEntity;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
