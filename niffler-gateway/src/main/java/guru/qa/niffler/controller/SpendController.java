@@ -52,23 +52,21 @@ public class SpendController {
     public SpendJson addSpend(@Valid @RequestBody SpendJson spend,
                               @AuthenticationPrincipal Jwt principal) {
         String username = principal.getClaim("sub");
-        CurrencyValues userCurrency = restUserDataClient.currentUser(username).getCurrency();
-        spend.setUsername(username);
-        spend.setCurrency(userCurrency);
-
-        return restSpendClient.addSpend(spend);
+        CurrencyValues userCurrency = restUserDataClient.currentUser(username).currency();
+        if (userCurrency != spend.currency()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Spending currency should be same with user currency");
+        }
+        return restSpendClient.addSpend(spend.addUsername(username));
     }
 
     @PatchMapping("/editSpend")
     public SpendJson editSpend(@Valid @RequestBody SpendJson spend,
                                @AuthenticationPrincipal Jwt principal) {
-        if (spend.getId() == null) {
+        if (spend.id() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id should be present");
         }
         String username = principal.getClaim("sub");
-        spend.setUsername(username);
-
-        return restSpendClient.editSpend(spend);
+        return restSpendClient.editSpend(spend.addUsername(username));
     }
 
     @GetMapping("/statistic")

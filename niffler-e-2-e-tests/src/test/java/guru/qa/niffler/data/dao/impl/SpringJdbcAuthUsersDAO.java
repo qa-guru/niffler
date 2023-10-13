@@ -134,10 +134,7 @@ public class SpringJdbcAuthUsersDAO implements AuthUsersDAO {
                 "SELECT * FROM authorities WHERE user_id = ?",
                 AuthorityEntityRowMapper.instance, userId
         );
-        for (AuthorityEntity authorityEntity : authorityEntityList) {
-            authorityEntity.setUser(authUser);
-        }
-        authUser.setAuthorities(authorityEntityList);
+        authUser.addAuthorities(authorityEntityList);
         return Optional.of(authUser);
     }
 
@@ -155,10 +152,7 @@ public class SpringJdbcAuthUsersDAO implements AuthUsersDAO {
                 "SELECT * FROM authorities WHERE user_id = ?",
                 AuthorityEntityRowMapper.instance, authUser.getId()
         );
-        for (AuthorityEntity authorityEntity : authorityEntityList) {
-            authorityEntity.setUser(authUser);
-        }
-        authUser.setAuthorities(authorityEntityList);
+        authUser.addAuthorities(authorityEntityList);
         return Optional.of(authUser);
     }
 }

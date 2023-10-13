@@ -44,12 +44,15 @@ public class SpendingTest extends BaseWebTest {
         int amount = 100;
         Date currentDate = new Date();
         String description = generateRandomSentence(3);
-        SpendJson spendingToCheck = new SpendJson();
-        spendingToCheck.setCurrency(user.getCurrency());
-        spendingToCheck.setSpendDate(currentDate);
-        spendingToCheck.setCategory(category);
-        spendingToCheck.setDescription(description);
-        spendingToCheck.setAmount((double) amount);
+        SpendJson spendingToCheck = new SpendJson(
+                null,
+                currentDate,
+                (double) amount,
+                user.currency(),
+                category,
+                description,
+                null
+        );
 
         Selenide.open(MainPage.URL, MainPage.class)
                 .waitForPageLoaded()
@@ -139,17 +142,21 @@ public class SpendingTest extends BaseWebTest {
     ))
     void shouldEditSpendingTest(@User UserJson user) {
         Date newSpendDate = DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_MONTH, -4);
-        SpendJson editedSpending = new SpendJson();
-        editedSpending.setDescription(generateRandomSentence(3));
-        editedSpending.setAmount(1000.0);
-        editedSpending.setCurrency(user.getSpendJsons().get(0).getCurrency());
-        editedSpending.setCategory("Friends");
-        editedSpending.setSpendDate(user.getSpendJsons().get(0).getSpendDate());
+        SpendJson testSpend = user.testData().spendJsons().get(0);
+        SpendJson editedSpending = new SpendJson(
+                null,
+                testSpend.spendDate(),
+                1000.0,
+                testSpend.currency(),
+                "Friends",
+                generateRandomSentence(3),
+                null
+        );
 
         SpendingTable spendingTable = Selenide.open(MainPage.URL, MainPage.class)
                 .waitForPageLoaded()
                 .getSpendingTable()
-                .checkTableContains(user.getSpendJsons().get(0))
+                .checkTableContains(testSpend)
                 .editSpending(0, editedSpending);
 
         Selenide.refresh();
@@ -174,7 +181,7 @@ public class SpendingTest extends BaseWebTest {
         Selenide.open(MainPage.URL, MainPage.class)
                 .getSpendingTable()
                 .clickByButton("Last week")
-                .checkTableContains(user.getSpendJsons().get(0));
+                .checkTableContains(user.testData().spendJsons().get(0));
     }
 
     @Disabled("Not implemented")

@@ -32,7 +32,10 @@ public class SecurityConfigMain {
         corsCustomizer.corsCustomizer(http);
 
         http.authorizeHttpRequests(customizer ->
-                customizer.requestMatchers(antMatcher("/actuator/health")).permitAll()
+                customizer.requestMatchers(
+                                antMatcher("/session"),
+                                antMatcher("/actuator/health"))
+                        .permitAll()
                         .anyRequest()
                         .authenticated()
         ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));

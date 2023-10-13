@@ -6,21 +6,23 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '1.0.0'
+version = '1.1.0'
 
 dependencies {
     implementation project(':niffler-grpc-common')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'net.devh:grpc-client-spring-boot-starter:2.14.0.RELEASE'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:4.0.1'
-    runtimeOnly 'org.postgresql:postgresql'
+    implementation "net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}"
+    implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
+    implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
+    annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    runtimeOnly "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-core:5.5.0'
     testImplementation("org.mockito:mockito-junit-jupiter:5.5.0") {
-        exclude group: "org.junit.jupiter-api"
-        exclude group: "org.junit.platform"
         exclude group: "org.junit.jupiter"
     }
 }

@@ -12,14 +12,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "spends")
-public class SpendEntity {
+@Table(name = "spend")
+public class SpendEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
@@ -45,72 +51,19 @@ public class SpendEntity {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private CategoryEntity category;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public CurrencyValues getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(CurrencyValues currency) {
-        this.currency = currency;
-    }
-
-    public Date getSpendDate() {
-        return spendDate;
-    }
-
-    public void setSpendDate(Date spendDate) {
-        this.spendDate = spendDate;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public CategoryEntity getCategory() {
-        return category;
-    }
-
-    public void setCategory(CategoryEntity category) {
-        this.category = category;
-    }
-
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
         SpendEntity that = (SpendEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && currency == that.currency && Objects.equals(spendDate, that.spendDate) && Objects.equals(amount, that.amount) && Objects.equals(description, that.description) && Objects.equals(category, that.category);
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, username, currency, spendDate, amount, description, category);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

@@ -51,16 +51,10 @@ jobs:
           echo "USERDATA_VER=${{ steps.userdata_version.outputs.version }}" >> $GITHUB_ENV
           echo "FRONT_VER=${{ steps.dotenv.outputs.front_version }}" >> $GITHUB_ENV
           echo "FRONT_IMAGE=niffler-frontend-gql" >> $GITHUB_ENV
-      - name: deploy
+      - name: build
         working-directory: ./niffler-frontend-gql
         run: |
           pwd
           docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
           echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
           bash ./docker-build.sh staging push
-      - name: deploy
-        run: |
-          docker-compose -f docker-compose.ci.yml pull frontend.niffler.dc
-          docker-compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
-          docker system prune  -a -f
-          echo "Done!"

@@ -10,6 +10,7 @@ import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.model.rest.CurrencyValues;
+import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
 
@@ -33,22 +34,31 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
         authUser.setAccountNonExpired(true);
         authUser.setAccountNonLocked(true);
         authUser.setCredentialsNonExpired(true);
-        authUser.setAuthorities(new ArrayList<>(Arrays.stream(Authority.values())
+        authUser.addAuthorities(Arrays.stream(Authority.values())
                 .map(a -> {
                     AuthorityEntity ae = new AuthorityEntity();
                     ae.setAuthority(a);
-                    ae.setUser(authUser);
                     return ae;
-                }).toList()));
+                }).toList());
 
         userRepository.createUserForTest(authUser);
         UserEntity userFromUserdata = userRepository.getTestUserFromUserdata(username);
-        UserJson result = new UserJson();
-        result.setId(userFromUserdata.getId());
-        result.setUsername(username);
-        result.setPassword(password);
-        result.setCurrency(CurrencyValues.valueOf(userFromUserdata.getCurrency().name()));
-        return result;
+        return new UserJson(
+                userFromUserdata.getId(),
+                username,
+                userFromUserdata.getFirstname(),
+                userFromUserdata.getSurname(),
+                CurrencyValues.valueOf(userFromUserdata.getCurrency().name()),
+                userFromUserdata.getPhoto() != null ? new String(userFromUserdata.getPhoto()) : null,
+                null,
+                new TestData(
+                        password,
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>()
+                )
+        );
     }
 
     @Step("Create income invitations for test user (DB)")
@@ -56,13 +66,13 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
     protected void createIncomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
         IncomeInvitations invitations = generateUser.incomeInvitations();
         if (invitations.handleAnnotation() && invitations.count() > 0) {
-            UserEntity targetUser = userRepository.getTestUserFromUserdata(createdUser.getUsername());
+            UserEntity targetUser = userRepository.getTestUserFromUserdata(createdUser.username());
             for (int i = 0; i < invitations.count(); i++) {
                 UserJson incomeInvitation = createUser(generateRandomUsername(), generateRandomPassword());
-                UserEntity incomeInvitationUser = userRepository.getTestUserFromUserdata(incomeInvitation.getUsername());
+                UserEntity incomeInvitationUser = userRepository.getTestUserFromUserdata(incomeInvitation.username());
                 incomeInvitationUser.addFriends(true, targetUser);
                 userRepository.updateUserForTest(incomeInvitationUser);
-                createdUser.getInvitationsJsons().add(incomeInvitation);
+                createdUser.testData().invitationsJsons().add(incomeInvitation);
             }
         }
     }
@@ -72,12 +82,12 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
     protected void createOutcomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
         OutcomeInvitations invitations = generateUser.outcomeInvitations();
         if (invitations.handleAnnotation() && invitations.count() > 0) {
-            UserEntity targetUser = userRepository.getTestUserFromUserdata(createdUser.getUsername());
+            UserEntity targetUser = userRepository.getTestUserFromUserdata(createdUser.username());
             for (int i = 0; i < invitations.count(); i++) {
                 UserJson outcomeInvitation = createUser(generateRandomUsername(), generateRandomPassword());
-                UserEntity outcomeInvitationUser = userRepository.getTestUserFromUserdata(outcomeInvitation.getUsername());
+                UserEntity outcomeInvitationUser = userRepository.getTestUserFromUserdata(outcomeInvitation.username());
                 targetUser.addFriends(true, outcomeInvitationUser);
-                createdUser.getInvitationsJsons().add(outcomeInvitation);
+                createdUser.testData().invitationsJsons().add(outcomeInvitation);
             }
             userRepository.updateUserForTest(targetUser);
         }
@@ -88,14 +98,14 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
     protected void createFriendsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
         Friends friends = generateUser.friends();
         if (friends.handleAnnotation() && friends.count() > 0) {
-            UserEntity targetUser = userRepository.getTestUserFromUserdata(createdUser.getUsername());
+            UserEntity targetUser = userRepository.getTestUserFromUserdata(createdUser.username());
             for (int i = 0; i < friends.count(); i++) {
                 UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
-                UserEntity friendUser = userRepository.getTestUserFromUserdata(friend.getUsername());
+                UserEntity friendUser = userRepository.getTestUserFromUserdata(friend.username());
                 targetUser.addFriends(false, friendUser);
                 friendUser.addFriends(false, targetUser);
                 userRepository.updateUserForTest(friendUser);
-                createdUser.getFriendsJsons().add(friend);
+                createdUser.testData().friendsJsons().add(friend);
             }
             userRepository.updateUserForTest(targetUser);
         }

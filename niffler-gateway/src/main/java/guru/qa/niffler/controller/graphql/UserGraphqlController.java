@@ -30,12 +30,12 @@ public class UserGraphqlController {
 
     @SchemaMapping(typeName = "User", field = "friends")
     public List<UserJsonGQL> getFriends(UserJsonGQL user) {
-        return getFriends(user.getUsername());
+        return getFriends(user.username());
     }
 
     @SchemaMapping(typeName = "User", field = "invitations")
     public List<UserJsonGQL> getInvitations(UserJsonGQL user) {
-        return getInvitations(user.getUsername());
+        return getInvitations(user.username());
     }
 
     @QueryMapping
@@ -43,8 +43,8 @@ public class UserGraphqlController {
         String username = principal.getClaim("sub");
         UserJson userJson = restUserDataClient.currentUser(username);
         UserJsonGQL userJsonGQL = UserJsonGQL.fromUserJson(userJson);
-        userJsonGQL.setFriends(getFriends(username));
-        userJsonGQL.setInvitations(getInvitations(username));
+        userJsonGQL.friends().addAll(getFriends(username));
+        userJsonGQL.invitations().addAll(getInvitations(username));
         return userJsonGQL;
     }
 
@@ -60,17 +60,22 @@ public class UserGraphqlController {
     public UserJsonGQL updateUser(@AuthenticationPrincipal Jwt principal,
                                   @Argument @Valid UpdateUserInfoInput input) {
         String username = principal.getClaim("sub");
-        UserJson user = UserJson.fromUpdateUserInfoInput(input);
-        user.setUsername(username);
-        return UserJsonGQL.fromUserJson(restUserDataClient.updateUserInfo(user));
+        return UserJsonGQL.fromUserJson(restUserDataClient.updateUserInfo(new UserJson(
+                null,
+                username,
+                input.firstname(),
+                input.surname(),
+                input.currency(),
+                input.photo(),
+                null
+        )));
     }
 
     @MutationMapping
     public UserJsonGQL addFriend(@AuthenticationPrincipal Jwt principal,
                                  @Argument String friendUsername) {
         String username = principal.getClaim("sub");
-        FriendJson friend = new FriendJson();
-        friend.setUsername(friendUsername);
+        FriendJson friend = new FriendJson(friendUsername);
         return UserJsonGQL.fromUserJson(restUserDataClient.addFriend(username, friend));
     }
 
@@ -78,8 +83,7 @@ public class UserGraphqlController {
     public UserJsonGQL acceptInvitation(@AuthenticationPrincipal Jwt principal,
                                         @Argument String friendUsername) {
         String username = principal.getClaim("sub");
-        FriendJson friend = new FriendJson();
-        friend.setUsername(friendUsername);
+        FriendJson friend = new FriendJson(friendUsername);
         return UserJsonGQL.fromUserJson(restUserDataClient.acceptInvitationAndReturnFriend(username, friend));
     }
 
@@ -87,12 +91,11 @@ public class UserGraphqlController {
     public UserJsonGQL declineInvitation(@AuthenticationPrincipal Jwt principal,
                                          @Argument String friendUsername) {
         String username = principal.getClaim("sub");
-        FriendJson friend = new FriendJson();
-        friend.setUsername(friendUsername);
+        FriendJson friend = new FriendJson(friendUsername);
         restUserDataClient.declineInvitation(username, friend);
         return UserJsonGQL.fromUserJson(restUserDataClient.allUsers(username)
                 .stream()
-                .filter(user -> user.getUsername().equals(friendUsername))
+                .filter(user -> user.username().equals(friendUsername))
                 .findFirst()
                 .orElseThrow());
     }
@@ -104,7 +107,7 @@ public class UserGraphqlController {
         restUserDataClient.removeFriend(username, friendUsername);
         return UserJsonGQL.fromUserJson(restUserDataClient.allUsers(username)
                 .stream()
-                .filter(user -> user.getUsername().equals(friendUsername))
+                .filter(user -> user.username().equals(friendUsername))
                 .findFirst()
                 .orElseThrow());
     }

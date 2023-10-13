@@ -14,6 +14,7 @@ import io.grpc.stub.StreamObserver;
 import jakarta.annotation.Nonnull;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -29,6 +30,7 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
         this.currencyRepository = currencyRepository;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void getAllCurrencies(Empty request, StreamObserver<CurrencyResponse> responseObserver) {
         List<CurrencyEntity> all = currencyRepository.findAll();
@@ -45,6 +47,7 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
         responseObserver.onCompleted();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public void calculateRate(CalculateRequest request, StreamObserver<CalculateResponse> responseObserver) {
         BigDecimal result = convertSpendTo(
@@ -60,7 +63,7 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
         responseObserver.onCompleted();
     }
 
-    private @Nonnull
+    @Nonnull
     BigDecimal convertSpendTo(double spend,
                               @Nonnull CurrencyValues spendCurrency,
                               @Nonnull CurrencyValues desiredCurrency,

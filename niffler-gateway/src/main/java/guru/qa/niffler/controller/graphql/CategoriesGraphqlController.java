@@ -33,8 +33,10 @@ public class CategoriesGraphqlController {
     @MutationMapping
     public CategoryJson createCategory(@AuthenticationPrincipal Jwt principal, @Argument @Valid CreateCategoryInput input) {
         String username = principal.getClaim("sub");
-        CategoryJson category = CategoryJson.fromCreateCategoryInput(input);
-        category.setUsername(username);
-        return restSpendClient.addCategory(category);
+        return restSpendClient.addCategory(new CategoryJson(
+                null,
+                input.category(),
+                username
+        ));
     }
 }

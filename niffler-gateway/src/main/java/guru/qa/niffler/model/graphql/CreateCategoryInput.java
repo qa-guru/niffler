@@ -1,23 +1,11 @@
 package guru.qa.niffler.model.graphql;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
-public class CreateCategoryInput {
-    @NotNull(message = "Category name can not be null")
-    private String category;
+public record CreateCategoryInput(
+        @NotEmpty(message = "Category name can not be empty")
+        @Size(max = 25, message = "Category can`t be longer than 50 characters")
+        String category) {
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    @Override
-    public String toString() {
-        return "CreateCategoryInput{" +
-                "category='" + category + '\'' +
-                '}';
-    }
 }

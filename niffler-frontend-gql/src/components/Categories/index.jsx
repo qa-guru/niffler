@@ -43,12 +43,12 @@ export const Categories = () => {
                     }
             }).then(res => {
             if (res.data?.createCategory != null) {
-                showSuccess("Category successfully created!");
+                showSuccess("New category added");
             } else {
-                showError("Category was not created!");
+                showError("Can not add new category");
             }
         }).catch((err) => {
-            showError("Category was not created!");
+            showError("Can not add new category");
             console.log(err);
         });
     };

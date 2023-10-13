@@ -3,15 +3,21 @@ package guru.qa.niffler.data.entity.ud;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
 
+import java.io.Serializable;
+import java.util.Objects;
+
+@Getter
+@Setter
 @Entity
-@Table(name = "friends")
-@IdClass(FriendsId.class)
-public class FriendsEntity {
+@Table(name = "friendship")
+public class FriendsEntity implements Serializable {
 
     @Id
     @ManyToOne
@@ -26,27 +32,19 @@ public class FriendsEntity {
     @Column(name = "pending")
     private boolean pending;
 
-    public UserEntity getUser() {
-        return user;
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        FriendsEntity that = (FriendsEntity) o;
+        return getUser() != null && Objects.equals(getUser(), that.getUser());
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public UserEntity getFriend() {
-        return friend;
-    }
-
-    public void setFriend(UserEntity friend) {
-        this.friend = friend;
-    }
-
-    public boolean isPending() {
-        return pending;
-    }
-
-    public void setPending(boolean pending) {
-        this.pending = pending;
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

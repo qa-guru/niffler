@@ -11,15 +11,24 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "users")
-public class UserEntity {
+@Table(name = "\"user\"")
+public class UserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
@@ -47,70 +56,6 @@ public class UserEntity {
     @OneToMany(mappedBy = "friend", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendsEntity> invites = new ArrayList<>();
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public CurrencyValues getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(CurrencyValues currency) {
-        this.currency = currency;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public byte[] getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
-    }
-
-    public List<FriendsEntity> getFriends() {
-        return friends;
-    }
-
-    public void setFriends(List<FriendsEntity> friends) {
-        this.friends = friends;
-    }
-
-    public List<FriendsEntity> getInvites() {
-        return invites;
-    }
-
-    public void setInvites(List<FriendsEntity> invites) {
-        this.invites = invites;
-    }
-
     public void addFriends(boolean pending, UserEntity... friends) {
         List<FriendsEntity> friendsEntities = Stream.of(friends)
                 .map(f -> {
@@ -120,19 +65,56 @@ public class UserEntity {
                     fe.setPending(pending);
                     return fe;
                 }).toList();
-
         this.friends.addAll(friendsEntities);
     }
 
+    public void addInvitations(UserEntity... invitations) {
+        List<FriendsEntity> invitationsEntities = Stream.of(invitations)
+                .map(i -> {
+                    FriendsEntity fe = new FriendsEntity();
+                    fe.setUser(i);
+                    fe.setFriend(this);
+                    fe.setPending(true);
+                    return fe;
+                }).toList();
+        this.invites.addAll(invitationsEntities);
+    }
+
     public void removeFriends(UserEntity... friends) {
-        for (UserEntity friend : friends) {
-            getFriends().removeIf(f -> f.getFriend().getId().equals(friend.getId()));
+        List<UUID> idsToBeRemoved = Arrays.stream(friends).map(UserEntity::getId).toList();
+        for (Iterator<FriendsEntity> i = getFriends().iterator(); i.hasNext(); ) {
+            FriendsEntity friendsEntity = i.next();
+            if (idsToBeRemoved.contains(friendsEntity.getFriend().getId())) {
+                friendsEntity.setFriend(null);
+                i.remove();
+            }
         }
     }
 
     public void removeInvites(UserEntity... invitations) {
-        for (UserEntity invite : invitations) {
-            getInvites().removeIf(i -> i.getUser().getId().equals(invite.getId()));
+        List<UUID> idsToBeRemoved = Arrays.stream(invitations).map(UserEntity::getId).toList();
+        for (Iterator<FriendsEntity> i = getInvites().iterator(); i.hasNext(); ) {
+            FriendsEntity friendsEntity = i.next();
+            if (idsToBeRemoved.contains(friendsEntity.getUser().getId())) {
+                friendsEntity.setUser(null);
+                i.remove();
+            }
         }
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        UserEntity user = (UserEntity) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

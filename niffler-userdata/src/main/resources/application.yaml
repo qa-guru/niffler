@@ -15,9 +15,15 @@ spring:
       idle-timeout: 10000
       max-lifetime: 1000
       auto-commit: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    schemas: public
+    locations: classpath:db/migration/niffler-userdata
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     properties:
       hibernate:
         jdbc:
@@ -26,9 +32,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     generate-ddl: true
-  sql:
-    init:
-      mode: always
+    open-in-view: false
 
 logging:
   level:

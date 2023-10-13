@@ -15,7 +15,7 @@ public class DockerConfig implements Config {
         Configuration.remote = "http://selenoid:4444/wd/hub";
         Configuration.timeout = 10000;
         Configuration.browser = "chrome";
-        Configuration.browserVersion = "116.0";
+        Configuration.browserVersion = "117.0";
         Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
     }
 

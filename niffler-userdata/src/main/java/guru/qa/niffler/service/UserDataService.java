@@ -20,11 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Set;
 
 @Component
 public class UserDataService {
@@ -39,40 +38,44 @@ public class UserDataService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     @KafkaListener(topics = "users", groupId = "userdata")
     public void listener(@Payload UserJson user, ConsumerRecord<String, UserJson> cr) {
-        LOG.info("### Kafka topic [users] received message: " + user.getUsername());
+        LOG.info("### Kafka topic [users] received message: " + user.username());
         LOG.info("### Kafka consumer record: " + cr.toString());
         UserEntity userDataEntity = new UserEntity();
-        userDataEntity.setUsername(user.getUsername());
+        userDataEntity.setUsername(user.username());
         userDataEntity.setCurrency(DEFAULT_USER_CURRENCY);
         UserEntity userEntity = userRepository.save(userDataEntity);
         LOG.info(String.format(
                 "### User '%s' successfully saved to database with id: %s",
-                user.getUsername(),
+                user.username(),
                 userEntity.getId()
         ));
     }
 
+    @Transactional
     public @Nonnull
     UserJson update(@Nonnull UserJson user) {
-        UserEntity userEntity = getRequiredUser(user.getUsername());
-        userEntity.setFirstname(user.getFirstname());
-        userEntity.setSurname(user.getSurname());
-        userEntity.setCurrency(user.getCurrency());
-        userEntity.setPhoto(user.getPhoto() != null ? user.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
+        UserEntity userEntity = getRequiredUser(user.username());
+        userEntity.setFirstname(user.firstname());
+        userEntity.setSurname(user.surname());
+        userEntity.setCurrency(user.currency());
+        userEntity.setPhoto(user.photo() != null ? user.photo().getBytes(StandardCharsets.UTF_8) : null);
         UserEntity saved = userRepository.save(userEntity);
         return UserJson.fromEntity(saved);
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull
     UserJson getCurrentUser(@Nonnull String username) {
         return UserJson.fromEntity(getRequiredUser(username));
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull
     List<UserJson> allUsers(@Nonnull String username) {
-        Map<UUID, UserJson> result = new HashMap<>();
+        Set<UserJson> result = new HashSet<>();
         for (UserEntity user : userRepository.findByUsernameNot(username)) {
             List<FriendsEntity> sendInvites = user.getFriends();
             List<FriendsEntity> receivedInvites = user.getInvites();
@@ -88,24 +91,24 @@ public class UserDataService {
 
                 if (inviteToMe.isPresent()) {
                     FriendsEntity invite = inviteToMe.get();
-                    result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
+                    result.add(UserJson.fromEntity(user, invite.isPending()
                             ? FriendState.INVITE_RECEIVED
                             : FriendState.FRIEND));
                 }
                 if (inviteFromMe.isPresent()) {
                     FriendsEntity invite = inviteFromMe.get();
-                    result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
+                    result.add(UserJson.fromEntity(user, invite.isPending()
                             ? FriendState.INVITE_SENT
                             : FriendState.FRIEND));
                 }
-            }
-            if (!result.containsKey(user.getId())) {
-                result.put(user.getId(), UserJson.fromEntity(user));
+            } else {
+                result.add(UserJson.fromEntity(user));
             }
         }
-        return new ArrayList<>(result.values());
+        return new ArrayList<>(result);
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull
     List<UserJson> friends(@Nonnull String username, boolean includePending) {
         return getRequiredUser(username)
@@ -118,6 +121,7 @@ public class UserDataService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public @Nonnull
     List<UserJson> invitations(@Nonnull String username) {
         return getRequiredUser(username)
@@ -128,19 +132,21 @@ public class UserDataService {
                 .toList();
     }
 
+    @Transactional
     public UserJson addFriend(@Nonnull String username, @Nonnull FriendJson friend) {
         UserEntity currentUser = getRequiredUser(username);
-        UserEntity friendEntity = getRequiredUser(friend.getUsername());
+        UserEntity friendEntity = getRequiredUser(friend.username());
 
         currentUser.addFriends(true, friendEntity);
         userRepository.save(currentUser);
         return UserJson.fromEntity(friendEntity, FriendState.INVITE_SENT);
     }
 
+    @Transactional
     public @Nonnull
     List<UserJson> acceptInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = getRequiredUser(username);
-        UserEntity inviteUser = getRequiredUser(invitation.getUsername());
+        UserEntity inviteUser = getRequiredUser(invitation.username());
 
         FriendsEntity invite = currentUser.getInvites()
                 .stream()
@@ -165,7 +171,7 @@ public class UserDataService {
     public @Nonnull
     List<UserJson> declineInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = getRequiredUser(username);
-        UserEntity friendToDecline = getRequiredUser(invitation.getUsername());
+        UserEntity friendToDecline = getRequiredUser(invitation.username());
 
         currentUser.removeInvites(friendToDecline);
         friendToDecline.removeFriends(currentUser);
@@ -203,7 +209,8 @@ public class UserDataService {
                 .toList();
     }
 
-    private @Nonnull UserEntity getRequiredUser(@Nonnull String username) {
+    @Nonnull
+    UserEntity getRequiredUser(@Nonnull String username) {
         UserEntity user = userRepository.findByUsername(username);
         if (user == null) {
             throw new NotFoundException("Can`t find user by username: " + username);

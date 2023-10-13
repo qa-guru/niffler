@@ -16,13 +16,13 @@ const handleAddUserToFriends = (username, onInvite) => {
         path: "/addFriend",
         data: {username: username},
         onSuccess: () => {
-            showSuccess("Invitation is sent!");
+            showSuccess("Invitation is sent");
             if (onInvite) {
                 onInvite({username});
             }
         },
         onFail: (err) => {
-            showError("Can not send invitation!");
+            showError("Can not send invitation");
             console.error(err);
         }
     });
@@ -33,13 +33,13 @@ const handleSubmitInvitation = (username, onSubmit) => {
         path: "/acceptInvitation",
         data: {username: username},
         onSuccess: () => {
-            showSuccess("Invitation is accepted!");
+            showSuccess("Invitation is accepted");
             if (onSubmit) {
                 onSubmit({username});
             }
         },
         onFail: (err) => {
-            showError("Can not accept invitation!");
+            showError("Can not accept invitation");
             console.error(err);
         }
     });
@@ -50,13 +50,13 @@ const handleDeclineInvitation = (username, onDecline) => {
         path: "/declineInvitation",
         data: {username: username},
         onSuccess: () => {
-            showSuccess("Invitation is declined!");
+            showSuccess("Invitation is declined");
             if (onDecline) {
                 onDecline({username});
             }
         },
         onFail: (err) => {
-            showError("Can not decline invitation!");
+            showError("Can not decline invitation");
             console.error(err);
         }
     });
@@ -70,13 +70,13 @@ const handleDeleteFriend = (username, onDelete) => {
             username: username,
         },
         onSuccess: () => {
-            showSuccess("Friend is deleted!");
+            showSuccess("Friend is deleted");
             if (onDelete) {
                 onDelete({username});
             }
         },
         onFail: (err) => {
-            showError("Can not delete friend!");
+            showError("Can not delete friend");
             console.error(err);
         }
     });

@@ -42,24 +42,24 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListWithoutInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<UserJson> friends = nus.friends(user.getUsername(), false);
+        final List<UserJson> friends = nus.friends(user.username(), false);
 
         step("Check that response contains expected users", () ->
                 assertEquals(1, friends.size())
         );
 
         Optional<UserJson> friend = friends.stream()
-                .filter(u -> u.getFriendState() == FriendState.FRIEND)
+                .filter(u -> u.friendState() == FriendState.FRIEND)
                 .findFirst();
 
         Optional<UserJson> invitation = friends.stream()
-                .filter(u -> u.getFriendState() == FriendState.INVITE_SENT)
+                .filter(u -> u.friendState() == FriendState.INVITE_SENT)
                 .findFirst();
 
         step("Check friend in response", () -> {
             assertTrue(friend.isPresent());
-            assertEquals(user.getFriendsJsons().get(0).getUsername(), friend.get().getUsername());
-            assertEquals(FriendState.FRIEND, friend.get().getFriendState());
+            assertEquals(user.testData().friendsJsons().get(0).username(), friend.get().username());
+            assertEquals(FriendState.FRIEND, friend.get().friendState());
         });
 
         step("Check that no invitation present in response", () -> assertFalse(invitation.isPresent()));
@@ -75,30 +75,30 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListWithInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<UserJson> friends = nus.friends(user.getUsername(), true);
+        final List<UserJson> friends = nus.friends(user.username(), true);
 
         step("Check that response contains expected users", () ->
                 assertEquals(2, friends.size())
         );
 
         Optional<UserJson> friend = friends.stream()
-                .filter(u -> u.getFriendState() == FriendState.FRIEND)
+                .filter(u -> u.friendState() == FriendState.FRIEND)
                 .findFirst();
 
         Optional<UserJson> invitation = friends.stream()
-                .filter(u -> u.getFriendState() == FriendState.INVITE_SENT)
+                .filter(u -> u.friendState() == FriendState.INVITE_SENT)
                 .findFirst();
 
         step("Check friend in response", () -> {
             assertTrue(friend.isPresent());
-            assertEquals(user.getFriendsJsons().get(0).getUsername(), friend.get().getUsername());
-            assertEquals(FriendState.FRIEND, friend.get().getFriendState());
+            assertEquals(user.testData().friendsJsons().get(0).username(), friend.get().username());
+            assertEquals(FriendState.FRIEND, friend.get().friendState());
         });
 
         step("Check invitation in response", () -> {
             assertTrue(invitation.isPresent());
-            assertEquals(user.getInvitationsJsons().get(0).getUsername(), invitation.get().getUsername());
-            assertEquals(FriendState.INVITE_SENT, invitation.get().getFriendState());
+            assertEquals(user.testData().invitationsJsons().get(0).username(), invitation.get().username());
+            assertEquals(FriendState.INVITE_SENT, invitation.get().friendState());
         });
     }
 
@@ -110,7 +110,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             incomeInvitations = @IncomeInvitations(count = 1)
     )
     void getInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<UserJson> invitations = nus.invitations(user.getUsername());
+        final List<UserJson> invitations = nus.invitations(user.username());
 
         step("Check that response contains expected invitations", () ->
                 assertEquals(1, invitations.size())
@@ -119,8 +119,8 @@ public class UserDataFriendsRestTest extends BaseRestTest {
         UserJson invitation = invitations.get(0);
 
         step("Check invitation in response", () -> {
-            assertEquals(user.getInvitationsJsons().get(0).getUsername(), invitation.getUsername());
-            assertEquals(FriendState.INVITE_RECEIVED, invitation.getFriendState());
+            assertEquals(user.testData().invitationsJsons().get(0).username(), invitation.username());
+            assertEquals(FriendState.INVITE_RECEIVED, invitation.friendState());
         });
     }
 
@@ -132,18 +132,16 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             incomeInvitations = @IncomeInvitations(count = 1)
     )
     void acceptInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String currentUser = user.getUsername();
-        final String incomeInvitation = user.getInvitationsJsons().get(0).getUsername();
+        final String currentUser = user.username();
+        final String incomeInvitation = user.testData().invitationsJsons().get(0).username();
 
-        FriendJson fj = new FriendJson();
-        fj.setUsername(incomeInvitation);
-
+        FriendJson fj = new FriendJson(incomeInvitation);
         final List<UserJson> friends = nus.acceptInvitation(currentUser, fj);
         UserJson friend = friends.get(0);
 
         step("Check friend in response", () -> {
-            assertEquals(user.getInvitationsJsons().get(0).getUsername(), friend.getUsername());
-            assertEquals(FriendState.FRIEND, friend.getFriendState());
+            assertEquals(user.testData().invitationsJsons().get(0).username(), friend.username());
+            assertEquals(FriendState.FRIEND, friend.friendState());
         });
 
         step("Check that friends present in GET /friends request for both users", () ->
@@ -170,12 +168,10 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             incomeInvitations = @IncomeInvitations(count = 1)
     )
     void declineInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String currentUser = user.getUsername();
-        final String incomeInvitation = user.getInvitationsJsons().get(0).getUsername();
+        final String currentUser = user.username();
+        final String incomeInvitation = user.testData().invitationsJsons().get(0).username();
 
-        FriendJson fj = new FriendJson();
-        fj.setUsername(incomeInvitation);
-
+        FriendJson fj = new FriendJson(incomeInvitation);
         final List<UserJson> invitations = nus.declineInvitation(currentUser, fj);
 
         step("Check that no invitation present in response", () -> assertTrue(invitations.isEmpty()));
@@ -202,17 +198,15 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             @GenerateUser
     })
     void addFriendTest(@User(selector = METHOD) UserJson[] users) throws Exception {
-        final String currentUser = users[0].getUsername();
-        final String friendWillBeAdded = users[1].getUsername();
+        final String currentUser = users[0].username();
+        final String friendWillBeAdded = users[1].username();
 
-        FriendJson fj = new FriendJson();
-        fj.setUsername(friendWillBeAdded);
-
+        FriendJson fj = new FriendJson(friendWillBeAdded);
         final UserJson invitation = nus.addFriend(currentUser, fj);
 
         step("Check invitation in response", () -> {
-            assertEquals(friendWillBeAdded, invitation.getUsername());
-            assertEquals(FriendState.INVITE_SENT, invitation.getFriendState());
+            assertEquals(friendWillBeAdded, invitation.username());
+            assertEquals(FriendState.INVITE_SENT, invitation.friendState());
         });
 
         step("Check that friends request & income invitation present for both users", () ->
@@ -238,8 +232,8 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             friends = @Friends(count = 1)
     )
     void removeFriendTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String currentUsername = user.getUsername();
-        final String friendUsername = user.getFriendsJsons().get(0).getUsername();
+        final String currentUsername = user.username();
+        final String friendUsername = user.testData().friendsJsons().get(0).username();
         final List<UserJson> friends = nus.removeFriend(currentUsername, friendUsername);
 
         step("Check that no friends present in response", () -> assertTrue(friends.isEmpty()));

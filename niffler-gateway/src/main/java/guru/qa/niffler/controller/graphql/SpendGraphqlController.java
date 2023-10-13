@@ -49,22 +49,22 @@ public class SpendGraphqlController {
     public SpendJson addSpend(@Valid @Argument SpendInput spend,
                               @AuthenticationPrincipal Jwt principal) {
         String username = principal.getClaim("sub");
-        CurrencyValues userCurrency = restUserDataClient.currentUser(username).getCurrency();
-        SpendJson spendJson = SpendJson.fromSpendInput(spend);
-        spendJson.setUsername(username);
-        spendJson.setCurrency(userCurrency);
+        CurrencyValues userCurrency = restUserDataClient.currentUser(username).currency();
+        if (userCurrency != spend.currency()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Spending currency should be same with user currency");
+        }
+        SpendJson spendJson = SpendJson.fromSpendInput(spend, username);
         return restSpendClient.addSpend(spendJson);
     }
 
     @MutationMapping
     public SpendJson updateSpend(@Valid @Argument UpdateSpendInput spend,
                                  @AuthenticationPrincipal Jwt principal) {
-        if (spend.getId() == null) {
+        if (spend.id() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id should be present");
         }
         String username = principal.getClaim("sub");
-        SpendJson spendJson = SpendJson.fromUpdateSpendInput(spend);
-        spendJson.setUsername(username);
+        SpendJson spendJson = SpendJson.fromUpdateSpendInput(spend, username);
         return restSpendClient.editSpend(spendJson);
     }
 

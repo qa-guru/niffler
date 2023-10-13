@@ -6,19 +6,23 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '1.0.0'
+version = '1.1.0'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
-    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.1.2'
-    implementation 'org.springframework.kafka:spring-kafka:3.0.11'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:4.0.1'
-    runtimeOnly 'org.postgresql:postgresql'
+    implementation "org.springframework.security:spring-security-oauth2-authorization-server:${project.ext.oauth2AuthorizationServerVersion}"
+    implementation "org.springframework.kafka:spring-kafka:${project.ext.springKafkaVersion}"
+    implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
+    implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
+    annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    runtimeOnly "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

@@ -32,7 +32,7 @@ export const Categories = () => {
             onSuccess: (data) => {
                 setCategories([...categories, data]);
                 setNewCategory("");
-                showSuccess("New category added!");
+                showSuccess("New category added");
             },
             onFail: (err) => {
                 console.log(err);

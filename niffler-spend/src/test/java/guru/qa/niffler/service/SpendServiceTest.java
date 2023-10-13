@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -121,13 +120,13 @@ class SpendServiceTest {
     void createDefaultStatisticJsonTest() {
         Date dateTo = new Date();
         StatisticJson defaultStatisticJson = spendService.createDefaultStatisticJson(CurrencyValues.KZT, userCurrency, dateTo);
-        assertEquals(dateTo, defaultStatisticJson.getDateTo());
-        assertEquals(CurrencyValues.KZT, defaultStatisticJson.getCurrency());
-        assertEquals(userCurrency, defaultStatisticJson.getUserDefaultCurrency());
-        assertEquals(0.0, defaultStatisticJson.getTotal());
-        assertEquals(0.0, defaultStatisticJson.getTotalInUserDefaultCurrency());
-        assertNull(defaultStatisticJson.getDateFrom());
-        assertNull(defaultStatisticJson.getCategoryStatistics());
+        assertEquals(dateTo, defaultStatisticJson.dateTo());
+        assertEquals(CurrencyValues.KZT, defaultStatisticJson.currency());
+        assertEquals(userCurrency, defaultStatisticJson.userDefaultCurrency());
+        assertEquals(0.0, defaultStatisticJson.total());
+        assertEquals(0.0, defaultStatisticJson.totalInUserDefaultCurrency());
+        assertNull(defaultStatisticJson.dateFrom());
+        assertEquals(0, defaultStatisticJson.categoryStatistics().size());
     }
 
     @Test
@@ -135,12 +134,15 @@ class SpendServiceTest {
         Date dateTo = new Date();
         StatisticJson defaultStatisticJson = spendService.createDefaultStatisticJson(CurrencyValues.KZT, userCurrency, dateTo);
 
-        Stream.of(secondSpend, firstSpend, thirdSpend)
+        for (SpendEntity spend : Stream.of(secondSpend, firstSpend, thirdSpend)
                 .sorted(Comparator.comparing(SpendEntity::getSpendDate))
-                .peek(spendService.enrichStatisticDateFromByFirstStreamElement(defaultStatisticJson))
-                .collect(Collectors.toList());
+                .toList()) {
+            defaultStatisticJson = spendService.enrichStatisticDateFromByFirstStreamElement(
+                    defaultStatisticJson
+            ).apply(spend);
+        }
 
-        assertEquals(firstSpend.getSpendDate(), defaultStatisticJson.getDateFrom());
+        assertEquals(firstSpend.getSpendDate(), defaultStatisticJson.dateFrom());
     }
 
     @Test
@@ -148,12 +150,15 @@ class SpendServiceTest {
         Date dateTo = new Date();
         StatisticJson defaultStatisticJson = spendService.createDefaultStatisticJson(CurrencyValues.KZT, userCurrency, dateTo);
 
-        Stream.of(secondSpend, firstSpend, thirdSpend)
+        for (SpendEntity spend : Stream.of(secondSpend, firstSpend, thirdSpend)
                 .sorted(Comparator.comparing(SpendEntity::getSpendDate))
-                .peek(spendService.enrichStatisticTotalAmountByAllStreamElements(defaultStatisticJson))
-                .collect(Collectors.toList());
+                .toList()) {
+            defaultStatisticJson = spendService.enrichStatisticTotalAmountByAllStreamElements(
+                    defaultStatisticJson
+            ).apply(spend);
+        }
 
-        assertEquals(13350.0, defaultStatisticJson.getTotal());
+        assertEquals(13350.0, defaultStatisticJson.total());
     }
 
     @Test
@@ -163,14 +168,18 @@ class SpendServiceTest {
         CurrencyValues userCurrency = CurrencyValues.RUB;
         StatisticJson defaultStatisticJson = spendService.createDefaultStatisticJson(statisticCurrency, userCurrency, dateTo);
 
-        Stream.of(secondSpend, firstSpend, thirdSpend)
+        for (SpendEntity spend : Stream.of(secondSpend, firstSpend, thirdSpend)
                 .sorted(Comparator.comparing(SpendEntity::getSpendDate))
-                .peek(spendService.enrichStatisticTotalAmountByAllStreamElements(defaultStatisticJson))
-                .peek(spendService.enrichStatisticTotalInUserCurrencyByAllStreamElements(defaultStatisticJson, statisticCurrency, userCurrency))
-                .collect(Collectors.toList());
+                .toList()) {
+            defaultStatisticJson =
+                    spendService.enrichStatisticTotalInUserCurrencyByAllStreamElements(
+                                    spendService.enrichStatisticTotalAmountByAllStreamElements(defaultStatisticJson)
+                                            .apply(spend), statisticCurrency, userCurrency)
+                            .apply(spend);
+        }
 
-        assertEquals(13350.0, defaultStatisticJson.getTotal());
-        assertEquals(13350.0, defaultStatisticJson.getTotalInUserDefaultCurrency());
+        assertEquals(13350.0, defaultStatisticJson.total());
+        assertEquals(13350.0, defaultStatisticJson.totalInUserDefaultCurrency());
     }
 
     @Test
@@ -180,14 +189,17 @@ class SpendServiceTest {
         CurrencyValues userCurrency = CurrencyValues.USD;
         StatisticJson defaultStatisticJson = spendService.createDefaultStatisticJson(statisticCurrency, userCurrency, dateTo);
 
-        Stream.of(secondSpend, firstSpend, thirdSpend)
+        for (SpendEntity spend : Stream.of(secondSpend, firstSpend, thirdSpend)
                 .sorted(Comparator.comparing(SpendEntity::getSpendDate))
-                .peek(spendService.enrichStatisticTotalAmountByAllStreamElements(defaultStatisticJson))
-                .peek(spendService.enrichStatisticTotalInUserCurrencyByAllStreamElements(defaultStatisticJson, statisticCurrency, userCurrency))
-                .collect(Collectors.toList());
-
-        assertEquals(13350.0, defaultStatisticJson.getTotal());
-        assertEquals(178.0, defaultStatisticJson.getTotalInUserDefaultCurrency());
+                .toList()) {
+            defaultStatisticJson =
+                    spendService.enrichStatisticTotalInUserCurrencyByAllStreamElements(
+                                    spendService.enrichStatisticTotalAmountByAllStreamElements(defaultStatisticJson)
+                                            .apply(spend), statisticCurrency, userCurrency)
+                            .apply(spend);
+        }
+        assertEquals(13350.0, defaultStatisticJson.total());
+        assertEquals(178.0, defaultStatisticJson.totalInUserDefaultCurrency());
     }
 
     @Test
@@ -195,10 +207,12 @@ class SpendServiceTest {
         Date dateTo = new Date();
         CurrencyValues statisticCurrency = CurrencyValues.RUB;
         StatisticJson defaultStatisticJson = spendService.createDefaultStatisticJson(statisticCurrency, userCurrency, dateTo);
+        List<SpendEntity> sortedSpends = List.of(secondSpend, firstSpend, thirdSpend).stream()
+                .filter(se -> se.getCurrency() == statisticCurrency)
+                .sorted(Comparator.comparing(SpendEntity::getSpendDate))
+                .toList();
 
-        Map<String, List<SpendJson>> map = spendService.bindSpendsToCategories(defaultStatisticJson, statisticCurrency, userCurrency, List.of(
-                secondSpend, firstSpend, thirdSpend
-        ));
+        Map<String, List<SpendJson>> map = spendService.bindSpendsToCategories(sortedSpends);
 
         assertEquals(2, map.size());
         assertNotNull(map.get("Бар"));

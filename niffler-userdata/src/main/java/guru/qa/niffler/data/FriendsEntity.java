@@ -7,11 +7,16 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "friends")
+@Table(name = "friendship")
 @IdClass(FriendsId.class)
 public class FriendsEntity {
 
@@ -28,40 +33,20 @@ public class FriendsEntity {
     @Column(name = "pending")
     private boolean pending;
 
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public UserEntity getFriend() {
-        return friend;
-    }
-
-    public void setFriend(UserEntity friend) {
-        this.friend = friend;
-    }
-
-    public boolean isPending() {
-        return pending;
-    }
-
-    public void setPending(boolean pending) {
-        this.pending = pending;
-    }
-
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
         FriendsEntity that = (FriendsEntity) o;
-        return pending == that.pending && Objects.equals(user, that.user) && Objects.equals(friend, that.friend);
+        return user != null && Objects.equals(user, that.user)
+                && friend != null && Objects.equals(friend, that.friend);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(user, friend, pending);
+    public final int hashCode() {
+        return Objects.hash(user, friend);
     }
 }

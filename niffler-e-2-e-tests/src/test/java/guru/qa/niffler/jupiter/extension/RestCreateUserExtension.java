@@ -8,10 +8,12 @@ import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.model.rest.FriendJson;
+import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
 import retrofit2.Response;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static guru.qa.niffler.utils.DataUtils.generateRandomPassword;
@@ -30,8 +32,13 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
             throw new RuntimeException("User is not registered");
         }
         UserJson currentUser = waitWhileUserToBeConsumed(username, 10000L);
-        currentUser.setPassword(password);
-        return currentUser;
+        return currentUser.addTestData(new TestData(
+                password,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>()
+        ));
     }
 
     @Step("Create income invitations for test user (REST)")
@@ -41,10 +48,9 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         if (invitations.handleAnnotation() && invitations.count() > 0) {
             for (int i = 0; i < invitations.count(); i++) {
                 UserJson invitation = createUser(generateRandomUsername(), generateRandomPassword());
-                FriendJson addFriend = new FriendJson();
-                addFriend.setUsername(createdUser.getUsername());
-                userdataClient.addFriend(invitation.getUsername(), addFriend);
-                createdUser.getInvitationsJsons().add(invitation);
+                FriendJson addFriend = new FriendJson(createdUser.username());
+                userdataClient.addFriend(invitation.username(), addFriend);
+                createdUser.testData().invitationsJsons().add(invitation);
             }
         }
     }
@@ -56,10 +62,9 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         if (invitations.handleAnnotation() && invitations.count() > 0) {
             for (int i = 0; i < invitations.count(); i++) {
                 UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
-                FriendJson addFriend = new FriendJson();
-                addFriend.setUsername(friend.getUsername());
-                userdataClient.addFriend(createdUser.getUsername(), addFriend);
-                createdUser.getInvitationsJsons().add(friend);
+                FriendJson addFriend = new FriendJson(friend.username());
+                userdataClient.addFriend(createdUser.username(), addFriend);
+                createdUser.testData().invitationsJsons().add(friend);
             }
         }
     }
@@ -71,13 +76,11 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         if (friends.handleAnnotation() && friends.count() > 0) {
             for (int i = 0; i < friends.count(); i++) {
                 UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
-                FriendJson addFriend = new FriendJson();
-                FriendJson invitation = new FriendJson();
-                addFriend.setUsername(friend.getUsername());
-                invitation.setUsername(createdUser.getUsername());
-                userdataClient.addFriend(createdUser.getUsername(), addFriend);
-                userdataClient.acceptInvitation(friend.getUsername(), invitation);
-                createdUser.getFriendsJsons().add(friend);
+                FriendJson addFriend = new FriendJson(friend.username());
+                FriendJson invitation = new FriendJson(createdUser.username());
+                userdataClient.addFriend(createdUser.username(), addFriend);
+                userdataClient.acceptInvitation(friend.username(), invitation);
+                createdUser.testData().friendsJsons().add(friend);
             }
         }
     }

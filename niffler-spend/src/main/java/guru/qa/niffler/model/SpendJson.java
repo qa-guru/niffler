@@ -3,93 +3,36 @@ package guru.qa.niffler.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.SpendEntity;
 
+import javax.annotation.Nonnull;
 import java.util.Date;
 import java.util.UUID;
 
-public class SpendJson {
-    @JsonProperty("id")
-    private UUID id;
-    @JsonProperty("spendDate")
-    private Date spendDate;
-    @JsonProperty("category")
-    private String category;
-    @JsonProperty("currency")
-    private CurrencyValues currency;
-    @JsonProperty("amount")
-    private Double amount;
-    @JsonProperty("description")
-    private String description;
-    @JsonProperty("username")
-    private String username;
+public record SpendJson(
+        @JsonProperty("id")
+        UUID id,
+        @JsonProperty("spendDate")
+        Date spendDate,
+        @JsonProperty("category")
+        String category,
+        @JsonProperty("currency")
+        CurrencyValues currency,
+        @JsonProperty("amount")
+        Double amount,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("username")
+        String username) {
 
-    public SpendJson() {
+    public static @Nonnull SpendJson fromEntity(@Nonnull SpendEntity entity) {
+        return new SpendJson(
+                entity.getId(),
+                entity.getSpendDate(),
+                entity.getCategory().getCategory(),
+                entity.getCurrency(),
+                entity.getAmount(),
+                entity.getDescription(),
+                entity.getUsername()
+        );
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Date getSpendDate() {
-        return spendDate;
-    }
-
-    public void setSpendDate(Date spendDate) {
-        this.spendDate = spendDate;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public CurrencyValues getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(CurrencyValues currency) {
-        this.currency = currency;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public static SpendJson fromEntity(SpendEntity entity) {
-        SpendJson spend = new SpendJson();
-        spend.setId(entity.getId());
-        spend.setSpendDate(entity.getSpendDate());
-        spend.setCategory(entity.getCategory().getCategory());
-        spend.setCurrency(entity.getCurrency());
-        spend.setAmount(entity.getAmount());
-        spend.setDescription(entity.getDescription());
-        spend.setUsername(entity.getUsername());
-        return spend;
-    }
 }

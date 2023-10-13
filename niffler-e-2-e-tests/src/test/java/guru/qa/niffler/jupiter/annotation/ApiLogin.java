@@ -2,7 +2,7 @@ package guru.qa.niffler.jupiter.annotation;
 
 import guru.qa.niffler.jupiter.extension.ApiAuthExtension;
 import guru.qa.niffler.jupiter.extension.ClearCookiesAndSessionExtension;
-import guru.qa.niffler.jupiter.extension.DatabaseCreateUserExtension;
+import guru.qa.niffler.jupiter.extension.RestCreateUserExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.ElementType;
@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ExtendWith({DatabaseCreateUserExtension.class, ApiAuthExtension.class, ClearCookiesAndSessionExtension.class})
+@ExtendWith({RestCreateUserExtension.class, ApiAuthExtension.class, ClearCookiesAndSessionExtension.class})
 public @interface ApiLogin {
 
     String username() default "";

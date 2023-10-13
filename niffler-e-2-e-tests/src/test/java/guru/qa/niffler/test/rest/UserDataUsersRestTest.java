@@ -8,8 +8,11 @@ import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.List;
 
@@ -21,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("[REST][niffler-userdata]: Пользователи")
 @DisplayName("[REST][niffler-userdata]: Пользователи")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserDataUsersRestTest extends BaseRestTest {
 
     private static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
@@ -31,17 +35,18 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @AllureId("200001")
     @Tag("REST")
     @GenerateUser()
+    @Order(1)
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final UserJson currentUserResponse = nus.getCurrentUser(user.getUsername());
+        final UserJson currentUserResponse = nus.getCurrentUser(user.username());
 
         step("Check that response contains ID (GUID)", () ->
-                assertTrue(currentUserResponse.getId().toString().matches(ID_REGEXP))
+                assertTrue(currentUserResponse.id().toString().matches(ID_REGEXP))
         );
         step("Check that response contains username", () ->
-                assertEquals(user.getUsername(), currentUserResponse.getUsername())
+                assertEquals(user.username(), currentUserResponse.username())
         );
         step("Check that response contains default currency (RUB)", () ->
-                assertEquals(CurrencyValues.RUB, currentUserResponse.getCurrency())
+                assertEquals(CurrencyValues.RUB, currentUserResponse.currency())
         );
     }
 
@@ -50,32 +55,38 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @AllureId("200002")
     @Tag("REST")
     @GenerateUser()
+    @Order(2)
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String firstName = "Pizzly";
         final String secondName = "Pizzlyvich";
 
-        UserJson jsonUser = new UserJson();
-        jsonUser.setUsername(user.getUsername());
-        jsonUser.setCurrency(CurrencyValues.KZT);
-        jsonUser.setFirstname(firstName);
-        jsonUser.setSurname(secondName);
+        UserJson jsonUser = new UserJson(
+                null,
+                user.username(),
+                firstName,
+                secondName,
+                CurrencyValues.KZT,
+                null,
+                null,
+                null
+        );
 
         final UserJson updateUserInfoResponse = nus.updateUser(jsonUser);
 
         step("Check that response contains ID (GUID)", () ->
-                assertTrue(updateUserInfoResponse.getId().toString().matches(ID_REGEXP))
+                assertTrue(updateUserInfoResponse.id().toString().matches(ID_REGEXP))
         );
         step("Check that response contains username", () ->
-                assertEquals(user.getUsername(), updateUserInfoResponse.getUsername())
+                assertEquals(user.username(), updateUserInfoResponse.username())
         );
         step("Check that response contains updated currency (KZT)", () ->
-                assertEquals(CurrencyValues.KZT, updateUserInfoResponse.getCurrency())
+                assertEquals(CurrencyValues.KZT, updateUserInfoResponse.currency())
         );
         step("Check that response contains updated firstname (Pizzly)", () ->
-                assertEquals(firstName, updateUserInfoResponse.getFirstname())
+                assertEquals(firstName, updateUserInfoResponse.firstname())
         );
         step("Check that response contains updated surname (Pizzlyvich)", () ->
-                assertEquals(secondName, updateUserInfoResponse.getSurname())
+                assertEquals(secondName, updateUserInfoResponse.surname())
         );
     }
 
@@ -84,8 +95,9 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @AllureId("200003")
     @Tag("REST")
     @GenerateUser()
+    @Order(3)
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<UserJson> allUsersResponse = nus.allUsers(user.getUsername());
+        final List<UserJson> allUsersResponse = nus.allUsers(user.username());
 
         step("Check that all users list is not empty", () ->
                 assertFalse(allUsersResponse.isEmpty())

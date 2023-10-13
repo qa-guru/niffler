@@ -33,7 +33,7 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
     @GenerateUser
     void getFriendsTest(@User(selector = METHOD) UserJson user,
                         @GqlReq("gql/getFriendsQuery.json") JsonNode query) throws Exception {
-        apiLogin(user.getUsername(), user.getPassword());
+        apiLogin(user.username(), user.testData().password());
 
         UserDataGql response = gqlClient.friends(query);
 

@@ -1,9 +1,10 @@
 FROM node:19.4.0-alpine as build
+ARG NPM_COMMAND
 WORKDIR /app
 COPY package.json ./
 RUN npm install
 COPY . ./
-RUN npm run build:docker
+RUN npm run ${NPM_COMMAND}
 
 # release step
 FROM nginx:1.23.3-alpine as release

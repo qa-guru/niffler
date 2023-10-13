@@ -29,7 +29,7 @@ public class StatisticAggregator {
     List<StatisticJson> enrichStatisticRequest(@Nonnull String username,
                                                @Nullable CurrencyValues filterCurrency,
                                                @Nullable DataFilterValues filterPeriod) {
-        CurrencyValues userDefaultCurrency = restUserDataClient.currentUser(username).getCurrency();
+        CurrencyValues userDefaultCurrency = restUserDataClient.currentUser(username).currency();
         return restSpendClient.statistic(username, userDefaultCurrency, filterCurrency, filterPeriod);
     }
 }

@@ -1,49 +1,19 @@
 package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.niffler.model.graphql.CreateCategoryInput;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
-public class CategoryJson {
-    @JsonProperty("id")
-    private UUID id;
-    @JsonProperty("category")
-    private String category;
-    @JsonProperty("username")
-    private String username;
+public record CategoryJson(
+        @JsonProperty("id")
+        UUID id,
+        @NotEmpty(message = "Category can not be empty")
+        @Size(max = 25, message = "Category can`t be longer than 50 characters")
+        @JsonProperty("category")
+        String category,
+        @JsonProperty("username")
+        String username) {
 
-    public CategoryJson() {
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-
-    public static CategoryJson fromCreateCategoryInput(CreateCategoryInput input) {
-        CategoryJson categoryJson = new CategoryJson();
-        categoryJson.setCategory(input.getCategory());
-        return categoryJson;
-    }
 }

@@ -11,6 +11,19 @@ subprojects {
     }
     ext {
         dockerHubName = "qaguru"
+
+        lombokVersion = '1.18.30'
+        springKafkaVersion = '3.0.11'
+        postgresDriverVersion = '42.6.0'
+        flywayVersion = '9.22.2'
+        oauth2AuthorizationServerVersion = '1.1.2'
+        oauth2ResourceServerVersion = '3.1.4'
+        springVaultVersion = '4.0.1'
+        springGrpcVersion = '2.14.0.RELEASE'
+        springGraphqlDateTimeVersion = '6.0.0'
+        glassfishJaxbVersion = '4.0.1'
+        wsdl4jVersion = '1.6.3'
+
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64v8/eclipse-temurin:19-jre"
                 : "eclipse-temurin:19-jre"

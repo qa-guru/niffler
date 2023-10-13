@@ -9,6 +9,7 @@ import guru.qa.niffler.api.context.SessionStorageHolder;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
+import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Step;
@@ -42,12 +43,16 @@ public class ApiAuthExtension implements BeforeEachCallback {
         if (generateUserAnnotation.handleAnnotation()) {
             userToLogin = context.getStore(API_LOGIN_USERS_NAMESPACE).get(testId, UserJson.class);
         } else {
-            userToLogin = new UserJson();
-            userToLogin.setUsername(apiLoginAnnotation.username());
-            userToLogin.setPassword(apiLoginAnnotation.password());
+            userToLogin = new UserJson(apiLoginAnnotation.username(), new TestData(
+                    apiLoginAnnotation.password(),
+                    null,
+                    null,
+                    null,
+                    null)
+            );
         }
         try {
-            apiLogin(userToLogin.getUsername(), userToLogin.getPassword());
+            apiLogin(userToLogin.username(), userToLogin.testData().password());
             Selenide.open(CFG.frontUrl());
             com.codeborne.selenide.SessionStorage sessionStorage = Selenide.sessionStorage();
             sessionStorage.setItem("codeChallenge", SessionStorageHolder.getInstance().getCodeChallenge());

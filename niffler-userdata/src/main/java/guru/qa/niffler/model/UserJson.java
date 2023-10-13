@@ -4,140 +4,72 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.CurrencyValues;
 import guru.qa.niffler.data.UserEntity;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import niffler_userdata.Currency;
 import niffler_userdata.User;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 import java.util.UUID;
 
-public class UserJson {
-    @JsonProperty("id")
-    private UUID id;
-    @JsonProperty("username")
-    private String username;
-    @JsonProperty("firstname")
-    private String firstname;
-    @JsonProperty("surname")
-    private String surname;
-    @JsonProperty("currency")
-    private CurrencyValues currency;
-    @JsonProperty("photo")
-    private String photo;
-    @JsonProperty("friendState")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private FriendState friendState;
+public record UserJson(
+        @JsonProperty("id")
+        UUID id,
+        @JsonProperty("username")
+        String username,
+        @JsonProperty("firstname")
+        String firstname,
+        @JsonProperty("surname")
+        String surname,
+        @JsonProperty("currency")
+        CurrencyValues currency,
+        @JsonProperty("photo")
+        String photo,
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonProperty("friendState")
+        FriendState friendState) {
 
-    public UserJson() {
+    public @Nonnull User toJaxbUser() {
+        User jaxbUser = new User();
+        jaxbUser.setId(id.toString());
+        jaxbUser.setUsername(username);
+        jaxbUser.setFirstname(firstname);
+        jaxbUser.setSurname(surname);
+        jaxbUser.setCurrency(Currency.valueOf(currency.name()));
+        jaxbUser.setPhoto(photo);
+        jaxbUser.setFriendState(friendState() == null ?
+                niffler_userdata.FriendState.VOID :
+                niffler_userdata.FriendState.valueOf(friendState().name()));
+        return jaxbUser;
     }
 
-    public UUID getId() {
-        return id;
+    public static @Nonnull UserJson fromJaxb(@Nonnull User jaxbUser) {
+        return new UserJson(
+                jaxbUser.getId() != null ? UUID.fromString(jaxbUser.getId()) : null,
+                jaxbUser.getUsername(),
+                jaxbUser.getFirstname(),
+                jaxbUser.getSurname(),
+                CurrencyValues.valueOf(jaxbUser.getCurrency().name()),
+                jaxbUser.getPhoto(),
+                (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != niffler_userdata.FriendState.VOID)
+                        ? FriendState.valueOf(jaxbUser.getFriendState().name())
+                        : null
+        );
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public static @Nonnull UserJson fromEntity(@Nonnull UserEntity entity, @Nullable FriendState friendState) {
+        return new UserJson(
+                entity.getId(),
+                entity.getUsername(),
+                entity.getFirstname(),
+                entity.getSurname(),
+                entity.getCurrency(),
+                entity.getPhoto() != null && entity.getPhoto().length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null,
+                friendState
+        );
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public CurrencyValues getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(CurrencyValues currency) {
-        this.currency = currency;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public FriendState getFriendState() {
-        return friendState;
-    }
-
-    public void setFriendState(FriendState friendState) {
-        this.friendState = friendState;
-    }
-
-    public static UserJson fromJaxb(User jaxbUser) {
-        UserJson usr = new UserJson();
-        usr.setPhoto(jaxbUser.getPhoto());
-        usr.setId(jaxbUser.getId() != null ? UUID.fromString(jaxbUser.getId()) : null);
-        usr.setUsername(jaxbUser.getUsername());
-        usr.setFirstname(jaxbUser.getFirstname());
-        usr.setSurname(jaxbUser.getSurname());
-        usr.setCurrency(CurrencyValues.valueOf(jaxbUser.getCurrency().name()));
-        return usr;
-    }
-
-    public static UserJson fromEntity(UserEntity entity) {
-        UserJson usr = new UserJson();
-        byte[] photo = entity.getPhoto();
-        usr.setId(entity.getId());
-        usr.setUsername(entity.getUsername());
-        usr.setFirstname(entity.getFirstname());
-        usr.setSurname(entity.getSurname());
-        usr.setCurrency(entity.getCurrency());
-        usr.setPhoto(photo != null && photo.length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null);
-        return usr;
-    }
-
-    public static UserJson fromEntity(UserEntity entity, FriendState friendState) {
-        UserJson userJson = fromEntity(entity);
-        userJson.setFriendState(friendState);
-        return userJson;
-    }
-
-    public User toJaxbUser() {
-        User u = new User();
-        u.setId(getId().toString());
-        u.setUsername(getUsername());
-        u.setFirstname(getFirstname());
-        u.setSurname(getSurname());
-        u.setCurrency(Currency.valueOf(getCurrency().name()));
-        u.setPhoto(getPhoto());
-        u.setFriendState(getFriendState() == null ? niffler_userdata.FriendState.VOID : niffler_userdata.FriendState.valueOf(getFriendState().name()));
-        return u;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, firstname, surname, currency, photo, friendState);
+    public static @Nonnull UserJson fromEntity(@Nonnull UserEntity entity) {
+        return fromEntity(entity, null);
     }
 }

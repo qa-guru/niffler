@@ -18,8 +18,8 @@ public class UsersSizeMismatch extends UIAssertionError {
         super(
                 collection.driver(),
                 "Users size mismatch" +
-                        lineSeparator() + "Actual: " + actualUsers.stream().map(UserJson::getUsername).toList() + ", List size: " + actualUsers.size() +
-                        lineSeparator() + "Expected: " + expectedUsers.stream().map(UserJson::getUsername).toList() + ", List size: " + expectedUsers.size() +
+                        lineSeparator() + "Actual: " + actualUsers.stream().map(UserJson::username).toList() + ", List size: " + actualUsers.size() +
+                        lineSeparator() + "Expected: " + expectedUsers.stream().map(UserJson::username).toList() + ", List size: " + expectedUsers.size() +
                         (explanation == null ? "" : lineSeparator() + "Because: " + explanation) +
                         lineSeparator() + "Collection: " + collection.description(),
                 expectedUsers, actualUsers,

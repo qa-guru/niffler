@@ -2,6 +2,7 @@ package guru.qa.niffler.controller;
 
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.service.api.RestSpendClient;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -30,9 +31,12 @@ public class CategoriesController {
 
     @PostMapping("/category")
     public CategoryJson addCategory(@AuthenticationPrincipal Jwt principal,
-                                    @RequestBody CategoryJson category) {
+                                    @Valid @RequestBody CategoryJson category) {
         String username = principal.getClaim("sub");
-        category.setUsername(username);
-        return restSpendClient.addCategory(category);
+        return restSpendClient.addCategory(new CategoryJson(
+                category.id(),
+                category.category(),
+                username
+        ));
     }
 }

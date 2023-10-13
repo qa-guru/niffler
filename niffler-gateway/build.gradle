@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '1.0.3'
+version = '1.1.1'
 
 configurations {
     jaxb
@@ -26,8 +26,7 @@ tasks.register('genJaxb') {
             mkdir(dir: sourcesDir)
             mkdir(dir: classesDir)
 
-            xjc(destdir: sourcesDir, schema: schema,
-                    package: "guru.qa.niffler.userdata.wsdl") {
+            xjc(destdir: sourcesDir, schema: schema, package: "guru.qa.niffler.userdata.wsdl") {
                 arg(value: "-wsdl")
                 produces(dir: sourcesDir, includes: "**/*.java")
             }
@@ -65,21 +64,21 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web-services') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
-    implementation "org.springframework.boot:spring-boot-starter-graphql"
-    implementation 'com.tailrocks.graphql:graphql-datetime-spring-boot-starter:6.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-graphql'
+    implementation "com.tailrocks.graphql:graphql-datetime-spring-boot-starter:${project.ext.springGraphqlDateTimeVersion}"
     implementation 'org.springframework.ws:spring-ws-core'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation "org.springframework.boot:spring-boot-starter-validation"
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation 'net.devh:grpc-client-spring-boot-starter:2.14.0.RELEASE'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:4.0.1'
-    implementation "org.springframework:spring-webflux"
-    implementation "io.projectreactor.netty:reactor-netty"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${project.ext.oauth2ResourceServerVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation "net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}"
+    implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
+    implementation 'org.springframework:spring-webflux'
+    implementation 'io.projectreactor.netty:reactor-netty'
     // For Java 11:
-    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.1'
+    implementation "org.glassfish.jaxb:jaxb-runtime:${project.ext.glassfishJaxbVersion}"
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
-    jaxb 'org.glassfish.jaxb:jaxb-xjc:4.0.1'
+    jaxb "org.glassfish.jaxb:jaxb-xjc:${project.ext.glassfishJaxbVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

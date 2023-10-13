@@ -23,7 +23,7 @@ import static guru.qa.niffler.utils.Error.CAN_NOT_ADD_CATEGORY;
 @DisplayName("[WEB][niffler-frontend]: Профиль")
 public class ProfileTest extends BaseWebTest {
 
-    private static final String SUCCESS_MSG = "Profile updated!";
+    private static final String SUCCESS_MSG = "Profile successfully updated";
 
     @Test
     @AllureId("500004")

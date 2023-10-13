@@ -41,7 +41,7 @@ public class UsersCondition {
                     boolean found = false;
                     for (WebElement row : elements) {
                         List<WebElement> cells = row.findElements(By.cssSelector("td"));
-                        if (cells.get(1).getText().equals(expectedUser.getUsername())) {
+                        if (cells.get(1).getText().equals(expectedUser.username())) {
                             found = true;
                             break;
                         }
@@ -59,9 +59,7 @@ public class UsersCondition {
                 return elements.stream()
                         .map(e -> {
                             List<WebElement> cells = e.findElements(By.cssSelector("td"));
-                            UserJson actual = new UserJson();
-                            actual.setUsername(cells.get(1).getText());
-                            return actual;
+                            return new UserJson(cells.get(1).getText());
                         })
                         .toList();
             }
