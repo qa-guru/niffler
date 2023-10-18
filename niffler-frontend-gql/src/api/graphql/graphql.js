@@ -19,3 +19,10 @@ export const qraphQlClient = new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache()
 });
+
+const clearCache = () => {
+    console.log('Evict apollo client cache');
+    qraphQlClient.clearStore();
+};
+
+setInterval(clearCache, 120000);

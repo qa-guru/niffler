@@ -30,6 +30,5 @@ public interface GraphQLApi {
     Call<UserDataGql> frieds(
             @Header("Authorization") String bearerToken,
             @Body JsonNode request);
-
-
+    
 }
