@@ -15,7 +15,6 @@ public class Header extends BaseComponent<Header> {
   private final SelenideElement friendsPageBtn = $("a[href*='friends']");
   private final SelenideElement allPeoplePageBtn = $("a[href*='people']");
   private final SelenideElement profilePageBtn = $("a[href*='profile']");
-  private final SelenideElement logoutBtn = $("button[data-tooltip-id='logout']");
 
   public Header() {
     super($(".header"));
@@ -37,7 +36,7 @@ public class Header extends BaseComponent<Header> {
     return new FriendsPage();
   }
 
-  public AllPeoplePage gotToAllPeoplePage() {
+  public AllPeoplePage goToAllPeoplePage() {
     allPeoplePageBtn.click();
     return new AllPeoplePage();
   }

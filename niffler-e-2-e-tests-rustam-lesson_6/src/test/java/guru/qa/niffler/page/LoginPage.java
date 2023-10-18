@@ -9,7 +9,7 @@ import guru.qa.niffler.config.Config;
 
 public class LoginPage extends BasePage<LoginPage> {
 
-  public static final String LOGIN_URL = Config.getInstance().getFrontUrl() + "/login";
+  public static final String LOGIN_URL = Config.getInstance().getAuthUrl() + "/login";
 
   private final SelenideElement header = $(".form__paragraph");
   private final SelenideElement usernameInput = $("input[name='username']");
@@ -19,7 +19,6 @@ public class LoginPage extends BasePage<LoginPage> {
 
   @Override
   public LoginPage checkThatPageLoaded() {
-    loginBtn.click();
     header.shouldHave(text("Please sign in"));
     return this;
   }

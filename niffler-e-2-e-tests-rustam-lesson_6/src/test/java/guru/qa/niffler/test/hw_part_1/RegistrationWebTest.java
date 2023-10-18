@@ -15,7 +15,6 @@ public class RegistrationWebTest extends BaseWebTest {
             .fillRegistrationForm("rustam", "12345", "54321")
             .checkErrorMessage("Passwords should be equal");
 
-
         new FriendsPage()
             .getHeader()
             .goToMainPage()

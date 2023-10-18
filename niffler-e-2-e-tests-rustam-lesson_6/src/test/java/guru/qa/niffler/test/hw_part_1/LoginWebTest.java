@@ -20,4 +20,28 @@ public class LoginWebTest extends BaseWebTest {
         .checkThatComponentDisplayed();
   }
 
+  @Test
+  void checkAllPagesFromHeaderIsDisplayedTest(){
+    open(LOGIN_URL, LoginPage.class)
+        .checkThatPageLoaded()
+        .fillSignInForm("rustam", "12345");
+    new MainPage()
+        .getHeader()
+        .checkThatComponentDisplayed()
+        .goToFriendsPage()
+        .getHeader()
+        .checkThatComponentDisplayed()
+        .goToAllPeoplePage()
+        .getHeader()
+        .checkThatComponentDisplayed()
+        .goToProfilePage()
+        .getHeader()
+        .checkThatComponentDisplayed()
+        .goToMainPage()
+        .getHeader()
+        .checkThatComponentDisplayed();
+
+
+  }
+
 }
