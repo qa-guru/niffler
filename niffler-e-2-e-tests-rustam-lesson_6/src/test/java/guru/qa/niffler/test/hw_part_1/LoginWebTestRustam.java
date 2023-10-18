@@ -9,9 +9,15 @@ import guru.qa.niffler.page.MainPageRustam;
 import guru.qa.niffler.page.WelcomePageRustam;
 import guru.qa.niffler.test.BaseWebTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.Isolated;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+//@Isolated
+//@Execution(ExecutionMode.SAME_THREAD)
 public class LoginWebTestRustam extends BaseWebTest {
 
   @Test
@@ -26,6 +32,7 @@ public class LoginWebTestRustam extends BaseWebTest {
   }
 
   @Test
+  @ResourceLock("lock")
   void checkAllPagesFromHeaderIsDisplayedTest(){
     open(WELCOME_PAGE_URL, WelcomePageRustam.class)
         .doLogin()
@@ -48,6 +55,7 @@ public class LoginWebTestRustam extends BaseWebTest {
   }
 
   @Test
+  @ResourceLock("lock")
   void checkLogoutTest(){
     open(WELCOME_PAGE_URL, WelcomePageRustam.class)
         .doLogin()

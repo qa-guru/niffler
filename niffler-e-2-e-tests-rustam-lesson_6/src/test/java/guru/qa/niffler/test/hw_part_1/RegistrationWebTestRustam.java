@@ -6,6 +6,7 @@ import guru.qa.niffler.page.FriendsPageRustam;
 import guru.qa.niffler.page.RegistrationPageRustam;
 import guru.qa.niffler.test.BaseWebTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 public class RegistrationWebTestRustam extends BaseWebTest {
 
@@ -18,6 +19,7 @@ public class RegistrationWebTestRustam extends BaseWebTest {
     }
 
     @Test
+    @ResourceLock("lock")
     void errorMessageShouldBeVisibleInCaseIfUserAlreadyExist() {
         Selenide.open(RegistrationPageRustam.REGISTRATION_URL, RegistrationPageRustam.class)
             .checkThatPageLoaded()
@@ -42,6 +44,7 @@ public class RegistrationWebTestRustam extends BaseWebTest {
     }
 
     @Test
+    @ResourceLock("lock")
     void errorMessageShouldBeVisibleInCaseIfLoginMoreThen50() {
         Selenide.open(RegistrationPageRustam.REGISTRATION_URL, RegistrationPageRustam.class)
             .checkThatPageLoaded()
