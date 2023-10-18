@@ -8,25 +8,25 @@ import static com.codeborne.selenide.Selenide.back;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.config.Config;
 
-public class WelcomePage extends BasePage<WelcomePage> {
+public class WelcomePageRustam extends BasePageRustam<WelcomePageRustam> {
 
   public static final String WELCOME_PAGE_URL = Config.getInstance().getFrontUrl() + "/login";
 
   private final SelenideElement header = $(".main__header");
   private final SelenideElement loginBtn = $("a[href*='redirect']");
   private final SelenideElement registerBtn = $("a[href*='register']");
-  private final LoginPage loginPage = new LoginPage();
-  private final RegistrationPage registrationPage = new RegistrationPage();
+  private final LoginPageRustam loginPage = new LoginPageRustam();
+  private final RegistrationPageRustam registrationPage = new RegistrationPageRustam();
 
   @Override
-  public WelcomePage checkThatPageLoaded() {
+  public WelcomePageRustam checkThatPageLoaded() {
     header.shouldHave(text("Welcome to magic journey with Niffler. The coin keeper"));
     loginBtn.should(visible);
     registerBtn.should(visible);
     return this;
   }
 
-  public WelcomePage checkWelcomeFormWorks() {
+  public WelcomePageRustam checkWelcomeFormWorks() {
     checkThatPageLoaded();
     loginBtn.click();
     loginPage.checkThatPageLoaded();
@@ -38,13 +38,13 @@ public class WelcomePage extends BasePage<WelcomePage> {
     return this;
   }
 
-  public LoginPage doLogin() {
+  public LoginPageRustam doLogin() {
     loginBtn.click();
-    return new LoginPage();
+    return new LoginPageRustam();
   }
 
-  public RegistrationPage doRegister() {
+  public RegistrationPageRustam doRegister() {
     registerBtn.click();
-    return new RegistrationPage();
+    return new RegistrationPageRustam();
   }
 }

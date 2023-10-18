@@ -7,7 +7,7 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.config.Config;
 import org.openqa.selenium.By;
 
-public class RegistrationPage extends BasePage<RegistrationPage> {
+public class RegistrationPageRustam extends BasePageRustam<RegistrationPageRustam> {
 
   // может быть статическим так как это константные типы
   private static final By ByHeader = By.cssSelector(".form__paragraph");
@@ -22,12 +22,12 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
   private final SelenideElement signUpBtn = $("button[type='submit']");
 
   @Override
-  public RegistrationPage checkThatPageLoaded() {
+  public RegistrationPageRustam checkThatPageLoaded() {
     header.shouldHave(text("Registration form"));
     return this;
   }
 
-  public RegistrationPage fillRegistrationForm(String username, String password, String passwordSubmit) {
+  public RegistrationPageRustam fillRegistrationForm(String username, String password, String passwordSubmit) {
     usernameInput.val(username);
     passwordInput.val(password);
     passwordSubmitInput.val(passwordSubmit);
@@ -35,7 +35,7 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
     return this;
   }
 
-  public RegistrationPage checkErrorMessage(String expectedMessage) {
+  public RegistrationPageRustam checkErrorMessage(String expectedMessage) {
     $(".form__error").shouldHave(text(expectedMessage));
     return this;
   }
