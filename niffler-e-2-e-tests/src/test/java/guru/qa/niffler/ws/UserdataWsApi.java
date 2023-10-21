@@ -23,7 +23,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public interface NifflerUserdataWs {
+public interface UserdataWsApi {
 
     @Headers({
             "Content-Type: text/xml",

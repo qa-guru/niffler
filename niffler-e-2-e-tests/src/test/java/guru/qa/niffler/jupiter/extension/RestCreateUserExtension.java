@@ -1,18 +1,17 @@
 package guru.qa.niffler.jupiter.extension;
 
 import com.google.common.base.Stopwatch;
-import guru.qa.niffler.api.NifflerAuthClient;
-import guru.qa.niffler.api.NifflerUserdataClient;
+import guru.qa.niffler.api.AuthRestClient;
+import guru.qa.niffler.api.UserdataRestClient;
 import guru.qa.niffler.jupiter.annotation.Friends;
-import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
-import retrofit2.Response;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -21,16 +20,15 @@ import static guru.qa.niffler.utils.DataUtils.generateRandomUsername;
 
 public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
-    private final NifflerAuthClient authClient = new NifflerAuthClient();
-    private final NifflerUserdataClient userdataClient = new NifflerUserdataClient();
+    private final AuthRestClient authClient = new AuthRestClient();
+    private final UserdataRestClient userdataClient = new UserdataRestClient();
 
     @Step("Create user for test (REST)")
     @Override
-    protected UserJson createUser(String username, String password) throws Exception {
-        Response<Void> res = authClient.register(username, password);
-        if (res.code() != 201) {
-            throw new RuntimeException("User is not registered");
-        }
+    @Nonnull
+    protected UserJson createUser(@Nonnull String username,
+                                  @Nonnull String password) throws Exception {
+        authClient.register(username, password);
         UserJson currentUser = waitWhileUserToBeConsumed(username, 10000L);
         return currentUser.addTestData(new TestData(
                 password,
@@ -43,10 +41,10 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
     @Step("Create income invitations for test user (REST)")
     @Override
-    protected void createIncomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
-        IncomeInvitations invitations = generateUser.incomeInvitations();
-        if (invitations.handleAnnotation() && invitations.count() > 0) {
-            for (int i = 0; i < invitations.count(); i++) {
+    protected void createIncomeInvitationsIfPresent(@Nonnull IncomeInvitations incomeInvitations,
+                                                    @Nonnull UserJson createdUser) throws Exception {
+        if (incomeInvitations.handleAnnotation() && incomeInvitations.count() > 0) {
+            for (int i = 0; i < incomeInvitations.count(); i++) {
                 UserJson invitation = createUser(generateRandomUsername(), generateRandomPassword());
                 FriendJson addFriend = new FriendJson(createdUser.username());
                 userdataClient.addFriend(invitation.username(), addFriend);
@@ -57,10 +55,10 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
     @Step("Create outcome invitations for test user (REST)")
     @Override
-    protected void createOutcomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
-        OutcomeInvitations invitations = generateUser.outcomeInvitations();
-        if (invitations.handleAnnotation() && invitations.count() > 0) {
-            for (int i = 0; i < invitations.count(); i++) {
+    protected void createOutcomeInvitationsIfPresent(@Nonnull OutcomeInvitations outcomeInvitations,
+                                                     @Nonnull UserJson createdUser) throws Exception {
+        if (outcomeInvitations.handleAnnotation() && outcomeInvitations.count() > 0) {
+            for (int i = 0; i < outcomeInvitations.count(); i++) {
                 UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
                 FriendJson addFriend = new FriendJson(friend.username());
                 userdataClient.addFriend(createdUser.username(), addFriend);
@@ -71,8 +69,8 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
     @Step("Create friends for test user (REST)")
     @Override
-    protected void createFriendsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
-        Friends friends = generateUser.friends();
+    protected void createFriendsIfPresent(@Nonnull Friends friends,
+                                          @Nonnull UserJson createdUser) throws Exception {
         if (friends.handleAnnotation() && friends.count() > 0) {
             for (int i = 0; i < friends.count(); i++) {
                 UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
@@ -85,7 +83,7 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         }
     }
 
-    private UserJson waitWhileUserToBeConsumed(String username, long maxWaitTime) throws Exception {
+    private UserJson waitWhileUserToBeConsumed(@Nonnull String username, long maxWaitTime) throws Exception {
         Stopwatch sw = Stopwatch.createStarted();
         while (sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
             UserJson userJson = userdataClient.getCurrentUser(username);

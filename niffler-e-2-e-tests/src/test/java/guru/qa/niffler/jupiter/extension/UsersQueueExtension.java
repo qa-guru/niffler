@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class UsersQueueExtension implements
         String id = getTestId(context);
         User.UserType desiredUserType = Arrays.stream(context.getRequiredTestMethod()
                         .getParameters())
-                .filter(p -> p.isAnnotationPresent(User.class))
+                .filter(p -> AnnotationSupport.isAnnotated(p, User.class))
                 .map(p -> p.getAnnotation(User.class))
                 .findFirst()
                 .orElseThrow()
@@ -69,15 +70,16 @@ public class UsersQueueExtension implements
     }
 
     private String getTestId(ExtensionContext context) {
-        return Objects.requireNonNull(
-                context.getRequiredTestMethod().getAnnotation(AllureId.class)
-        ).value();
+        return AnnotationSupport.findAnnotation(
+                context.getRequiredTestMethod(),
+                AllureId.class
+        ).orElseThrow().value();
     }
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return parameterContext.getParameter().getType().isAssignableFrom(UserModel.class)
-                && parameterContext.getParameter().isAnnotationPresent(User.class);
+                && AnnotationSupport.isAnnotated(parameterContext.getParameter(), User.class);
     }
 
     @Override

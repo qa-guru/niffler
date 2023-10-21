@@ -6,6 +6,7 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.model.rest.SpendJson;
 import io.qameta.allure.Step;
 
+import javax.annotation.Nonnull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -22,7 +23,8 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
     }
 
     @Step("Click by button {0}")
-    public SpendingTable clickByButton(String buttonText) {
+    @Nonnull
+    public SpendingTable clickByButton(@Nonnull String buttonText) {
         spendingButtons.find(Condition.text(buttonText))
                 .scrollIntoView(false)
                 .click();
@@ -30,7 +32,8 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
     }
 
     @Step("Check that table contains data {0}")
-    public SpendingTable checkTableContains(SpendJson... expectedSpends) {
+    @Nonnull
+    public SpendingTable checkTableContains(@Nonnull SpendJson... expectedSpends) {
         self.$$("tbody tr").should(spends(expectedSpends));
         return this;
     }

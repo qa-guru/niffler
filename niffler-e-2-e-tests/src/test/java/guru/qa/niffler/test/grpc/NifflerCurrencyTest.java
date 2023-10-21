@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Epic("[gRPC][niffler-currency]: Валюты")
 @DisplayName("[gRPC][niffler-currency]: Валюты")
-public class NifflerCurrencyTest extends BaseGRPCTest {
+public class NifflerCurrencyTest extends BaseGrpcTest {
 
     @Test
     @DisplayName("gRPC: Сервис niffler-currency должен возвращать 4 валюты")
@@ -31,7 +31,7 @@ public class NifflerCurrencyTest extends BaseGRPCTest {
     @Tag("gRPC")
     void getAllCurrenciesTest() {
         CurrencyResponse allCurrencies = step("Get all currencies", () ->
-                nifflerCurrencyBlockingStub.getAllCurrencies(Empty.getDefaultInstance())
+                currencyStub.getAllCurrencies(Empty.getDefaultInstance())
         );
         final List<Currency> currenciesList = allCurrencies.getAllCurrenciesList();
 
@@ -80,7 +80,7 @@ public class NifflerCurrencyTest extends BaseGRPCTest {
                 .build();
 
         final CalculateResponse calculateResponse = step("Calculate rate", () ->
-                nifflerCurrencyBlockingStub.calculateRate(request)
+                currencyStub.calculateRate(request)
         );
 
         step("Check calculated rate", () ->

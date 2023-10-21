@@ -5,6 +5,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
+import javax.annotation.Nonnull;
 import java.time.Month;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,7 +18,7 @@ import static java.util.Calendar.YEAR;
 
 public class Calendar extends BaseComponent<Calendar> {
 
-    public Calendar(SelenideElement self) {
+    public Calendar(@Nonnull SelenideElement self) {
         super(self);
     }
 
@@ -27,7 +28,7 @@ public class Calendar extends BaseComponent<Calendar> {
     private final SelenideElement currentMonthAndYear = self.$(".react-datepicker__current-month");
 
     @Step("Select date in calendar: {date}")
-    public void selectDateInCalendar(Date date) {
+    public void selectDateInCalendar(@Nonnull Date date) {
         java.util.Calendar cal = new GregorianCalendar();
         cal.setTime(date);
         input.click();

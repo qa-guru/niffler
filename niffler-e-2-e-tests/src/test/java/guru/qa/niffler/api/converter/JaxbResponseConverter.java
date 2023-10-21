@@ -1,4 +1,4 @@
-package guru.qa.niffler.ws.service.converter;
+package guru.qa.niffler.api.converter;
 
 import com.google.common.base.Charsets;
 import jakarta.xml.bind.JAXBContext;
@@ -8,7 +8,6 @@ import jakarta.xml.soap.MessageFactory;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
 import okhttp3.ResponseBody;
-import okhttp3.internal.annotations.EverythingIsNonNull;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.w3c.dom.Document;
 import retrofit2.Converter;
@@ -28,8 +27,7 @@ final class JaxbResponseConverter<T> implements Converter<ResponseBody, T> {
     }
 
     @Override
-    @EverythingIsNonNull
-    public @Nonnull T convert(ResponseBody value) throws IOException {
+    public @Nonnull T convert(@Nonnull final ResponseBody value) throws IOException {
         try (value; Reader reader = value.charStream()) {
             SOAPMessage response = MessageFactory.newInstance().createMessage(
                     null,

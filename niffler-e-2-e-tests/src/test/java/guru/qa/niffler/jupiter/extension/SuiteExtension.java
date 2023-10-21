@@ -3,7 +3,7 @@ package guru.qa.niffler.jupiter.extension;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-public interface AroundAllTestsExtension extends BeforeAllCallback {
+public interface SuiteExtension extends BeforeAllCallback {
 
     default void beforeAllTests(ExtensionContext context) {
     }

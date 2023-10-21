@@ -29,7 +29,8 @@ public class WaitForOne<K, V> {
         }
     }
 
-    public @Nonnull Map<K, V> getAsMap() {
+    @Nonnull
+    public Map<K, V> getAsMap() {
         return this.storedValues.entrySet()
                 .stream()
                 .collect(

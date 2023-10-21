@@ -9,7 +9,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-public interface NifflerAuthApi {
+public interface AuthApi {
 
     @GET("/oauth2/authorize")
     Call<Void> authorize(
@@ -21,7 +21,7 @@ public interface NifflerAuthApi {
             @Query("code_challenge_method") String codeChallengeMethod);
 
     @POST("/oauth2/token")
-    Call<JsonNode> getToken(
+    Call<JsonNode> token(
             @Header("Authorization") String basic,
             @Query("client_id") String clientId,
             @Query(value = "redirect_uri", encoded = true) String redirectUri,
@@ -32,11 +32,9 @@ public interface NifflerAuthApi {
     @POST("/login")
     @FormUrlEncoded
     Call<Void> login(
-            @Header("Cookie") String jsessionidCookie,
-            @Header("Cookie") String csrfCookie,
-            @Field("_csrf") String csrf,
             @Field("username") String username,
-            @Field("password") String password);
+            @Field("password") String password,
+            @Field("_csrf") String csrf);
 
     @GET("/register")
     Call<Void> requestRegisterForm();
@@ -44,9 +42,8 @@ public interface NifflerAuthApi {
     @POST("/register")
     @FormUrlEncoded
     Call<Void> register(
-            @Header("Cookie") String csrfCookie,
-            @Field("_csrf") String csrf,
             @Field("username") String username,
             @Field("password") String password,
-            @Field("passwordSubmit") String passwordSubmit);
+            @Field("passwordSubmit") String passwordSubmit,
+            @Field("_csrf") String csrf);
 }

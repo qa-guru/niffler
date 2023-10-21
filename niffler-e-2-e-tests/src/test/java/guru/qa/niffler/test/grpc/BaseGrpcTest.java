@@ -9,7 +9,7 @@ import io.grpc.Metadata;
 import io.qameta.allure.grpc.AllureGrpc;
 
 @GrpcTest
-public abstract class BaseGRPCTest {
+public abstract class BaseGrpcTest {
 
     protected static final Config CFG = Config.getConfig();
 
@@ -27,10 +27,6 @@ public abstract class BaseGRPCTest {
                 .build();
     }
 
-    protected final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub nifflerCurrencyBlockingStub =
+    protected final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub currencyStub =
             NifflerCurrencyServiceGrpc.newBlockingStub(channel);
-
-    protected final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceStub nifflerCurrencyStub =
-            NifflerCurrencyServiceGrpc.newStub(channel);
-
 }

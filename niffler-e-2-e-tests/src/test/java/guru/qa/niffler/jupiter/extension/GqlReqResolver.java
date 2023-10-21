@@ -1,13 +1,14 @@
 package guru.qa.niffler.jupiter.extension;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.niffler.jupiter.annotation.GqlReq;
-import guru.qa.niffler.test.gql.GraphQlFriendsTest;
+import guru.qa.niffler.model.gql.GqlRequest;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,19 +16,20 @@ import java.io.InputStream;
 public class GqlReqResolver implements ParameterResolver {
 
     private static final ObjectMapper om = new ObjectMapper();
-    private final ClassLoader cl = GraphQlFriendsTest.class.getClassLoader();
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return parameterContext.getParameter().isAnnotationPresent(GqlReq.class) &&
-                parameterContext.getParameter().getType().isAssignableFrom(JsonNode.class);
+        return AnnotationSupport.isAnnotated(parameterContext.getParameter(), GqlReq.class) &&
+                parameterContext.getParameter().getType().isAssignableFrom(GqlRequest.class);
     }
 
     @Override
-    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        String path = parameterContext.getParameter().getAnnotation(GqlReq.class).value();
-        try (InputStream is = cl.getResourceAsStream(path)) {
-            return om.readValue(is, JsonNode.class);
+    public GqlRequest resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        String path = AnnotationSupport.findAnnotation(parameterContext.getParameter(), GqlReq.class)
+                .orElseThrow()
+                .value();
+        try (InputStream is = new ClassPathResource(path).getInputStream()) {
+            return om.readValue(is, GqlRequest.class);
         } catch (IOException e) {
             throw new ParameterResolutionException("Error while reading resource", e);
         }

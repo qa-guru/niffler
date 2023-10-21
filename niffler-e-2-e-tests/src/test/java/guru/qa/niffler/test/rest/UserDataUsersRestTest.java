@@ -1,6 +1,6 @@
 package guru.qa.niffler.test.rest;
 
-import guru.qa.niffler.api.NifflerUserdataClient;
+import guru.qa.niffler.api.UserdataRestClient;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.CurrencyValues;
@@ -27,8 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserDataUsersRestTest extends BaseRestTest {
 
-    private static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-    private final NifflerUserdataClient nus = new NifflerUserdataClient();
+    private final UserdataRestClient userdataClient = new UserdataRestClient();
 
     @Test
     @DisplayName("REST: Для нового пользователя должна возвращаться информация из niffler-userdata c дефолтными значениями")
@@ -37,7 +36,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @GenerateUser()
     @Order(1)
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final UserJson currentUserResponse = nus.getCurrentUser(user.username());
+        final UserJson currentUserResponse = userdataClient.getCurrentUser(user.username());
 
         step("Check that response contains ID (GUID)", () ->
                 assertTrue(currentUserResponse.id().toString().matches(ID_REGEXP))
@@ -71,7 +70,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
                 null
         );
 
-        final UserJson updateUserInfoResponse = nus.updateUser(jsonUser);
+        final UserJson updateUserInfoResponse = userdataClient.updateUser(jsonUser);
 
         step("Check that response contains ID (GUID)", () ->
                 assertTrue(updateUserInfoResponse.id().toString().matches(ID_REGEXP))
@@ -97,7 +96,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @GenerateUser()
     @Order(3)
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<UserJson> allUsersResponse = nus.allUsers(user.username());
+        final List<UserJson> allUsersResponse = userdataClient.allUsers(user.username());
 
         step("Check that all users list is not empty", () ->
                 assertFalse(allUsersResponse.isEmpty())
