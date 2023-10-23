@@ -1,23 +1,17 @@
 package guru.qa.niffler.jupiter.annotation;
 
-import guru.qa.niffler.jupiter.extension.ApiAuthExtension;
-import guru.qa.niffler.jupiter.extension.ClearCookiesAndSessionExtension;
-import guru.qa.niffler.jupiter.extension.RestCreateUserExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@ExtendWith({RestCreateUserExtension.class, ApiAuthExtension.class, ClearCookiesAndSessionExtension.class})
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface ApiLogin {
 
     String username() default "";
 
     String password() default "";
 
-    GenerateUser nifflerUser() default @GenerateUser(handleAnnotation = false);
+    GenerateUser user() default @GenerateUser(handleAnnotation = false);
 }

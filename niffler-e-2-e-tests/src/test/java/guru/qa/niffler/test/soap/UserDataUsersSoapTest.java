@@ -11,7 +11,7 @@ import guru.qa.niffler.userdata.wsdl.CurrentUserResponse;
 import guru.qa.niffler.userdata.wsdl.FriendState;
 import guru.qa.niffler.userdata.wsdl.UpdateUserInfoRequest;
 import guru.qa.niffler.userdata.wsdl.UpdateUserInfoResponse;
-import guru.qa.niffler.ws.NifflerUserdataWsService;
+import guru.qa.niffler.ws.UserdataWsClient;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class UserDataUsersSoapTest extends BaseSoapTest {
 
     private static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-    private final NifflerUserdataWsService nus = new NifflerUserdataWsService();
+    private static final UserdataWsClient wsClient = new UserdataWsClient();
 
     @Test
     @DisplayName("SOAP: Для нового пользователя должна возвращаться информация из niffler-userdata c дефолтными значениями")
@@ -45,7 +45,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
         CurrentUserRequest cur = new CurrentUserRequest();
         cur.setUsername(user.username());
 
-        final CurrentUserResponse currentUserResponse = nus.currentUser(cur);
+        final CurrentUserResponse currentUserResponse = wsClient.currentUser(cur);
 
         step("Check that response contains ID (GUID)", () ->
                 assertTrue(currentUserResponse.getUser().getId().matches(ID_REGEXP))
@@ -79,7 +79,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
         xmlUser.setSurname(secondName);
         uir.setUser(xmlUser);
 
-        final UpdateUserInfoResponse updateUserInfoResponse = nus.updateUserInfo(uir);
+        final UpdateUserInfoResponse updateUserInfoResponse = wsClient.updateUserInfo(uir);
 
         step("Check that response contains ID (GUID)", () ->
                 assertTrue(updateUserInfoResponse.getUser().getId().matches(ID_REGEXP))
@@ -108,7 +108,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
         AllUsersRequest aur = new AllUsersRequest();
         aur.setUsername(user.username());
 
-        final AllUsersResponse allUsersResponse = nus.allUsersRequest(aur);
+        final AllUsersResponse allUsersResponse = wsClient.allUsersRequest(aur);
 
         step("Check that all users list is not empty", () ->
                 assertFalse(allUsersResponse.getUser().isEmpty())

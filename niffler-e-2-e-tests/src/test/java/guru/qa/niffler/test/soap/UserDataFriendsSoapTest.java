@@ -21,7 +21,7 @@ import guru.qa.niffler.userdata.wsdl.InvitationsRequest;
 import guru.qa.niffler.userdata.wsdl.InvitationsResponse;
 import guru.qa.niffler.userdata.wsdl.RemoveFriendRequest;
 import guru.qa.niffler.userdata.wsdl.RemoveFriendResponse;
-import guru.qa.niffler.ws.NifflerUserdataWsService;
+import guru.qa.niffler.ws.UserdataWsClient;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("[SOAP][niffler-userdata]: Друзья")
 public class UserDataFriendsSoapTest extends BaseSoapTest {
 
-    private final NifflerUserdataWsService nus = new NifflerUserdataWsService();
+    private static final UserdataWsClient wsClient = new UserdataWsClient();
 
     @Test
     @DisplayName("SOAP: Для пользователя должен возвращаться список друзей из niffler-userdata" +
@@ -56,7 +56,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
     void getAllFriendsListWithoutInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
         FriendsRequest fr = friendsRequest(user.username(), false);
 
-        final FriendsResponse friendsResponse = nus.friendsRequest(fr);
+        final FriendsResponse friendsResponse = wsClient.friendsRequest(fr);
 
         List<guru.qa.niffler.userdata.wsdl.User> friends = friendsResponse.getUser();
 
@@ -93,7 +93,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
     void getAllFriendsListWithInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
         FriendsRequest fr = friendsRequest(user.username(), true);
 
-        final FriendsResponse friendsResponse = nus.friendsRequest(fr);
+        final FriendsResponse friendsResponse = wsClient.friendsRequest(fr);
 
         List<guru.qa.niffler.userdata.wsdl.User> friends = friendsResponse.getUser();
 
@@ -133,7 +133,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
         InvitationsRequest ir = new InvitationsRequest();
         ir.setUsername(user.username());
 
-        final InvitationsResponse invitationsResponse = nus.invitationsRequest(ir);
+        final InvitationsResponse invitationsResponse = wsClient.invitationsRequest(ir);
 
         List<guru.qa.niffler.userdata.wsdl.User> invitations = invitationsResponse.getUser();
 
@@ -162,7 +162,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         AcceptInvitationRequest air = acceptInvitationRequest(currentUser, incomeInvitation);
 
-        final AcceptInvitationResponse acceptInvitationResponse = nus.acceptInvitationRequest(air);
+        final AcceptInvitationResponse acceptInvitationResponse = wsClient.acceptInvitationRequest(air);
 
         guru.qa.niffler.userdata.wsdl.User friend = acceptInvitationResponse.getUser().get(0);
 
@@ -175,14 +175,14 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
                 Assertions.assertAll(
                         () -> assertEquals(
                                 1,
-                                nus.friendsRequest(friendsRequest(currentUser, false))
+                                wsClient.friendsRequest(friendsRequest(currentUser, false))
                                         .getUser()
                                         .size(),
                                 "Current user should have friend after accepting"
                         ),
                         () -> assertEquals(
                                 1,
-                                nus.friendsRequest(friendsRequest(incomeInvitation, false))
+                                wsClient.friendsRequest(friendsRequest(incomeInvitation, false))
                                         .getUser()
                                         .size(),
                                 "Target friend should have friend after accepting"
@@ -204,7 +204,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         DeclineInvitationRequest dir = declineInvitationRequest(currentUser, incomeInvitation);
 
-        final DeclineInvitationResponse declineInvitationResponse = nus.declineInvitationRequest(dir);
+        final DeclineInvitationResponse declineInvitationResponse = wsClient.declineInvitationRequest(dir);
 
         List<guru.qa.niffler.userdata.wsdl.User> invitations = declineInvitationResponse.getUser();
 
@@ -213,12 +213,12 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
         step("Check that friends request & income invitation removed for both users", () ->
                 Assertions.assertAll(
                         () -> assertTrue(
-                                nus.invitationsRequest(invitationsRequest(currentUser))
+                                wsClient.invitationsRequest(invitationsRequest(currentUser))
                                         .getUser()
                                         .isEmpty(),
                                 "Current user should not have invitations after declining"),
                         () -> assertTrue(
-                                nus.friendsRequest(friendsRequest(incomeInvitation, true))
+                                wsClient.friendsRequest(friendsRequest(incomeInvitation, true))
                                         .getUser()
                                         .isEmpty(),
                                 "Inviter should not have pending friend after declining"
@@ -241,7 +241,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         AddFriendRequest afr = addFriendRequest(currentUser, friendWillBeAdded);
 
-        final AddFriendResponse addFriendResponse = nus.addFriendRequest(afr);
+        final AddFriendResponse addFriendResponse = wsClient.addFriendRequest(afr);
 
         guru.qa.niffler.userdata.wsdl.User invitation = addFriendResponse.getUser();
 
@@ -254,13 +254,13 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
                 Assertions.assertAll(
                         () -> assertEquals(
                                 1,
-                                nus.friendsRequest(friendsRequest(currentUser, true))
+                                wsClient.friendsRequest(friendsRequest(currentUser, true))
                                         .getUser()
                                         .size(),
                                 "Current user should have pending friend after adding"),
                         () -> assertEquals(
                                 1,
-                                nus.invitationsRequest(invitationsRequest(friendWillBeAdded))
+                                wsClient.invitationsRequest(invitationsRequest(friendWillBeAdded))
                                         .getUser()
                                         .size(),
                                 "Target friend should have 1 invitation"
@@ -284,7 +284,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
         rfr.setUsername(user.username());
         rfr.setFriendUsername(user.testData().friendsJsons().get(0).username());
 
-        final RemoveFriendResponse removeFriendResponse = nus.removeFriendRequest(rfr);
+        final RemoveFriendResponse removeFriendResponse = wsClient.removeFriendRequest(rfr);
 
         List<guru.qa.niffler.userdata.wsdl.User> friends = removeFriendResponse.getUser();
 
@@ -293,13 +293,13 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
         step("Check that no friends present in GET /friends request for both users", () ->
                 Assertions.assertAll(
                         () -> assertTrue(
-                                nus.friendsRequest(friendsRequest(currentUsername, false))
+                                wsClient.friendsRequest(friendsRequest(currentUsername, false))
                                         .getUser()
                                         .isEmpty(),
                                 "Current user should not have friend after removing"
                         ),
                         () -> assertTrue(
-                                nus.friendsRequest(friendsRequest(friendUsername, false))
+                                wsClient.friendsRequest(friendsRequest(friendUsername, false))
                                         .getUser()
                                         .isEmpty(),
                                 "Target friend should not have friend after removing"

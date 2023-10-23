@@ -56,7 +56,7 @@ public class KafkaConsumerService implements Runnable {
         this(CFG.kafkaTopics());
     }
 
-    public KafkaConsumerService(List<String> stringTopics) {
+    public KafkaConsumerService(@Nonnull List<String> stringTopics) {
         stringConsumer = new KafkaConsumer<>(STR_KAFKA_PROPERTIES);
         stringConsumer.subscribe(stringTopics);
     }
@@ -66,7 +66,7 @@ public class KafkaConsumerService implements Runnable {
         return this;
     }
 
-    public KafkaConsumerService withFileLogger(String pathToLogFile) {
+    public KafkaConsumerService withFileLogger(@Nonnull String pathToLogFile) {
         if (pathToLogFile.endsWith("/")) {
             pathToLogFile = pathToLogFile.substring(0, pathToLogFile.length() - 1);
         }
@@ -86,27 +86,28 @@ public class KafkaConsumerService implements Runnable {
         running.set(false);
     }
 
+    @Nonnull
     public static Map<String, UserJson> getMessages() {
         return MESSAGES.getAsMap();
     }
 
     @Nullable
-    public static UserJson getMessage(String username) {
+    public static UserJson getMessage(@Nonnull String username) {
         return getMessage(username, MAX_READ_TIMEOUT);
     }
 
     @Nullable
-    public static UserJson getMessage(String username, long timeoutMs) {
+    public static UserJson getMessage(@Nonnull String username, long timeoutMs) {
         return MESSAGES.wait(username, timeoutMs);
     }
 
     @Nonnull
-    public static UserJson getRequiredMessage(String username) {
+    public static UserJson getRequiredMessage(@Nonnull String username) {
         return getRequiredMessage(username, MAX_READ_TIMEOUT);
     }
 
     @Nonnull
-    public static UserJson getRequiredMessage(String username, long timeoutMs) {
+    public static UserJson getRequiredMessage(@Nonnull String username, long timeoutMs) {
         return Objects.requireNonNull(getMessage(username, timeoutMs));
     }
 
@@ -135,7 +136,7 @@ public class KafkaConsumerService implements Runnable {
         }
     }
 
-    private void deserializeRecord(String recordValue) {
+    private void deserializeRecord(@Nonnull String recordValue) {
         try {
             UserJson userJson = OM.readValue(recordValue, UserJson.class);
 
@@ -150,7 +151,7 @@ public class KafkaConsumerService implements Runnable {
         }
     }
 
-    private void logRecord(ConsumerRecord<String, String> record) {
+    private void logRecord(@Nonnull ConsumerRecord<String, String> record) {
         LOG.info(String.format("topic = %s, \npartition = %d, \noffset = %d, \nkey = %s, \nvalue = %s\n\n",
                 record.topic(),
                 record.partition(),

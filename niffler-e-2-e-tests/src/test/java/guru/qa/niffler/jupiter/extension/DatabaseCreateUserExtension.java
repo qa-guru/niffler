@@ -6,7 +6,6 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.ud.UserEntity;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.jupiter.annotation.Friends;
-import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.model.rest.CurrencyValues;
@@ -14,6 +13,7 @@ import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -26,7 +26,9 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
 
     @Step("Create user for test (DB)")
     @Override
-    protected UserJson createUser(String username, String password) throws Exception {
+    @Nonnull
+    protected UserJson createUser(@Nonnull String username,
+                                  @Nonnull String password) throws Exception {
         AuthUserEntity authUser = new AuthUserEntity();
         authUser.setUsername(username);
         authUser.setPassword(password);
@@ -63,11 +65,11 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
 
     @Step("Create income invitations for test user (DB)")
     @Override
-    protected void createIncomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
-        IncomeInvitations invitations = generateUser.incomeInvitations();
-        if (invitations.handleAnnotation() && invitations.count() > 0) {
+    protected void createIncomeInvitationsIfPresent(@Nonnull IncomeInvitations incomeInvitations,
+                                                    @Nonnull UserJson createdUser) throws Exception {
+        if (incomeInvitations.handleAnnotation() && incomeInvitations.count() > 0) {
             UserEntity targetUser = userRepository.getTestUserFromUserdata(createdUser.username());
-            for (int i = 0; i < invitations.count(); i++) {
+            for (int i = 0; i < incomeInvitations.count(); i++) {
                 UserJson incomeInvitation = createUser(generateRandomUsername(), generateRandomPassword());
                 UserEntity incomeInvitationUser = userRepository.getTestUserFromUserdata(incomeInvitation.username());
                 incomeInvitationUser.addFriends(true, targetUser);
@@ -79,11 +81,11 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
 
     @Step("Create outcome invitations for test user (DB)")
     @Override
-    protected void createOutcomeInvitationsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
-        OutcomeInvitations invitations = generateUser.outcomeInvitations();
-        if (invitations.handleAnnotation() && invitations.count() > 0) {
+    protected void createOutcomeInvitationsIfPresent(@Nonnull OutcomeInvitations outcomeInvitations,
+                                                     @Nonnull UserJson createdUser) throws Exception {
+        if (outcomeInvitations.handleAnnotation() && outcomeInvitations.count() > 0) {
             UserEntity targetUser = userRepository.getTestUserFromUserdata(createdUser.username());
-            for (int i = 0; i < invitations.count(); i++) {
+            for (int i = 0; i < outcomeInvitations.count(); i++) {
                 UserJson outcomeInvitation = createUser(generateRandomUsername(), generateRandomPassword());
                 UserEntity outcomeInvitationUser = userRepository.getTestUserFromUserdata(outcomeInvitation.username());
                 targetUser.addFriends(true, outcomeInvitationUser);
@@ -95,8 +97,8 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
 
     @Step("Create friends for test user (DB)")
     @Override
-    protected void createFriendsIfPresent(GenerateUser generateUser, UserJson createdUser) throws Exception {
-        Friends friends = generateUser.friends();
+    protected void createFriendsIfPresent(@Nonnull Friends friends,
+                                          @Nonnull UserJson createdUser) throws Exception {
         if (friends.handleAnnotation() && friends.count() > 0) {
             UserEntity targetUser = userRepository.getTestUserFromUserdata(createdUser.username());
             for (int i = 0; i < friends.count(); i++) {

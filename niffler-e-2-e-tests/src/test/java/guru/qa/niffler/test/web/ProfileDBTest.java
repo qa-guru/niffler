@@ -39,7 +39,7 @@ public class ProfileDBTest extends BaseWebTest {
     @AllureId("500003")
     @DisplayName("WEB: В профиле должна отображаться валюта, сохраненная в niffler-userdata")
     @Tag("WEB")
-    @ApiLogin(nifflerUser = @GenerateUser)
+    @ApiLogin(user = @GenerateUser)
     void checkCurrencyTest() {
         Selenide.open(ProfilePage.URL, ProfilePage.class)
                 .checkCurrency(testedCurrency);

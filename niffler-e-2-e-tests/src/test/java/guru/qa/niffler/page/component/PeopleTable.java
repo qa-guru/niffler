@@ -4,6 +4,8 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
+import javax.annotation.Nonnull;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -14,22 +16,26 @@ public class PeopleTable extends BaseComponent<PeopleTable> {
         super(self);
     }
 
+    @Nonnull
     public ElementsCollection getAllRows() {
         return $$("tbody tr");
     }
 
-    public SelenideElement getRowByUsername(String username) {
+    @Nonnull
+    public SelenideElement getRowByUsername(@Nonnull String username) {
         ElementsCollection allRows = getAllRows();
         SelenideElement table = $(".table");
         table.shouldBe(Condition.visible);
         return allRows.find(text(username));
     }
 
-    public SelenideElement getUsernameCell(SelenideElement row) {
+    @Nonnull
+    public SelenideElement getUsernameCell(@Nonnull SelenideElement row) {
         return row.$$("td").get(1);
     }
 
-    public SelenideElement getActionsCell(SelenideElement row) {
+    @Nonnull
+    public SelenideElement getActionsCell(@Nonnull SelenideElement row) {
         return row.$$("td").get(3);
     }
 }

@@ -11,7 +11,7 @@ import retrofit2.http.Query;
 
 import java.util.List;
 
-public interface NifflerUserdataApi {
+public interface UserdataApi {
 
     @GET("/currentUser")
     Call<UserJson> currentUser(@Query("username") String username);

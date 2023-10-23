@@ -1,6 +1,6 @@
 package guru.qa.niffler.utils;
 
-public enum Error {
+public enum ErrorMessage {
     BAD_CREDENTIALS("Bad credentials"),
     CAN_NOT_ADD_CATEGORY("Can not add new category"),
     PASSWORDS_SHOULD_BE_EQUAL("Passwords should be equal"),
@@ -11,7 +11,7 @@ public enum Error {
 
     public final String content;
 
-    Error(String content) {
+    ErrorMessage(String content) {
         this.content = content;
     }
 }

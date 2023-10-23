@@ -1,4 +1,4 @@
-package guru.qa.niffler.ws.service.converter;
+package guru.qa.niffler.api.converter;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -9,7 +9,6 @@ import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
 import jakarta.xml.soap.SOAPPart;
 import okhttp3.RequestBody;
-import okhttp3.internal.annotations.EverythingIsNonNull;
 import org.w3c.dom.Document;
 import retrofit2.Converter;
 
@@ -21,17 +20,17 @@ import java.io.IOException;
 
 final class JaxbRequestConverter<T> implements Converter<T, RequestBody> {
 
-    private final JAXBContext context;
-    private final Class<T> type;
+    public static final String NAMESPACE_PREFIX = "gs";
+    private final @Nonnull String messageNamespace;
+    private final @Nonnull JAXBContext context;
 
-    JaxbRequestConverter(JAXBContext context, Class<T> type) {
+    JaxbRequestConverter(@Nonnull String messageNamespace, @Nonnull JAXBContext context) {
+        this.messageNamespace = messageNamespace;
         this.context = context;
-        this.type = type;
     }
 
     @Override
-    @EverythingIsNonNull
-    public @Nonnull RequestBody convert(final T value) throws IOException {
+    public @Nonnull RequestBody convert(@Nonnull final T value) throws IOException {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             Marshaller marshaller = context.createMarshaller();
@@ -41,7 +40,7 @@ final class JaxbRequestConverter<T> implements Converter<T, RequestBody> {
             soapMessage.getSOAPBody().addDocument(document);
             SOAPPart part = soapMessage.getSOAPPart();
             SOAPEnvelope envelope = part.getEnvelope();
-            envelope.addNamespaceDeclaration("gs", "niffler-userdata");
+            envelope.addNamespaceDeclaration(NAMESPACE_PREFIX, messageNamespace);
             soapMessage.writeTo(outputStream);
 
             return RequestBody.create(JaxbConverterFactory.XML, outputStream.toByteArray());

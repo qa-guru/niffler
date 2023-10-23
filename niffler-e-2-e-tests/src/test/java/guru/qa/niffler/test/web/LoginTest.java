@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
-import static guru.qa.niffler.utils.Error.BAD_CREDENTIALS;
+import static guru.qa.niffler.utils.ErrorMessage.BAD_CREDENTIALS;
 
 @Epic("[WEB][niffler-frontend]: Авторизация")
 @DisplayName("[WEB][niffler-frontend]: Авторизация")

@@ -22,21 +22,20 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static guru.qa.niffler.utils.DataUtils.generateRandomSentence;
-import static guru.qa.niffler.utils.Error.CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT;
-import static guru.qa.niffler.utils.Error.CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY;
-import static guru.qa.niffler.utils.Error.CAN_NOT_PICK_FUTURE_DATE_FOR_SPENDING;
+import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT;
+import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY;
+import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_PICK_FUTURE_DATE_FOR_SPENDING;
+import static guru.qa.niffler.utils.SuccessMessage.SPENDING_ADDED;
 
 @Epic("[WEB][niffler-frontend]: Траты")
 @DisplayName("[WEB][niffler-frontend]: Траты")
 public class SpendingTest extends BaseWebTest {
 
-    private static final String ADD_SPENDING_SUCCESS_MSG = "Spending successfully added!";
-
     @Test
     @AllureId("500011")
     @DisplayName("WEB: Пользователь имеет возможность добавить трату")
     @Tag("WEB")
-    @ApiLogin(nifflerUser = @GenerateUser(
+    @ApiLogin(user = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
     void shouldAddNewSpending(@User UserJson user) {
@@ -61,7 +60,7 @@ public class SpendingTest extends BaseWebTest {
                 .setNewSpendingDate(currentDate)
                 .setNewSpendingDescription(description)
                 .submitNewSpending()
-                .checkToasterMessage(ADD_SPENDING_SUCCESS_MSG)
+                .checkToasterMessage(SPENDING_ADDED.content)
                 .getSpendingTable()
                 .checkTableContains(spendingToCheck);
     }
@@ -70,7 +69,7 @@ public class SpendingTest extends BaseWebTest {
     @AllureId("500012")
     @DisplayName("WEB: Нельзя добавить трату с будущей датой")
     @Tag("WEB")
-    @ApiLogin(nifflerUser = @GenerateUser(
+    @ApiLogin(user = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
     void shouldNotAddSpendingWithFutureDate() {
@@ -93,7 +92,7 @@ public class SpendingTest extends BaseWebTest {
     @AllureId("500013")
     @DisplayName("WEB: Нельзя добавить трату пустой категорией")
     @Tag("WEB")
-    @ApiLogin(nifflerUser = @GenerateUser(
+    @ApiLogin(user = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
     void shouldNotAddSpendingWithEmptyCategory() {
@@ -111,7 +110,7 @@ public class SpendingTest extends BaseWebTest {
     @AllureId("500014")
     @DisplayName("WEB: Нельзя добавить трату с пустым значением суммы")
     @Tag("WEB")
-    @ApiLogin(nifflerUser = @GenerateUser(
+    @ApiLogin(user = @GenerateUser(
             categories = @GenerateCategory("Friends")
     ))
     void shouldNotAddSpendingWithEmptyAmount() {
@@ -129,7 +128,7 @@ public class SpendingTest extends BaseWebTest {
     @AllureId("500015")
     @DisplayName("WEB: Пользователь имеет возможность отредактировать трату")
     @Tag("WEB")
-    @ApiLogin(nifflerUser = @GenerateUser(
+    @ApiLogin(user = @GenerateUser(
             categories = {
                     @GenerateCategory("Food"),
                     @GenerateCategory("Friends")
@@ -168,7 +167,7 @@ public class SpendingTest extends BaseWebTest {
     @AllureId("500016")
     @DisplayName("WEB: Траты за последнюю неделю должны отображаться при применении фильтра 'Last week'")
     @Tag("WEB")
-    @ApiLogin(nifflerUser = @GenerateUser(
+    @ApiLogin(user = @GenerateUser(
             categories = @GenerateCategory("Бар"),
             spends = @GenerateSpend(
                     spendName = "Коктейль",
@@ -189,7 +188,7 @@ public class SpendingTest extends BaseWebTest {
     @AllureId("500017")
     @DisplayName("WEB: Пользователь имеет возможность удалить трату")
     @Tag("WEB")
-    @ApiLogin(nifflerUser = @GenerateUser(
+    @ApiLogin(user = @GenerateUser(
             categories = @GenerateCategory("Бар"),
             spends = @GenerateSpend(
                     spendName = "Коктейль",

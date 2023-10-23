@@ -1,5 +1,6 @@
 package guru.qa.niffler.utils;
 
+import javax.annotation.Nonnull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,17 +8,20 @@ import java.util.Date;
 
 public class DateUtils {
 
-    public static String getDateAsString(Date date) {
+    @Nonnull
+    public static String getDateAsString(@Nonnull Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy");
         return sdf.format(date);
     }
 
-    public static String getDateAsString(Date date, String stringFormat) {
+    @Nonnull
+    public static String getDateAsString(@Nonnull Date date, @Nonnull String stringFormat) {
         SimpleDateFormat sdf = new SimpleDateFormat(stringFormat);
         return sdf.format(date);
     }
 
-    public static Date fromString(String dateAsString) {
+    @Nonnull
+    public static Date fromString(@Nonnull String dateAsString) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy");
         try {
             return sdf.parse(dateAsString);
@@ -26,7 +30,8 @@ public class DateUtils {
         }
     }
 
-    public static Date addDaysToDate(Date date, int selector, int days) {
+    @Nonnull
+    public static Date addDaysToDate(@Nonnull Date date, int selector, int days) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(selector, days);

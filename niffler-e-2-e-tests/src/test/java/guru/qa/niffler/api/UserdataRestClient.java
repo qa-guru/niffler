@@ -5,74 +5,87 @@ import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
-public class NifflerUserdataClient extends RestService {
+public class UserdataRestClient extends RestService {
 
-    public NifflerUserdataClient() {
+    public UserdataRestClient() {
         super(CFG.userdataUrl());
     }
 
-    private final NifflerUserdataApi userdataApi = retrofit.create(NifflerUserdataApi.class);
+    private final UserdataApi userdataApi = retrofit.create(UserdataApi.class);
 
     @Step("Send REST GET('/currentUser') request to niffler-userdata")
-    public UserJson getCurrentUser(String username) throws Exception {
+    @Nullable
+    public UserJson getCurrentUser(@Nonnull String username) throws Exception {
         return userdataApi.currentUser(username)
                 .execute()
                 .body();
     }
 
     @Step("Send REST POST('/updateUserInfo') request to niffler-userdata")
-    public UserJson updateUser(UserJson userJson) throws Exception {
+    @Nullable
+    public UserJson updateUser(@Nonnull UserJson userJson) throws Exception {
         return userdataApi.updateUserInfo(userJson)
                 .execute()
                 .body();
     }
 
     @Step("Send REST GET('/allUsers') request to niffler-userdata")
-    public List<UserJson> allUsers(String username) throws Exception {
+    @Nullable
+    public List<UserJson> allUsers(@Nonnull String username) throws Exception {
         return userdataApi.allUsers(username)
                 .execute()
                 .body();
     }
 
     @Step("Send REST GET('/friends') request to niffler-userdata")
-    public List<UserJson> friends(String username, boolean includePending) throws Exception {
+    @Nullable
+    public List<UserJson> friends(@Nonnull String username, boolean includePending) throws Exception {
         return userdataApi.friends(username, includePending)
                 .execute()
                 .body();
     }
 
     @Step("Send REST GET('/invitations') request to niffler-userdata")
-    public List<UserJson> invitations(String username) throws Exception {
+    @Nullable
+    public List<UserJson> invitations(@Nonnull String username) throws Exception {
         return userdataApi.invitations(username)
                 .execute()
                 .body();
     }
 
     @Step("Send REST POST('/acceptInvitation') request to niffler-userdata")
-    public List<UserJson> acceptInvitation(String username, FriendJson invitation) throws Exception {
+    @Nullable
+    public List<UserJson> acceptInvitation(@Nonnull String username,
+                                           @Nonnull FriendJson invitation) throws Exception {
         return userdataApi.acceptInvitation(username, invitation)
                 .execute()
                 .body();
     }
 
     @Step("Send REST POST('/declineInvitation') request to niffler-userdata")
-    public List<UserJson> declineInvitation(String username, FriendJson invitation) throws Exception {
+    @Nullable
+    public List<UserJson> declineInvitation(@Nonnull String username,
+                                            @Nonnull FriendJson invitation) throws Exception {
         return userdataApi.declineInvitation(username, invitation)
                 .execute()
                 .body();
     }
 
     @Step("Send REST POST('/addFriend') request to niffler-userdata")
-    public UserJson addFriend(String username, FriendJson friend) throws Exception {
+    @Nullable
+    public UserJson addFriend(@Nonnull String username, @Nonnull FriendJson friend) throws Exception {
         return userdataApi.addFriend(username, friend)
                 .execute()
                 .body();
     }
 
     @Step("Send REST DELETE('/removeFriend') request to niffler-userdata")
-    public List<UserJson> removeFriend(String username, String friendUsername) throws Exception {
+    @Nullable
+    public List<UserJson> removeFriend(@Nonnull String username, @Nonnull String friendUsername) throws Exception {
         return userdataApi.removeFriend(username, friendUsername)
                 .execute()
                 .body();

@@ -1,7 +1,9 @@
 package guru.qa.niffler.jupiter.annotation.meta;
 
-import guru.qa.niffler.jupiter.extension.ClearCookiesAndSessionExtension;
+import guru.qa.niffler.jupiter.extension.ClearCookiesExtension;
+import guru.qa.niffler.jupiter.extension.ContextHolderExtension;
 import guru.qa.niffler.jupiter.extension.KafkaExtension;
+import guru.qa.niffler.jupiter.extension.RestCreateUserExtension;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -12,6 +14,12 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@ExtendWith({KafkaExtension.class, ClearCookiesAndSessionExtension.class, AllureJunit5.class})
+@ExtendWith({
+        KafkaExtension.class,
+        ContextHolderExtension.class,
+        RestCreateUserExtension.class,
+        ClearCookiesExtension.class,
+        AllureJunit5.class
+})
 public @interface KafkaTest {
 }
