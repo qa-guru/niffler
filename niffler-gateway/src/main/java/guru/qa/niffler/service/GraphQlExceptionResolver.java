@@ -5,6 +5,7 @@ import graphql.GraphqlErrorBuilder;
 import graphql.schema.DataFetchingEnvironment;
 import guru.qa.niffler.ex.ToManySubQueriesException;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
 import org.springframework.graphql.execution.ErrorType;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class GraphQlExceptionResolver extends DataFetcherExceptionResolverAdapter {
 
     @Override
+    @Nullable
     protected GraphQLError resolveToSingleError(@Nonnull Throwable ex, @Nonnull DataFetchingEnvironment env) {
         if (ex instanceof ToManySubQueriesException) {
             return GraphqlErrorBuilder.newError()

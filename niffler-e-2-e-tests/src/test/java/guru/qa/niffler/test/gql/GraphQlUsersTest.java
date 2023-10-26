@@ -38,11 +38,10 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     @AllureId("400001")
     @Tag("GraphQL")
     @ApiLogin(user = @GenerateUser)
-    void currentUserTest(@User UserJson user,
-                         @Token String bearerToken,
-                         @GqlReq("gql/currentUserQuery.json") GqlRequest query) throws Exception {
-        UserDataGql currentUserResponse = gqlClient.currentUser(bearerToken, query);
-
+    void currentUserInfoShouldReceived(@User UserJson user,
+                                       @Token String bearerToken,
+                                       @GqlReq("gql/currentUserQuery.json") GqlRequest query) throws Exception {
+        final UserDataGql currentUserResponse = gqlClient.currentUser(bearerToken, query);
         final UserGql userGql = currentUserResponse.getData().getUser();
 
         step("Check that response contains ID (GUID)", () ->
@@ -57,15 +56,14 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     }
 
     @Test
-    @DisplayName("GraphQL: При обновлении юзера должны сохраняться значения в niffler-gateway")
+    @DisplayName("GraphQL: При обновлении юзера должны сохраняться значения в niffler-userdata")
     @AllureId("400002")
     @Tag("GraphQL")
     @ApiLogin(user = @GenerateUser)
-    void updateUserTest(@User UserJson user,
-                        @Token String bearerToken,
-                        @GqlReq("gql/updateUserQuery.json") GqlRequest query) throws Exception {
-        UpdateUserDataGql updateUserResponse = gqlClient.updateUser(bearerToken, query);
-
+    void updatedUserInfoShouldReceived(@User UserJson user,
+                                       @Token String bearerToken,
+                                       @GqlReq("gql/updateUserQuery.json") GqlRequest query) throws Exception {
+        final UpdateUserDataGql updateUserResponse = gqlClient.updateUser(bearerToken, query);
         final UserGql userGql = updateUserResponse.getData().getUpdateUser();
 
         step("Check that response contains ID (GUID)", () ->
@@ -93,10 +91,9 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     @GenerateUsers({
             @GenerateUser
     })
-    void allUsersTest(@Token String bearerToken,
-                      @GqlReq("gql/usersQuery.json") GqlRequest query) throws Exception {
-        UsersDataGql usersDataGql = gqlClient.allUsers(bearerToken, query);
-
+    void notEmptyUsersListShouldReceived(@Token String bearerToken,
+                                         @GqlReq("gql/usersQuery.json") GqlRequest query) throws Exception {
+        final UsersDataGql usersDataGql = gqlClient.allUsers(bearerToken, query);
         final List<UserGql> userGql = usersDataGql.getData().getUsers();
 
         step("Check that all users list is not empty", () ->

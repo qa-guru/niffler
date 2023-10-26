@@ -24,11 +24,11 @@ export const SpendingRow = ({
             path: "/editSpend",
             data: editableSpending,
             onSuccess: () => {
-                showSuccess("Spending updated!");
+                showSuccess("Spending successfully updated");
                 setIsGraphOutdated(!isGraphOutdated);
             },
             onFail: (err) => {
-                showError("Spending was not updated!");
+                showError("Spending was not updated");
                 console.log(err);
             },
         });

@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static io.qameta.allure.Allure.step;
@@ -54,6 +55,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListWithoutInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
+        UserJson testFriend = user.testData().friendsJsons().get(0);
         FriendsRequest fr = friendsRequest(user.username(), false);
 
         final FriendsResponse friendsResponse = wsClient.friendsRequest(fr);
@@ -74,11 +76,15 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         step("Check friend in response", () -> {
             assertTrue(friend.isPresent());
-            assertEquals(user.testData().friendsJsons().get(0).username(), friend.get().getUsername());
+            assertEquals(testFriend.id(), UUID.fromString(friend.get().getId()));
+            assertEquals(testFriend.username(), friend.get().getUsername());
             assertEquals(FriendState.FRIEND, friend.get().getFriendState());
         });
 
-        step("Check that no invitation present in response", () -> assertFalse(invitation.isPresent()));
+        step(
+                "Check that no outcome invitation present in response",
+                () -> assertFalse(invitation.isPresent())
+        );
     }
 
     @Test
@@ -91,6 +97,8 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListWithInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
+        UserJson testFriend = user.testData().friendsJsons().get(0);
+        UserJson testOutInvitation = user.testData().invitationsJsons().get(0);
         FriendsRequest fr = friendsRequest(user.username(), true);
 
         final FriendsResponse friendsResponse = wsClient.friendsRequest(fr);
@@ -111,13 +119,15 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
 
         step("Check friend in response", () -> {
             assertTrue(friend.isPresent());
-            assertEquals(user.testData().friendsJsons().get(0).username(), friend.get().getUsername());
+            assertEquals(testFriend.id(), UUID.fromString(friend.get().getId()));
+            assertEquals(testFriend.username(), friend.get().getUsername());
             assertEquals(FriendState.FRIEND, friend.get().getFriendState());
         });
 
         step("Check invitation in response", () -> {
             assertTrue(invitation.isPresent());
-            assertEquals(user.testData().invitationsJsons().get(0).username(), invitation.get().getUsername());
+            assertEquals(testOutInvitation.id(), UUID.fromString(invitation.get().getId()));
+            assertEquals(testOutInvitation.username(), invitation.get().getUsername());
             assertEquals(FriendState.INVITE_SENT, invitation.get().getFriendState());
         });
     }

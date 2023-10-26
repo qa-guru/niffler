@@ -42,6 +42,8 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListWithoutInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
+        UserJson testFriend = user.testData().friendsJsons().get(0);
+
         final List<UserJson> friends = userdataClient.friends(user.username(), false);
 
         step("Check that response contains expected users", () ->
@@ -58,11 +60,15 @@ public class UserDataFriendsRestTest extends BaseRestTest {
 
         step("Check friend in response", () -> {
             assertTrue(friend.isPresent());
-            assertEquals(user.testData().friendsJsons().get(0).username(), friend.get().username());
+            assertEquals(testFriend.id(), friend.get().id());
+            assertEquals(testFriend.username(), friend.get().username());
             assertEquals(FriendState.FRIEND, friend.get().friendState());
         });
 
-        step("Check that no invitation present in response", () -> assertFalse(invitation.isPresent()));
+        step(
+                "Check that no outcome invitation present in response",
+                () -> assertFalse(invitation.isPresent())
+        );
     }
 
     @Test
@@ -75,6 +81,9 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListWithInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
+        UserJson testFriend = user.testData().friendsJsons().get(0);
+        UserJson testOutInvitation = user.testData().invitationsJsons().get(0);
+
         final List<UserJson> friends = userdataClient.friends(user.username(), true);
 
         step("Check that response contains expected users", () ->
@@ -91,13 +100,15 @@ public class UserDataFriendsRestTest extends BaseRestTest {
 
         step("Check friend in response", () -> {
             assertTrue(friend.isPresent());
-            assertEquals(user.testData().friendsJsons().get(0).username(), friend.get().username());
+            assertEquals(testFriend.id(), friend.get().id());
+            assertEquals(testFriend.username(), friend.get().username());
             assertEquals(FriendState.FRIEND, friend.get().friendState());
         });
 
         step("Check invitation in response", () -> {
             assertTrue(invitation.isPresent());
-            assertEquals(user.testData().invitationsJsons().get(0).username(), invitation.get().username());
+            assertEquals(testOutInvitation.id(), invitation.get().id());
+            assertEquals(testOutInvitation.username(), invitation.get().username());
             assertEquals(FriendState.INVITE_SENT, invitation.get().friendState());
         });
     }

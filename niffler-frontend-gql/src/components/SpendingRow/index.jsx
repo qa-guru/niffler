@@ -27,19 +27,20 @@ export const SpendingRow = ({
         updateSpending({
             variables: {
                 spend: {
-                    ...data
+                    ...data,
+                    amount: parseFloat(data.amount),
                 }
             }
         }).then(res => {
             if (res?.data?.updateSpend !== null) {
-                showSuccess("Spending updated!");
+                showSuccess("Spending successfully updated");
                 setIsGraphOutdated(!isGraphOutdated);
             } else {
-                showError("Spending was not updated!");
+                showError("Spending was not updated");
                 console.log(err);
             }
         }).catch((err) => {
-            showError("Can not update Profile");
+            showError("Can not update Spending row");
             console.log(err);
         });
     };

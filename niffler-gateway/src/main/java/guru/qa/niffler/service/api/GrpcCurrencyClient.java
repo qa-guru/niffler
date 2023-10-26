@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class GrpcCurrencyClient {
@@ -29,8 +28,9 @@ public class GrpcCurrencyClient {
     List<CurrencyJson> getAllCurrencies() {
         try {
             return nifflerCurrencyServiceStub.getAllCurrencies(EMPTY).getAllCurrenciesList()
-                    .stream().map(CurrencyJson::fromGrpcMessage)
-                    .collect(Collectors.toList());
+                    .stream()
+                    .map(CurrencyJson::fromGrpcMessage)
+                    .toList();
         } catch (StatusRuntimeException e) {
             LOG.error("### Error while calling gRPC server ", e);
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);

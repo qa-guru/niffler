@@ -1,12 +1,13 @@
 package guru.qa.niffler.service.api;
 
+import guru.qa.niffler.ex.NoRestResponseException;
 import guru.qa.niffler.model.FriendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,9 +18,10 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @Component
-@Qualifier("rest")
+@ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "rest")
 public class RestUserDataClient implements UserDataClient {
 
     private final WebClient webClient;
@@ -35,12 +37,14 @@ public class RestUserDataClient implements UserDataClient {
     @Override
     public @Nonnull
     UserJson updateUserInfo(@Nonnull UserJson user) {
-        return webClient.post()
-                .uri(nifflerUserdataBaseUri + "/updateUserInfo")
-                .body(Mono.just(user), UserJson.class)
-                .retrieve()
-                .bodyToMono(UserJson.class)
-                .block();
+        return Optional.ofNullable(
+                webClient.post()
+                        .uri(nifflerUserdataBaseUri + "/updateUserInfo")
+                        .body(Mono.just(user), UserJson.class)
+                        .retrieve()
+                        .bodyToMono(UserJson.class)
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/updateUserInfo Route]"));
     }
 
     @Override
@@ -50,11 +54,13 @@ public class RestUserDataClient implements UserDataClient {
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/currentUser").queryParams(params).build().toUri();
 
-        return webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(UserJson.class)
-                .block();
+        return Optional.ofNullable(
+                webClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(UserJson.class)
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/currentUser Route]"));
     }
 
     @Override
@@ -64,12 +70,14 @@ public class RestUserDataClient implements UserDataClient {
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/allUsers").queryParams(params).build().toUri();
 
-        return webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                })
-                .block();
+        return Optional.ofNullable(
+                webClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
+                        })
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/allUsers Route]"));
     }
 
     @Override
@@ -80,12 +88,14 @@ public class RestUserDataClient implements UserDataClient {
         params.add("includePending", String.valueOf(includePending));
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/friends").queryParams(params).build().toUri();
 
-        return webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                })
-                .block();
+        return Optional.ofNullable(
+                webClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
+                        })
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/friends Route]"));
     }
 
     @Override
@@ -95,12 +105,14 @@ public class RestUserDataClient implements UserDataClient {
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/invitations").queryParams(params).build().toUri();
 
-        return webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                })
-                .block();
+        return Optional.ofNullable(
+                webClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
+                        })
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/invitations Route]"));
     }
 
     @Override
@@ -111,13 +123,15 @@ public class RestUserDataClient implements UserDataClient {
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/acceptInvitation").queryParams(params).build().toUri();
 
-        return webClient.post()
-                .uri(uri)
-                .body(Mono.just(invitation), FriendJson.class)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                })
-                .block();
+        return Optional.ofNullable(
+                webClient.post()
+                        .uri(uri)
+                        .body(Mono.just(invitation), FriendJson.class)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
+                        })
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/acceptInvitation Route]"));
     }
 
     @Override
@@ -138,13 +152,15 @@ public class RestUserDataClient implements UserDataClient {
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/declineInvitation").queryParams(params).build().toUri();
 
-        return webClient.post()
-                .uri(uri)
-                .body(Mono.just(invitation), FriendJson.class)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                })
-                .block();
+        return Optional.ofNullable(
+                webClient.post()
+                        .uri(uri)
+                        .body(Mono.just(invitation), FriendJson.class)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
+                        })
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/declineInvitation Route]"));
     }
 
     @Override
@@ -154,12 +170,14 @@ public class RestUserDataClient implements UserDataClient {
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/addFriend").queryParams(params).build().toUri();
 
-        return webClient.post()
-                .uri(uri)
-                .body(Mono.just(friend), FriendJson.class)
-                .retrieve()
-                .bodyToMono(UserJson.class)
-                .block();
+        return Optional.ofNullable(
+                webClient.post()
+                        .uri(uri)
+                        .body(Mono.just(friend), FriendJson.class)
+                        .retrieve()
+                        .bodyToMono(UserJson.class)
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/addFriend Route]"));
     }
 
     @Override
@@ -171,11 +189,13 @@ public class RestUserDataClient implements UserDataClient {
         params.add("friendUsername", friendUsername);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/removeFriend").queryParams(params).build().toUri();
 
-        return webClient.delete()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                })
-                .block();
+        return Optional.ofNullable(
+                webClient.delete()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
+                        })
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/removeFriend Route]"));
     }
 }

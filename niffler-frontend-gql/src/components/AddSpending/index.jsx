@@ -1,6 +1,6 @@
 import {gql, useMutation} from "@apollo/client";
 import dayjs from "dayjs";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {ADD_SPEND_MUTATION} from "../../api/graphql/mutations";
 import {MAX_TEXT_INPUT_FIELD_LENGTH} from "../../constants/const";
 import {showError, showSuccess} from "../../toaster/toaster";
@@ -8,6 +8,7 @@ import {Button} from "../Button/index";
 import {FormCalendar} from "../FormCalendar";
 import {FormInput} from "../FormInput";
 import {FormSelect} from "../FormSelect";
+import {UserContext} from "../../contexts/UserContext";
 
 const initialSpendingState = {
     amount: "",
@@ -26,6 +27,7 @@ const initialErrorState = {
 export const AddSpending = ({categories, addSpendingCallback}) => {
     const [data, setData] = useState(initialSpendingState);
     const [formErrors, setFormErrors] = useState(initialErrorState);
+    const {user, setUser} = useContext(UserContext);
 
     const [addSpend] = useMutation(ADD_SPEND_MUTATION, {
         update(cache, {data: {addSpend}}) {
@@ -101,19 +103,24 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
     const handleAddSpendingSubmit = (e) => {
         e.preventDefault();
         if (isFormValid()) {
-            const dataToSend = {...data, category: data.category?.value};
+            const dataToSend = {
+                ...data,
+                amount: parseFloat(data.amount),
+                category: data.category?.value,
+                currency: user?.currency
+            };
             addSpend({
                 variables: {
                     spend: dataToSend
                 }
             }).then(res => {
                 if (res.data?.addSpend != null) {
-                    showSuccess("New spending successfully added!");
+                    showSuccess("Spending successfully added");
                     addSpendingCallback(data);
                     setData(initialSpendingState);
                     setFormErrors(initialErrorState);
                 } else {
-                    showError("Spending was not added!");
+                    showError("Can not add spending");
                     console.error(err);
                 }
             })
@@ -136,6 +143,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
                             }
                             }/>
                 <FormInput placeholder={"Set Amount"}
+                           fieldName={"amount"}
                            label={"Amount"}
                            type="number"
                            required
@@ -154,6 +162,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
                                   setData({...data, spendDate})
                               }}/>
                 <FormInput placeholder={"Spending description"}
+                           fieldName={"description"}
                            label={"Description"}
                            type="text"
                            max={255}
@@ -163,7 +172,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
                                setFormErrors({...formErrors, description: null})
                                setData({...data, description: evt.target.value})
                            }}/>
-                <Button buttonText={"Add new spending"}/>
+                <Button type="submit" buttonText={"Add new spending"}/>
             </form>
         </section>
     );

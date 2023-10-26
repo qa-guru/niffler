@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,7 @@ public class UserController {
     private final UserDataClient userDataClient;
 
     @Autowired
-    public UserController(@Qualifier("rest") UserDataClient userDataClient) {
+    public UserController(UserDataClient userDataClient) {
         this.userDataClient = userDataClient;
     }
 

@@ -7,7 +7,7 @@ import guru.qa.niffler.model.FriendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.model.graphql.UpdateUserInfoInput;
 import guru.qa.niffler.model.graphql.UserJsonGQL;
-import guru.qa.niffler.service.api.RestUserDataClient;
+import guru.qa.niffler.service.UserDataClient;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
 @Controller
 public class UserGraphqlController {
 
-    private final RestUserDataClient restUserDataClient;
+    private final UserDataClient userDataClient;
 
     @Autowired
-    public UserGraphqlController(RestUserDataClient restUserDataClient) {
-        this.restUserDataClient = restUserDataClient;
+    public UserGraphqlController(UserDataClient userDataClient) {
+        this.userDataClient = userDataClient;
     }
 
     @SchemaMapping(typeName = "User", field = "friends")
@@ -45,17 +45,9 @@ public class UserGraphqlController {
     @QueryMapping
     public UserJsonGQL user(@AuthenticationPrincipal Jwt principal,
                             @Nonnull DataFetchingEnvironment env) {
-        List<SelectedField> friendsSelectors = env.getSelectionSet().getFieldsGroupedByResultKey().get("friends");
-        List<SelectedField> invitationsSelectors = env.getSelectionSet().getFieldsGroupedByResultKey().get("invitations");
-        if (friendsSelectors != null && friendsSelectors.size() > 2) {
-            throw new ToManySubQueriesException("Can`t fetch over 2 friends sub-queries");
-        }
-        if (invitationsSelectors != null && invitationsSelectors.size() > 2) {
-            throw new ToManySubQueriesException("Can`t fetch over 2 invitations sub-queries");
-        }
-
+        checkSubQueries(env, 2, "friends", "invitations");
         String username = principal.getClaim("sub");
-        UserJson userJson = restUserDataClient.currentUser(username);
+        UserJson userJson = userDataClient.currentUser(username);
         UserJsonGQL userJsonGQL = UserJsonGQL.fromUserJson(userJson);
         userJsonGQL.friends().addAll(getFriends(username));
         userJsonGQL.invitations().addAll(getInvitations(username));
@@ -65,7 +57,7 @@ public class UserGraphqlController {
     @QueryMapping
     public List<UserJsonGQL> users(@AuthenticationPrincipal Jwt principal) {
         String username = principal.getClaim("sub");
-        return restUserDataClient.allUsers(username).stream()
+        return userDataClient.allUsers(username).stream()
                 .map(UserJsonGQL::fromUserJson)
                 .collect(Collectors.toList());
     }
@@ -74,7 +66,7 @@ public class UserGraphqlController {
     public UserJsonGQL updateUser(@AuthenticationPrincipal Jwt principal,
                                   @Argument @Valid UpdateUserInfoInput input) {
         String username = principal.getClaim("sub");
-        return UserJsonGQL.fromUserJson(restUserDataClient.updateUserInfo(new UserJson(
+        return UserJsonGQL.fromUserJson(userDataClient.updateUserInfo(new UserJson(
                 null,
                 username,
                 input.firstname(),
@@ -90,7 +82,7 @@ public class UserGraphqlController {
                                  @Argument String friendUsername) {
         String username = principal.getClaim("sub");
         FriendJson friend = new FriendJson(friendUsername);
-        return UserJsonGQL.fromUserJson(restUserDataClient.addFriend(username, friend));
+        return UserJsonGQL.fromUserJson(userDataClient.addFriend(username, friend));
     }
 
     @MutationMapping
@@ -98,7 +90,7 @@ public class UserGraphqlController {
                                         @Argument String friendUsername) {
         String username = principal.getClaim("sub");
         FriendJson friend = new FriendJson(friendUsername);
-        return UserJsonGQL.fromUserJson(restUserDataClient.acceptInvitationAndReturnFriend(username, friend));
+        return UserJsonGQL.fromUserJson(userDataClient.acceptInvitationAndReturnFriend(username, friend));
     }
 
     @MutationMapping
@@ -106,8 +98,8 @@ public class UserGraphqlController {
                                          @Argument String friendUsername) {
         String username = principal.getClaim("sub");
         FriendJson friend = new FriendJson(friendUsername);
-        restUserDataClient.declineInvitation(username, friend);
-        return UserJsonGQL.fromUserJson(restUserDataClient.allUsers(username)
+        userDataClient.declineInvitation(username, friend);
+        return UserJsonGQL.fromUserJson(userDataClient.allUsers(username)
                 .stream()
                 .filter(user -> user.username().equals(friendUsername))
                 .findFirst()
@@ -118,8 +110,8 @@ public class UserGraphqlController {
     public UserJsonGQL removeFriend(@AuthenticationPrincipal Jwt principal,
                                     @Argument String friendUsername) {
         String username = principal.getClaim("sub");
-        restUserDataClient.removeFriend(username, friendUsername);
-        return UserJsonGQL.fromUserJson(restUserDataClient.allUsers(username)
+        userDataClient.removeFriend(username, friendUsername);
+        return UserJsonGQL.fromUserJson(userDataClient.allUsers(username)
                 .stream()
                 .filter(user -> user.username().equals(friendUsername))
                 .findFirst()
@@ -127,16 +119,25 @@ public class UserGraphqlController {
     }
 
     private List<UserJsonGQL> getFriends(String username) {
-        return restUserDataClient.friends(username, false)
+        return userDataClient.friends(username, false)
+                .stream()
+                .map(UserJsonGQL::fromUserJson)
+                .toList();
+    }
+
+    private List<UserJsonGQL> getInvitations(String username) {
+        return userDataClient.invitations(username)
                 .stream()
                 .map(UserJsonGQL::fromUserJson)
                 .collect(Collectors.toList());
     }
 
-    private List<UserJsonGQL> getInvitations(String username) {
-        return restUserDataClient.invitations(username)
-                .stream()
-                .map(UserJsonGQL::fromUserJson)
-                .collect(Collectors.toList());
+    private void checkSubQueries(@Nonnull DataFetchingEnvironment env, int depth, @Nonnull String... queryKeys) {
+        for (String queryKey : queryKeys) {
+            List<SelectedField> selectors = env.getSelectionSet().getFieldsGroupedByResultKey().get(queryKey);
+            if (selectors != null && selectors.size() > depth) {
+                throw new ToManySubQueriesException("Can`t fetch over 2 " + queryKey + " sub-queries");
+            }
+        }
     }
 }
