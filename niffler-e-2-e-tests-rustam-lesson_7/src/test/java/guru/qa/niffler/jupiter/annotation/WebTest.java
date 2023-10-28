@@ -1,5 +1,6 @@
 package guru.qa.niffler.jupiter.annotation;
 
+import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.extension.ExampleSuiteExtension;
 import guru.qa.niffler.jupiter.extension.GenerateSpendExtension;
@@ -12,6 +13,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ExtendWith({BrowserExtension.class, ExampleSuiteExtension.class})
+@ExtendWith({BrowserExtension.class, ExampleSuiteExtension.class, ApiLoginExtension.class})
 public @interface WebTest {
 }

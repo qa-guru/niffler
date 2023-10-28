@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions;
 public class CategoryRestClient extends BaseRestClient {
 
   public CategoryRestClient() {
-    super(Config.getInstance().getCategoryUrl());
+    super(CFG.getCategoryUrl());
   }
 
   private final CategoryService categoryService = retrofit.create(CategoryService.class);

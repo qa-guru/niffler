@@ -1,6 +1,8 @@
-package guru.qa.niffler.db;
+package guru.qa.niffler.db.jdbc;
 
+import com.p6spy.engine.spy.P6DataSource;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.db.ServiceDB;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
@@ -69,11 +71,12 @@ public enum DataSourceProvider {
   public DataSource getDataSource(ServiceDB db) {
 
     return dataSourceStore.computeIfAbsent(db, key -> {
-        PGSimpleDataSource ds = new PGSimpleDataSource();
-        ds.setUrl(key.getUrl());
-        ds.setUser(cfg.databaseUser());
-        ds.setPassword(cfg.databasePassword());
-        return ds;
+      PGSimpleDataSource sd = new PGSimpleDataSource();
+      sd.setUrl(key.getUrl());
+      sd.setUser(cfg.databaseUser());
+      sd.setPassword(cfg.databasePassword());
+      P6DataSource ds = new P6DataSource(sd);
+      return ds;
     });
 
   }

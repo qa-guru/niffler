@@ -2,13 +2,11 @@ package guru.qa.niffler.jupiter.extension;
 
 
 import com.github.javafaker.Faker;
-import guru.qa.niffler.db.dao.AuthUserDAO;
-import guru.qa.niffler.db.dao.UserDataUserDAO;
+import guru.qa.niffler.db.dao.NifflerUserRepository;
 import guru.qa.niffler.db.entity.auth.Authority;
 import guru.qa.niffler.db.entity.auth.AuthorityEntity;
-import guru.qa.niffler.db.entity.userdata.CurrencyValues;
-import guru.qa.niffler.db.entity.userdata.UserDataEntity;
 import guru.qa.niffler.db.entity.auth.UserEntity;
+import guru.qa.niffler.db.entity.userdata.UserDataEntity;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -26,20 +24,23 @@ public class RandomUsersExtension implements
     ParameterResolver
 {
 
-  private final AuthUserDAO authUserDAO = AuthUserDAO.getImpl();
-  private final UserDataUserDAO userDataUserDAO = UserDataUserDAO.getImpl();
-  private UserEntity user;
-  private UserDataEntity userData;
+//  private final AuthUserDAO authUserDAO = AuthUserDAO.getImpl();
+//  private final UserDataUserDAO userDataUserDAO = UserDataUserDAO.getImpl();
+//  private final NifflerUserRepository userRepository = new NifflerUserRepository();
+//  private NifflerUserRepository userRepository;
+//  private UserEntity user;
+//  private UserDataEntity userData;
 
   public static Namespace RANDOM_USER_NAMESPACE = Namespace.create(RandomUsersExtension.class);
+  public static Namespace RANDOM_USER_REPOSITORY_NAMESPACE = Namespace.create(RandomUsersExtension.class);
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
     GenerateUser annotation = context.getRequiredTestMethod().getAnnotation(GenerateUser.class);
     if (annotation != null) {
-      user = new UserEntity();
-      user.setUsername(new Faker().name().username());
-
+      UserEntity user = new UserEntity();
+//      user.setUsername(new Faker().name().username());
+      user.setUsername("new Faker().name().username()");
       user.setPassword("12345");
       user.setEnabled(true);
       user.setAccountNonExpired(true);
@@ -65,18 +66,21 @@ public class RandomUsersExtension implements
 //      }
 //      user.setAuthorities(authorityEntityList);
 
-      authUserDAO.createUser(user);
+//      authUserDAO.createUser(user);
+      NifflerUserRepository userRepository = new NifflerUserRepository();
+      userRepository.createUserForTest(user);
 
-      userData = new UserDataEntity();
-      userData.setUsername(user.getUsername());
-      userData.setCurrency(CurrencyValues.USD);
-      userData.setFirstname("updated_firstname_2");
-      userData.setSurname("updated_surname_2");
-      userData.setPhoto("photos/photo2.jpeg".getBytes());
+//      userData = new UserDataEntity();
+//      userData.setUsername(user.getUsername());
+//      userData.setCurrency(CurrencyValues.USD);
+//      userData.setFirstname("updated_firstname_2");
+//      userData.setSurname("updated_surname_2");
+//      userData.setPhoto("photos/photo2.jpeg".getBytes());
 
-      userDataUserDAO.createUserInUserData(userData);
+//      userDataUserDAO.createUserInUserData(userData);
 
       context.getStore(RANDOM_USER_NAMESPACE).put("randomUser", user);
+      context.getStore(RANDOM_USER_REPOSITORY_NAMESPACE).put("userRepository", userRepository);
     }
 
   }
@@ -95,17 +99,20 @@ public class RandomUsersExtension implements
 
   @Override
   public void afterTestExecution(ExtensionContext context) throws Exception {
-    authUserDAO.getUserById(user.getId());
-    userDataUserDAO.getUserdataInUserData(userData);
+//    authUserDAO.getUserById(user.getId());
+//    userDataUserDAO.getUserdataInUserData(userData);
 
-    user.setEnabled(false);
-    authUserDAO.updateUser(user);
-
-    userData.setCurrency(CurrencyValues.KZT);
-    userDataUserDAO.updateUserInUserData(userData);
-
-    userDataUserDAO.deleteUserByUsernameInUserData(userData);
-    authUserDAO.deleteUser(user);
+//    user.setEnabled(false);
+////    authUserDAO.updateUser(user);
+//
+//    userData.setCurrency(CurrencyValues.KZT);
+//    userDataUserDAO.updateUserInUserData(userData);
+//
+//    userDataUserDAO.deleteUserByUsernameInUserData(userData);
+//    authUserDAO.deleteUser(user);
+    NifflerUserRepository userRepository = context.getStore(RANDOM_USER_REPOSITORY_NAMESPACE).get("userRepository", NifflerUserRepository.class);
+    UserEntity user = context.getStore(RANDOM_USER_NAMESPACE).get("randomUser", UserEntity.class);
+    userRepository.removeAfterTest(user);
   }
 
 }

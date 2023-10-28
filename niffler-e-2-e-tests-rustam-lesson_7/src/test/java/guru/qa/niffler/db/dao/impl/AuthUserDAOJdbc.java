@@ -1,6 +1,8 @@
-package guru.qa.niffler.db.dao;
+package guru.qa.niffler.db.dao.impl;
 
-import guru.qa.niffler.db.DataSourceProvider;
+import guru.qa.niffler.db.dao.AuthUserDAO;
+import guru.qa.niffler.db.dao.UserDataUserDAO;
+import guru.qa.niffler.db.jdbc.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDB;
 import guru.qa.niffler.db.entity.auth.Authority;
 import guru.qa.niffler.db.entity.userdata.CurrencyValues;
@@ -179,6 +181,30 @@ public class AuthUserDAOJdbc implements AuthUserDAO, UserDataUserDAO {
             "SELECT * FROM users WHERE username = ?"
         )) {
       userPs.setObject(1, userData.getUsername());
+      ResultSet resultSet = userPs.executeQuery();
+
+      if (resultSet.next()) {
+        userdata.setId(resultSet.getObject("id", UUID.class));
+        userdata.setUsername(resultSet.getString("username"));
+        userdata.setCurrency(CurrencyValues.valueOf(resultSet.getString("currency")));
+        userdata.setFirstname(resultSet.getString("firstname"));
+        userdata.setSurname(resultSet.getString("surname"));
+//        userdata.setPhoto(resultSet.getString("photo").getBytes());
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    return userdata;
+  }
+
+  @Override
+  public UserDataEntity getUserdataInUserDataByUserName(String username) {
+    UserDataEntity userdata = new UserDataEntity();
+    try (Connection conn = userdataDs.getConnection();
+        PreparedStatement userPs = conn.prepareStatement(
+            "SELECT * FROM users WHERE username = ?"
+        )) {
+      userPs.setObject(1, username);
       ResultSet resultSet = userPs.executeQuery();
 
       if (resultSet.next()) {

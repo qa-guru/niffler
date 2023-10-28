@@ -1,6 +1,7 @@
 package guru.qa.niffler.db;
 
 import guru.qa.niffler.config.Config;
+import org.apache.commons.lang3.StringUtils;
 
 public enum ServiceDB {
 
@@ -22,5 +23,9 @@ public enum ServiceDB {
         cfg.databaseHost(),
         cfg.databasePort()
     );
+  }
+
+  public String getSpyUrl() {
+    return "jdbc:p6spy:" + StringUtils.substringAfter(getUrl(), "jdbc:");
   }
 }

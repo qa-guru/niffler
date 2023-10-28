@@ -1,6 +1,7 @@
-package guru.qa.niffler.db.dao;
+package guru.qa.niffler.db.dao.impl;
 
 import guru.qa.niffler.db.ServiceDB;
+import guru.qa.niffler.db.dao.AuthUserDAO;
 import guru.qa.niffler.db.jpa.EntityManagerFactoryProvider;
 import guru.qa.niffler.db.jpa.JpaService;
 import guru.qa.niffler.db.entity.auth.UserEntity;

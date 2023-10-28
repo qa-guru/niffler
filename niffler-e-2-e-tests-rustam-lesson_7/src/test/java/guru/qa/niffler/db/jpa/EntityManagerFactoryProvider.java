@@ -1,5 +1,7 @@
 package guru.qa.niffler.db.jpa;
 
+import com.p6spy.engine.spy.P6SpyDriver;
+import com.p6spy.engine.spy.P6SpyFactory;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.db.ServiceDB;
 import jakarta.persistence.EntityManagerFactory;
@@ -22,10 +24,12 @@ public enum EntityManagerFactoryProvider {
     return entityManagerFactory.computeIfAbsent(db, key -> {
 
       Map<String, Object> props = new HashMap<>();
-      props.put("hibernate.connection.url", key.getUrl());
+//      props.put("hibernate.connection.url", key.getUrl());
+      props.put("hibernate.connection.url", key.getSpyUrl());
       props.put("hibernate.connection.user", cfg.databaseUser());
       props.put("hibernate.connection.password", cfg.databasePassword());
-      props.put("hibernate.connection.driver_class", "org.postgresql.Driver");
+//      props.put("hibernate.connection.driver_class", "org.postgresql.Driver");
+      props.put("hibernate.connection.driver_class", "com.p6spy.engine.spy.P6SpyDriver");
       props.put("hibernate.connection.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
       EntityManagerFactory entityManagerFactory =

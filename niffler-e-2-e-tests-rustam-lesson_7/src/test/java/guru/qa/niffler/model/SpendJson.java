@@ -81,4 +81,16 @@ public class SpendJson {
         this.username = username;
     }
 
+    @Override
+    public String toString() {
+        return "SpendJson{" +
+            "id=" + id +
+            ", spendDate=" + spendDate +
+            ", category='" + category + '\'' +
+            ", currency=" + currency +
+            ", amount=" + amount +
+            ", description='" + description + '\'' +
+            ", username='" + username + '\'' +
+            '}';
+    }
 }

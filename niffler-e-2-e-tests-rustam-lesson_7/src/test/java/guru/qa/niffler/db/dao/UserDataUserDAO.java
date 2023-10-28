@@ -1,5 +1,7 @@
 package guru.qa.niffler.db.dao;
 
+import guru.qa.niffler.db.dao.impl.AuthUserDAOJdbc;
+import guru.qa.niffler.db.dao.impl.UserDataUserDAOHibernate;
 import guru.qa.niffler.db.entity.userdata.UserDataEntity;
 import java.util.UUID;
 
@@ -21,6 +23,8 @@ public interface UserDataUserDAO {
   UserDataEntity createUserInUserData(UserDataEntity userData);
 
   UserDataEntity getUserdataInUserData(UserDataEntity userData);
+
+  UserDataEntity getUserdataInUserDataByUserName(String username);
 
   UserDataEntity updateUserInUserData(UserDataEntity userData);
 

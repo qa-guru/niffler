@@ -1,8 +1,10 @@
-package guru.qa.niffler.db.dao;
+package guru.qa.niffler.db.dao.impl;
 
 import static guru.qa.niffler.db.entity.userdata.CurrencyValues.RUB;
 
-import guru.qa.niffler.db.DataSourceProvider;
+import guru.qa.niffler.db.dao.AuthUserDAO;
+import guru.qa.niffler.db.dao.UserDataUserDAO;
+import guru.qa.niffler.db.jdbc.DataSourceProvider;
 import guru.qa.niffler.db.ServiceDB;
 import guru.qa.niffler.db.mapper.UserEntityRowMapper;
 import guru.qa.niffler.db.mapper.UserdataEntityRowMapper;
@@ -153,6 +155,15 @@ public class AuthUserDAOSpringJdbc implements AuthUserDAO, UserDataUserDAO {
         "SELECT * FROM users WHERE username = ?",
         UserdataEntityRowMapper.instance,
         userData.getUsername()
+    );
+  }
+
+  @Override
+  public UserDataEntity getUserdataInUserDataByUserName(String username) {
+    return userdataJdbcTemplate.queryForObject(
+        "SELECT * FROM users WHERE username = ?",
+        UserdataEntityRowMapper.instance,
+        username
     );
   }
 

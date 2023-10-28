@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions;
 public class SpendRestClient extends BaseRestClient {
 
   public SpendRestClient() {
-    super(Config.getInstance().getSpendUrl());
+    super(CFG.getSpendUrl());
   }
 
   private final SpendService spendService = retrofit.create(SpendService.class);

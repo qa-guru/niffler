@@ -8,6 +8,8 @@ import guru.qa.niffler.page.component.HeaderRustam;
 
 public class MainPageRustam extends BasePageRustam<MainPageRustam> {
 
+  public final static String URL = "http://127.0.0.1:3000/main";
+
   private final HeaderRustam headerRustam = new HeaderRustam();
 
   public HeaderRustam getHeader() {
