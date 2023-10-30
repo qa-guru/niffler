@@ -6,7 +6,7 @@ public interface Config {
     if ("docker".equals(System.getProperty("test.env"))) {
       return DockerConfig.config;
     }
-    return LocalConfig.config;
+    return Local7Config.config;
   }
 
   String databaseHost();

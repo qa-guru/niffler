@@ -5,7 +5,7 @@ import static guru.qa.niffler.condition.SpendRustamCondition.spends;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.Spend7Json;
 import io.qameta.allure.Step;
 
 public class SpendingRustamTable extends BaseComponentRustam<SpendingRustamTable> {
@@ -25,7 +25,7 @@ public class SpendingRustamTable extends BaseComponentRustam<SpendingRustamTable
     }
 
     @Step("Check that table contains data {0}")
-    public SpendingRustamTable checkTableContains(SpendJson... expectedSpends) {
+    public SpendingRustamTable checkTableContains(Spend7Json... expectedSpends) {
         self.$$("tbody tr").should(spends(expectedSpends));
         return this;
     }

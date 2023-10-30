@@ -6,7 +6,7 @@ import guru.qa.niffler.db.entity.userdata.CurrencyValues;
 import java.util.Date;
 import java.util.UUID;
 
-public class SpendJson {
+public class Spend7Json {
     @JsonProperty("id")
     private UUID id;
     @JsonProperty("spendDate")
@@ -22,7 +22,7 @@ public class SpendJson {
     @JsonProperty("username")
     private String username;
 
-    public SpendJson() {
+    public Spend7Json() {
     }
 
     public UUID getId() {

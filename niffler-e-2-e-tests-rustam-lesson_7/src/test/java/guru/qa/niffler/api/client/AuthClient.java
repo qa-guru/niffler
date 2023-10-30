@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class AuthClient extends BaseRestClient {
+public class AuthClient extends BaseRestClient7 {
 
   public AuthClient() {
     super(

@@ -1,11 +1,11 @@
 package guru.qa.niffler.config;
 
-public class LocalConfig implements Config {
+public class Local7Config implements Config {
 
   // Убрал паблик, чтобы был дефолт и видимость была только в пакете конфиг, а в тестах использовать было нельзя.
-  static final LocalConfig config = new LocalConfig();
+  static final Local7Config config = new Local7Config();
   // Приватный конструктор для того, чтобы нельзя было создавать новые объекты, а конфиг был синглтоном.
-  private LocalConfig() {
+  private Local7Config() {
   }
 
   @Override

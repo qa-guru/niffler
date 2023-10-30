@@ -1,25 +1,21 @@
 package guru.qa.niffler.condition;
 
 import com.codeborne.selenide.CollectionCondition;
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.impl.CollectionSource;
 import guru.qa.niffler.db.entity.userdata.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.Spend7Json;
 import guru.qa.niffler.utils.DateUtils;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public class SpendRustamCondition {
 
-  public static CollectionCondition spends(SpendJson... expectedSpends) {
+  public static CollectionCondition spends(Spend7Json... expectedSpends) {
     return new CollectionCondition() {
 
       @Override
@@ -49,7 +45,7 @@ public class SpendRustamCondition {
 
         for (int i = 0; i < expectedSpends.length; i++) {
           WebElement row = elements.get(i);
-          SpendJson expectedSpending = expectedSpends[i];
+          Spend7Json expectedSpending = expectedSpends[i];
           List<WebElement> calls = row.findElements(By.cssSelector("td"));
 
           if (!calls.get(1).getText().equals(DateUtils.getDateAsString(expectedSpending.getSpendDate()))) {
@@ -71,11 +67,11 @@ public class SpendRustamCondition {
         return true;
       }
 
-      private List<SpendJson> bindElementsToSpends(List<WebElement> elements) {
+      private List<Spend7Json> bindElementsToSpends(List<WebElement> elements) {
         return elements.stream()
             .map(e -> {
               List<WebElement> cells = e.findElements(By.cssSelector("td"));
-              SpendJson actual = new SpendJson();
+              Spend7Json actual = new Spend7Json();
               actual.setSpendDate(DateUtils.fromString(cells.get(1).getText()));
               actual.setAmount(Double.valueOf(cells.get(2).getText()));
               actual.setCurrency(CurrencyValues.valueOf(cells.get(3).getText()));

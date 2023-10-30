@@ -1,13 +1,12 @@
 package guru.qa.niffler.api.client;
 
 import guru.qa.niffler.api.service.CategoryService;
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Assertions;
 
-public class CategoryRestClient extends BaseRestClient {
+public class CategoryRestClient extends BaseRestClient7 {
 
   public CategoryRestClient() {
     super(CFG.getCategoryUrl());

@@ -1,7 +1,6 @@
 package guru.qa.niffler.test;
 
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
@@ -10,11 +9,11 @@ import com.codeborne.selenide.CollectionCondition;
 import guru.qa.niffler.db.entity.userdata.CurrencyValues;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.Spend7Json;
 import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.Test;
 
-public class SpendingRustamTest extends BaseWebTest {
+public class Spending7Test extends BaseWebTest {
 
     @GenerateSpend(
         username = "rustam",
@@ -23,10 +22,10 @@ public class SpendingRustamTest extends BaseWebTest {
         amount = 52000.00,
         currency = CurrencyValues.RUB
     )
-    @ApiLogin(username = "rustam", password = "12345")
+//    @ApiLogin(username = "rustam", password = "12345")
     @AllureId("50")
     @Test
-    void checkLastWeekSpendingTest(SpendJson spend) {
+    void checkLastWeekSpendingTest(Spend7Json spend) {
         open(CFG.getFrontUrl() + "/main");
 
         $(".spendings-table tbody").$$("tr")
