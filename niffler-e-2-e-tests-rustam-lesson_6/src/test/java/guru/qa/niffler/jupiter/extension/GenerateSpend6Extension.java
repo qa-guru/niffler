@@ -1,6 +1,6 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.client.SpendRestClient;
+import guru.qa.niffler.api.client.Spend6RestClient;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.model.SpendJson;
 import java.util.Date;
@@ -15,7 +15,7 @@ public class GenerateSpend6Extension implements ParameterResolver, BeforeEachCal
     public static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace
           .create(GenerateSpend6Extension.class);
 
-    private final SpendRestClient spendRestClient = new SpendRestClient();
+    private final Spend6RestClient spendRestClient = new Spend6RestClient();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {

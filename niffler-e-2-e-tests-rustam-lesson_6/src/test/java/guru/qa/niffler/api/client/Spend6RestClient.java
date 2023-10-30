@@ -7,9 +7,9 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Assertions;
 
-public class SpendRestClient extends BaseRestClient {
+public class Spend6RestClient extends BaseRestClient {
 
-  public SpendRestClient() {
+  public Spend6RestClient() {
     super(Config.getInstance().getSpendUrl());
   }
 
