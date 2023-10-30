@@ -10,10 +10,10 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-public class GenerateSpendExtension implements ParameterResolver, BeforeEachCallback {
+public class GenerateSpend6Extension implements ParameterResolver, BeforeEachCallback {
 
     public static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace
-          .create(GenerateSpendExtension.class);
+          .create(GenerateSpend6Extension.class);
 
     private final SpendRestClient spendRestClient = new SpendRestClient();
 

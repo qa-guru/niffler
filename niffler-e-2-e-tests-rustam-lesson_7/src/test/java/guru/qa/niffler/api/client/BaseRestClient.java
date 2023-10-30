@@ -30,8 +30,7 @@ public abstract class BaseRestClient {
   public BaseRestClient(String serviceBaseUrl, boolean followRedirect, Interceptor... interceptors) {
     this.serviceBaseUrl = serviceBaseUrl;
     Builder builder = new Builder()
-        .followRedirects(followRedirect)
-        .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BODY));
+        .followRedirects(followRedirect);
 
     if (interceptors != null) {
       for (Interceptor interceptor: interceptors) {
@@ -39,6 +38,7 @@ public abstract class BaseRestClient {
       }
     }
 
+    builder.addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BODY));
     this.httpClient = builder.build();
 
     this.retrofit = new Retrofit.Builder()

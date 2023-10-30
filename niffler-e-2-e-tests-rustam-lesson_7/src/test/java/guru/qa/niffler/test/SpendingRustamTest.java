@@ -23,9 +23,9 @@ public class SpendingRustamTest extends BaseWebTest {
         amount = 52000.00,
         currency = CurrencyValues.RUB
     )
-    @Test
-    @AllureId("50")
     @ApiLogin(username = "rustam", password = "12345")
+    @AllureId("50")
+    @Test
     void checkLastWeekSpendingTest(SpendJson spend) {
         open(CFG.getFrontUrl() + "/main");
 

@@ -40,7 +40,7 @@ public class GenerateSpendExtension implements ParameterResolver, BeforeEachCall
     }
 
     @Override
-    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    public SpendJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return extensionContext.getStore(NAMESPACE).get("spend", SpendJson.class);
     }
 }

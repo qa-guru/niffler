@@ -1,21 +1,30 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.client.SpendRestClient;
+import guru.qa.niffler.api.SpendService;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.model.SpendJson;
-import java.util.Date;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
+import okhttp3.OkHttpClient;
+import org.junit.jupiter.api.extension.*;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
-public class GenerateSpendExtension implements ParameterResolver, BeforeEachCallback {
+import java.util.Date;
+
+public class GenerateSpend4Extension implements ParameterResolver, BeforeEachCallback {
 
     public static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace
-          .create(GenerateSpendExtension.class);
+          .create(GenerateSpend4Extension.class);
 
-    private final SpendRestClient spendRestClient = new SpendRestClient();
+    private static final OkHttpClient httpClient = new OkHttpClient.Builder()
+          .build();
+
+    private final Retrofit retrofit = new Retrofit.Builder()
+          .client(httpClient)
+          .baseUrl("http://127.0.0.1:8093")
+          .addConverterFactory(JacksonConverterFactory.create())
+          .build();
+
+    private final SpendService spendService = retrofit.create(SpendService.class);
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
@@ -29,7 +38,9 @@ public class GenerateSpendExtension implements ParameterResolver, BeforeEachCall
             spend.setCurrency(annotation.currency());
             spend.setAmount(annotation.amount());
 
-            SpendJson created = spendRestClient.addSpend(spend);
+            SpendJson created = spendService.addSpend(spend)
+                  .execute()
+                  .body();
             context.getStore(NAMESPACE).put("spend", created);
         }
     }

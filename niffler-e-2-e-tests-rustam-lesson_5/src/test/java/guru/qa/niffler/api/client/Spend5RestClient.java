@@ -1,19 +1,19 @@
 package guru.qa.niffler.api.client;
 
-import guru.qa.niffler.api.service.SpendService;
+import guru.qa.niffler.api.service.Spend5Service;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.SpendJson;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Assertions;
 
-public class SpendRestClient extends BaseRestClient {
+public class Spend5RestClient extends BaseRestClient {
 
-  public SpendRestClient() {
+  public Spend5RestClient() {
     super(Config.getInstance().getSpendUrl());
   }
 
-  private final SpendService spendService = retrofit.create(SpendService.class);
+  private final Spend5Service spendService = retrofit.create(Spend5Service.class);
 
   public @Nonnull SpendJson addSpend(SpendJson spend) {
     try {

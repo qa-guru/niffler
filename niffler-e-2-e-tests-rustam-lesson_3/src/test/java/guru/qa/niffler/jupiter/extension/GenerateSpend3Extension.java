@@ -10,10 +10,10 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.util.Date;
 
-public class GenerateSpendExtension implements ParameterResolver, BeforeEachCallback {
+public class GenerateSpend3Extension implements ParameterResolver, BeforeEachCallback {
 
     public static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace
-          .create(GenerateSpendExtension.class);
+          .create(GenerateSpend3Extension.class);
 
     private static final OkHttpClient httpClient = new OkHttpClient.Builder()
           .build();

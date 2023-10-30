@@ -1,30 +1,21 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.SpendService;
+import guru.qa.niffler.api.client.Spend5RestClient;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.model.SpendJson;
-import okhttp3.OkHttpClient;
-import org.junit.jupiter.api.extension.*;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
-
 import java.util.Date;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.ParameterResolver;
 
-public class GenerateSpendExtension implements ParameterResolver, BeforeEachCallback {
+public class GenerateSpend5Extension implements ParameterResolver, BeforeEachCallback {
 
     public static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace
-          .create(GenerateSpendExtension.class);
+          .create(GenerateSpend5Extension.class);
 
-    private static final OkHttpClient httpClient = new OkHttpClient.Builder()
-          .build();
-
-    private final Retrofit retrofit = new Retrofit.Builder()
-          .client(httpClient)
-          .baseUrl("http://127.0.0.1:8093")
-          .addConverterFactory(JacksonConverterFactory.create())
-          .build();
-
-    private final SpendService spendService = retrofit.create(SpendService.class);
+    private final Spend5RestClient spendRestClient = new Spend5RestClient();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
@@ -38,10 +29,8 @@ public class GenerateSpendExtension implements ParameterResolver, BeforeEachCall
             spend.setCurrency(annotation.currency());
             spend.setAmount(annotation.amount());
 
-            SpendJson created = spendService.addSpend(spend)
-                  .execute()
-                  .body();
-            context.getStore(NAMESPACE).put("spend", created);
+            SpendJson created = spendRestClient.addSpend(spend);
+            context.getStore(NAMESPACE).put("spend", spend);
         }
     }
 

@@ -49,7 +49,7 @@ public class AuthClient extends BaseRestClient {
           username,
           password
       ).execute();
-    } catch (IOException e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
 

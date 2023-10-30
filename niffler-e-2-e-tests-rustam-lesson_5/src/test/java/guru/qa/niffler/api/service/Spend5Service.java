@@ -5,7 +5,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public interface SpendService {
+public interface Spend5Service {
 
     @POST("/addSpend")
     Call<SpendJson> addSpend(@Body SpendJson spend);
