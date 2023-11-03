@@ -13,7 +13,7 @@ public class SpendJson {
     @JsonProperty("spendDate")
     private Date spendDate;
     @JsonProperty("category")
-    private GenerateCategory category;
+    private String category;
     @JsonProperty("currency")
     private CurrencyValues currency;
     @JsonProperty("amount")
@@ -42,11 +42,11 @@ public class SpendJson {
         this.spendDate = spendDate;
     }
 
-    public GenerateCategory getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(GenerateCategory category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 

@@ -25,6 +25,9 @@ public class Spend7Json {
     public Spend7Json() {
     }
 
+    public Spend7Json(String spendDate, String category, String currency, String amount, String description, String username) {
+    }
+
     public UUID getId() {
         return id;
     }

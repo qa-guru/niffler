@@ -1,21 +1,36 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.client.Spend7RestClient;
+import guru.qa.niffler.api.service.CategoryService;
+import guru.qa.niffler.api.service.Spend7Service;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.model.Spend7Json;
 import java.util.Date;
+import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class Generate7SpendExtension implements ParameterResolver, BeforeEachCallback {
 
-    public static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace
+    public static ExtensionContext.Namespace NAMESPACE_7 = ExtensionContext.Namespace
           .create(Generate7SpendExtension.class);
 
-//    private final Spend7RestClient spend7RestClient = new Spend7RestClient();
+    private final Spend7RestClient spend7RestClient = new Spend7RestClient();
+//    private static final OkHttpClient httpClient = new OkHttpClient.Builder()
+//        .build();
+//
+//    private final Retrofit retrofit = new Retrofit.Builder()
+//        .client(httpClient)
+//        .baseUrl("http://127.0.0.1:8093")
+//        .addConverterFactory(JacksonConverterFactory.create())
+//        .build();
+//
+//    private final Spend7Service spend7Service = retrofit.create(Spend7Service.class);
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
@@ -28,9 +43,10 @@ public class Generate7SpendExtension implements ParameterResolver, BeforeEachCal
             spend.setSpendDate(new Date());
             spend.setCurrency(annotation.currency());
             spend.setAmount(annotation.amount());
-            Spend7RestClient spend7RestClient = new Spend7RestClient();
+
             Spend7Json created = spend7RestClient.addSpend(spend);
-            context.getStore(NAMESPACE).put("spend", created);
+//            Spend7Json created = spend7Service.addSpend(spend).execute().body();
+            context.getStore(NAMESPACE_7).put("spend", created);
         }
     }
 
@@ -41,6 +57,6 @@ public class Generate7SpendExtension implements ParameterResolver, BeforeEachCal
 
     @Override
     public Spend7Json resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return extensionContext.getStore(NAMESPACE).get("spend", Spend7Json.class);
+        return extensionContext.getStore(NAMESPACE_7).get("spend", Spend7Json.class);
     }
 }

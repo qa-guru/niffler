@@ -17,20 +17,20 @@ public abstract class BaseRestClient7 {
   protected final OkHttpClient httpClient;
   protected final Retrofit retrofit;
 
-//  public BaseRestClient7(String serviceBaseUrl) {
-//    this(serviceBaseUrl, false, null);
-//  }
-
   public BaseRestClient7(String serviceBaseUrl) {
-    this.serviceBaseUrl = serviceBaseUrl;
-    this.httpClient = new OkHttpClient.Builder()
-        .build();
-    this.retrofit = new Retrofit.Builder()
-        .client(httpClient)
-        .baseUrl(serviceBaseUrl)
-        .addConverterFactory(JacksonConverterFactory.create())
-        .build();
+    this(serviceBaseUrl, false, null);
   }
+
+//  public BaseRestClient7(String serviceBaseUrl) {
+//    this.serviceBaseUrl = serviceBaseUrl;
+//    this.httpClient = new OkHttpClient.Builder()
+//        .build();
+//    this.retrofit = new Retrofit.Builder()
+//        .client(httpClient)
+//        .baseUrl(serviceBaseUrl)
+//        .addConverterFactory(JacksonConverterFactory.create())
+//        .build();
+//  }
 
   public BaseRestClient7(String serviceBaseUrl, boolean followRedirect) {
     this(serviceBaseUrl, followRedirect, null);

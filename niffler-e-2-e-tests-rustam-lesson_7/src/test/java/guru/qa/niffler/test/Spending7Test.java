@@ -22,7 +22,7 @@ public class Spending7Test extends BaseWebTest {
         amount = 52000.00,
         currency = CurrencyValues.RUB
     )
-//    @ApiLogin(username = "rustam", password = "12345")
+    @ApiLogin(username = "rustam", password = "12345")
     @AllureId("50")
     @Test
     void checkLastWeekSpendingTest(Spend7Json spend) {
