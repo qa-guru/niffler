@@ -38,25 +38,25 @@ public class SpendsWebTest {
 //          category = "обучение",
 //          username = "rustam"
 //    )
-//    @GenerateSpend(
-//          username = "rustam",
-//          description = "QA GURU ADVANCED VOL 1",
-//          category = "обучение",
-//          amount = 52000.00,
-//          currency = CurrencyValues.RUB
-//    )
     @GenerateSpend(
           username = "rustam",
           description = "QA GURU ADVANCED VOL 1",
-          category = @GenerateCategory(
-              category = "обучение",
-              username = "rustam"
-          ),
+          category = "обучение",
           amount = 52000.00,
           currency = CurrencyValues.RUB
     )
+//    @GenerateSpend(
+//          username = "rustam",
+//          description = "QA GURU ADVANCED VOL 1",
+//          category = @GenerateCategory(
+//              category = "обучение",
+//              username = "rustam"
+//          ),
+//          amount = 52000.00,
+//          currency = CurrencyValues.RUB
+//    )
     @Test
-    void spendShouldBeDeletedByActionInTable(CategoryJson category, GenerateSpend test, SpendJson spend) {
+    void spendShouldBeDeletedByActionInTable(SpendJson spend) {
         try {
             $(".spendings-table tbody").$$("tr")
                 .find(text(spend.getDescription()))

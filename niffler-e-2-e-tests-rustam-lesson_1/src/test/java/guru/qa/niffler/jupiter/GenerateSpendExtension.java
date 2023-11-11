@@ -38,8 +38,8 @@ public class GenerateSpendExtension implements ParameterResolver, BeforeEachCall
 
         // вырезать внизу //
             CategoryJson category = new CategoryJson();
-            category.setCategory(annotation.category().category());
-            category.setUsername(annotation.category().username());
+            category.setCategory(annotation.category());
+            category.setUsername(annotation.username());
 
             CategoryJson createdCategory = categoryService.addCategory(category)
                 .execute()

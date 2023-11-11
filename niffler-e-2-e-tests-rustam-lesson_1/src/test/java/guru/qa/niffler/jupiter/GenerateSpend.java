@@ -18,7 +18,7 @@ public @interface GenerateSpend {
 
     String description();
 
-    GenerateCategory category();
+    String category();
 
     double amount();
 
