@@ -122,7 +122,7 @@ public class UserQueueExtensionHW implements
 
     private static UserJson userJson(String userName, String password) {
         UserJson user = new UserJson();
-        user.setUsername(userName);
+        user.setUserName(userName);
         user.setPassword(password);
         return user;
     }

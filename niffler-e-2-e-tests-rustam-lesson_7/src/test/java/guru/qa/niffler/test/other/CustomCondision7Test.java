@@ -1,26 +1,15 @@
-package guru.qa.niffler.test;
+package guru.qa.niffler.test.other;
 
-import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
-import static guru.qa.niffler.condition.SpendRustamCondition.spends;
 
-import com.codeborne.selenide.CollectionCondition;
-import guru.qa.niffler.db.entity.userdata.CurrencyValues;
-import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.ApiRegisterWithRandomUser;
-import guru.qa.niffler.jupiter.annotation.DBUser;
 import guru.qa.niffler.jupiter.annotation.GenerateCategory;
-import guru.qa.niffler.jupiter.annotation.GenerateRandomUser;
-import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.Spend7Json;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.component.CategoryRustamComponent;
-import guru.qa.niffler.page.component.SpendingRustamTable;
 import io.qameta.allure.AllureId;
-import io.qameta.allure.Step;
 import org.junit.jupiter.api.Test;
 
 public class CustomCondision7Test extends BaseWebTest {

@@ -1,13 +1,7 @@
 package guru.qa.niffler.test.other;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.internal.JsonFormatter;
-import guru.qa.niffler.db.logging.AllureJsonLogger;
 import guru.qa.niffler.db.logging.JsonAttachment;
 import guru.qa.niffler.model.Spend7Json;
-import guru.qa.niffler.test.BaseWebTest;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.attachment.AttachmentData;
@@ -15,18 +9,11 @@ import io.qameta.allure.attachment.AttachmentProcessor;
 import io.qameta.allure.attachment.AttachmentRenderer;
 import io.qameta.allure.attachment.DefaultAttachmentProcessor;
 import io.qameta.allure.attachment.FreemarkerAttachmentRenderer;
-import io.qameta.allure.internal.shadowed.jackson.core.JsonParser;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 

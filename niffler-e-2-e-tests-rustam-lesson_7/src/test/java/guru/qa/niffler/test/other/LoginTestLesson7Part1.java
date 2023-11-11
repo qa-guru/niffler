@@ -10,7 +10,6 @@ import guru.qa.niffler.db.entity.auth.UserEntity;
 import guru.qa.niffler.jupiter.annotation.DAO;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.extension.DaoExtension;
-import guru.qa.niffler.test.BaseWebTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
