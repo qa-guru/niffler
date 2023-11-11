@@ -24,6 +24,11 @@ public class Local7Config implements Config {
   }
 
   @Override
+  public String getUserdataUrl() {
+    return "http://127.0.0.1:8089/";
+  }
+
+  @Override
   public String getFrontUrl() {
     return "http://127.0.0.1:3000";
   }

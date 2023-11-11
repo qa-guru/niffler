@@ -13,7 +13,9 @@ import java.lang.annotation.Target;
 @ExtendWith(GenerateCategoryExtension.class)
 public @interface GenerateCategory {
 
-    String category();
+    boolean handleAnnotation() default true;
 
-    String username();
+    String category() default "";
+
+    String username() default "";
 }

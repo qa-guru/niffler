@@ -23,6 +23,11 @@ public class DockerConfig implements Config {
   }
 
   @Override
+  public String getUserdataUrl() {
+    return "niffler-userdata";
+  }
+
+  @Override
   public String getFrontUrl() {
     return "http://niffler-frontend:3000/";
   }

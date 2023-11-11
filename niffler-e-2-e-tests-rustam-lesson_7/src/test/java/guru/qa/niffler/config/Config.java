@@ -27,6 +27,8 @@ public interface Config {
 
   String getCategoryUrl();
 
+  String getUserdataUrl();
+
   String getFrontUrl();
 
   String getAuthUrl();

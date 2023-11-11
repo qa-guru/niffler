@@ -36,4 +36,12 @@ public class CategoryJson {
         this.username = username;
     }
 
+    @Override
+    public String toString() {
+        return "CategoryJson{" +
+            "id=" + id +
+            ", category='" + category + '\'' +
+            ", username='" + username + '\'' +
+            '}';
+    }
 }

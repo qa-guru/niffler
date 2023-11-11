@@ -19,7 +19,9 @@ public @interface GenerateSpend {
 
     String description();
 
-    String category();
+    String category() default "";
+
+    GenerateCategory randomCategory() default @GenerateCategory(handleAnnotation = false);
 
     double amount();
 

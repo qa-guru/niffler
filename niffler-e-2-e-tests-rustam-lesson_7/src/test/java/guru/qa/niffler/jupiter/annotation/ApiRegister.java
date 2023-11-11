@@ -1,6 +1,6 @@
 package guru.qa.niffler.jupiter.annotation;
 
-import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
+import guru.qa.niffler.jupiter.extension.ApiRegisterExtension;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -9,10 +9,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ExtendWith(ApiLoginExtension.class)
-public @interface ApiLogin {
+@ExtendWith(ApiRegisterExtension.class)
+public @interface ApiRegister {
 
   String username() default "";
 
   String password() default "";
+
+  String submitPassword() default "";
+
 }

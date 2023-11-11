@@ -1,9 +1,11 @@
 package guru.qa.niffler.jupiter.extension;
 
+import guru.qa.niffler.api.client.CategoryRestClient;
 import guru.qa.niffler.api.client.Spend7RestClient;
 import guru.qa.niffler.api.service.CategoryService;
 import guru.qa.niffler.api.service.Spend7Service;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
+import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.Spend7Json;
 import java.util.Date;
 import okhttp3.OkHttpClient;
@@ -21,6 +23,9 @@ public class Generate7SpendExtension implements ParameterResolver, BeforeEachCal
           .create(Generate7SpendExtension.class);
 
     private final Spend7RestClient spend7RestClient = new Spend7RestClient();
+
+    private final CategoryRestClient categoryRestClient = new CategoryRestClient();
+
 //    private static final OkHttpClient httpClient = new OkHttpClient.Builder()
 //        .build();
 //
@@ -39,7 +44,21 @@ public class Generate7SpendExtension implements ParameterResolver, BeforeEachCal
             Spend7Json spend = new Spend7Json();
             spend.setUsername(annotation.username());
             spend.setDescription(annotation.description());
-            spend.setCategory(annotation.category());
+            if (annotation.randomCategory().handleAnnotation()) {
+//                CategoryJson randomCategory = new CategoryJson();
+//                randomCategory.setCategory(annotation.randomCategory().category());
+//                randomCategory.setUsername(annotation.randomCategory().username());
+//                spend.setCategory(randomCategory);
+                CategoryJson category = new CategoryJson();
+                category.setCategory(annotation.randomCategory().category());
+                category.setUsername(annotation.randomCategory().username());
+
+                categoryRestClient.addCategory(category);
+
+                spend.setCategory(category.getCategory());
+            } else {
+                spend.setCategory(annotation.category());
+            }
             spend.setSpendDate(new Date());
             spend.setCurrency(annotation.currency());
             spend.setAmount(annotation.amount());

@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UserJson {
+
     @JsonProperty("id")
     private UUID id;
     @JsonProperty("username")
