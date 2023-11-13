@@ -19,7 +19,10 @@ public class GqlReqResolver implements ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return AnnotationSupport.isAnnotated(parameterContext.getParameter(), GqlReq.class) &&
+        GqlReq annotation = AnnotationSupport.findAnnotation(parameterContext.getParameter(), GqlReq.class)
+                .orElse(null);
+
+        return annotation != null && !"".equals(annotation.value()) &&
                 parameterContext.getParameter().getType().isAssignableFrom(GqlRequest.class);
     }
 

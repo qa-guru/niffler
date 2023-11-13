@@ -1,5 +1,6 @@
 package guru.qa.niffler.service.api;
 
+import guru.qa.niffler.ex.NoRestResponseException;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
@@ -46,22 +47,30 @@ public class RestSpendClient {
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/categories").queryParams(params).build().toUri();
 
-        return webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<CategoryJson>>() {
-                })
-                .block();
+        return Optional.ofNullable(
+                webClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<CategoryJson>>() {
+                        })
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException(
+                "No REST List<CategoryJson> response is given [/categories Route]"
+        ));
     }
 
     public @Nonnull
-    CategoryJson addCategory(CategoryJson category) {
-        return webClient.post()
-                .uri(nifflerSpendUri + "/category")
-                .body(Mono.just(category), CategoryJson.class)
-                .retrieve()
-                .bodyToMono(CategoryJson.class)
-                .block();
+    CategoryJson addCategory(@Nonnull CategoryJson category) {
+        return Optional.ofNullable(
+                webClient.post()
+                        .uri(nifflerSpendUri + "/category")
+                        .body(Mono.just(category), CategoryJson.class)
+                        .retrieve()
+                        .bodyToMono(CategoryJson.class)
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException(
+                "No REST CategoryJson response is given [/category Route]"
+        ));
     }
 
     public @Nonnull
@@ -77,32 +86,44 @@ public class RestSpendClient {
         Optional.ofNullable(filterCurrency).ifPresent(dfv -> params.add("filterCurrency", filterCurrency.name()));
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/spends").queryParams(params).build().toUri();
 
-        return webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<SpendJson>>() {
-                })
-                .block();
+        return Optional.ofNullable(
+                webClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<SpendJson>>() {
+                        })
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException(
+                "No REST List<SpendJson> response is given [/spends Route]"
+        ));
     }
 
     public @Nonnull
     SpendJson addSpend(@Nonnull SpendJson spend) {
-        return webClient.post()
-                .uri(nifflerSpendUri + "/addSpend")
-                .body(Mono.just(spend), SpendJson.class)
-                .retrieve()
-                .bodyToMono(SpendJson.class)
-                .block();
+        return Optional.ofNullable(
+                webClient.post()
+                        .uri(nifflerSpendUri + "/addSpend")
+                        .body(Mono.just(spend), SpendJson.class)
+                        .retrieve()
+                        .bodyToMono(SpendJson.class)
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException(
+                "No REST SpendJson response is given [/addSpend Route]"
+        ));
     }
 
     public @Nonnull
     SpendJson editSpend(@Nonnull SpendJson spend) {
-        return webClient.patch()
-                .uri(nifflerSpendUri + "/editSpend")
-                .body(Mono.just(spend), SpendJson.class)
-                .retrieve()
-                .bodyToMono(SpendJson.class)
-                .block();
+        return Optional.ofNullable(
+                webClient.patch()
+                        .uri(nifflerSpendUri + "/editSpend")
+                        .body(Mono.just(spend), SpendJson.class)
+                        .retrieve()
+                        .bodyToMono(SpendJson.class)
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException(
+                "No REST SpendJson response is given [/editSpend Route]"
+        ));
     }
 
     public @Nonnull
@@ -120,24 +141,33 @@ public class RestSpendClient {
         });
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/statistic").queryParams(params).build().toUri();
 
-        return webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<StatisticJson>>() {
-                })
-                .block();
+        return Optional.ofNullable(
+                webClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<StatisticJson>>() {
+                        })
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException(
+                "No REST List<StatisticJson> response is given [/statistic Route]"
+        ));
     }
 
+    @Nonnull
     public HttpStatusCode deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         params.add("ids", String.join(",", ids));
         URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/deleteSpends").queryParams(params).build().toUri();
 
-        return webClient.delete()
-                .uri(uri)
-                .exchangeToMono(response -> Mono.just(response.statusCode()))
-                .block();
+        return Optional.ofNullable(
+                webClient.delete()
+                        .uri(uri)
+                        .exchangeToMono(response -> Mono.just(response.statusCode()))
+                        .block()
+        ).orElseThrow(() -> new NoRestResponseException(
+                "No REST response is given [/deleteSpends Route]"
+        ));
     }
 
     private @Nonnull

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 // Workaround for spring boot 3:
-// https://github.com/yidongnan/grpc-spring-boot-starter/pull/775#issuecomment-1329023335
+// https://github.com/grpc-ecosystem/grpc-spring/issues/953
 @ImportAutoConfiguration({
         net.devh.boot.grpc.client.autoconfigure.GrpcClientAutoConfiguration.class,
         net.devh.boot.grpc.client.autoconfigure.GrpcClientMetricAutoConfiguration.class,

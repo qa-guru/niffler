@@ -17,6 +17,8 @@ logging:
     net.devh.boot.grpc: DEBUG
 #    org.springframework.boot.autoconfigure: DEBUG
 
+niffler-userdata.client: soap
+
 ---
 spring:
   config:

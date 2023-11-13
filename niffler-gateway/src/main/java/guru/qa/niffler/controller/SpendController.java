@@ -5,8 +5,8 @@ import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.StatisticJson;
 import guru.qa.niffler.service.StatisticAggregator;
+import guru.qa.niffler.service.UserDataClient;
 import guru.qa.niffler.service.api.RestSpendClient;
-import guru.qa.niffler.service.api.RestUserDataClient;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,13 +29,13 @@ import java.util.List;
 public class SpendController {
 
     private final RestSpendClient restSpendClient;
-    private final RestUserDataClient restUserDataClient;
+    private final UserDataClient userDataClient;
     private final StatisticAggregator statisticAggregator;
 
     @Autowired
-    public SpendController(RestSpendClient restSpendClient, RestUserDataClient restUserDataClient, StatisticAggregator statisticAggregator) {
+    public SpendController(RestSpendClient restSpendClient, UserDataClient userDataClient, StatisticAggregator statisticAggregator) {
         this.restSpendClient = restSpendClient;
-        this.restUserDataClient = restUserDataClient;
+        this.userDataClient = userDataClient;
         this.statisticAggregator = statisticAggregator;
     }
 
@@ -52,7 +52,7 @@ public class SpendController {
     public SpendJson addSpend(@Valid @RequestBody SpendJson spend,
                               @AuthenticationPrincipal Jwt principal) {
         String username = principal.getClaim("sub");
-        CurrencyValues userCurrency = restUserDataClient.currentUser(username).currency();
+        CurrencyValues userCurrency = userDataClient.currentUser(username).currency();
         if (userCurrency != spend.currency()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Spending currency should be same with user currency");
         }

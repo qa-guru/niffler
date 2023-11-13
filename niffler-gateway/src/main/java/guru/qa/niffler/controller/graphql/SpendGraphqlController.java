@@ -6,8 +6,8 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.graphql.SpendInput;
 import guru.qa.niffler.model.graphql.UpdateSpendInput;
 import guru.qa.niffler.service.StatisticAggregator;
+import guru.qa.niffler.service.UserDataClient;
 import guru.qa.niffler.service.api.RestSpendClient;
-import guru.qa.niffler.service.api.RestUserDataClient;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -26,13 +26,15 @@ import java.util.List;
 public class SpendGraphqlController {
 
     private final RestSpendClient restSpendClient;
-    private final RestUserDataClient restUserDataClient;
+    private final UserDataClient userDataClient;
     private final StatisticAggregator statisticAggregator;
 
     @Autowired
-    public SpendGraphqlController(RestSpendClient restSpendClient, RestUserDataClient restUserDataClient, StatisticAggregator statisticAggregator) {
+    public SpendGraphqlController(RestSpendClient restSpendClient,
+                                  UserDataClient userDataClient,
+                                  StatisticAggregator statisticAggregator) {
         this.restSpendClient = restSpendClient;
-        this.restUserDataClient = restUserDataClient;
+        this.userDataClient = userDataClient;
         this.statisticAggregator = statisticAggregator;
     }
 
@@ -49,7 +51,7 @@ public class SpendGraphqlController {
     public SpendJson addSpend(@Valid @Argument SpendInput spend,
                               @AuthenticationPrincipal Jwt principal) {
         String username = principal.getClaim("sub");
-        CurrencyValues userCurrency = restUserDataClient.currentUser(username).currency();
+        CurrencyValues userCurrency = userDataClient.currentUser(username).currency();
         if (userCurrency != spend.currency()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Spending currency should be same with user currency");
         }

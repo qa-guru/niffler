@@ -79,7 +79,8 @@ export const DECLINE_INVITATION_MUTATION = gql(`
         declineInvitation(friendUsername: $username) {
             id
             username
-            friendState}
+            friendState
+        }
     }
 `);
 

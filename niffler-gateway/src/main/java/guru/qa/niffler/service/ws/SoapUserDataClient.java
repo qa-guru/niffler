@@ -1,5 +1,6 @@
 package guru.qa.niffler.service.ws;
 
+import guru.qa.niffler.ex.NoSoapResponseException;
 import guru.qa.niffler.model.FriendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
@@ -22,14 +23,15 @@ import guru.qa.niffler.userdata.wsdl.RemoveFriendResponse;
 import guru.qa.niffler.userdata.wsdl.UpdateUserInfoRequest;
 import guru.qa.niffler.userdata.wsdl.UpdateUserInfoResponse;
 import jakarta.annotation.Nonnull;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
-@Qualifier("soap")
+@ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "soap")
 public class SoapUserDataClient extends WebServiceGatewaySupport implements UserDataClient {
 
     @Override
@@ -38,8 +40,14 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         UpdateUserInfoRequest request = new UpdateUserInfoRequest();
         request.setUser(user.toJaxbUser());
 
-        UpdateUserInfoResponse response = (UpdateUserInfoResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri(), request);
+        UpdateUserInfoResponse response = Optional.ofNullable(
+                (UpdateUserInfoResponse) getWebServiceTemplate().marshalSendAndReceive(
+                        getDefaultUri(),
+                        request
+                )
+        ).orElseThrow(() -> new NoSoapResponseException(
+                "No SOAP UpdateUserInfoResponse is given [/updateUserInfo Endpoint]"
+        ));
 
         return UserJson.fromJaxb(response.getUser());
     }
@@ -50,8 +58,14 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         CurrentUserRequest request = new CurrentUserRequest();
         request.setUsername(username);
 
-        CurrentUserResponse response = (CurrentUserResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri(), request);
+        CurrentUserResponse response = Optional.ofNullable(
+                (CurrentUserResponse) getWebServiceTemplate().marshalSendAndReceive(
+                        getDefaultUri(),
+                        request
+                )
+        ).orElseThrow(() -> new NoSoapResponseException(
+                "No SOAP CurrentUserResponse is given [/currentUser Endpoint]"
+        ));
 
         return UserJson.fromJaxb(response.getUser());
     }
@@ -62,8 +76,14 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         AllUsersRequest request = new AllUsersRequest();
         request.setUsername(username);
 
-        AllUsersResponse response = (AllUsersResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri(), request);
+        AllUsersResponse response = Optional.ofNullable(
+                (AllUsersResponse) getWebServiceTemplate().marshalSendAndReceive(
+                        getDefaultUri(),
+                        request
+                )
+        ).orElseThrow(() -> new NoSoapResponseException(
+                "No SOAP AllUsersResponse is given [/allUsers Endpoint]"
+        ));
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }
@@ -75,8 +95,14 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         request.setUsername(username);
         request.setIncludePending(includePending);
 
-        FriendsResponse response = (FriendsResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri(), request);
+        FriendsResponse response = Optional.ofNullable(
+                (FriendsResponse) getWebServiceTemplate().marshalSendAndReceive(
+                        getDefaultUri(),
+                        request
+                )
+        ).orElseThrow(() -> new NoSoapResponseException(
+                "No SOAP FriendsResponse is given [/friends Endpoint]"
+        ));
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }
@@ -87,8 +113,14 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         InvitationsRequest request = new InvitationsRequest();
         request.setUsername(username);
 
-        InvitationsResponse response = (InvitationsResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri(), request);
+        InvitationsResponse response = Optional.ofNullable(
+                (InvitationsResponse) getWebServiceTemplate().marshalSendAndReceive(
+                        getDefaultUri(),
+                        request
+                )
+        ).orElseThrow(() -> new NoSoapResponseException(
+                "No SOAP InvitationsResponse is given [/invitations Endpoint]"
+        ));
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }
@@ -101,8 +133,14 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         request.setUsername(username);
         request.setInvitation(invitation.toJaxbFriend());
 
-        AcceptInvitationResponse response = (AcceptInvitationResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri(), request);
+        AcceptInvitationResponse response = Optional.ofNullable(
+                (AcceptInvitationResponse) getWebServiceTemplate().marshalSendAndReceive(
+                        getDefaultUri(),
+                        request
+                )
+        ).orElseThrow(() -> new NoSoapResponseException(
+                "No SOAP AcceptInvitationResponse is given [/acceptInvitation Endpoint]"
+        ));
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }
@@ -123,8 +161,14 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         request.setUsername(username);
         request.setInvitation(invitation.toJaxbFriend());
 
-        DeclineInvitationResponse response = (DeclineInvitationResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri(), request);
+        DeclineInvitationResponse response = Optional.ofNullable(
+                (DeclineInvitationResponse) getWebServiceTemplate().marshalSendAndReceive(
+                        getDefaultUri(),
+                        request
+                )
+        ).orElseThrow(() -> new NoSoapResponseException(
+                "No SOAP DeclineInvitationResponse is given [/declineInvitation Endpoint]"
+        ));
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }
@@ -136,8 +180,15 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         request.setUsername(username);
         request.setFriend(friend.toJaxbFriend());
 
-        AddFriendResponse response = (AddFriendResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri(), request);
+        AddFriendResponse response = Optional.ofNullable(
+                (AddFriendResponse) getWebServiceTemplate().marshalSendAndReceive(
+                        getDefaultUri(),
+                        request
+                )
+        ).orElseThrow(() -> new NoSoapResponseException(
+                "No SOAP AddFriendResponse is given [/addFriend Endpoint]"
+        ));
+
         return UserJson.fromJaxb(response.getUser());
     }
 
@@ -149,8 +200,14 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         request.setUsername(username);
         request.setFriendUsername(friendUsername);
 
-        RemoveFriendResponse response = (RemoveFriendResponse) getWebServiceTemplate()
-                .marshalSendAndReceive(getDefaultUri(), request);
+        RemoveFriendResponse response = Optional.ofNullable(
+                (RemoveFriendResponse) getWebServiceTemplate().marshalSendAndReceive(
+                        getDefaultUri(),
+                        request
+                )
+        ).orElseThrow(() -> new NoSoapResponseException(
+                "No SOAP RemoveFriendResponse is given [/removeFriend Endpoint]"
+        ));
 
         return response.getUser().stream().map(UserJson::fromJaxb).toList();
     }

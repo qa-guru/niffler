@@ -47,6 +47,7 @@ public class PropertiesLogger implements ApplicationListener<ApplicationPrepared
         }
     }
 
+    @Nonnull
     private List<EnumerablePropertySource<?>> findPropertiesPropertySources() {
         List<EnumerablePropertySource<?>> propertiesPropertySources = new LinkedList<>();
         for (PropertySource<?> propertySource : environment.getPropertySources()) {

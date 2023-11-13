@@ -27,7 +27,7 @@ const getData = ({path, onSuccess, onFail, params}) => {
             if (res.status === 200) {
                 return res.data;
             } else {
-                throw new Error("Error while loading data!")
+                throw new Error("Error while loading data")
             }
         })
         .then(data => onSuccess(data))
@@ -55,7 +55,7 @@ const postData = ({path, data, onSuccess, onFail}) => {
             if (res.status === 200 || res.status === 201) {
                 return res.data;
             } else {
-                throw new Error("Entity not created!")
+                throw new Error("Entity not created")
             }
         })
         .then(data => onSuccess(data))
@@ -71,7 +71,7 @@ const patchData = ({path, data, onSuccess, onFail}) => {
             if (res.status === 200) {
                 return res.data;
             } else {
-                throw new Error("Unsuccessful editing!")
+                throw new Error("Unsuccessful editing")
             }
         })
         .then(data => onSuccess(data))

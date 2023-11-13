@@ -31,7 +31,7 @@ public record UserJson(
 
     public @Nonnull User toJaxbUser() {
         User jaxbUser = new User();
-        jaxbUser.setId(id.toString());
+        jaxbUser.setId(id != null ? id.toString() : null);
         jaxbUser.setUsername(username);
         jaxbUser.setFirstname(firstname);
         jaxbUser.setSurname(surname);
