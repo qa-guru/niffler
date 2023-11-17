@@ -84,7 +84,11 @@ public class NifflerAuthServiceConfig {
     public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttps() {
         LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint("/login");
         PortMapperImpl portMapper = new PortMapperImpl();
-        portMapper.setPortMappings(Map.of(serverPort, defaultHttpsPort));
+        portMapper.setPortMappings(Map.of(
+                serverPort, defaultHttpsPort,
+                "80", defaultHttpsPort,
+                "8080", "8443"
+        ));
         PortResolverImpl portResolver = new PortResolverImpl();
         portResolver.setPortMapper(portMapper);
         entryPoint.setForceHttps(true);
