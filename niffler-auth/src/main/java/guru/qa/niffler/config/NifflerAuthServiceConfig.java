@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -27,11 +26,14 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.web.PortMapperImpl;
+import org.springframework.security.web.PortResolverImpl;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.Map;
 import java.util.UUID;
 
 @Configuration
@@ -43,6 +45,8 @@ public class NifflerAuthServiceConfig {
     private final String clientId;
     private final String clientSecret;
     private final CorsCustomizer corsCustomizer;
+    private final String serverPort;
+    private final String defaultHttpsPort = "443";
 
     @Autowired
     public NifflerAuthServiceConfig(KeyManager keyManager,
@@ -50,27 +54,53 @@ public class NifflerAuthServiceConfig {
                                     @Value("${niffler-auth.base-uri}") String nifflerAuthUri,
                                     @Value("${oauth2.client-id}") String clientId,
                                     @Value("${oauth2.client-secret}") String clientSecret,
+                                    @Value("${server.port}") String serverPort,
                                     CorsCustomizer corsCustomizer) {
         this.keyManager = keyManager;
         this.nifflerFrontUri = nifflerFrontUri;
         this.nifflerAuthUri = nifflerAuthUri;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.serverPort = serverPort;
         this.corsCustomizer = corsCustomizer;
     }
 
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
+                                                                      LoginUrlAuthenticationEntryPoint entryPoint) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
 
-        http.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
+        http.exceptionHandling(customizer -> customizer.authenticationEntryPoint(entryPoint))
                 .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
 
         corsCustomizer.corsCustomizer(http);
         return http.build();
+    }
+
+    @Bean
+    @Profile({"staging", "prod"})
+    public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttps() {
+        LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint("/login");
+        PortMapperImpl portMapper = new PortMapperImpl();
+        portMapper.setPortMappings(Map.of(
+                serverPort, defaultHttpsPort,
+                "80", defaultHttpsPort,
+                "8080", "8443"
+        ));
+        PortResolverImpl portResolver = new PortResolverImpl();
+        portResolver.setPortMapper(portMapper);
+        entryPoint.setForceHttps(true);
+        entryPoint.setPortMapper(portMapper);
+        entryPoint.setPortResolver(portResolver);
+        return entryPoint;
+    }
+
+    @Bean
+    @Profile({"local", "docker"})
+    public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttp() {
+        return new LoginUrlAuthenticationEntryPoint("/login");
     }
 
     @Bean
