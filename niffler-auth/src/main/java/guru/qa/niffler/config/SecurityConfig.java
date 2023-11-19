@@ -1,8 +1,8 @@
 package guru.qa.niffler.config;
 
-import guru.qa.niffler.service.LoggingFilter;
 import guru.qa.niffler.service.cors.CookieCsrfFilter;
 import guru.qa.niffler.service.cors.CorsCustomizer;
+import org.apache.catalina.filters.RequestDumperFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
@@ -31,9 +31,7 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         corsCustomizer.corsCustomizer(http);
 
-        return http
-//                .addFilterBefore(new LoggingFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new LoggingFilter(), CorsFilter.class)
+        return http.addFilterBefore(new RequestDumperFilter(), DisableEncodeUrlFilter.class)
                 .authorizeHttpRequests(customizer -> customizer
                         .requestMatchers(
                                 antMatcher("/register"),

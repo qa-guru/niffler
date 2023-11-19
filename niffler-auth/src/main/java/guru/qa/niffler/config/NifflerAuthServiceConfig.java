@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import guru.qa.niffler.config.keys.KeyManager;
 import guru.qa.niffler.service.cors.CorsCustomizer;
+import org.apache.catalina.filters.RequestDumperFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,7 @@ import org.springframework.security.web.PortMapperImpl;
 import org.springframework.security.web.PortResolverImpl;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
@@ -69,7 +71,8 @@ public class NifflerAuthServiceConfig {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
                                                                       LoginUrlAuthenticationEntryPoint entryPoint) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+        http.addFilterBefore(new RequestDumperFilter(), DisableEncodeUrlFilter.class)
+                .getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
 
         http.exceptionHandling(customizer -> customizer.authenticationEntryPoint(entryPoint))
