@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.security.config.Customizer;
@@ -74,6 +76,7 @@ public class NifflerAuthServiceConfig {
     }
 
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
                                                                       LoginUrlAuthenticationEntryPoint entryPoint) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
@@ -87,7 +90,7 @@ public class NifflerAuthServiceConfig {
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
 
-        http.exceptionHandling(customizer -> customizer.authenticationEntryPoint(entryPoint))
+        http.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(entryPoint))
                 .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
 
         corsCustomizer.corsCustomizer(http);
