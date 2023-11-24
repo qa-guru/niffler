@@ -4,12 +4,18 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import guru.qa.niffler.config.keys.KeyManager;
+import guru.qa.niffler.service.SpecificRequestDumperFilter;
 import guru.qa.niffler.service.cors.CorsCustomizer;
+import org.apache.catalina.filters.RequestDumperFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -30,6 +36,7 @@ import org.springframework.security.web.PortMapperImpl;
 import org.springframework.security.web.PortResolverImpl;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
@@ -47,6 +54,7 @@ public class NifflerAuthServiceConfig {
     private final CorsCustomizer corsCustomizer;
     private final String serverPort;
     private final String defaultHttpsPort = "443";
+    private final Environment environment;
 
     @Autowired
     public NifflerAuthServiceConfig(KeyManager keyManager,
@@ -55,7 +63,8 @@ public class NifflerAuthServiceConfig {
                                     @Value("${oauth2.client-id}") String clientId,
                                     @Value("${oauth2.client-secret}") String clientSecret,
                                     @Value("${server.port}") String serverPort,
-                                    CorsCustomizer corsCustomizer) {
+                                    CorsCustomizer corsCustomizer,
+                                    Environment environment) {
         this.keyManager = keyManager;
         this.nifflerFrontUri = nifflerFrontUri;
         this.nifflerAuthUri = nifflerAuthUri;
@@ -63,16 +72,25 @@ public class NifflerAuthServiceConfig {
         this.clientSecret = clientSecret;
         this.serverPort = serverPort;
         this.corsCustomizer = corsCustomizer;
+        this.environment = environment;
     }
 
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
                                                                       LoginUrlAuthenticationEntryPoint entryPoint) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+        if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
+            http.addFilterBefore(new SpecificRequestDumperFilter(
+                    new RequestDumperFilter(),
+                    "/login", "/oauth2/.*"
+            ), DisableEncodeUrlFilter.class);
+        }
+
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
 
-        http.exceptionHandling(customizer -> customizer.authenticationEntryPoint(entryPoint))
+        http.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(entryPoint))
                 .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
 
         corsCustomizer.corsCustomizer(http);
