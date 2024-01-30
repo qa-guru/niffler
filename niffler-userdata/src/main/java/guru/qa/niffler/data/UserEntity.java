@@ -1,5 +1,7 @@
 package guru.qa.niffler.data;
 
+import guru.qa.niffler.model.FriendState;
+import guru.qa.niffler.model.UserJson;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -125,6 +127,32 @@ public class UserEntity {
                 }).toList();
 
         this.friends.addAll(friendsEntities);
+    }
+
+    public void addInvites(UserEntity... invites) {
+        List<FriendsEntity> friendsEntities = Stream.of(invites)
+                .map(f -> {
+                    FriendsEntity fe = new FriendsEntity();
+                    fe.setUser(f);
+                    fe.setFriend(this);
+                    fe.setPending(true);
+                    return fe;
+                }).toList();
+
+        this.invites.addAll(friendsEntities);
+    }
+
+    public void declineInvites(UserEntity... invites) {
+        List<FriendsEntity> friendsEntities = Stream.of(invites)
+                .map(f -> {
+                    FriendsEntity fe = new FriendsEntity();
+                    fe.setUser(f);
+                    fe.setFriend(this);
+                    fe.setPending(false);
+                    return fe;
+                }).toList();
+
+        this.invites.addAll(friendsEntities);
     }
 
     public void removeFriends(UserEntity... friends) {
