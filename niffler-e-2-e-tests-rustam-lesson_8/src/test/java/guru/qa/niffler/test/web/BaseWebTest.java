@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.other;
+package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Configuration;
 import guru.qa.niffler.config.Config;

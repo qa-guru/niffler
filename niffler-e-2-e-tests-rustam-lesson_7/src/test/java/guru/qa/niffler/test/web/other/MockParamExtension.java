@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.other;
+package guru.qa.niffler.test.web.other;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;

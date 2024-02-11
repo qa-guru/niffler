@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.other;
+package guru.qa.niffler.test.web.other;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

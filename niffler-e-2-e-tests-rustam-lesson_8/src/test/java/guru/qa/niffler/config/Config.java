@@ -33,4 +33,7 @@ public interface Config {
 
   String getAuthUrl();
 
+  String getCurrencyGrpcAddress();
+  int getCurrencyGrpcPort();
+
 }

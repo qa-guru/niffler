@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.other;
+package guru.qa.niffler.test.web.other;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -10,12 +10,12 @@ import guru.qa.niffler.db.entity.auth.UserEntity;
 import guru.qa.niffler.jupiter.annotation.DAO;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.extension.DaoExtension;
-import guru.qa.niffler.test.BaseWebTest;
+import guru.qa.niffler.test.web.BaseWebTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(DaoExtension.class)
-public class LoginTestLesson7Part1 extends BaseWebTest {
+public class LoginTestLesson8Part1 extends BaseWebTest {
 
     @DAO
     private AuthUserDAO authUserDAO;

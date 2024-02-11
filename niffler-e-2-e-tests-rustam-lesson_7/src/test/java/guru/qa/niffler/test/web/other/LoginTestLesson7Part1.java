@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.other;
+package guru.qa.niffler.test.web.other;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;

@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.other;
+package guru.qa.niffler.test.web;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
@@ -18,7 +18,7 @@ import guru.qa.niffler.model.UserJson;
 import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.Test;
 
-public class DBUser7Test extends BaseWebTest {
+public class DBUser8Test extends BaseWebTest {
 
     final String USERNAME = "test31";
 

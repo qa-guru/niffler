@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.other;
+package guru.qa.niffler.test.web.other;
 
 import guru.qa.niffler.db.logging.JsonAttachment;
 import guru.qa.niffler.model.Spend7Json;

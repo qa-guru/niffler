@@ -1,4 +1,4 @@
-package guru.qa.niffler.test;
+package guru.qa.niffler.test.web.other;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
@@ -7,7 +7,6 @@ import static com.codeborne.selenide.Selenide.open;
 
 import com.codeborne.selenide.CollectionCondition;
 import guru.qa.niffler.db.entity.userdata.CurrencyValues;
-import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.ApiRegister;
 import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;

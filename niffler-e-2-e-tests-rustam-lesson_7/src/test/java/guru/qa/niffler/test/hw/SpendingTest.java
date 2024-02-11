@@ -6,7 +6,7 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.db.entity.userdata.CurrencyValues;
 import guru.qa.niffler.page.BasePageRustam;
 import guru.qa.niffler.page.MainPageRustam;
-import guru.qa.niffler.test.other.BaseWebTest;
+import guru.qa.niffler.test.web.other.BaseWebTest;
 import io.qameta.allure.AllureId;
 import guru.qa.niffler.jupiter.annotation.*;
 import guru.qa.niffler.model.Spend7Json;
