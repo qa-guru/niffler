@@ -96,8 +96,10 @@ public class UserDataService {
                     FriendsEntity invite = inviteFromMe.get();
                     result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
                             ? FriendState.INVITE_SENT
-                            : FriendState.FRIEND));
+                            : FriendState.INVITE_SENT));
                 }
+                // todo: тест зеленый, если
+                // оба INVITE_SENT либо INVITE_SENT + INVITE_RECEIVED
             }
             if (!result.containsKey(user.getId())) {
                 result.put(user.getId(), UserJson.fromEntity(user));
@@ -203,7 +205,7 @@ public class UserDataService {
                 .toList();
     }
 
-    private @Nonnull UserEntity getRequiredUser(@Nonnull String username) {
+    @Nonnull UserEntity getRequiredUser(@Nonnull String username) {
         UserEntity user = userRepository.findByUsername(username);
         if (user == null) {
             throw new NotFoundException("Can`t find user by username: " + username);

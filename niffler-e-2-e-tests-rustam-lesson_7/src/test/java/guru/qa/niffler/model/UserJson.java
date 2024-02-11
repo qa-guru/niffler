@@ -1,22 +1,17 @@
 package guru.qa.niffler.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.db.entity.userdata.CurrencyValues;
-import guru.qa.niffler.db.entity.userdata.FriendState;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class UserJson {
-
     @JsonProperty("id")
     private UUID id;
     @JsonProperty("username")
-    private String username;
-
-    private transient String password;
-
+    private String userName;
     @JsonProperty("firstname")
     private String firstname;
     @JsonProperty("surname")
@@ -25,12 +20,12 @@ public class UserJson {
     private CurrencyValues currency;
     @JsonProperty("photo")
     private String photo;
-    @JsonProperty("friendState")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private FriendState friendState;
+    @JsonProperty("password")
+    private String password;
 
-    public UserJson() {
-    }
+    private transient List<CategoryJson> categories = new ArrayList<>();
+    private transient List<Spend7Json> spends = new ArrayList<>();
+
 
     public UUID getId() {
         return id;
@@ -40,20 +35,12 @@ public class UserJson {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getFirstname() {
@@ -88,12 +75,36 @@ public class UserJson {
         this.photo = photo;
     }
 
-    public FriendState getFriendState() {
-        return friendState;
+    public String getPassword() {
+        return password;
     }
 
-    public void setFriendState(FriendState friendState) {
-        this.friendState = friendState;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<CategoryJson> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<CategoryJson> categories) {
+        this.categories = categories;
+    }
+
+    public void addCategory(CategoryJson category) {
+        categories.add(category);
+    }
+
+    public List<Spend7Json> getSpends() {
+        return spends;
+    }
+
+    public void setSpends(List<Spend7Json> spends) {
+        this.spends = spends;
+    }
+
+    public void addSpend(Spend7Json spend) {
+        spends.add(spend);
     }
 
     @Override
@@ -101,12 +112,12 @@ public class UserJson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
+        return Objects.equals(id, userJson.id) && Objects.equals(userName, userJson.userName) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && Objects.equals(password, userJson.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, firstname, surname, currency, photo, friendState);
+        return Objects.hash(id, userName, firstname, surname, currency, photo, password);
     }
-
 }
+

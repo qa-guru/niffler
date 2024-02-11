@@ -6,6 +6,11 @@ import guru.qa.niffler.db.entity.userdata.CurrencyValues;
 import java.util.Date;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Date;
+import java.util.UUID;
+
 public class Spend7Json {
     @JsonProperty("id")
     private UUID id;
@@ -21,6 +26,8 @@ public class Spend7Json {
     private String description;
     @JsonProperty("username")
     private String username;
+    @JsonProperty("spendDetails")
+    private SpendDetailsJson spendDetails;
 
     public Spend7Json() {
     }
@@ -84,6 +91,27 @@ public class Spend7Json {
         this.username = username;
     }
 
+    public SpendDetailsJson getSpendDetails() {
+        return spendDetails;
+    }
+
+    public void setSpendDetails(SpendDetailsJson spendDetails) {
+        this.spendDetails = spendDetails;
+    }
+
+    public static class SpendDetailsJson {
+        private String id;
+
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
+
     @Override
     public String toString() {
         return "SpendJson{" +
@@ -94,6 +122,7 @@ public class Spend7Json {
             ", amount=" + amount +
             ", description='" + description + '\'' +
             ", username='" + username + '\'' +
+            ", spendDetails=" + spendDetails +
             '}';
     }
 }

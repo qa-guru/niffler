@@ -34,7 +34,7 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
         List<CurrencyEntity> all = currencyRepository.findAll();
 
         CurrencyResponse response = CurrencyResponse.newBuilder()
-                .addAllAllCurrencies(all.stream().map(e -> Currency.newBuilder()
+                .addAllCurrencies(all.stream().map(e -> Currency.newBuilder()
                                 .setCurrency(CurrencyValues.valueOf(e.getCurrency().name()))
                                 .setCurrencyRate(e.getCurrencyRate())
                                 .build())
