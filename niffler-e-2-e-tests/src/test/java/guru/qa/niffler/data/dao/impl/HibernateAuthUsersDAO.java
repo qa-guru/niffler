@@ -43,7 +43,7 @@ public class HibernateAuthUsersDAO extends JpaService implements AuthUsersDAO {
         try {
             return Optional.of(
                     em.createQuery("select u from AuthUserEntity u where u.id=:userId", AuthUserEntity.class)
-                            .setParameter("id", userId)
+                            .setParameter("userId", userId)
                             .getSingleResult()
             );
         } catch (NoResultException e) {
