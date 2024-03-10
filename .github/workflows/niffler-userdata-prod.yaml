@@ -7,30 +7,15 @@ on:
       - 'niffler-userdata/**'
 
 jobs:
-  checkout:
-    runs-on: prod-runner
-    steps:
-      - uses: actions/checkout@v3
-
   deploy:
     runs-on: prod-runner
-    needs: checkout
     steps:
-      - name: Retrieve niffler-userdata version
-        run: |
-          echo "::set-output name=version::$(bash ./gradlew :niffler-userdata:printVersion -q)"
-        id: userdata_version
-      - name: Push required props to GITHUB_ENV
-        run: |
-          echo "PROFILE=prod" >> $GITHUB_ENV
-          echo "PREFIX=${{ vars.DOCKER_HUB_ACC }}" >> $GITHUB_ENV
-          echo "VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}" >> $GITHUB_ENV
-          echo "USERDATA_VER=${{ steps.userdata_version.outputs.version }}" >> $GITHUB_ENV
+      - name: Checkout project & set envs
+        uses: .github/workflows/reusable/prepare-action-prod.yml
       - name: deploy
         working-directory: ./
         run: |
           pwd
-          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
           echo "### niffler-userdata version will be used: ${{ env.USERDATA_VER }}"
           bash ./gradlew :niffler-userdata:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
           docker-compose -f docker-compose.ci.yml pull userdata.niffler.dc

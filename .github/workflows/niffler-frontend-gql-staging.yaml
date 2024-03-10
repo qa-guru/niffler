@@ -7,31 +7,14 @@ on:
       - 'niffler-frontend-gql/**'
 
 jobs:
-  checkout:
-    runs-on: stage-runner
-    steps:
-      - uses: actions/checkout@v3
-
   deploy:
     runs-on: stage-runner
-    needs: checkout
     steps:
-      - name: Read docker.properties and extract front version
-        id: front_version
-        run: |
-          FRONT_VERSION=$(grep '^FRONT_VERSION=' docker.properties | cut -d '=' -f 2)
-          echo "::set-output name=version::$FRONT_VERSION"
-      - name: Push required props to GITHUB_ENV
-        run: |
-          echo "PROFILE=staging" >> $GITHUB_ENV
-          echo "PREFIX=${{ vars.DOCKER_HUB_ACC }}" >> $GITHUB_ENV
-          echo "VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}" >> $GITHUB_ENV
-          echo "FRONT_VER=${{ steps.front_version.outputs.version }}" >> $GITHUB_ENV
-          echo "FRONT_IMAGE=niffler-frontend-gql" >> $GITHUB_ENV
+      - name: Checkout project & set envs
+        uses: .github/workflows/reusable/prepare-action-staging.yml
       - name: build
         working-directory: ./niffler-frontend-gql
         run: |
           pwd
-          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
           echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
           bash ./docker-build.sh staging push

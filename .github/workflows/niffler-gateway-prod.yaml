@@ -7,30 +7,15 @@ on:
       - 'niffler-gateway/**'
 
 jobs:
-  checkout:
-    runs-on: prod-runner
-    steps:
-      - uses: actions/checkout@v3
-
   deploy:
     runs-on: prod-runner
-    needs: checkout
     steps:
-      - name: Retrieve niffler-gateway version
-        run: |
-          echo "::set-output name=version::$(bash ./gradlew :niffler-gateway:printVersion -q)"
-        id: gateway_version
-      - name: Push required props to GITHUB_ENV
-        run: |
-          echo "PROFILE=prod" >> $GITHUB_ENV
-          echo "PREFIX=${{ vars.DOCKER_HUB_ACC }}" >> $GITHUB_ENV
-          echo "VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}" >> $GITHUB_ENV
-          echo "GATEWAY_VER=${{ steps.gateway_version.outputs.version }}" >> $GITHUB_ENV
+      - name: Checkout project & set envs
+        uses: .github/workflows/reusable/prepare-action-prod.yml
       - name: deploy
         working-directory: ./
         run: |
           pwd
-          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
           echo "### niffler-gateway version will be used: ${{ env.GATEWAY_VER }}"
           bash ./gradlew :niffler-gateway:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
           docker-compose -f docker-compose.ci.yml pull gateway.niffler.dc

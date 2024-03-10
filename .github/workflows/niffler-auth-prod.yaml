@@ -7,30 +7,15 @@ on:
       - 'niffler-auth/**'
 
 jobs:
-  checkout:
-    runs-on: prod-runner
-    steps:
-      - uses: actions/checkout@v3
-
   deploy:
     runs-on: prod-runner
-    needs: checkout
     steps:
-      - name: Retrieve niffler-auth version
-        run: |
-          echo "::set-output name=version::$(bash ./gradlew :niffler-auth:printVersion -q)"
-        id: auth_version
-      - name: Push required props to GITHUB_ENV
-        run: |
-          echo "PROFILE=prod" >> $GITHUB_ENV
-          echo "PREFIX=${{ vars.DOCKER_HUB_ACC }}" >> $GITHUB_ENV
-          echo "VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}" >> $GITHUB_ENV
-          echo "AUTH_VER=${{ steps.auth_version.outputs.version }}" >> $GITHUB_ENV
+      - name: Checkout project & set envs
+        uses: .github/workflows/reusable/prepare-action-prod.yml
       - name: deploy
         working-directory: ./
         run: |
           pwd
-          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
           echo "### niffler-auth version will be used: ${{ env.AUTH_VER }}"
           bash ./gradlew :niffler-auth:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
           docker-compose -f docker-compose.ci.yml pull auth.niffler.dc

@@ -7,30 +7,15 @@ on:
       - 'niffler-currency/**'
 
 jobs:
-  checkout:
-    runs-on: stage-runner
-    steps:
-      - uses: actions/checkout@v3
-
   deploy:
     runs-on: stage-runner
-    needs: checkout
     steps:
-      - name: Retrieve niffler-currency version
-        run: |
-          echo "::set-output name=version::$(bash ./gradlew :niffler-currency:printVersion -q)"
-        id: currency_version
-      - name: Push required props to GITHUB_ENV
-        run: |
-          echo "PROFILE=staging" >> $GITHUB_ENV
-          echo "PREFIX=${{ vars.DOCKER_HUB_ACC }}" >> $GITHUB_ENV
-          echo "VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}" >> $GITHUB_ENV
-          echo "CURRENCY_VER=${{ steps.currency_version.outputs.version }}" >> $GITHUB_ENV
+      - name: Checkout project & set envs
+        uses: .github/workflows/reusable/prepare-action-staging.yml
       - name: build
         working-directory: ./
         run: |
           pwd
-          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
           echo "### niffler-currency version will be used: ${{ env.CURRENCY_VER }}"
           bash ./gradlew :niffler-currency:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
           docker-compose -f docker-compose.ci.yml pull currency.niffler.dc
