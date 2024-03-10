@@ -1,6 +1,7 @@
 package guru.qa.niffler.config;
 
 import com.codeborne.selenide.Configuration;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class DockerConfig implements Config {
@@ -57,5 +58,10 @@ public class DockerConfig implements Config {
     @Override
     public String kafkaAddress() {
         return "kafka:9092";
+    }
+
+    @Override
+    public HttpLoggingInterceptor.Level restLoggingLevel() {
+        return HttpLoggingInterceptor.Level.NONE;
     }
 }

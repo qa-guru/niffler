@@ -16,9 +16,11 @@ jobs:
     runs-on: prod-runner
     needs: checkout
     steps:
-      - name: Set front version
-        uses: falti/dotenv-action@v1.0.4
-        id: dotenv
+      - name: Read docker.properties and extract front version
+        id: front_version
+        run: |
+          FRONT_VERSION=$(grep '^FRONT_VERSION=' docker.properties | cut -d '=' -f 2)
+          echo "::set-output name=version::$FRONT_VERSION"
       - name: Retrieve niffler-auth version
         run: |
           echo "::set-output name=version::$(bash ./gradlew :niffler-auth:printVersion -q)"
@@ -49,7 +51,7 @@ jobs:
           echo "GATEWAY_VER=${{ steps.gateway_version.outputs.version }}" >> $GITHUB_ENV
           echo "SPEND_VER=${{ steps.spend_version.outputs.version }}" >> $GITHUB_ENV
           echo "USERDATA_VER=${{ steps.userdata_version.outputs.version }}" >> $GITHUB_ENV
-          echo "FRONT_VER=${{ steps.dotenv.outputs.front_version }}" >> $GITHUB_ENV
+          echo "FRONT_VER=${{ steps.front_version.outputs.version }}" >> $GITHUB_ENV
           echo "FRONT_IMAGE=niffler-frontend-gql" >> $GITHUB_ENV
       - name: build
         working-directory: ./niffler-frontend-gql
