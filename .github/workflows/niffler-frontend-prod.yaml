@@ -11,7 +11,7 @@ jobs:
     runs-on: prod-runner
     steps:
       - name: Checkout project & set envs
-        uses: .github/workflows/reusable/prepare-action-prod.yml
+        uses: .github/workflows/reusable/prod
       - name: build
         working-directory: ./niffler-frontend
         run: |

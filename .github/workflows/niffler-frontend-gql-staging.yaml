@@ -11,7 +11,7 @@ jobs:
     runs-on: stage-runner
     steps:
       - name: Checkout project & set envs
-        uses: .github/workflows/reusable/prepare-action-staging.yml
+        uses: .github/workflows/reusable/staging
       - name: build
         working-directory: ./niffler-frontend-gql
         run: |
