@@ -1,17 +1,16 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.1.3'
+    id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'com.google.cloud.tools.jib' version '3.4.1'
 }
 
 group = 'guru.qa'
-version = '1.2.0'
+version = '1.2.1'
 
 dependencies {
     implementation project(':niffler-grpc-common')
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "net.devh:grpc-server-spring-boot-starter:${project.ext.springGrpcVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"

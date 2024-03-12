@@ -4,17 +4,21 @@ on:
     branches-ignore:
       - master
     paths:
+      - '.github/workflows/niffler-userdata-staging.yaml'
       - 'niffler-userdata/**'
 
 jobs:
+  prepare:
+    uses: ./.github/workflows/common-action.yml
+    with:
+      runner: niffler-stage-runner
+      profile: staging
+        
   deploy:
-    runs-on: stage-runner
+    runs-on: niffler-stage-runner
+    needs:
+      - prepare
     steps:
-      - name: Checkout project & set envs
-        uses: ./.github/workflows/common-action.yml
-        with:
-          runner: stage-runner
-          profile: staging
       - name: build
         working-directory: ./
         run: |

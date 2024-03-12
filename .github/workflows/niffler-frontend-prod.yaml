@@ -4,17 +4,21 @@ on:
     branches:
       - master
     paths:
+      - '.github/workflows/niffler-frontend-prod.yaml'
       - 'niffler-frontend/**'
 
 jobs:
+  prepare:
+    uses: ./.github/workflows/common-action.yml
+    with:
+      runner: niffler-prod-runner
+      profile: prod
+
   deploy:
-    runs-on: prod-runner
+    runs-on: niffler-prod-runner
+    needs:
+      - prepare
     steps:
-      - name: Checkout project & set envs
-        uses: ./.github/workflows/common-action.yml
-        with:
-          runner: prod-runner
-          profile: prod
       - name: build
         working-directory: ./niffler-frontend
         run: |
