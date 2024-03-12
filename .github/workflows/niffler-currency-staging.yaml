@@ -4,6 +4,7 @@ on:
     branches-ignore:
       - master
     paths:
+      - '.github/workflows/niffler-currency-staging.yaml'
       - 'niffler-currency/**'
 
 jobs:

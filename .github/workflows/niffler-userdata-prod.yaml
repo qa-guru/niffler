@@ -4,6 +4,7 @@ on:
     branches:
       - master
     paths:
+      - '.github/workflows/niffler-userdata-prod.yaml'
       - 'niffler-userdata/**'
 
 jobs:

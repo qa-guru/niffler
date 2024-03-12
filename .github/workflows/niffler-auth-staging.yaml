@@ -4,6 +4,7 @@ on:
     branches-ignore:
       - master
     paths:
+      - '.github/workflows/niffler-auth-staging.yaml'
       - 'niffler-auth/**'
 
 jobs:

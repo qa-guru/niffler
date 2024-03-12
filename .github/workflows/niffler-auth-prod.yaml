@@ -4,6 +4,7 @@ on:
     branches:
       - master
     paths:
+      - '.github/workflows/niffler-auth-prod.yaml'
       - 'niffler-auth/**'
 
 jobs:

@@ -4,6 +4,7 @@ on:
     branches-ignore:
       - master
     paths:
+      - '.github/workflows/niffler-userdata-staging.yaml'
       - 'niffler-userdata/**'
 
 jobs:

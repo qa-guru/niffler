@@ -4,6 +4,7 @@ on:
     branches:
       - master
     paths:
+      - '.github/workflows/niffler-frontend-gql-prod.yaml'
       - 'niffler-frontend-gql/**'
 
 jobs:

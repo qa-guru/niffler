@@ -4,6 +4,7 @@ on:
     branches:
       - master
     paths:
+      - '.github/workflows/niffler-gateway-prod.yaml'
       - 'niffler-gateway/**'
 
 jobs:

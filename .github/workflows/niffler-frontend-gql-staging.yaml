@@ -4,6 +4,7 @@ on:
     branches-ignore:
       - master
     paths:
+      - '.github/workflows/niffler-frontend-gql-staging.yaml'
       - 'niffler-frontend-gql/**'
 
 jobs:
