@@ -51,9 +51,6 @@ jobs:
           echo "USERDATA_VER=${{ steps.userdata_version.outputs.version }}" >> $GITHUB_ENV
           echo "FRONT_VER=${{ steps.front_version.outputs.version }}" >> $GITHUB_ENV
           echo "FRONT_IMAGE=niffler-frontend" >> $GITHUB_ENV
-      - name: Docker login
-        run: |
-          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
       - name: Summary info
         run: |
           echo "### profile be used: ${{ env.PROFILE }}"

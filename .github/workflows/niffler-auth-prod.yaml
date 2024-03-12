@@ -19,6 +19,9 @@ jobs:
     needs:
       - prepare
     steps:
+      - name: Docker login
+        run: |
+          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
       - name: deploy
         working-directory: ./
         run: |
