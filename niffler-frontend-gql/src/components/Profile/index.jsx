@@ -24,10 +24,9 @@ export const Profile = () => {
     const {data: currenciesData, loading: currenciesLoading, error: currenciesError} = useQuery(QUERY_ALL_CURRENCIES);
     const currencies = useMemo(() => {
         if (currenciesLoading || currenciesError) return [];
-        const result = currenciesData.currencies.map((v) => {
+        return currenciesData.currencies.map((v) => {
             return {value: v?.currency, label: v?.currency}
         });
-        return result;
     }, [currenciesLoading, currenciesError, currenciesData]);
 
     const [updateUserInfo] = useMutation(UPDATE_USER_INFO_MUTATION);

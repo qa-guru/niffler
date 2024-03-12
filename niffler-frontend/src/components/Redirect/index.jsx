@@ -50,8 +50,7 @@ export const Redirect = ({}) => {
     useEffect(() => {
         if (!searchParams?.get('code')) {
             const codeChallenge = sessionStorage.getItem('codeChallenge');
-            const link = `${process.env.REACT_APP_AUTH_URL}/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=${process.env.REACT_APP_FRONT_URL}/authorized&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-            window.location.href = link;
+            window.location.href = `${process.env.REACT_APP_AUTH_URL}/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=${process.env.REACT_APP_FRONT_URL}/authorized&code_challenge=${codeChallenge}&code_challenge_method=S256`;
         }
     }, []);
 
