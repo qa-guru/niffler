@@ -20,7 +20,7 @@ on:
 
 jobs:
   prepare:
-    runs-on: ${{ inputs.runner }}
+    runs-on: "${{ inputs.runner }}"
     outputs:
       auth: ${{ steps.auth_version.outputs.version }}
       currency: ${{ steps.currency_version.outputs.version }}
