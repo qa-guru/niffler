@@ -8,12 +8,12 @@ on:
 
 jobs:
   checkout:
-    runs-on: prod-runner
+    runs-on: niffler-prod-runner
     steps:
       - uses: actions/checkout@v3
 
   deploy:
-    runs-on: prod-runner
+    runs-on: niffler-prod-runner
     needs: checkout
     steps:
       - name: Set front version

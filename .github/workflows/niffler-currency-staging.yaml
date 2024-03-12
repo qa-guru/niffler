@@ -8,12 +8,12 @@ on:
 
 jobs:
   checkout:
-    runs-on: stage-runner
+    runs-on: niffler-stage-runner
     steps:
       - uses: actions/checkout@v3
 
   deploy:
-    runs-on: stage-runner
+    runs-on: niffler-stage-runner
     needs: checkout
     steps:
       - name: Set front version
