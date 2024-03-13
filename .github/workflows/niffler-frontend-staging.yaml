@@ -9,20 +9,20 @@ on:
 jobs:
   prepare:
     if: |
-      github.event.workflow_run.event == 'workflow_run' && 
+      github.event.workflow_run.event == 'push' && 
       github.event.workflow_run.name == 'e2e' && 
       github.event.workflow_run.conclusion == 'success' && 
-      contains(github.event_path, 'niffler-frontend/')
+      -n "$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'niffler-frontend')
     uses: ./.github/workflows/common-action.yml
     with:
       runner: niffler-stage-runner
 
   deploy:
     if: |
-      github.event.workflow_run.event == 'workflow_run' && 
+      github.event.workflow_run.event == 'push' && 
       github.event.workflow_run.name == 'e2e' && 
       github.event.workflow_run.conclusion == 'success' && 
-      contains(github.event_path, 'niffler-frontend/')
+      -n "$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'niffler-frontend')
     runs-on: niffler-stage-runner
     needs: prepare
     steps:
@@ -74,3 +74,4 @@ jobs:
         with:
           sha: ${{ steps.sharef.outputs.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          name: frontend_deploy_stage
