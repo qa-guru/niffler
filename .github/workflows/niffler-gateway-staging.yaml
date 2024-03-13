@@ -1,19 +1,28 @@
 name: gateway_deploy_stage
+
 on:
-  push:
-    branches-ignore:
-      - master
-    paths:
-      - '.github/workflows/niffler-gateway-staging.yaml'
-      - 'niffler-gateway/**'
+  workflow_run:
+    workflows: [ e2e ]
+    types:
+      - completed
 
 jobs:
   prepare:
+    if: |
+      github.event.workflow_run.event == 'workflow_run' && 
+      github.event.workflow_run.name == 'e2e' && 
+      github.event.workflow_run.conclusion == 'success' && 
+      contains(github.event_path, 'niffler-gateway/')
     uses: ./.github/workflows/common-action.yml
     with:
       runner: niffler-stage-runner
 
   deploy:
+    if: |
+      github.event.workflow_run.event == 'workflow_run' && 
+      github.event.workflow_run.name == 'e2e' && 
+      github.event.workflow_run.conclusion == 'success' && 
+      contains(github.event_path, 'niffler-gateway/')
     runs-on: niffler-stage-runner
     needs: prepare
     steps:
