@@ -1,11 +1,19 @@
 name: userdata_deploy_stage
+
 on:
   workflow_run:
-    workflows: [ "e2e" ]
+    workflows: [ e2e ]
     types:
       - completed
 
 jobs:
+  debug:
+    runs-on: niffler-stage-runner
+    steps:
+      - name: debug
+        run: |
+          echo "debug!"
+
   prepare:
     if: |
       github.event.workflow_run.event == 'workflow_run' && 

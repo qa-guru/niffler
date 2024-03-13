@@ -1,7 +1,8 @@
 name: gateway_deploy_stage
+
 on:
   workflow_run:
-    workflows: [ "e2e" ]
+    workflows: [ e2e ]
     types:
       - completed
 
