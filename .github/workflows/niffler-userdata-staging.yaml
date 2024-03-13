@@ -16,7 +16,8 @@ jobs:
           echo "### github.event.workflow_run.name: ${{ github.event.workflow_run.name }}"
           echo "### github.event.workflow_run.conclusion: ${{ github.event.workflow_run.conclusion }}"
           echo "### github.event_path: ${{ github.event_path }}"
-          echo "### github.event_path result: ${{ contains(github.event_path, 'niffler-userdata/') }}"
+          echo "### github diff: ${{ "$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})" }}"
+          echo "### github diff result: ${{ -n "$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'userdata')" }}"
   
 
   prepare:
