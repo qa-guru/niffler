@@ -17,26 +17,24 @@ jobs:
           echo "### github.event.workflow_run.conclusion: ${{ github.event.workflow_run.conclusion }}"
           echo "### github.event_path: ${{ github.event_path }}"
           echo "$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'userdata')"
-          echo "###"
-          echo "${{ -n $(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'userdata') }}"
   
 
   prepare:
     if: |
-      github.event.workflow_run.event == 'workflow_run' && 
+      github.event.workflow_run.event == 'push' && 
       github.event.workflow_run.name == 'e2e' && 
       github.event.workflow_run.conclusion == 'success' && 
-      contains(github.event_path, 'niffler-userdata/')
+      -n "$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'userdata')
     uses: ./.github/workflows/common-action.yml
     with:
       runner: niffler-stage-runner
 
   deploy:
     if: |
-      github.event.workflow_run.event == 'workflow_run' && 
+      github.event.workflow_run.event == 'push' && 
       github.event.workflow_run.name == 'e2e' && 
       github.event.workflow_run.conclusion == 'success' && 
-      contains(github.event_path, 'niffler-userdata/')
+      -n "$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'userdata')
     runs-on: niffler-stage-runner
     needs: prepare
     steps:
