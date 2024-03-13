@@ -1,0 +1,16 @@
+name: e2e
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  e2e-tests:
+    runs-on: niffler-stage-runner
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Build and run tests
+        run: |
+          echo "### e2e tests!"
