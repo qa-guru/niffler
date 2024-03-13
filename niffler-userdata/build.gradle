@@ -93,3 +93,4 @@ tasks.register('printVersion') {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
