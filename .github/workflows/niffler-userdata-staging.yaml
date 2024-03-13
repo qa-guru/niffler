@@ -12,7 +12,12 @@ jobs:
     steps:
       - name: debug
         run: |
-          echo "debug!"
+          echo "### github.event.workflow_run.event: ${{ github.event.workflow_run.event }}"
+          echo "### github.event.workflow_run.name: ${{ github.event.workflow_run.name }}"
+          echo "### github.event.workflow_run.conclusion: ${{ github.event.workflow_run.conclusion }}"
+          echo "### github.event_path: ${{ github.event_path }}"
+          echo "### github.event_path result: ${{ contains(github.event_path, 'niffler-userdata/') }}"
+  
 
   prepare:
     if: |
@@ -33,6 +38,23 @@ jobs:
     runs-on: niffler-stage-runner
     needs: prepare
     steps:
+      #   https://github.com/LouisBrunner/checks-action/issues/22#issuecomment-885047551
+      - name: Recognize sha ref
+      - uses: actions/checkout@master
+        id: sharef
+        run: |
+          if [ "$EVENT" == 'pull_request' ]
+          then
+            echo "::set-output name=sha::$(echo ${{github.event.pull_request.head.sha}})"
+          elif [ "$EVENT" == 'workflow_run' ]
+          then
+            echo "::set-output name=sha::$(echo ${{github.event.workflow_run.head_sha}})"
+          else
+            echo "::set-output name=sha::$(echo $GITHUB_SHA)"
+          fi
+        env:
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
       - name: Push required props to GITHUB_ENV
         run: |
           echo "PROFILE=staging" >> $GITHUB_ENV
@@ -58,3 +80,8 @@ jobs:
           docker-compose -f docker-compose.ci.yml stop userdata.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps userdata.niffler.dc
           docker system prune -a -f
           echo "Done!"
+      - name: Commit Action Status
+        uses: LouisBrunner/checks-action@v1.1.1
+        with:
+          sha: ${{ steps.sharef.outputs.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
