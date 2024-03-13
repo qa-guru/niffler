@@ -40,5 +40,5 @@ jobs:
           bash ./gradlew :niffler-auth:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
           docker-compose -f docker-compose.ci.yml pull auth.niffler.dc
           docker-compose -f docker-compose.ci.yml stop auth.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps auth.niffler.dc
-          docker system prune  -a -f
+          docker system prune -a -f
           echo "Done!"
