@@ -40,5 +40,5 @@ jobs:
           bash ./gradlew :niffler-spend:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
           docker-compose -f docker-compose.ci.yml pull spend.niffler.dc
           docker-compose -f docker-compose.ci.yml stop spend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps spend.niffler.dc
-          docker system prune  -a -f
+          docker system prune -a -f
           echo "Done!"

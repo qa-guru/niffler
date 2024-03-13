@@ -40,5 +40,5 @@ jobs:
           bash ./gradlew :niffler-currency:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
           docker-compose -f docker-compose.ci.yml pull currency.niffler.dc
           docker-compose -f docker-compose.ci.yml stop currency.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps currency.niffler.dc
-          docker system prune  -a -f
+          docker system prune -a -f
           echo "Done!"
