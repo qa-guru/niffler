@@ -134,7 +134,7 @@ services:
 
   selenoid:
     container_name: selenoid
-    image: aerokube/selenoid:1.11.0
+    image: aerokube/selenoid:1.11.2
     platform: "${ARCH}"
     volumes:
       - ./selenoid:/etc/selenoid
@@ -149,7 +149,7 @@ services:
 
   selenoid-ui:
     container_name: selenoid-ui
-    image: aerokube/selenoid-ui:1.10.10
+    image: aerokube/selenoid-ui:1.10.11
     depends_on:
       - selenoid
     restart: unless-stopped

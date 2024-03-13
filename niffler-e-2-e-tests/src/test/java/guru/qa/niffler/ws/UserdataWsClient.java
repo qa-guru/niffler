@@ -28,7 +28,11 @@ import javax.annotation.Nullable;
 public class UserdataWsClient extends RestService {
 
     public UserdataWsClient() {
-        super(CFG.userdataUrl(), false, JaxbConverterFactory.create("niffler-userdata"));
+        super(
+                CFG.userdataUrl(),
+                false,
+                JaxbConverterFactory.create("niffler-userdata")
+        );
     }
 
     private final UserdataWsApi userdataWs = retrofit.create(UserdataWsApi.class);

@@ -37,10 +37,10 @@ bash ./gradlew clean build dockerTagLatest -x :niffler-e-2-e-tests:build
 
 if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
   docker_arch="linux/arm64"
-  docker build --build-arg DOCKER=arm64v8/eclipse-temurin:19-jdk -t "${IMAGE_PREFIX}/${TEST_IMAGE_NAME}:latest" -f ./niffler-e-2-e-tests/Dockerfile .
+  docker build --build-arg DOCKER=arm64v8/eclipse-temurin:21-jdk -t "${IMAGE_PREFIX}/${TEST_IMAGE_NAME}:latest" -f ./niffler-e-2-e-tests/Dockerfile .
 else
   docker_arch="linux/amd64"
-  docker build --build-arg DOCKER=eclipse-temurin:19-jdk -t "${IMAGE_PREFIX}/${TEST_IMAGE_NAME}:latest" -f ./niffler-e-2-e-tests/Dockerfile .
+  docker build --build-arg DOCKER=eclipse-temurin:21-jdk -t "${IMAGE_PREFIX}/${TEST_IMAGE_NAME}:latest" -f ./niffler-e-2-e-tests/Dockerfile .
 fi
 
 cd "$front" || exit

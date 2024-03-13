@@ -106,10 +106,10 @@ spring:
     vault:
       authentication: TOKEN
       host: vault.qa.guru
-      port: 443
-      scheme: https
-      uri: https://vault.qa.guru:443
+      uri: https://vault.qa.guru
       token: ${VAULT_TOKEN}
+      kv:
+        enabled: true
   kafka:
     bootstrap-servers: ${kafka.url}
   datasource:
@@ -121,8 +121,8 @@ niffler-front:
 niffler-auth:
   base-uri: 'https://auth.niffler.qa.guru'
 oauth2:
-  client-id: ${oauth2.client-id}
-  client-secret: ${oauth2.client-secret}
+  client-id: ${client-id}
+  client-secret: ${client-secret}
 ---
 spring:
   config:
@@ -133,10 +133,10 @@ spring:
     vault:
       authentication: TOKEN
       host: vault.qa.guru
-      port: 443
-      scheme: https
-      uri: https://vault.qa.guru:443
+      uri: https://vault.qa.guru
       token: ${VAULT_TOKEN}
+      kv:
+        enabled: true
   kafka:
     bootstrap-servers: ${kafka.url}
   datasource:
@@ -148,6 +148,6 @@ niffler-front:
 niffler-auth:
   base-uri: 'https://auth.niffler-stage.qa.guru'
 oauth2:
-  client-id: ${oauth2.client-id}
-  client-secret: ${oauth2.client-secret}
+  client-id: ${client-id}
+  client-secret: ${client-secret}
 ---
