@@ -28,7 +28,6 @@ jobs:
     steps:
       #   https://github.com/LouisBrunner/checks-action/issues/22#issuecomment-885047551
       - name: Recognize sha ref
-      - uses: actions/checkout@master
         id: sharef
         run: |
           if [ "$EVENT" == 'pull_request' ]
