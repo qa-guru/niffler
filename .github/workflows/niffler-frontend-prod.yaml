@@ -9,7 +9,7 @@ on:
 
 jobs:
   prepare:
-    uses: ./.github/workflows/common-action.yml
+    uses: ./.github/workflows/versions.yml
     with:
       runner: niffler-prod-runner
 

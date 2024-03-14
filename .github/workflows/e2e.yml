@@ -36,49 +36,30 @@ jobs:
             docker system prune -a -f
             exit 1
           fi
+
+  prepare:
+    needs: e2e-tests
+    uses: ./.github/workflows/versions.yml
+    with:
+      runner: niffler-stage-runner
   
   obtain-versions:
     runs-on: niffler-stage-runner
-    needs: e2e-tests
+    needs: prepare
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Read docker.properties and extract front version
-        id: front_version
-        run: |
-          echo "::set-output name=version::$(grep '^FRONT_VERSION=' docker.properties | cut -d '=' -f 2)"
-      - name: Retrieve niffler-auth version
-        run: |
-          echo "::set-output name=version::$(bash ./gradlew :niffler-auth:printVersion -q)"
-        id: auth_version
-      - name: Retrieve niffler-currency version
-        run: |
-          echo "::set-output name=version::$(bash ./gradlew :niffler-currency:printVersion -q)"
-        id: currency_version
-      - name: Retrieve niffler-gateway version
-        run: |
-          echo "::set-output name=version::$(bash ./gradlew :niffler-gateway:printVersion -q)"
-        id: gateway_version
-      - name: Retrieve niffler-spend version
-        run: |
-          echo "::set-output name=version::$(bash ./gradlew :niffler-spend:printVersion -q)"
-        id: spend_version
-      - name: Retrieve niffler-userdata version
-        run: |
-          echo "::set-output name=version::$(bash ./gradlew :niffler-userdata:printVersion -q)"
-        id: userdata_version
       - name: Push required props to GITHUB_ENV
         run: |
           echo "PROFILE=staging" >> $GITHUB_ENV
           echo "PREFIX=${{ vars.DOCKER_HUB_ACC }}" >> $GITHUB_ENV
           echo "VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}" >> $GITHUB_ENV
-          echo "AUTH_VER=${{ steps.auth_version.outputs.version }}" >> $GITHUB_ENV
-          echo "CURRENCY_VER=${{ steps.currency_version.outputs.version }}" >> $GITHUB_ENV
-          echo "GATEWAY_VER=${{ steps.gateway_version.outputs.version }}" >> $GITHUB_ENV
-          echo "SPEND_VER=${{ steps.spend_version.outputs.version }}" >> $GITHUB_ENV
-          echo "USERDATA_VER=${{ steps.userdata_version.outputs.version }}" >> $GITHUB_ENV
-          echo "FRONT_VER=${{ steps.front_version.outputs.version }}" >> $GITHUB_ENV
+          echo "AUTH_VER=${{ needs.prepare.outputs.auth-ver }}" >> $GITHUB_ENV
+          echo "CURRENCY_VER=${{ needs.prepare.outputs.currency-ver }}" >> $GITHUB_ENV
+          echo "GATEWAY_VER=${{ needs.prepare.outputs.gateway-ver }}" >> $GITHUB_ENV
+          echo "SPEND_VER=${{ needs.prepare.outputs.spend-ver }}" >> $GITHUB_ENV
+          echo "USERDATA_VER=${{ needs.prepare.outputs.userdata-ver }}" >> $GITHUB_ENV
+          echo "FRONT_VER=${{ needs.prepare.outputs.front-ver }}" >> $GITHUB_ENV
           echo "FRONT_IMAGE=niffler-frontend" >> $GITHUB_ENV
+
       - name: Summary info
         run: |
           echo "### niffler-auth version will be used: ${{ env.PREFIX }}/niffler-auth-${{ env.PROFILE }}:${{ env.AUTH_VER }}"
@@ -93,7 +74,7 @@ jobs:
     needs: obtain-versions
     steps:
       - name: Check changes path
-      - uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
@@ -115,8 +96,9 @@ jobs:
       - name: Docker login
         run: |
           docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
+
       - name: build auth & deploy to staging
-      - if: steps.changes.outputs.auth == 'true'
+        if: steps.changes.outputs.auth == 'true'
         working-directory: ./
         run: |
           pwd
@@ -125,8 +107,9 @@ jobs:
           docker-compose -f docker-compose.ci.yml stop auth.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps auth.niffler.dc
           docker system prune -a -f
           echo "Deploy auth to staging done!"
+
       - name: build currency & deploy to staging
-      - if: steps.changes.outputs.currency == 'true'
+        if: steps.changes.outputs.currency == 'true'
         working-directory: ./
         run: |
           pwd
@@ -135,8 +118,9 @@ jobs:
           docker-compose -f docker-compose.ci.yml stop currency.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps currency.niffler.dc
           docker system prune -a -f
           echo "Deploy currency to staging done!"
+
       - name: build gateway & deploy to staging
-      - if: steps.changes.outputs.gateway == 'true'
+        if: steps.changes.outputs.gateway == 'true'
         working-directory: ./
         run: |
           pwd
@@ -145,8 +129,9 @@ jobs:
           docker-compose -f docker-compose.ci.yml stop gateway.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps gateway.niffler.dc
           docker system prune -a -f
           echo "Deploy gateway to staging done!"
+
       - name: build spend & deploy to staging
-      - if: steps.changes.outputs.spend == 'true'
+        if: steps.changes.outputs.spend == 'true'
         working-directory: ./
         run: |
           pwd
@@ -155,8 +140,9 @@ jobs:
           docker-compose -f docker-compose.ci.yml stop spend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps spend.niffler.dc
           docker system prune -a -f
           echo "Deploy spend to staging done!"
+
       - name: build userdata & deploy to staging
-      - if: steps.changes.outputs.userdata == 'true'
+        if: steps.changes.outputs.userdata == 'true'
         working-directory: ./
         run: |
           pwd
@@ -165,8 +151,9 @@ jobs:
           docker-compose -f docker-compose.ci.yml stop userdata.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps userdata.niffler.dc
           docker system prune -a -f
           echo "Deploy userdata to staging done!"
+
       - name: build frontend & deploy to staging
-      - if: steps.changes.outputs.frontend == 'true'
+        if: steps.changes.outputs.frontend == 'true'
         working-directory: ./
         run: |
           pwd
@@ -175,8 +162,9 @@ jobs:
           docker-compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
           docker system prune -a -f
           echo "Deploy frontend to staging done!"
+
       - name: build frontend WITHOUT deploy to staging
-      - if: steps.changes.outputs.frontend-gql == 'true'
+        if: steps.changes.outputs.frontend-gql == 'true'
         working-directory: ./
         run: |
           pwd
