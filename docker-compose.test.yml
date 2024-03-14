@@ -154,7 +154,7 @@ services:
       - selenoid
     restart: unless-stopped
     ports:
-      - "9090:8080"
+      - "9091:8080"
     command: [ "--selenoid-uri", "http://selenoid:4444" ]
     networks:
       - test-network
