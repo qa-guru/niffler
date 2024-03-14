@@ -9,8 +9,179 @@ jobs:
   e2e-tests:
     runs-on: niffler-stage-runner
     steps:
+      - name: Build and run e2e-tests
+        run: |
+          : # only for e2e, it will be overridden for deployment
+          echo "PROFILE=staging" >> $GITHUB_ENV
+          : # build backends with profile `staging`, only for testing
+          bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
+          : # build container with tests `qaguru/niffler-e-2-e-tests:latest`     
+          docker build --build-arg DOCKER=eclipse-temurin:21-jdk -t "qaguru/niffler-e-2-e-tests:latest" -f ./niffler-e-2-e-tests/Dockerfile .
+          : # build frontend container `qaguru/niffler-frontend-docker:latest`           
+          bash ./niffler-frontend/docker-build.sh staging
+          : # pull browser (see browsers.json)        
+          docker pull selenoid/vnc_chrome:117.0
+          : # run tests
+          ARCH="linux/amd64" FRONT_IMAGE="qaguru/niffler-frontend-docker:latest" PREFIX="qaguru" PROFILE="docker" docker-compose -f docker-compose.test.yml up -d
+          docker wait niffler-e-2-e
+          exit_code=$(docker inspect -f '{{.State.ExitCode}}' niffler-e-2-e)
+          if [ "$exit_code" -eq "0" ]; then
+            echo "Tests passed successfully!"
+            ARCH="linux/amd64" FRONT_IMAGE="qaguru/niffler-frontend-docker:latest" PREFIX="qaguru" PROFILE="docker" docker-compose -f docker-compose.test.yml down
+            docker system prune -a -f
+            exit 0
+          else
+            echo "Tests failed!"
+            ARCH="linux/amd64" FRONT_IMAGE="qaguru/niffler-frontend-docker:latest" PREFIX="qaguru" PROFILE="docker" docker-compose -f docker-compose.test.yml down
+            docker system prune -a -f
+            exit 1
+          fi
+  
+  obtain-versions:
+    runs-on: niffler-stage-runner
+    needs: e2e-tests
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Build and run tests
+      - name: Read docker.properties and extract front version
+        id: front_version
         run: |
-          echo "### e2e tests!"
+          echo "::set-output name=version::$(grep '^FRONT_VERSION=' docker.properties | cut -d '=' -f 2)"
+      - name: Retrieve niffler-auth version
+        run: |
+          echo "::set-output name=version::$(bash ./gradlew :niffler-auth:printVersion -q)"
+        id: auth_version
+      - name: Retrieve niffler-currency version
+        run: |
+          echo "::set-output name=version::$(bash ./gradlew :niffler-currency:printVersion -q)"
+        id: currency_version
+      - name: Retrieve niffler-gateway version
+        run: |
+          echo "::set-output name=version::$(bash ./gradlew :niffler-gateway:printVersion -q)"
+        id: gateway_version
+      - name: Retrieve niffler-spend version
+        run: |
+          echo "::set-output name=version::$(bash ./gradlew :niffler-spend:printVersion -q)"
+        id: spend_version
+      - name: Retrieve niffler-userdata version
+        run: |
+          echo "::set-output name=version::$(bash ./gradlew :niffler-userdata:printVersion -q)"
+        id: userdata_version
+      - name: Push required props to GITHUB_ENV
+        run: |
+          echo "PROFILE=staging" >> $GITHUB_ENV
+          echo "PREFIX=${{ vars.DOCKER_HUB_ACC }}" >> $GITHUB_ENV
+          echo "VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}" >> $GITHUB_ENV
+          echo "AUTH_VER=${{ steps.auth_version.outputs.version }}" >> $GITHUB_ENV
+          echo "CURRENCY_VER=${{ steps.currency_version.outputs.version }}" >> $GITHUB_ENV
+          echo "GATEWAY_VER=${{ steps.gateway_version.outputs.version }}" >> $GITHUB_ENV
+          echo "SPEND_VER=${{ steps.spend_version.outputs.version }}" >> $GITHUB_ENV
+          echo "USERDATA_VER=${{ steps.userdata_version.outputs.version }}" >> $GITHUB_ENV
+          echo "FRONT_VER=${{ steps.front_version.outputs.version }}" >> $GITHUB_ENV
+          echo "FRONT_IMAGE=niffler-frontend" >> $GITHUB_ENV
+      - name: Summary info
+        run: |
+          echo "### niffler-auth version will be used: ${{ env.PREFIX }}/niffler-auth-${{ env.PROFILE }}:${{ env.AUTH_VER }}"
+          echo "### niffler-currency version will be used: ${{ env.PREFIX }}/niffler-currency-${{ env.PROFILE }}:${{ env.CURRENCY_VER }}"
+          echo "### niffler-gateway version will be used: ${{ env.PREFIX }}/niffler-gateway-${{ env.PROFILE }}:${{ env.GATEWAY_VER }}"
+          echo "### niffler-spend version will be used: ${{ env.PREFIX }}/niffler-spend-${{ env.PROFILE }}:${{ env.SPEND_VER }}"
+          echo "### niffler-userdata version will be used: ${{ env.PREFIX }}/niffler-userdata-${{ env.PROFILE }}:${{ env.USERDATA_VER }}"
+          echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
+
+  deploy:
+    runs-on: niffler-stage-runner
+    needs: obtain-versions
+    steps:
+      - name: Check changes path
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            auth:
+              - 'niffler-auth/**'
+            currency:
+              - 'niffler-currency/**'
+            gateway:
+              - 'niffler-gateway/**'
+            spend:
+              - 'niffler-spend/**'
+            userdata:
+              - 'niffler-userdata/**'
+            frontend:
+              - 'niffler-frontend/**'            
+            frontend-gql:
+              - 'niffler-frontend-gql/**'     
+
+      - name: Docker login
+        run: |
+          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
+      - name: build auth & deploy to staging
+      - if: steps.changes.outputs.auth == 'true'
+        working-directory: ./
+        run: |
+          pwd
+          bash ./gradlew :niffler-auth:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          docker-compose -f docker-compose.ci.yml pull auth.niffler.dc
+          docker-compose -f docker-compose.ci.yml stop auth.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps auth.niffler.dc
+          docker system prune -a -f
+          echo "Deploy auth to staging done!"
+      - name: build currency & deploy to staging
+      - if: steps.changes.outputs.currency == 'true'
+        working-directory: ./
+        run: |
+          pwd
+          bash ./gradlew :niffler-currency:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          docker-compose -f docker-compose.ci.yml pull currency.niffler.dc
+          docker-compose -f docker-compose.ci.yml stop currency.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps currency.niffler.dc
+          docker system prune -a -f
+          echo "Deploy currency to staging done!"
+      - name: build gateway & deploy to staging
+      - if: steps.changes.outputs.gateway == 'true'
+        working-directory: ./
+        run: |
+          pwd
+          bash ./gradlew :niffler-gateway:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          docker-compose -f docker-compose.ci.yml pull gateway.niffler.dc
+          docker-compose -f docker-compose.ci.yml stop gateway.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps gateway.niffler.dc
+          docker system prune -a -f
+          echo "Deploy gateway to staging done!"
+      - name: build spend & deploy to staging
+      - if: steps.changes.outputs.spend == 'true'
+        working-directory: ./
+        run: |
+          pwd
+          bash ./gradlew :niffler-spend:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          docker-compose -f docker-compose.ci.yml pull spend.niffler.dc
+          docker-compose -f docker-compose.ci.yml stop spend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps spend.niffler.dc
+          docker system prune -a -f
+          echo "Deploy spend to staging done!"
+      - name: build userdata & deploy to staging
+      - if: steps.changes.outputs.userdata == 'true'
+        working-directory: ./
+        run: |
+          pwd
+          bash ./gradlew :niffler-userdata:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          docker-compose -f docker-compose.ci.yml pull userdata.niffler.dc
+          docker-compose -f docker-compose.ci.yml stop userdata.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps userdata.niffler.dc
+          docker system prune -a -f
+          echo "Deploy userdata to staging done!"
+      - name: build frontend & deploy to staging
+      - if: steps.changes.outputs.frontend == 'true'
+        working-directory: ./
+        run: |
+          pwd
+          bash ./niffler-frontend/docker-build.sh staging push
+          docker-compose -f docker-compose.ci.yml pull frontend.niffler.dc
+          docker-compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
+          docker system prune -a -f
+          echo "Deploy frontend to staging done!"
+      - name: build frontend WITHOUT deploy to staging
+      - if: steps.changes.outputs.frontend-gql == 'true'
+        working-directory: ./
+        run: |
+          pwd
+          bash ./niffler-frontend-gql/docker-build.sh staging push
+          docker-compose -f docker-compose.ci.yml pull frontend.niffler.dc
+          docker-compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
+          docker system prune -a -f
+          echo "Build & push frontend-gql to staging done!"  
