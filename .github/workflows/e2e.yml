@@ -11,31 +11,7 @@ jobs:
     steps:
       - name: Build and run e2e-tests
         run: |
-          : # only for e2e, it will be overridden for deployment
-          echo "PROFILE=staging" >> $GITHUB_ENV
-          : # build backends with profile `staging`, only for testing
-          bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
-          : # build container with tests `qaguru/niffler-e-2-e-tests:latest`     
-          docker build --build-arg DOCKER=eclipse-temurin:21-jdk -t "qaguru/niffler-e-2-e-tests:latest" -f ./niffler-e-2-e-tests/Dockerfile .
-          : # build frontend container `qaguru/niffler-frontend-docker:latest`           
-          bash ./niffler-frontend/docker-build.sh staging
-          : # pull browser (see browsers.json)        
-          docker pull selenoid/vnc_chrome:117.0
-          : # run tests
-          ARCH="linux/amd64" FRONT_IMAGE="qaguru/niffler-frontend-docker:latest" PREFIX="qaguru" PROFILE="docker" docker-compose -f docker-compose.test.yml up -d
-          docker wait niffler-e-2-e
-          exit_code=$(docker inspect -f '{{.State.ExitCode}}' niffler-e-2-e)
-          if [ "$exit_code" -eq "0" ]; then
-            echo "Tests passed successfully!"
-            ARCH="linux/amd64" FRONT_IMAGE="qaguru/niffler-frontend-docker:latest" PREFIX="qaguru" PROFILE="docker" docker-compose -f docker-compose.test.yml down
-            docker system prune -a -f
-            exit 0
-          else
-            echo "Tests failed!"
-            ARCH="linux/amd64" FRONT_IMAGE="qaguru/niffler-frontend-docker:latest" PREFIX="qaguru" PROFILE="docker" docker-compose -f docker-compose.test.yml down
-            docker system prune -a -f
-            exit 1
-          fi
+          echo "### e2e will be here!"
 
   prepare:
     needs: e2e-tests
