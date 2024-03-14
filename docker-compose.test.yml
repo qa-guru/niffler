@@ -167,18 +167,19 @@ services:
       frontend.niffler.dc:
         condition: service_started
     volumes:
-      - test-results:/niffler/niffler-e-2-e-tests/build/allure-results/
+      - allure_test-result:/niffler/niffler-e-2-e-tests/build/allure-results/
     networks:
       - test-network
     dns_search: .
 
   allure:
+    profiles: [ "docker" ]
     container_name: allure
     image: frankescobar/allure-docker-service:2.21.0
     depends_on:
       - niffler-e-2-e
     volumes:
-      - test-results:/app/allure-results
+      - allure_test-result:/app/allure-results
     environment:
       CHECK_RESULTS_EVERY_SECONDS: 5
       KEEP_HISTORY: 1
@@ -189,6 +190,7 @@ services:
     dns_search: .
 
   allure-ui:
+    profiles: [ "docker" ]
     container_name: allure-ui
     image: frankescobar/allure-docker-service-ui:7.0.3
     depends_on:
