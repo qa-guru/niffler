@@ -19,7 +19,7 @@ jobs:
     with:
       runner: niffler-stage-runner
   
-  obtain-versions:
+  deploy-services:
     runs-on: niffler-stage-runner
     needs: prepare
     steps:
@@ -45,10 +45,6 @@ jobs:
           echo "### niffler-userdata version will be used: ${{ env.PREFIX }}/niffler-userdata-${{ env.PROFILE }}:${{ env.USERDATA_VER }}"
           echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
 
-  deploy:
-    runs-on: niffler-stage-runner
-    needs: obtain-versions
-    steps:
       - name: Check changes path
         uses: dorny/paths-filter@v3
         id: changes
