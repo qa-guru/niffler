@@ -32,8 +32,10 @@ jobs:
           bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
           : # build container with tests `qaguru/niffler-e-2-e-tests:latest`     
           docker build --build-arg DOCKER=eclipse-temurin:21-jdk -t qaguru/niffler-e-2-e-tests:latest -f ./niffler-e-2-e-tests/Dockerfile .
-          : # build frontend container `qaguru/niffler-frontend-docker:latest`           
-          bash ./niffler-frontend/docker-build.sh docker
+          : # build frontend container `qaguru/niffler-frontend-docker:latest`
+          cd ./niffler-frontend/ || exit 1
+          bash docker-build.sh docker
+          cd ../ || exit 1
           : # pull browser (see browsers.json)        
           docker pull selenoid/vnc_chrome:117.0
           : # run e2e tests
