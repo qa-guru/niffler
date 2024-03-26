@@ -29,7 +29,7 @@ jobs:
           FRONT_IMAGE: qaguru/niffler-frontend-docker:latest
         run: |
           : # build backends with profile `docker`, only for testing
-          bash gradle -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
+          bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
           : # build container with tests `qaguru/niffler-e-2-e-tests:latest`     
           docker build --build-arg DOCKER=eclipse-temurin:21-jdk -t qaguru/niffler-e-2-e-tests:latest -f ./niffler-e-2-e-tests/Dockerfile .
           : # build frontend container `qaguru/niffler-frontend-docker:latest`
@@ -57,8 +57,15 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            const issues = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
+            })
+            const pr = context.issue.number || issues.data[0].number
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: pr,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: '👋 There is the last report: https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler/reports/latest/index.html'
