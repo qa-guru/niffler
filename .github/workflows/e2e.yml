@@ -52,7 +52,18 @@ jobs:
             echo "Tests failed!"
             exit 1
           fi
-
+      - name: Add comment to PR with link to allure
+        if: always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 There is the last report: https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler/reports/latest/index.html'
+            })
+  
   collect-versions:
     needs: e2e-tests
     uses: ./.github/workflows/versions.yml

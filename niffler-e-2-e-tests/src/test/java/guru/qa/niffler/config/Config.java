@@ -38,6 +38,8 @@ public interface Config {
 
     String kafkaAddress();
 
+    String allureDockerUrl();
+
     default List<String> kafkaTopics() {
         return List.of("users");
     }

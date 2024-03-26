@@ -27,34 +27,30 @@ public class AllureDockerExtension implements SuiteExtension {
 
     @Override
     public void afterAllTests() {
-        try (Stream<Path> paths = Files.walk(Path.of(allureResultsDirectory))) {
-            List<Path> allureResults = paths.filter(Files::isRegularFile).toList();
-            List<DecodedAllureFile> filesToSend = new ArrayList<>();
-            for (Path allureResult : allureResults) {
-                try (InputStream is = Files.newInputStream(allureResult)) {
-                    filesToSend.add(
-                            new DecodedAllureFile(
-                                    allureResult.getFileName().toString(),
-                                    encoder.encodeToString(is.readAllBytes())
-                            )
-                    );
+        if ("docker".equals(System.getProperty("test.env"))) {
+            try (Stream<Path> paths = Files.walk(Path.of(allureResultsDirectory))) {
+                List<Path> allureResults = paths.filter(Files::isRegularFile).toList();
+                List<DecodedAllureFile> filesToSend = new ArrayList<>();
+                for (Path allureResult : allureResults) {
+                    try (InputStream is = Files.newInputStream(allureResult)) {
+                        filesToSend.add(
+                                new DecodedAllureFile(
+                                        allureResult.getFileName().toString(),
+                                        encoder.encodeToString(is.readAllBytes())
+                                )
+                        );
+                    }
                 }
+                allureDockerApiClient.createProjectIfNotExist(projectId);
+                allureDockerApiClient.sendResultsToAllure(
+                        projectId,
+                        new AllureResults(
+                                filesToSend
+                        )
+                );
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            allureDockerApiClient.sendResultsToAllure(
-                    projectId,
-                    new AllureResults(
-                            filesToSend
-                    )
-            );
-            String allureUrl = allureDockerApiClient.generateReport(
-                    projectId,
-                    AllureDockerExtension.class.getSimpleName(),
-                    "https://github.com/qa-guru/niffler/",
-                    "GHA"
-            );
-            LOG.info("### Allure url: " + allureUrl);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

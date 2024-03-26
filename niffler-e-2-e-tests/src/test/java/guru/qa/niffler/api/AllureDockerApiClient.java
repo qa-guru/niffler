@@ -1,38 +1,43 @@
 package guru.qa.niffler.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.api.service.RestClient;
+import guru.qa.niffler.model.allure.AllureProject;
 import guru.qa.niffler.model.allure.AllureResults;
+import org.junit.jupiter.api.Assertions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class AllureDockerApiClient extends RestClient {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AllureDockerApiClient.class);
     private final AllureDockerApi allureDockerApi;
 
     public AllureDockerApiClient() {
-        super("http://localhost:5050");
+        super(CFG.allureDockerUrl());
         this.allureDockerApi = retrofit.create(AllureDockerApi.class);
     }
 
     public void sendResultsToAllure(String projectId, AllureResults allureResults) throws IOException {
-        allureDockerApi.uploadResults(
+        LOG.info("### Send results to allure docker " + CFG.allureDockerUrl());
+        int code = allureDockerApi.uploadResults(
                 projectId,
                 allureResults
-        ).execute();
+        ).execute().code();
+        Assertions.assertEquals(200, code);
     }
 
-    public String generateReport(String projectId,
-                                 String executionName,
-                                 String executionFrom,
-                                 String executionType) throws IOException {
-        JsonNode response = allureDockerApi.generateReport(
-                        projectId,
-                        executionName,
-                        executionFrom,
-                        executionType
-                ).execute()
-                .body();
-        return response.get("data").get("report_url").asText();
+    public void createProjectIfNotExist(String projectId) throws IOException {
+        LOG.info("### Create project in allure docker " + CFG.allureDockerUrl());
+        int code = allureDockerApi.project(
+                projectId
+        ).execute().code();
+        if (code == 404) {
+            code = allureDockerApi.createProject(new AllureProject(projectId)).execute().code();
+            Assertions.assertEquals(201, code);
+        } else {
+            Assertions.assertEquals(200, code);
+        }
     }
 }

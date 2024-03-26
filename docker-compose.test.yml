@@ -173,15 +173,12 @@ services:
     dns_search: .
 
   allure:
-    profiles: [ "docker" ]
     container_name: allure
     image: frankescobar/allure-docker-service:2.21.0
     depends_on:
       - niffler-e-2-e
-    volumes:
-      - allure-artifacts:/app/allure-results
     environment:
-      CHECK_RESULTS_EVERY_SECONDS: 5
+      CHECK_RESULTS_EVERY_SECONDS: 3
       KEEP_HISTORY: 1
     ports:
       - "5050:5050"
@@ -190,7 +187,6 @@ services:
     dns_search: .
 
   allure-ui:
-    profiles: [ "docker" ]
     container_name: allure-ui
     image: frankescobar/allure-docker-service-ui:7.0.3
     depends_on:

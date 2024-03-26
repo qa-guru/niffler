@@ -61,6 +61,14 @@ public class DockerConfig implements Config {
     }
 
     @Override
+    public String allureDockerUrl() {
+        final String allureDockerApi = System.getenv("ALLURE_DOCKER_API");
+        return allureDockerApi != null
+                ? allureDockerApi
+                : "http://allure:5050";
+    }
+
+    @Override
     public HttpLoggingInterceptor.Level restLoggingLevel() {
         return HttpLoggingInterceptor.Level.NONE;
     }

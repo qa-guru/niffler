@@ -58,6 +58,11 @@ public class LocalConfig implements Config {
     }
 
     @Override
+    public String allureDockerUrl() {
+        return "http://127.0.0.1:5050/";
+    }
+
+    @Override
     public HttpLoggingInterceptor.Level restLoggingLevel() {
         return HttpLoggingInterceptor.Level.BODY;
     }
