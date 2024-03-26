@@ -7,7 +7,6 @@ import jakarta.xml.soap.MessageFactory;
 import jakarta.xml.soap.SOAPEnvelope;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
-import jakarta.xml.soap.SOAPPart;
 import okhttp3.RequestBody;
 import org.w3c.dom.Document;
 import retrofit2.Converter;
@@ -20,7 +19,7 @@ import java.io.IOException;
 
 final class JaxbRequestConverter<T> implements Converter<T, RequestBody> {
 
-    public static final String NAMESPACE_PREFIX = "gs";
+    public static final String NAMESPACE_PREFIX = "tns";
     private final @Nonnull String messageNamespace;
     private final @Nonnull JAXBContext context;
 
@@ -32,14 +31,14 @@ final class JaxbRequestConverter<T> implements Converter<T, RequestBody> {
     @Override
     public @Nonnull RequestBody convert(@Nonnull final T value) throws IOException {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            SOAPMessage soapMessage = MessageFactory.newInstance().createMessage();
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+
             Marshaller marshaller = context.createMarshaller();
             marshaller.marshal(value, document);
 
-            SOAPMessage soapMessage = MessageFactory.newInstance().createMessage();
             soapMessage.getSOAPBody().addDocument(document);
-            SOAPPart part = soapMessage.getSOAPPart();
-            SOAPEnvelope envelope = part.getEnvelope();
+            SOAPEnvelope envelope = soapMessage.getSOAPPart().getEnvelope();
             envelope.addNamespaceDeclaration(NAMESPACE_PREFIX, messageNamespace);
             soapMessage.writeTo(outputStream);
 
