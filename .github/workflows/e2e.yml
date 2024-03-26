@@ -22,9 +22,12 @@ jobs:
         with:
           gradle-version: 8.6
       - name: Build and run e2e-tests
+        env:
+          PROFILE: docker
+          ARCH: linux/amd64
+          PREFIX: qaguru
+          FRONT_IMAGE: qaguru/niffler-frontend-docker:latest
         run: |
-          : # only for e2e
-          echo "PROFILE=docker" >> $GITHUB_ENV
           : # build backends with profile `docker`, only for testing
           bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
           : # build container with tests `qaguru/niffler-e-2-e-tests:latest`     
@@ -34,10 +37,11 @@ jobs:
           : # pull browser (see browsers.json)        
           docker pull selenoid/vnc_chrome:117.0
           : # run e2e tests
-          ARCH="linux/amd64" FRONT_IMAGE="qaguru/niffler-frontend-docker:latest" PREFIX="qaguru" PROFILE="docker" docker-compose -f docker-compose.test.yml up -d
+          docker-compose -f docker-compose.test.yml up -d
+          docker ps -a
           docker wait niffler-e-2-e
           exit_code=$(docker inspect -f '{{.State.ExitCode}}' niffler-e-2-e)
-          ARCH="linux/amd64" FRONT_IMAGE="qaguru/niffler-frontend-docker:latest" PREFIX="qaguru" PROFILE="docker" docker-compose -f docker-compose.test.yml down
+          docker-compose -f docker-compose.test.yml down
           docker system prune -a -f
           if [ "$exit_code" -eq "0" ]; then
             echo "Tests passed successfully!"

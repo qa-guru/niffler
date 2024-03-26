@@ -167,7 +167,7 @@ services:
       frontend.niffler.dc:
         condition: service_started
     volumes:
-      - allure_test-result:/niffler/niffler-e-2-e-tests/build/allure-results/
+      - allure-artifacts:/niffler/niffler-e-2-e-tests/build/allure-results/
     networks:
       - test-network
     dns_search: .
@@ -179,7 +179,7 @@ services:
     depends_on:
       - niffler-e-2-e
     volumes:
-      - allure_test-result:/app/allure-results
+      - allure-artifacts:/app/allure-results
     environment:
       CHECK_RESULTS_EVERY_SECONDS: 5
       KEEP_HISTORY: 1
@@ -204,7 +204,7 @@ services:
     dns_search: .
 
 volumes:
-  test-results:
+  allure-artifacts:
 
 networks:
   test-network:
