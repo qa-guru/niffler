@@ -27,6 +27,7 @@ jobs:
           ARCH: linux/amd64
           PREFIX: qaguru
           FRONT_IMAGE: qaguru/niffler-frontend-docker:latest
+          ALLURE_DOCKER_API: ${{ secrets.ALLURE_DOCKER_API }}
         run: |
           : # build backends with profile `docker`, only for testing
           bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
