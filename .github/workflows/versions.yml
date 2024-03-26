@@ -30,7 +30,7 @@ jobs:
       front: ${{ steps.front_version.outputs.version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Retrieve niffler-frontend version
         id: front_version
         run: |
