@@ -163,6 +163,8 @@ services:
   niffler-e-2-e:
     container_name: niffler-e-2-e
     image: ${PREFIX}/niffler-e-2-e-tests:latest
+    environment:
+      - ALLURE_DOCKER_API=${ALLURE_DOCKER_API}
     depends_on:
       frontend.niffler.dc:
         condition: service_started
