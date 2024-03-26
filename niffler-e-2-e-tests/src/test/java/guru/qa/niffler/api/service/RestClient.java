@@ -14,29 +14,29 @@ import javax.annotation.Nullable;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 
-public abstract class RestService {
+public abstract class RestClient {
 
     protected static final Config CFG = Config.getConfig();
 
     protected final OkHttpClient httpClient;
     protected final Retrofit retrofit;
 
-    public RestService(@Nonnull String baseUrl) {
+    public RestClient(@Nonnull String baseUrl) {
         this(baseUrl, false, JacksonConverterFactory.create());
     }
 
-    public RestService(@Nonnull String baseUrl, boolean followRedirect) {
+    public RestClient(@Nonnull String baseUrl, boolean followRedirect) {
         this(baseUrl, followRedirect, JacksonConverterFactory.create());
     }
 
-    public RestService(@Nonnull String baseUrl, boolean followRedirect, @Nonnull Interceptor... interceptors) {
+    public RestClient(@Nonnull String baseUrl, boolean followRedirect, @Nonnull Interceptor... interceptors) {
         this(baseUrl, followRedirect, JacksonConverterFactory.create(), interceptors);
     }
 
-    public RestService(@Nonnull String baseUrl,
-                       boolean followRedirect,
-                       @Nonnull Converter.Factory converterFactory,
-                       @Nullable Interceptor... interceptors) {
+    public RestClient(@Nonnull String baseUrl,
+                      boolean followRedirect,
+                      @Nonnull Converter.Factory converterFactory,
+                      @Nullable Interceptor... interceptors) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .followRedirects(followRedirect);
 

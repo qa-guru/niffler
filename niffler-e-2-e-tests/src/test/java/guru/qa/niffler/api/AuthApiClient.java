@@ -2,7 +2,7 @@ package guru.qa.niffler.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.api.interceptor.CodeInterceptor;
-import guru.qa.niffler.api.service.RestService;
+import guru.qa.niffler.api.service.RestClient;
 import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import io.qameta.allure.Step;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -13,9 +13,9 @@ import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class AuthRestClient extends RestService {
+public class AuthApiClient extends RestClient {
 
-    public AuthRestClient() {
+    public AuthApiClient() {
         super(
                 CFG.authUrl(),
                 true,

@@ -29,7 +29,7 @@ jobs:
           FRONT_IMAGE: qaguru/niffler-frontend-docker:latest
         run: |
           : # build backends with profile `docker`, only for testing
-          bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
+          bash gradle -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
           : # build container with tests `qaguru/niffler-e-2-e-tests:latest`     
           docker build --build-arg DOCKER=eclipse-temurin:21-jdk -t qaguru/niffler-e-2-e-tests:latest -f ./niffler-e-2-e-tests/Dockerfile .
           : # build frontend container `qaguru/niffler-frontend-docker:latest`
@@ -53,7 +53,7 @@ jobs:
             exit 1
           fi
 
-  prepare:
+  collect-versions:
     needs: e2e-tests
     uses: ./.github/workflows/versions.yml
     with:

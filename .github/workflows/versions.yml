@@ -19,7 +19,7 @@ on:
         value: ${{ jobs.prepare.outputs.front }}
 
 jobs:
-  prepare:
+  collect-versions:
     runs-on: "${{ inputs.runner }}"
     outputs:
       auth: ${{ steps.auth_version.outputs.version }}

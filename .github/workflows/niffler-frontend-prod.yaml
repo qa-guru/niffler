@@ -8,7 +8,7 @@ on:
       - 'niffler-frontend/**'
 
 jobs:
-  prepare:
+  collect-versions:
     uses: ./.github/workflows/versions.yml
     with:
       runner: niffler-prod-runner

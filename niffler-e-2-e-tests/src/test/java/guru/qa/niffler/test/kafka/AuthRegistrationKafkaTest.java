@@ -1,6 +1,6 @@
 package guru.qa.niffler.test.kafka;
 
-import guru.qa.niffler.api.AuthRestClient;
+import guru.qa.niffler.api.AuthApiClient;
 import guru.qa.niffler.kafka.KafkaConsumerService;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.utils.DataUtils;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("[KAFKA][niffler-auth]: Паблишинг сообщений в кафку")
 public class AuthRegistrationKafkaTest extends BaseKafkaTest {
 
-    private final AuthRestClient authClient = new AuthRestClient();
+    private final AuthApiClient authClient = new AuthApiClient();
 
     @Test
     @AllureId("600001")

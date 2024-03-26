@@ -1,8 +1,8 @@
 package guru.qa.niffler.jupiter.extension;
 
 import com.google.common.base.Stopwatch;
-import guru.qa.niffler.api.AuthRestClient;
-import guru.qa.niffler.api.UserdataRestClient;
+import guru.qa.niffler.api.AuthApiClient;
+import guru.qa.niffler.api.UserdataApiClient;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
@@ -20,8 +20,8 @@ import static guru.qa.niffler.utils.DataUtils.generateRandomUsername;
 
 public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
-    private final AuthRestClient authClient = new AuthRestClient();
-    private final UserdataRestClient userdataClient = new UserdataRestClient();
+    private final AuthApiClient authClient = new AuthApiClient();
+    private final UserdataApiClient userdataClient = new UserdataApiClient();
 
     @Step("Create user for test (REST)")
     @Override

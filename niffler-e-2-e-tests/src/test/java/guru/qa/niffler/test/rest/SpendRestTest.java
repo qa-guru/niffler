@@ -1,6 +1,6 @@
 package guru.qa.niffler.test.rest;
 
-import guru.qa.niffler.api.SpendRestClient;
+import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("[REST][niffler-spend]: Траты")
 public class SpendRestTest extends BaseRestTest {
 
-    private final SpendRestClient spendClient = new SpendRestClient();
+    private final SpendApiClient spendClient = new SpendApiClient();
 
     @AllureId("200004")
     @GenerateUser(categories = {

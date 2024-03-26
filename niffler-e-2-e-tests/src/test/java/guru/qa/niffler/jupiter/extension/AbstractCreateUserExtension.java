@@ -1,6 +1,6 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.SpendRestClient;
+import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Friends;
@@ -39,7 +39,7 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
 
     protected static final Config CFG = Config.getConfig();
 
-    private final SpendRestClient spendClient = new SpendRestClient();
+    private final SpendApiClient spendClient = new SpendApiClient();
 
     public static final ExtensionContext.Namespace
             ON_METHOD_USERS_NAMESPACE = ExtensionContext.Namespace.create(AbstractCreateUserExtension.class, User.Selector.METHOD),
