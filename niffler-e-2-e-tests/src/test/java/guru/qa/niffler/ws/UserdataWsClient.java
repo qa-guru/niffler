@@ -31,7 +31,8 @@ public class UserdataWsClient extends RestClient {
         super(
                 CFG.userdataUrl(),
                 false,
-                JaxbConverterFactory.create("niffler-userdata")
+                JaxbConverterFactory.create("niffler-userdata"),
+                CFG.restLoggingLevel()
         );
     }
 
