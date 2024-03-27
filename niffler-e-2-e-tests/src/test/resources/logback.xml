@@ -5,8 +5,8 @@
         </encoder>
     </appender>
 
-    <logger name="org.hibernate" level="info"/>
-    <logger name="org.hibernate.event.internal.DefaultPersistEventListener" level="info"/>
+    <logger name="org.hibernate" level="error"/>
+    <logger name="org.apache.kafka" level="error"/>
 
     <logger name="com.codeborne.selenide.webdriver.WebDriverFactory" level="error"/>
     <logger name="com.codeborne.selenide.impl.WebDriverThreadLocalContainer" level="error"/>

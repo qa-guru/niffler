@@ -33,7 +33,7 @@ public class LocalConfig implements Config {
     }
 
     @Override
-    public String currencyGrpcAddress() {
+    public String currencyGrpcHost() {
         return "127.0.0.1";
     }
 

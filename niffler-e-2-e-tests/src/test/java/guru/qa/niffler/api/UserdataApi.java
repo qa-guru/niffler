@@ -13,30 +13,30 @@ import java.util.List;
 
 public interface UserdataApi {
 
-    @GET("/currentUser")
+    @GET("currentUser")
     Call<UserJson> currentUser(@Query("username") String username);
 
-    @POST("/updateUserInfo")
+    @POST("updateUserInfo")
     Call<UserJson> updateUserInfo(@Body UserJson user);
 
-    @GET("/allUsers")
+    @GET("allUsers")
     Call<List<UserJson>> allUsers(@Query("username") String username);
 
-    @GET("/friends")
+    @GET("friends")
     Call<List<UserJson>> friends(@Query("username") String username, @Query("includePending") boolean includePending);
 
-    @GET("/invitations")
+    @GET("invitations")
     Call<List<UserJson>> invitations(@Query("username") String username);
 
-    @POST("/acceptInvitation")
+    @POST("acceptInvitation")
     Call<List<UserJson>> acceptInvitation(@Query("username") String username, @Body FriendJson invitation);
 
-    @POST("/declineInvitation")
+    @POST("declineInvitation")
     Call<List<UserJson>> declineInvitation(@Query("username") String username, @Body FriendJson invitation);
 
-    @POST("/addFriend")
+    @POST("addFriend")
     Call<UserJson> addFriend(@Query("username") String username, @Body FriendJson friend);
 
-    @DELETE("/removeFriend")
+    @DELETE("removeFriend")
     Call<List<UserJson>> removeFriend(@Query("username") String username, @Query("friendUsername") String friendUsername);
 }

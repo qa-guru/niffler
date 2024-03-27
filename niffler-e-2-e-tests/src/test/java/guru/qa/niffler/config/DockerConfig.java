@@ -36,7 +36,7 @@ public class DockerConfig implements Config {
     }
 
     @Override
-    public String currencyGrpcAddress() {
+    public String currencyGrpcHost() {
         return "currency.niffler.dc";
     }
 
@@ -65,7 +65,7 @@ public class DockerConfig implements Config {
         final String allureDockerApi = System.getenv("ALLURE_DOCKER_API");
         return allureDockerApi != null
                 ? allureDockerApi
-                : "http://allure:5050";
+                : "http://allure:5050/";
     }
 
     @Override

@@ -26,7 +26,7 @@ public interface Config {
 
     String userdataUrl();
 
-    String currencyGrpcAddress();
+    String currencyGrpcHost();
 
     default int currencyGrpcPort() {
         return 8092;

@@ -18,7 +18,7 @@ public abstract class BaseGrpcTest {
 
     static {
         channel = ManagedChannelBuilder
-                .forAddress(CFG.currencyGrpcAddress(), CFG.currencyGrpcPort())
+                .forAddress(CFG.currencyGrpcHost(), CFG.currencyGrpcPort())
                 .intercept(new GrpcConsoleInterceptor())
                 .usePlaintext()
                 .build();

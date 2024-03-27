@@ -11,22 +11,22 @@ import retrofit2.http.POST;
 
 public interface GatewayGqlApi {
 
-    @POST("/graphql")
+    @POST("graphql")
     Call<UserDataGql> currentUser(
             @Header("Authorization") String bearerToken,
             @Body GqlRequest request);
 
-    @POST("/graphql")
+    @POST("graphql")
     Call<UpdateUserDataGql> updateUser(
             @Header("Authorization") String bearerToken,
             @Body GqlRequest request);
 
-    @POST("/graphql")
+    @POST("graphql")
     Call<UsersDataGql> allUsers(
             @Header("Authorization") String bearerToken,
             @Body GqlRequest request);
 
-    @POST("/graphql")
+    @POST("graphql")
     Call<UserDataGql> frieds(
             @Header("Authorization") String bearerToken,
             @Body GqlRequest request);
