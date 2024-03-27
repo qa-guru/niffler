@@ -44,7 +44,7 @@ jobs:
           docker ps -a
           docker wait niffler-e-2-e
           exit_code=$(docker inspect -f '{{.State.ExitCode}}' niffler-e-2-e)
-          echo "### Test logs"
+          echo "### Test logs ###"
           docker logs niffler-e-2-e
           docker-compose -f docker-compose.test.yml down
           docker system prune -a -f
@@ -71,7 +71,7 @@ jobs:
               issue_number: pr,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 There is the last report: https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler/reports/latest/index.html'
+              body: '👋 There is the last [report](https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler/reports/latest/index.html)'
             })
   
   collect-versions:
