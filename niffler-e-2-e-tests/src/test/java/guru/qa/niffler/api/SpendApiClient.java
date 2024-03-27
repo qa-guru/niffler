@@ -1,6 +1,6 @@
 package guru.qa.niffler.api;
 
-import guru.qa.niffler.api.service.RestService;
+import guru.qa.niffler.api.service.RestClient;
 import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.SpendJson;
 import io.qameta.allure.Step;
@@ -8,9 +8,9 @@ import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SpendRestClient extends RestService {
+public class SpendApiClient extends RestClient {
 
-    public SpendRestClient() {
+    public SpendApiClient() {
         super(CFG.spendUrl());
     }
 

@@ -1,6 +1,6 @@
 package guru.qa.niffler.api;
 
-import guru.qa.niffler.api.service.RestService;
+import guru.qa.niffler.api.service.RestClient;
 import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
@@ -9,9 +9,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class UserdataRestClient extends RestService {
+public class UserdataApiClient extends RestClient {
 
-    public UserdataRestClient() {
+    public UserdataApiClient() {
         super(CFG.userdataUrl());
     }
 

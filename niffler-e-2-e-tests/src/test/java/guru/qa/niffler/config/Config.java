@@ -26,7 +26,7 @@ public interface Config {
 
     String userdataUrl();
 
-    String currencyGrpcAddress();
+    String currencyGrpcHost();
 
     default int currencyGrpcPort() {
         return 8092;
@@ -37,6 +37,8 @@ public interface Config {
     String databaseAddress();
 
     String kafkaAddress();
+
+    String allureDockerUrl();
 
     default List<String> kafkaTopics() {
         return List.of("users");

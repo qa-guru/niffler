@@ -1,7 +1,7 @@
 package guru.qa.niffler.ws;
 
 import guru.qa.niffler.api.converter.JaxbConverterFactory;
-import guru.qa.niffler.api.service.RestService;
+import guru.qa.niffler.api.service.RestClient;
 import guru.qa.niffler.userdata.wsdl.AcceptInvitationRequest;
 import guru.qa.niffler.userdata.wsdl.AcceptInvitationResponse;
 import guru.qa.niffler.userdata.wsdl.AddFriendRequest;
@@ -25,13 +25,14 @@ import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class UserdataWsClient extends RestService {
+public class UserdataWsClient extends RestClient {
 
     public UserdataWsClient() {
         super(
                 CFG.userdataUrl(),
                 false,
-                JaxbConverterFactory.create("niffler-userdata")
+                JaxbConverterFactory.create("niffler-userdata"),
+                CFG.restLoggingLevel()
         );
     }
 

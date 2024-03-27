@@ -5,6 +5,7 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.soap.MessageFactory;
+import jakarta.xml.soap.MimeHeaders;
 import jakarta.xml.soap.SOAPException;
 import jakarta.xml.soap.SOAPMessage;
 import okhttp3.ResponseBody;
@@ -30,7 +31,7 @@ final class JaxbResponseConverter<T> implements Converter<ResponseBody, T> {
     public @Nonnull T convert(@Nonnull final ResponseBody value) throws IOException {
         try (value; Reader reader = value.charStream()) {
             SOAPMessage response = MessageFactory.newInstance().createMessage(
-                    null,
+                    new MimeHeaders(),
                     new ReaderInputStream(reader, Charsets.UTF_8)
             );
             Document responseDoc = response.getSOAPBody().extractContentAsDocument();

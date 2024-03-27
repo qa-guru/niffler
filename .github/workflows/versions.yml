@@ -6,20 +6,20 @@ on:
         type: string
     outputs:
       auth-ver:
-        value: ${{ jobs.prepare.outputs.auth }}
+        value: ${{ jobs.collect-versions.outputs.auth }}
       currency-ver:
-        value: ${{ jobs.prepare.outputs.currency }}
+        value: ${{ jobs.collect-versions.outputs.currency }}
       gateway-ver:
-        value: ${{ jobs.prepare.outputs.gateway }}
+        value: ${{ jobs.collect-versions.outputs.gateway }}
       spend-ver:
-        value: ${{ jobs.prepare.outputs.spend }}
+        value: ${{ jobs.collect-versions.outputs.spend }}
       userdata-ver:
-        value: ${{ jobs.prepare.outputs.userdata }}
+        value: ${{ jobs.collect-versions.outputs.userdata }}
       front-ver:
-        value: ${{ jobs.prepare.outputs.front }}
+        value: ${{ jobs.collect-versions.outputs.front }}
 
 jobs:
-  prepare:
+  collect-versions:
     runs-on: "${{ inputs.runner }}"
     outputs:
       auth: ${{ steps.auth_version.outputs.version }}
@@ -30,12 +30,11 @@ jobs:
       front: ${{ steps.front_version.outputs.version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Read docker.properties and extract front version
+        uses: actions/checkout@v4
+      - name: Retrieve niffler-frontend version
         id: front_version
         run: |
-          FRONT_VERSION=$(grep '^FRONT_VERSION=' docker.properties | cut -d '=' -f 2)
-          echo "::set-output name=version::$FRONT_VERSION"
+          echo "::set-output name=version::$(grep '^FRONT_VERSION=' docker.properties | cut -d '=' -f 2)"
       - name: Retrieve niffler-auth version
         run: |
           echo "::set-output name=version::$(bash ./gradlew :niffler-auth:printVersion -q)"

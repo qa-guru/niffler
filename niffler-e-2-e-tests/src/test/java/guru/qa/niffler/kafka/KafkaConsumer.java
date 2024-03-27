@@ -10,30 +10,24 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 
-public class KafkaConsumerService implements Runnable {
+public class KafkaConsumer implements Runnable {
 
-    private static final Logger LOG = Logger.getLogger(KafkaConsumerService.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaConsumer.class);
     private static final Config CFG = Config.getConfig();
     private static final WaitForOne<String, UserJson> MESSAGES = new WaitForOne<>();
     private static final ObjectMapper OM = new ObjectMapper();
@@ -52,33 +46,17 @@ public class KafkaConsumerService implements Runnable {
         STR_KAFKA_PROPERTIES.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
     }
 
-    public KafkaConsumerService() {
+    public KafkaConsumer() {
         this(CFG.kafkaTopics());
     }
 
-    public KafkaConsumerService(@Nonnull List<String> stringTopics) {
-        stringConsumer = new KafkaConsumer<>(STR_KAFKA_PROPERTIES);
+    public KafkaConsumer(@Nonnull List<String> stringTopics) {
+        stringConsumer = new org.apache.kafka.clients.consumer.KafkaConsumer<>(STR_KAFKA_PROPERTIES);
         stringConsumer.subscribe(stringTopics);
     }
 
-    public KafkaConsumerService withReadTimeout(long maxReadTimeout) {
+    public KafkaConsumer withReadTimeout(long maxReadTimeout) {
         MAX_READ_TIMEOUT = maxReadTimeout;
-        return this;
-    }
-
-    public KafkaConsumerService withFileLogger(@Nonnull String pathToLogFile) {
-        if (pathToLogFile.endsWith("/")) {
-            pathToLogFile = pathToLogFile.substring(0, pathToLogFile.length() - 1);
-        }
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
-            Handler fh = new FileHandler(pathToLogFile + "/KAFKA_MyLogFile_"
-                    + format.format(Calendar.getInstance().getTime()) + ".log");
-            fh.setFormatter(new SimpleFormatter());
-            LOG.addHandler(fh);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return this;
     }
 
@@ -125,13 +103,12 @@ public class KafkaConsumerService implements Runnable {
                 try {
                     stringConsumer.commitSync();
                 } catch (CommitFailedException e) {
-                    LOG.warning("### Commit failed: " + e.getMessage());
+                    LOG.error("### Commit failed: " + e.getMessage());
                 }
             }
         } finally {
-            LOG.info("### Close consumer ###");
+            LOG.debug("### Close consumer ###");
             stringConsumer.close();
-            LogManager.getLogManager().reset();
             Thread.currentThread().interrupt();
         }
     }
@@ -139,20 +116,18 @@ public class KafkaConsumerService implements Runnable {
     private void deserializeRecord(@Nonnull String recordValue) {
         try {
             UserJson userJson = OM.readValue(recordValue, UserJson.class);
-
             if (userJson == null || userJson.username() == null) {
-                LOG.info("### Empty username in message ###");
+                LOG.warn("### Empty username in message ###");
                 return;
             }
-
             MESSAGES.provide(userJson.username(), userJson);
         } catch (JsonProcessingException e) {
-            LOG.warning("### Parse message fail: " + e.getMessage());
+            LOG.error("### Parse message fail: " + e.getMessage());
         }
     }
 
     private void logRecord(@Nonnull ConsumerRecord<String, String> record) {
-        LOG.info(String.format("topic = %s, \npartition = %d, \noffset = %d, \nkey = %s, \nvalue = %s\n\n",
+        LOG.debug(String.format("topic = %s, \npartition = %d, \noffset = %d, \nkey = %s, \nvalue = %s\n\n",
                 record.topic(),
                 record.partition(),
                 record.offset(),

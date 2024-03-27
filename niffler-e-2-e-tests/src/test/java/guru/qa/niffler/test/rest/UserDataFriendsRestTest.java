@@ -1,6 +1,6 @@
 package guru.qa.niffler.test.rest;
 
-import guru.qa.niffler.api.UserdataRestClient;
+import guru.qa.niffler.api.UserdataApiClient;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.GenerateUsers;
@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("[REST][niffler-userdata]: Друзья")
 public class UserDataFriendsRestTest extends BaseRestTest {
 
-    private final UserdataRestClient userdataClient = new UserdataRestClient();
+    private final UserdataApiClient userdataClient = new UserdataApiClient();
 
     @Test
     @DisplayName("REST: Для пользователя должен возвращаться список друзей из niffler-userdata" +
