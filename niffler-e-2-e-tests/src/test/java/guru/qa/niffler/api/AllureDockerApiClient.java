@@ -3,6 +3,7 @@ package guru.qa.niffler.api;
 import guru.qa.niffler.api.service.RestClient;
 import guru.qa.niffler.model.allure.AllureProject;
 import guru.qa.niffler.model.allure.AllureResults;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ public class AllureDockerApiClient extends RestClient {
     private final AllureDockerApi allureDockerApi;
 
     public AllureDockerApiClient() {
-        super(CFG.allureDockerUrl());
+        super(CFG.allureDockerUrl(), HttpLoggingInterceptor.Level.BODY);
         this.allureDockerApi = retrofit.create(AllureDockerApi.class);
     }
 
