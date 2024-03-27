@@ -28,11 +28,12 @@ jobs:
           PREFIX: qaguru
           FRONT_IMAGE: qaguru/niffler-frontend-docker:latest
           ALLURE_DOCKER_API: ${{ secrets.ALLURE_DOCKER_API }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           : # build backends with profile `docker`, only for testing
           bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
           : # build container with tests `qaguru/niffler-e-2-e-tests:latest`     
-          docker build --build-arg DOCKER=eclipse-temurin:21-jdk --build-arg ALLURE_DOCKER_API=${{ env.ALLURE_DOCKER_API }} -t qaguru/niffler-e-2-e-tests:latest -f ./niffler-e-2-e-tests/Dockerfile .
+          docker build --build-arg DOCKER=eclipse-temurin:21-jdk --build-arg ALLURE_DOCKER_API=${{ env.ALLURE_DOCKER_API }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t qaguru/niffler-e-2-e-tests:latest -f ./niffler-e-2-e-tests/Dockerfile .
           : # build frontend container `qaguru/niffler-frontend-docker:latest`
           cd ./niffler-frontend/ || exit 1
           bash docker-build.sh docker
@@ -71,7 +72,7 @@ jobs:
               issue_number: pr,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 There is the last [report](https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler/reports/latest/index.html)'
+              body: '👋 There is the last [Allure report](https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler/reports/latest/index.html)\n\n[Reports history](https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler)'
             })
   
   collect-versions:

@@ -16,12 +16,11 @@ public class AllureDockerApiClient extends RestClient {
     private final AllureDockerApi allureDockerApi;
 
     public AllureDockerApiClient() {
-        super(CFG.allureDockerUrl(), HttpLoggingInterceptor.Level.BODY);
+        super(CFG.allureDockerUrl(), HttpLoggingInterceptor.Level.NONE);
         this.allureDockerApi = retrofit.create(AllureDockerApi.class);
     }
 
     public void sendResultsToAllure(String projectId, AllureResults allureResults) throws IOException {
-        LOG.info("### Send results to allure docker " + CFG.allureDockerUrl());
         int code = allureDockerApi.uploadResults(
                 projectId,
                 allureResults
@@ -30,7 +29,6 @@ public class AllureDockerApiClient extends RestClient {
     }
 
     public void createProjectIfNotExist(String projectId) throws IOException {
-        LOG.info("### Create project in allure docker " + CFG.allureDockerUrl());
         int code = allureDockerApi.project(
                 projectId
         ).execute().code();

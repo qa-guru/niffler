@@ -18,7 +18,7 @@ public class GhApiClient extends RestClient {
     @Step("Get issue state by number: {issueNumber}")
     public String getIssueState(String issueNumber) throws IOException {
         JsonNode responseBody = ghApi.issue(
-                "Bearer " + System.getenv("GH_TOKEN"),
+                "Bearer " + System.getenv("GITHUB_TOKEN"),
                 issueNumber
         ).execute().body();
         return responseBody.get("state").asText();
