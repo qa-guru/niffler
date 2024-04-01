@@ -192,6 +192,7 @@ jobs:
         run: |
           pwd     
           bash ./docker-build.sh staging push
+          cd ../ || exit 1
           docker-compose -f docker-compose.ci.yml pull frontend.niffler.dc
           docker-compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
           docker system prune -a -f
@@ -203,4 +204,5 @@ jobs:
         run: |
           pwd
           bash ./docker-build.sh staging push
+          cd ../ || exit 1
           echo "Build & push frontend-gql to staging done!"  
