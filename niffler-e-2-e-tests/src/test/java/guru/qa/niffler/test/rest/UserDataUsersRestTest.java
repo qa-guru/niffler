@@ -34,7 +34,6 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @AllureId("200001")
     @Tag("REST")
     @GenerateUser()
-    @Order(1)
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final UserJson currentUserResponse = userdataClient.getCurrentUser(user.username());
 
@@ -54,7 +53,6 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @AllureId("200002")
     @Tag("REST")
     @GenerateUser()
-    @Order(2)
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String firstName = "Pizzly";
         final String secondName = "Pizzlyvich";
@@ -94,7 +92,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @AllureId("200003")
     @Tag("REST")
     @GenerateUser()
-    @Order(3)
+    @Order(1)
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
         final List<UserJson> allUsersResponse = userdataClient.allUsers(user.username(), null);
 

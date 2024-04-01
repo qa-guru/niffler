@@ -39,7 +39,6 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100001")
     @Tag("SOAP")
     @GenerateUser()
-    @Order(1)
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         CurrentUserRequest cur = new CurrentUserRequest();
         cur.setUsername(user.username());
@@ -65,7 +64,6 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100002")
     @Tag("SOAP")
     @GenerateUser()
-    @Order(2)
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String firstName = "Pizzly";
         final String secondName = "Pizzlyvich";
@@ -102,7 +100,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100003")
     @Tag("SOAP")
     @GenerateUser()
-    @Order(3)
+    @Order(1)
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
         AllUsersRequest aur = new AllUsersRequest();
         aur.setUsername(user.username());

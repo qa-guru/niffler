@@ -153,7 +153,8 @@
             <xs:sequence>
                 <xs:element name="user" type="tns:user" minOccurs="0" maxOccurs="unbounded">
                 </xs:element>
-                <xs:element name="total" type="xs:int" minOccurs="0"/>
+                <xs:element name="totalElements" type="xs:long" minOccurs="0"/>
+                <xs:element name="totalPages" type="xs:int" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

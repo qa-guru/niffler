@@ -25,6 +25,7 @@ import jakarta.annotation.Nullable;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -87,7 +88,7 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         return new PageImpl<>(
                 response.getUser().stream().map(UserJson::fromJaxb).toList(),
                 pageable,
-                response.getTotal()
+                response.getTotalElements()
         );
     }
 
@@ -117,8 +118,8 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
 
         return new PageImpl<>(
                 response.getUser().stream().map(UserJson::fromJaxb).toList(),
-                pageable,
-                response.getTotal()
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+                response.getTotalElements()
         );
     }
 
@@ -148,8 +149,8 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
 
         return new PageImpl<>(
                 response.getUser().stream().map(UserJson::fromJaxb).toList(),
-                pageable,
-                response.getTotal()
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+                response.getTotalElements()
         );
     }
 
@@ -179,8 +180,8 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
 
         return new PageImpl<>(
                 response.getUser().stream().map(UserJson::fromJaxb).toList(),
-                pageable,
-                response.getTotal()
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+                response.getTotalElements()
         );
     }
 

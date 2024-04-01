@@ -34,6 +34,18 @@ public class GatewayV2ApiClient extends RestClient {
                 .body();
     }
 
+    @Step("Send REST GET('/api/v2/users/all') request to niffler-gateway")
+    @Nullable
+    public RestPage<UserJson> allUsersPageable(@Nonnull String bearerToken,
+                                               @Nullable String searchQuery,
+                                               @Nullable Integer page,
+                                               @Nullable Integer size,
+                                               @Nullable List<String> sort) throws Exception {
+        return gatewayV2Api.allUsersPageable(bearerToken, searchQuery, page, size, sort)
+                .execute()
+                .body();
+    }
+
     @Step("Send REST GET('/api/v2/friends/all') request to niffler-gateway")
     @Nullable
     public RestPage<UserJson> allFriendsPageable(@Nonnull String bearerToken,
@@ -42,6 +54,30 @@ public class GatewayV2ApiClient extends RestClient {
                                                  @Nullable Integer size,
                                                  @Nullable List<String> sort) throws Exception {
         return gatewayV2Api.allFriendsPageable(bearerToken, searchQuery, page, size, sort)
+                .execute()
+                .body();
+    }
+
+    @Step("Send REST GET('/api/v2/invitations/income') request to niffler-gateway")
+    @Nullable
+    public RestPage<UserJson> incomeInvitationsPageable(@Nonnull String bearerToken,
+                                                        @Nullable String searchQuery,
+                                                        @Nullable Integer page,
+                                                        @Nullable Integer size,
+                                                        @Nullable List<String> sort) throws Exception {
+        return gatewayV2Api.incomeInvitationsPageable(bearerToken, searchQuery, page, size, sort)
+                .execute()
+                .body();
+    }
+
+    @Step("Send REST GET('/api/v2/invitations/outcome') request to niffler-gateway")
+    @Nullable
+    public RestPage<UserJson> outcomeInvitationsPageable(@Nonnull String bearerToken,
+                                                         @Nullable String searchQuery,
+                                                         @Nullable Integer page,
+                                                         @Nullable Integer size,
+                                                         @Nullable List<String> sort) throws Exception {
+        return gatewayV2Api.outcomeInvitationsPageable(bearerToken, searchQuery, page, size, sort)
                 .execute()
                 .body();
     }

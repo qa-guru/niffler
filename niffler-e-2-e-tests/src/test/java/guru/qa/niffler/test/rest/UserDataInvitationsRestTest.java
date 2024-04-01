@@ -34,7 +34,7 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Для пользователя должен возвращаться список исходящих инвайтов из niffler-userdata")
-    @AllureId("200007")
+    @AllureId("200012")
     @Tag("REST")
     @GenerateUser(
             friends = @Friends(count = 1),
@@ -63,7 +63,7 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
     @Test
     @DisplayName("REST: Для пользователя должен возвращаться список исходящих инвайтов из niffler-userdata " +
             "с фильтраций по username, если передан searchQuery")
-    @AllureId("200008")
+    @AllureId("200013")
     @Tag("REST")
     @GenerateUser(
             friends = @Friends(count = 1),
@@ -91,7 +91,7 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Для пользователя должен возвращаться список приглашений дружить из niffler-userdata")
-    @AllureId("200009")
+    @AllureId("200014")
     @Tag("REST")
     @GenerateUser(
             incomeInvitations = @IncomeInvitations(count = 1)
@@ -117,7 +117,7 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
     @Test
     @DisplayName("REST: Для пользователя должен возвращаться список приглашений дружить из niffler-userdata " +
             "с фильтраций по username, если передан searchQuery")
-    @AllureId("200010")
+    @AllureId("200015")
     @Tag("REST")
     @GenerateUser(
             incomeInvitations = @IncomeInvitations(count = 2)
@@ -142,7 +142,7 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Прием заявки в друзья")
-    @AllureId("200011")
+    @AllureId("200016")
     @Tag("REST")
     @GenerateUser(
             incomeInvitations = @IncomeInvitations(count = 1)
@@ -179,7 +179,7 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Отклонение заявки в друзья")
-    @AllureId("200012")
+    @AllureId("200017")
     @Tag("REST")
     @GenerateUser(
             incomeInvitations = @IncomeInvitations(count = 1)
@@ -213,7 +213,7 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Отправка приглашения дружить")
-    @AllureId("200013")
+    @AllureId("200018")
     @Tag("REST")
     @GenerateUsers({
             @GenerateUser,

@@ -38,11 +38,11 @@ public class RestUserDataClient implements UserDataClient {
     public UserJson currentUser(@Nonnull String username) {
         return Optional.ofNullable(
                 restTemplate.getForObject(
-                        nifflerUserdataApiUri + "/user/current?username={username}",
+                        nifflerUserdataApiUri + "/users/current?username={username}",
                         UserJson.class,
                         username
                 )
-        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/user/current/ Route]"));
+        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/users/current/ Route]"));
     }
 
     @Nonnull
@@ -50,11 +50,11 @@ public class RestUserDataClient implements UserDataClient {
     public UserJson updateUserInfo(@Nonnull UserJson user) {
         return Optional.ofNullable(
                 restTemplate.postForObject(
-                        nifflerUserdataApiUri + "/user/update",
+                        nifflerUserdataApiUri + "/users/update",
                         user,
                         UserJson.class
                 )
-        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/user/update/ Route]"));
+        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/users/update/ Route]"));
     }
 
     @Nonnull
@@ -63,12 +63,12 @@ public class RestUserDataClient implements UserDataClient {
         return Arrays.asList(
                 Optional.ofNullable(
                         restTemplate.getForObject(
-                                nifflerUserdataApiUri + "/user/all?username={username}&searchQuery={searchQuery}",
+                                nifflerUserdataApiUri + "/users/all?username={username}&searchQuery={searchQuery}",
                                 UserJson[].class,
                                 username,
                                 searchQuery
                         )
-                ).orElseThrow(() -> new NoRestResponseException("No REST UserJson[] response is given [/user/all/ Route]"))
+                ).orElseThrow(() -> new NoRestResponseException("No REST UserJson[] response is given [/users/all/ Route]"))
         );
     }
 
@@ -78,7 +78,7 @@ public class RestUserDataClient implements UserDataClient {
     public Page<UserJson> allUsers(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
         return Optional.ofNullable(
                 restTemplate.getForObject(
-                        nifflerUserdataApiUri + "/v2/user/all?username={username}&searchQuery={searchQuery}" +
+                        nifflerUserdataApiUri + "/v2/users/all?username={username}&searchQuery={searchQuery}" +
                                 "&page={page}&size={size}" + extractSort(pageable),
                         RestPage.class,
                         username,
@@ -86,7 +86,7 @@ public class RestUserDataClient implements UserDataClient {
                         pageable.getPageNumber(),
                         pageable.getPageSize()
                 )
-        ).orElseThrow(() -> new NoRestResponseException("No REST Page<UserJson> response is given [/b2/user/all/ Route]"));
+        ).orElseThrow(() -> new NoRestResponseException("No REST Page<UserJson> response is given [/v2/users/all/ Route]"));
     }
 
     @Nonnull

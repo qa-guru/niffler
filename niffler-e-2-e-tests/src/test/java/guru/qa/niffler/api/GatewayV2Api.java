@@ -22,6 +22,12 @@ public interface GatewayV2Api {
                                                 @Query("size") Integer size,
                                                 @Query("sort") List<String> sort);
 
+    @GET("api/v2/users/all")
+    Call<RestPage<UserJson>> allUsersPageable(@Header("Authorization") String bearerToken,
+                                              @Query("searchQuery") String searchQuery,
+                                              @Query("page") Integer page,
+                                              @Query("size") Integer size,
+                                              @Query("sort") List<String> sort);
 
     @GET("api/v2/friends/all")
     Call<RestPage<UserJson>> allFriendsPageable(@Header("Authorization") String bearerToken,
@@ -29,4 +35,18 @@ public interface GatewayV2Api {
                                                 @Query("page") Integer page,
                                                 @Query("size") Integer size,
                                                 @Query("sort") List<String> sort);
+
+    @GET("api/v2/invitations/income")
+    Call<RestPage<UserJson>> incomeInvitationsPageable(@Header("Authorization") String bearerToken,
+                                                       @Query("searchQuery") String searchQuery,
+                                                       @Query("page") Integer page,
+                                                       @Query("size") Integer size,
+                                                       @Query("sort") List<String> sort);
+
+    @GET("api/v2/invitations/outcome")
+    Call<RestPage<UserJson>> outcomeInvitationsPageable(@Header("Authorization") String bearerToken,
+                                                        @Query("searchQuery") String searchQuery,
+                                                        @Query("page") Integer page,
+                                                        @Query("size") Integer size,
+                                                        @Query("sort") List<String> sort);
 }

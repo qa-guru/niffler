@@ -26,7 +26,7 @@ public class SpendRestTest extends BaseRestTest {
 
     private static final SpendApiClient spendClient = new SpendApiClient();
 
-    @AllureId("200001")
+    @AllureId("200008")
     @GenerateUser(categories = {
             @GenerateCategory("Рестораны"),
             @GenerateCategory("Бары"),
