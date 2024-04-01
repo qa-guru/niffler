@@ -52,6 +52,7 @@ public class UserService {
         String savedUser = userRepository.save(userEntity).getUsername();
         kafkaTemplate.send("users", new UserJson(savedUser));
         LOG.info("### Kafka topic [users] sent message: " + savedUser);
+
         return savedUser;
     }
 }
