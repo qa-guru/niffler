@@ -188,10 +188,10 @@ jobs:
 
       - name: build frontend & deploy to staging
         if: steps.changes.outputs.frontend == 'true'
-        working-directory: ./
+        working-directory: ./niffler-frontend
         run: |
-          pwd
-          bash ./niffler-frontend/docker-build.sh staging push
+          pwd     
+          bash ./docker-build.sh staging push
           docker-compose -f docker-compose.ci.yml pull frontend.niffler.dc
           docker-compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
           docker system prune -a -f
@@ -199,11 +199,8 @@ jobs:
 
       - name: build frontend WITHOUT deploy to staging
         if: steps.changes.outputs.frontend-gql == 'true'
-        working-directory: ./
+        working-directory: ./niffler-frontend-gql
         run: |
           pwd
-          bash ./niffler-frontend-gql/docker-build.sh staging push
-          docker-compose -f docker-compose.ci.yml pull frontend.niffler.dc
-          docker-compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
-          docker system prune -a -f
+          bash ./docker-build.sh staging push
           echo "Build & push frontend-gql to staging done!"  
