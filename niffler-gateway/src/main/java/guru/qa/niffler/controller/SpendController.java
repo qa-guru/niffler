@@ -10,7 +10,6 @@ import guru.qa.niffler.service.api.RestSpendClient;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/spends")
 public class SpendController {
 
     private final RestSpendClient restSpendClient;
@@ -39,7 +40,7 @@ public class SpendController {
         this.statisticAggregator = statisticAggregator;
     }
 
-    @GetMapping("/spends")
+    @GetMapping("/all")
     public List<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal,
                                      @RequestParam(required = false) DataFilterValues filterPeriod,
                                      @RequestParam(required = false) CurrencyValues filterCurrency) {
@@ -47,7 +48,7 @@ public class SpendController {
         return restSpendClient.getSpends(username, filterPeriod, filterCurrency);
     }
 
-    @PostMapping("/addSpend")
+    @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public SpendJson addSpend(@Valid @RequestBody SpendJson spend,
                               @AuthenticationPrincipal Jwt principal) {
@@ -59,7 +60,7 @@ public class SpendController {
         return restSpendClient.addSpend(spend.addUsername(username));
     }
 
-    @PatchMapping("/editSpend")
+    @PatchMapping("/edit")
     public SpendJson editSpend(@Valid @RequestBody SpendJson spend,
                                @AuthenticationPrincipal Jwt principal) {
         if (spend.id() == null) {
@@ -69,7 +70,7 @@ public class SpendController {
         return restSpendClient.editSpend(spend.addUsername(username));
     }
 
-    @GetMapping("/statistic")
+    @GetMapping("/stat")
     public List<StatisticJson> getTotalStatistic(@AuthenticationPrincipal Jwt principal,
                                                  @RequestParam(required = false) CurrencyValues filterCurrency,
                                                  @RequestParam(required = false) DataFilterValues filterPeriod) {
@@ -77,10 +78,10 @@ public class SpendController {
         return statisticAggregator.enrichStatisticRequest(username, filterCurrency, filterPeriod);
     }
 
-    @DeleteMapping("/deleteSpends")
-    public ResponseEntity<Void> deleteSpends(@AuthenticationPrincipal Jwt principal,
-                                             @RequestParam List<String> ids) {
+    @DeleteMapping("/remove")
+    public void deleteSpends(@AuthenticationPrincipal Jwt principal,
+                             @RequestParam List<String> ids) {
         String username = principal.getClaim("sub");
-        return new ResponseEntity<>(restSpendClient.deleteSpends(username, ids));
+        restSpendClient.deleteSpends(username, ids);
     }
 }

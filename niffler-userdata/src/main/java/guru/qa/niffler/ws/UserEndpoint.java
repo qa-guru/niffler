@@ -3,11 +3,10 @@ package guru.qa.niffler.ws;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataService;
 import niffler_userdata.AllUsersRequest;
-import niffler_userdata.AllUsersResponse;
 import niffler_userdata.CurrentUserRequest;
-import niffler_userdata.CurrentUserResponse;
-import niffler_userdata.UpdateUserInfoRequest;
-import niffler_userdata.UpdateUserInfoResponse;
+import niffler_userdata.UpdateUserRequest;
+import niffler_userdata.UserResponse;
+import niffler_userdata.UsersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -27,27 +26,27 @@ public class UserEndpoint {
         this.userService = userService;
     }
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "updateUserInfoRequest")
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "updateUserRequest")
     @ResponsePayload
-    public UpdateUserInfoResponse updateUserInfoRequest(@RequestPayload UpdateUserInfoRequest request) {
-        UpdateUserInfoResponse response = new UpdateUserInfoResponse();
+    public UserResponse updateUserRq(@RequestPayload UpdateUserRequest request) {
+        UserResponse response = new UserResponse();
         response.setUser(userService.update(UserJson.fromJaxb(request.getUser())).toJaxbUser());
         return response;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "currentUserRequest")
     @ResponsePayload
-    public CurrentUserResponse currentUserRequest(@RequestPayload CurrentUserRequest request) {
-        CurrentUserResponse response = new CurrentUserResponse();
+    public UserResponse currentUserRq(@RequestPayload CurrentUserRequest request) {
+        UserResponse response = new UserResponse();
         response.setUser(userService.getCurrentUser(request.getUsername()).toJaxbUser());
         return response;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "allUsersRequest")
     @ResponsePayload
-    public AllUsersResponse allUsersRequest(@RequestPayload AllUsersRequest request) {
-        AllUsersResponse response = new AllUsersResponse();
-        List<UserJson> users = userService.allUsers(request.getUsername());
+    public UsersResponse allUsersRq(@RequestPayload AllUsersRequest request) {
+        UsersResponse response = new UsersResponse();
+        List<UserJson> users = userService.allUsers(request.getUsername(), request.getSearchQuery());
         if (!users.isEmpty()) {
             response.getUser().addAll(
                     users.stream()

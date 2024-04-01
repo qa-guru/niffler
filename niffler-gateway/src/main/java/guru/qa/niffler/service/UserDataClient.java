@@ -1,44 +1,69 @@
 package guru.qa.niffler.service;
 
-import guru.qa.niffler.model.FriendJson;
 import guru.qa.niffler.model.UserJson;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface UserDataClient {
-    @Nonnull
-    UserJson updateUserInfo(@Nonnull UserJson user);
 
     @Nonnull
     UserJson currentUser(@Nonnull String username);
 
     @Nonnull
-    List<UserJson> allUsers(@Nonnull String username);
+    UserJson updateUserInfo(@Nonnull UserJson user);
 
     @Nonnull
-    List<UserJson> friends(@Nonnull String username, boolean includePending);
+    List<UserJson> allUsers(@Nonnull String username,
+                            @Nullable String searchQuery);
 
     @Nonnull
-    List<UserJson> invitations(@Nonnull String username);
+    Page<UserJson> allUsers(@Nonnull String username,
+                            @Nonnull Pageable pageable,
+                            @Nullable String searchQuery);
 
     @Nonnull
-    List<UserJson> acceptInvitation(@Nonnull String username,
-                                    @Nonnull FriendJson invitation);
+    List<UserJson> friends(@Nonnull String username,
+                           @Nullable String searchQuery);
 
     @Nonnull
-    UserJson acceptInvitationAndReturnFriend(@Nonnull String username,
-                                             @Nonnull FriendJson invitation);
+    Page<UserJson> friends(@Nonnull String username,
+                           @Nonnull Pageable pageable,
+                           @Nullable String searchQuery);
 
     @Nonnull
-    List<UserJson> declineInvitation(@Nonnull String username,
-                                     @Nonnull FriendJson invitation);
+    List<UserJson> incomeInvitations(@Nonnull String username,
+                                     @Nullable String searchQuery);
 
     @Nonnull
-    UserJson addFriend(@Nonnull String username,
-                       @Nonnull FriendJson friend);
+    Page<UserJson> incomeInvitations(@Nonnull String username,
+                                     @Nonnull Pageable pageable,
+                                     @Nullable String searchQuery);
 
     @Nonnull
-    List<UserJson> removeFriend(@Nonnull String username,
-                                @Nonnull String friendUsername);
+    List<UserJson> outcomeInvitations(@Nonnull String username, @Nullable String searchQuery);
+
+    @Nonnull
+    Page<UserJson> outcomeInvitations(@Nonnull String username,
+                                      @Nonnull Pageable pageable,
+                                      @Nullable String searchQuery);
+
+    @Nonnull
+    UserJson sendInvitation(@Nonnull String username,
+                            @Nonnull String targetUsername);
+
+    @Nonnull
+    UserJson acceptInvitation(@Nonnull String username,
+                              @Nonnull String targetUsername);
+
+    @Nonnull
+    UserJson declineInvitation(@Nonnull String username,
+                               @Nonnull String targetUsername);
+
+
+    void removeFriend(@Nonnull String username,
+                      @Nonnull String targetUsername);
 }

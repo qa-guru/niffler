@@ -34,7 +34,7 @@ public class FriendsTest extends BaseWebTest {
         Selenide.open(MainPage.URL, MainPage.class)
                 .getHeader()
                 .toFriendsPage()
-                .checkExistingFriends(user.testData().friendsJsons());
+                .checkExistingFriends(user.testData().friends());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class FriendsTest extends BaseWebTest {
     @Tag("WEB")
     @ApiLogin(user = @GenerateUser(friends = @Friends(count = 2)))
     void shouldRemoveFriend(@User(selector = NESTED) UserJson user) {
-        UserJson userToRemove = user.testData().friendsJsons().remove(0);
+        UserJson userToRemove = user.testData().friends().remove(0);
         FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
                 .waitForPageLoaded()
                 .removeFriend(userToRemove.username())
@@ -68,7 +68,7 @@ public class FriendsTest extends BaseWebTest {
 
         Selenide.refresh();
 
-        friendsPage.checkExistingFriends(user.testData().friendsJsons());
+        friendsPage.checkExistingFriends(user.testData().friends());
     }
 
     @Test
@@ -77,8 +77,8 @@ public class FriendsTest extends BaseWebTest {
     @Tag("WEB")
     @ApiLogin(user = @GenerateUser(incomeInvitations = @IncomeInvitations(count = 2)))
     void shouldAcceptInvitation(@User UserJson user) {
-        UserJson userToAcceptInvitation = user.testData().invitationsJsons().remove(0);
-        user.testData().friendsJsons().add(userToAcceptInvitation);
+        UserJson userToAcceptInvitation = user.testData().incomeInvitations().remove(0);
+        user.testData().friends().add(userToAcceptInvitation);
         FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
                 .waitForPageLoaded()
                 .acceptFriendInvitationFromUser(userToAcceptInvitation.username())
@@ -86,7 +86,7 @@ public class FriendsTest extends BaseWebTest {
 
         Selenide.refresh();
 
-        friendsPage.checkExistingFriends(user.testData().friendsJsons());
+        friendsPage.checkExistingFriends(user.testData().friends());
     }
 
     @Test
@@ -95,7 +95,7 @@ public class FriendsTest extends BaseWebTest {
     @Tag("WEB")
     @ApiLogin(user = @GenerateUser(incomeInvitations = @IncomeInvitations(count = 2)))
     void shouldDeclineInvitation(@User UserJson user) {
-        UserJson userToDeclineInvitation = user.testData().invitationsJsons().get(0);
+        UserJson userToDeclineInvitation = user.testData().incomeInvitations().get(0);
         FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
                 .waitForPageLoaded()
                 .removeFriend(userToDeclineInvitation.username())
@@ -103,6 +103,6 @@ public class FriendsTest extends BaseWebTest {
 
         Selenide.refresh();
 
-        friendsPage.checkExistingFriends(user.testData().friendsJsons());
+        friendsPage.checkExistingFriends(user.testData().friends());
     }
 }

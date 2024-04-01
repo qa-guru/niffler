@@ -4,6 +4,8 @@ import com.codeborne.selenide.Configuration;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import static guru.qa.niffler.utils.UrlUtils.isValidURL;
+
 public class DockerConfig implements Config {
 
     static final DockerConfig INSTANCE = new DockerConfig();
@@ -63,7 +65,7 @@ public class DockerConfig implements Config {
     @Override
     public String allureDockerUrl() {
         final String allureDockerApi = System.getenv("ALLURE_DOCKER_API");
-        return allureDockerApi != null
+        return isValidURL(allureDockerApi)
                 ? allureDockerApi
                 : "http://allure:5050/";
     }

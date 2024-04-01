@@ -12,7 +12,7 @@ export const Header = () => {
 
     useEffect(() => {
         getData({
-                path: "/invitations",
+                path: "/api/invitations/income",
                 onSuccess: (data) => {
                     setInvitations(data);
                 },

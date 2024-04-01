@@ -3,6 +3,7 @@ package guru.qa.niffler.jupiter.extension;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+import guru.qa.niffler.data.entity.ud.FriendshipStatus;
 import guru.qa.niffler.data.entity.ud.UserEntity;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.jupiter.annotation.Friends;
@@ -58,6 +59,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
                         new ArrayList<>(),
                         new ArrayList<>(),
                         new ArrayList<>(),
+                        new ArrayList<>(),
                         new ArrayList<>()
                 )
         );
@@ -72,9 +74,9 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
             for (int i = 0; i < incomeInvitations.count(); i++) {
                 UserJson incomeInvitation = createUser(generateRandomUsername(), generateRandomPassword());
                 UserEntity incomeInvitationUser = userRepository.getTestUserFromUserdata(incomeInvitation.username());
-                incomeInvitationUser.addFriends(true, targetUser);
+                incomeInvitationUser.addFriends(FriendshipStatus.PENDING, targetUser);
                 userRepository.updateUserForTest(incomeInvitationUser);
-                createdUser.testData().invitationsJsons().add(incomeInvitation);
+                createdUser.testData().incomeInvitations().add(incomeInvitation);
             }
         }
     }
@@ -88,8 +90,8 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
             for (int i = 0; i < outcomeInvitations.count(); i++) {
                 UserJson outcomeInvitation = createUser(generateRandomUsername(), generateRandomPassword());
                 UserEntity outcomeInvitationUser = userRepository.getTestUserFromUserdata(outcomeInvitation.username());
-                targetUser.addFriends(true, outcomeInvitationUser);
-                createdUser.testData().invitationsJsons().add(outcomeInvitation);
+                targetUser.addFriends(FriendshipStatus.PENDING, outcomeInvitationUser);
+                createdUser.testData().outcomeInvitations().add(outcomeInvitation);
             }
             userRepository.updateUserForTest(targetUser);
         }
@@ -104,10 +106,10 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
             for (int i = 0; i < friends.count(); i++) {
                 UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
                 UserEntity friendUser = userRepository.getTestUserFromUserdata(friend.username());
-                targetUser.addFriends(false, friendUser);
-                friendUser.addFriends(false, targetUser);
+                targetUser.addFriends(FriendshipStatus.ACCEPTED, friendUser);
+                friendUser.addFriends(FriendshipStatus.ACCEPTED, targetUser);
                 userRepository.updateUserForTest(friendUser);
-                createdUser.testData().friendsJsons().add(friend);
+                createdUser.testData().friends().add(friend);
             }
             userRepository.updateUserForTest(targetUser);
         }

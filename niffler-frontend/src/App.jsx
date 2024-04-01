@@ -32,7 +32,7 @@ function App() {
             return;
         }
         getData({
-                path: "/currentUser",
+                path: "/api/users/current",
                 onSuccess: (user) => {
                     setUser(user);
                     setUserLoading(false);

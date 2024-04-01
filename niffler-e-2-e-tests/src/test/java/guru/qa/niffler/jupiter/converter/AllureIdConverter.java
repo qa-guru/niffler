@@ -6,11 +6,11 @@ import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.ArgumentConverter;
 
 public class AllureIdConverter implements ArgumentConverter {
-  @Override
-  public Object convert(Object o, ParameterContext parameterContext) throws ArgumentConversionException {
-    if (o instanceof String allureId) {
-      Allure.label("AS_ID", allureId);
+    @Override
+    public Object convert(Object o, ParameterContext parameterContext) throws ArgumentConversionException {
+        if (o instanceof String allureId) {
+            Allure.label("AS_ID", allureId);
+        }
+        return o;
     }
-    return o;
-  }
 }

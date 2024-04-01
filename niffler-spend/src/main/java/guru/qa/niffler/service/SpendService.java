@@ -11,6 +11,8 @@ import guru.qa.niffler.model.StatisticJson;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class SpendService {
@@ -99,8 +100,20 @@ public class SpendService {
                                      @Nullable Date dateFrom,
                                      @Nullable Date dateTo) {
         return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo)
+                .stream()
                 .map(SpendJson::fromEntity)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull
+    Page<SpendJson> getSpendsForUser(@Nonnull String username,
+                                     @Nonnull Pageable pageable,
+                                     @Nullable CurrencyValues filterCurrency,
+                                     @Nullable Date dateFrom,
+                                     @Nullable Date dateTo) {
+        return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo, pageable)
+                .map(SpendJson::fromEntity);
     }
 
     @Transactional
@@ -115,7 +128,7 @@ public class SpendService {
                                      @Nullable CurrencyValues filterCurrency,
                                      @Nullable Date dateFrom,
                                      @Nullable Date dateTo) {
-        List<SpendEntity> spendEntities = getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo).toList();
+        List<SpendEntity> spendEntities = getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo);
         List<StatisticJson> result = new ArrayList<>();
 
         CurrencyValues[] desiredCurrenciesInResponse = resolveDesiredCurrenciesInStatistic(filterCurrency);
@@ -283,19 +296,55 @@ public class SpendService {
     }
 
     private @Nonnull
-    Stream<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
-                                               @Nullable CurrencyValues filterCurrency,
-                                               @Nullable Date dateFrom,
-                                               @Nullable Date dateTo) {
+    List<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
+                                             @Nullable CurrencyValues filterCurrency,
+                                             @Nullable Date dateFrom,
+                                             @Nullable Date dateTo) {
         dateTo = dateTo == null
                 ? new Date()
                 : dateTo;
 
-        List<SpendEntity> spends = dateFrom == null
-                ? spendRepository.findAllByUsernameAndSpendDateLessThanEqual(username, dateTo)
-                : spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(username, dateFrom, dateTo);
+        List<SpendEntity> spends;
+        if (dateFrom == null) {
+            spends = filterCurrency != null
+                    ? spendRepository.findAllByUsernameAndCurrencyAndSpendDateLessThanEqual(
+                    username, filterCurrency, dateTo)
+                    : spendRepository.findAllByUsernameAndSpendDateLessThanEqual(
+                    username, dateTo);
+        } else {
+            spends = filterCurrency != null
+                    ? spendRepository.findAllByUsernameAndCurrencyAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(
+                    username, filterCurrency, dateFrom, dateTo)
+                    : spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(
+                    username, dateFrom, dateTo);
+        }
+        return spends;
+    }
 
-        return spends.stream()
-                .filter(se -> filterCurrency == null || se.getCurrency() == filterCurrency);
+    private @Nonnull
+    Page<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
+                                             @Nullable CurrencyValues filterCurrency,
+                                             @Nullable Date dateFrom,
+                                             @Nullable Date dateTo,
+                                             @Nonnull Pageable pageable) {
+        dateTo = dateTo == null
+                ? new Date()
+                : dateTo;
+
+        Page<SpendEntity> spends;
+        if (dateFrom == null) {
+            spends = filterCurrency != null
+                    ? spendRepository.findAllByUsernameAndCurrencyAndSpendDateLessThanEqual(
+                    username, filterCurrency, dateTo, pageable)
+                    : spendRepository.findAllByUsernameAndSpendDateLessThanEqual(
+                    username, dateTo, pageable);
+        } else {
+            spends = filterCurrency != null
+                    ? spendRepository.findAllByUsernameAndCurrencyAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(
+                    username, filterCurrency, dateFrom, dateTo, pageable)
+                    : spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(
+                    username, dateFrom, dateTo, pageable);
+        }
+        return spends;
     }
 }

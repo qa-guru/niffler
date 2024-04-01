@@ -1,4 +1,4 @@
-package guru.qa.niffler.gql;
+package guru.qa.niffler.api;
 
 import guru.qa.niffler.api.service.RestClient;
 import guru.qa.niffler.model.gql.GqlRequest;
@@ -9,13 +9,14 @@ import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 
-public class GatewayGqlClient extends RestClient {
+public class GatewayGqlApiClient extends RestClient {
 
-    public GatewayGqlClient() {
+    private final GatewayGqlApi gatewayGqlApi;
+
+    public GatewayGqlApiClient() {
         super(CFG.gatewayUrl());
+        this.gatewayGqlApi = retrofit.create(GatewayGqlApi.class);
     }
-
-    private final GatewayGqlApi gatewayGqlApi = retrofit.create(GatewayGqlApi.class);
 
     @Step("Send POST('/graphql') request to niffler-gateway, query: CurrentUser")
     public UserDataGql currentUser(@Nonnull String bearerToken,
@@ -44,7 +45,7 @@ public class GatewayGqlClient extends RestClient {
     @Step("Send POST('/graphql') request to niffler-gateway, query: Friends")
     public UserDataGql friends(@Nonnull String bearerToken,
                                @Nonnull GqlRequest request) throws Exception {
-        return gatewayGqlApi.frieds(bearerToken, request)
+        return gatewayGqlApi.friends(bearerToken, request)
                 .execute()
                 .body();
     }

@@ -1,6 +1,5 @@
 package guru.qa.niffler.api;
 
-import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -9,34 +8,46 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface UserdataApi {
 
-    @GET("currentUser")
+    @GET("internal/users/current")
     Call<UserJson> currentUser(@Query("username") String username);
 
-    @POST("updateUserInfo")
+    @POST("internal/users/update")
     Call<UserJson> updateUserInfo(@Body UserJson user);
 
-    @GET("allUsers")
-    Call<List<UserJson>> allUsers(@Query("username") String username);
+    @GET("internal/users/all")
+    Call<List<UserJson>> allUsers(@Query("username") String username,
+                                  @Query("searchQuery") @Nullable String searchQuery);
 
-    @GET("friends")
-    Call<List<UserJson>> friends(@Query("username") String username, @Query("includePending") boolean includePending);
+    @GET("internal/friends/all")
+    Call<List<UserJson>> friends(@Query("username") String username,
+                                 @Query("searchQuery") @Nullable String searchQuery);
 
-    @GET("invitations")
-    Call<List<UserJson>> invitations(@Query("username") String username);
+    @DELETE("internal/friends/remove")
+    Call<Void> removeFriend(@Query("username") String username,
+                            @Query("targetUsername") String targetUsername);
 
-    @POST("acceptInvitation")
-    Call<List<UserJson>> acceptInvitation(@Query("username") String username, @Body FriendJson invitation);
+    @GET("internal/invitations/income")
+    Call<List<UserJson>> incomeInvitations(@Query("username") String username,
+                                           @Query("searchQuery") @Nullable String searchQuery);
 
-    @POST("declineInvitation")
-    Call<List<UserJson>> declineInvitation(@Query("username") String username, @Body FriendJson invitation);
+    @GET("internal/invitations/outcome")
+    Call<List<UserJson>> outcomeInvitations(@Query("username") String username,
+                                            @Query("searchQuery") @Nullable String searchQuery);
 
-    @POST("addFriend")
-    Call<UserJson> addFriend(@Query("username") String username, @Body FriendJson friend);
+    @POST("internal/invitations/accept")
+    Call<UserJson> acceptInvitation(@Query("username") String username,
+                                    @Query("targetUsername") String targetUsername);
 
-    @DELETE("removeFriend")
-    Call<List<UserJson>> removeFriend(@Query("username") String username, @Query("friendUsername") String friendUsername);
+    @POST("internal/invitations/decline")
+    Call<UserJson> declineInvitation(@Query("username") String username,
+                                     @Query("targetUsername") String targetUsername);
+
+    @POST("internal/invitations/send")
+    Call<UserJson> sendInvitation(@Query("username") String username,
+                                  @Query("targetUsername") String targetUsername);
 }

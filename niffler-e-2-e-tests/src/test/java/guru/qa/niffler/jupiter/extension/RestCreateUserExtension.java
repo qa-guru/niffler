@@ -3,10 +3,10 @@ package guru.qa.niffler.jupiter.extension;
 import com.google.common.base.Stopwatch;
 import guru.qa.niffler.api.AuthApiClient;
 import guru.qa.niffler.api.UserdataApiClient;
+import guru.qa.niffler.api.service.ThreadLocalCookieStore;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
-import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
@@ -20,8 +20,8 @@ import static guru.qa.niffler.utils.DataUtils.generateRandomUsername;
 
 public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
-    private final AuthApiClient authClient = new AuthApiClient();
-    private final UserdataApiClient userdataClient = new UserdataApiClient();
+    private static final AuthApiClient authClient = new AuthApiClient();
+    private static final UserdataApiClient userdataClient = new UserdataApiClient();
 
     @Step("Create user for test (REST)")
     @Override
@@ -29,9 +29,11 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
     protected UserJson createUser(@Nonnull String username,
                                   @Nonnull String password) throws Exception {
         authClient.register(username, password);
+        ThreadLocalCookieStore.INSTANCE.removeAll();
         UserJson currentUser = waitWhileUserToBeConsumed(username, 10000L);
         return currentUser.addTestData(new TestData(
                 password,
+                new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
@@ -46,9 +48,8 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         if (incomeInvitations.handleAnnotation() && incomeInvitations.count() > 0) {
             for (int i = 0; i < incomeInvitations.count(); i++) {
                 UserJson invitation = createUser(generateRandomUsername(), generateRandomPassword());
-                FriendJson addFriend = new FriendJson(createdUser.username());
-                userdataClient.addFriend(invitation.username(), addFriend);
-                createdUser.testData().invitationsJsons().add(invitation);
+                userdataClient.sendInvitation(invitation.username(), createdUser.username());
+                createdUser.testData().incomeInvitations().add(invitation);
             }
         }
     }
@@ -60,9 +61,8 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         if (outcomeInvitations.handleAnnotation() && outcomeInvitations.count() > 0) {
             for (int i = 0; i < outcomeInvitations.count(); i++) {
                 UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
-                FriendJson addFriend = new FriendJson(friend.username());
-                userdataClient.addFriend(createdUser.username(), addFriend);
-                createdUser.testData().invitationsJsons().add(friend);
+                userdataClient.sendInvitation(createdUser.username(), friend.username());
+                createdUser.testData().outcomeInvitations().add(friend);
             }
         }
     }
@@ -74,11 +74,9 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         if (friends.handleAnnotation() && friends.count() > 0) {
             for (int i = 0; i < friends.count(); i++) {
                 UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
-                FriendJson addFriend = new FriendJson(friend.username());
-                FriendJson invitation = new FriendJson(createdUser.username());
-                userdataClient.addFriend(createdUser.username(), addFriend);
-                userdataClient.acceptInvitation(friend.username(), invitation);
-                createdUser.testData().friendsJsons().add(friend);
+                userdataClient.sendInvitation(createdUser.username(), friend.username());
+                userdataClient.acceptInvitation(friend.username(), createdUser.username());
+                createdUser.testData().friends().add(friend);
             }
         }
     }

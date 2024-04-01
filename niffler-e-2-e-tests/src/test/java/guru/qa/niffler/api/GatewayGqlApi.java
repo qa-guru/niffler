@@ -1,4 +1,4 @@
-package guru.qa.niffler.gql;
+package guru.qa.niffler.api;
 
 import guru.qa.niffler.model.gql.GqlRequest;
 import guru.qa.niffler.model.gql.UpdateUserDataGql;
@@ -27,7 +27,7 @@ public interface GatewayGqlApi {
             @Body GqlRequest request);
 
     @POST("graphql")
-    Call<UserDataGql> frieds(
+    Call<UserDataGql> friends(
             @Header("Authorization") String bearerToken,
             @Body GqlRequest request);
 

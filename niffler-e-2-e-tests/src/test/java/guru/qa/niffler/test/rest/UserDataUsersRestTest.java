@@ -96,7 +96,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @GenerateUser()
     @Order(3)
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<UserJson> allUsersResponse = userdataClient.allUsers(user.username());
+        final List<UserJson> allUsersResponse = userdataClient.allUsers(user.username(), null);
 
         step("Check that all users list is not empty", () ->
                 assertFalse(allUsersResponse.isEmpty())

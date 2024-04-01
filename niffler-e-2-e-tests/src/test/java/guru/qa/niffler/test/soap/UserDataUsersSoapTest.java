@@ -1,17 +1,16 @@
 package guru.qa.niffler.test.soap;
 
+import guru.qa.niffler.api.UserdataWsClient;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.userdata.wsdl.AllUsersRequest;
-import guru.qa.niffler.userdata.wsdl.AllUsersResponse;
 import guru.qa.niffler.userdata.wsdl.Currency;
 import guru.qa.niffler.userdata.wsdl.CurrentUserRequest;
-import guru.qa.niffler.userdata.wsdl.CurrentUserResponse;
 import guru.qa.niffler.userdata.wsdl.FriendState;
-import guru.qa.niffler.userdata.wsdl.UpdateUserInfoRequest;
-import guru.qa.niffler.userdata.wsdl.UpdateUserInfoResponse;
-import guru.qa.niffler.ws.UserdataWsClient;
+import guru.qa.niffler.userdata.wsdl.UpdateUserRequest;
+import guru.qa.niffler.userdata.wsdl.UserResponse;
+import guru.qa.niffler.userdata.wsdl.UsersResponse;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +44,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
         CurrentUserRequest cur = new CurrentUserRequest();
         cur.setUsername(user.username());
 
-        final CurrentUserResponse currentUserResponse = wsClient.currentUser(cur);
+        final UserResponse currentUserResponse = wsClient.currentUser(cur);
 
         step("Check that response contains ID (GUID)", () ->
                 assertTrue(currentUserResponse.getUser().getId().matches(ID_REGEXP))
@@ -71,7 +70,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
         final String firstName = "Pizzly";
         final String secondName = "Pizzlyvich";
 
-        UpdateUserInfoRequest uir = new UpdateUserInfoRequest();
+        UpdateUserRequest uir = new UpdateUserRequest();
         guru.qa.niffler.userdata.wsdl.User xmlUser = new guru.qa.niffler.userdata.wsdl.User();
         xmlUser.setUsername(user.username());
         xmlUser.setCurrency(Currency.USD);
@@ -79,7 +78,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
         xmlUser.setSurname(secondName);
         uir.setUser(xmlUser);
 
-        final UpdateUserInfoResponse updateUserInfoResponse = wsClient.updateUserInfo(uir);
+        final UserResponse updateUserInfoResponse = wsClient.updateUserInfo(uir);
 
         step("Check that response contains ID (GUID)", () ->
                 assertTrue(updateUserInfoResponse.getUser().getId().matches(ID_REGEXP))
@@ -108,7 +107,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
         AllUsersRequest aur = new AllUsersRequest();
         aur.setUsername(user.username());
 
-        final AllUsersResponse allUsersResponse = wsClient.allUsersRequest(aur);
+        final UsersResponse allUsersResponse = wsClient.allUsersRequest(aur);
 
         step("Check that all users list is not empty", () ->
                 assertFalse(allUsersResponse.getUser().isEmpty())

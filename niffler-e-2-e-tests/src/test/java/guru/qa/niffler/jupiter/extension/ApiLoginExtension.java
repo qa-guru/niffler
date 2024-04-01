@@ -11,8 +11,8 @@ import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.utils.OauthUtils;
-import io.qameta.allure.AllureId;
 import io.qameta.allure.Step;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -29,7 +29,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
 
     protected static final Config CFG = Config.getConfig();
 
-    private final AuthApiClient authClient = new AuthApiClient();
+    private static final AuthApiClient authClient = new AuthApiClient();
     private final boolean setUpBrowser;
 
     public static final ExtensionContext.Namespace NAMESPACE
@@ -68,14 +68,17 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
             )) {
                 throw new IllegalArgumentException("You have to provide in @ApiLogin annotation user by username/password or @GenerateUser");
             }
-            final String testId = getTestId(context);
 
             UserJson userToLogin;
             if (generateUserAnnotation.handleAnnotation()) {
-                userToLogin = context.getStore(API_LOGIN_USERS_NAMESPACE).get(testId, UserJson.class);
+                userToLogin = context.getStore(API_LOGIN_USERS_NAMESPACE).get(
+                        context.getUniqueId(),
+                        UserJson.class
+                );
             } else {
                 userToLogin = new UserJson(apiLoginAnnotation.username(), new TestData(
                         apiLoginAnnotation.password(),
+                        null,
                         null,
                         null,
                         null,
@@ -84,6 +87,15 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
             }
             setCodeVerifier(context, OauthUtils.codeVerifier());
             setCodeChallenge(context, OauthUtils.codeChallenge(getCodeVerifier(context)));
+
+            Assertions.assertEquals(
+                    0,
+                    ThreadLocalCookieStore.INSTANCE.getCookies().size()
+            );
+            Assertions.assertEquals(
+                    context,
+                    ContextHolderExtension.Holder.INSTANCE.get()
+            );
             authClient.login(context, userToLogin.username(), userToLogin.testData().password());
             if (setUpBrowser) {
                 Selenide.open(CFG.frontUrl());
@@ -160,12 +172,5 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
 
     public static String getJsessionIdCookieAsString() {
         return "JSESSIONID=" + getJsessionid();
-    }
-
-    private String getTestId(@Nonnull ExtensionContext context) {
-        return AnnotationSupport.findAnnotation(
-                context.getRequiredTestMethod(),
-                AllureId.class
-        ).orElseThrow().value();
     }
 }

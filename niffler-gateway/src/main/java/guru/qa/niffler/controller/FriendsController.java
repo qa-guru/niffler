@@ -1,10 +1,8 @@
 package guru.qa.niffler.controller;
 
 
-import guru.qa.niffler.model.FriendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
-import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +18,7 @@ import java.util.List;
 
 
 @RestController
+@RequestMapping("/api/friends")
 public class FriendsController {
 
     private static final Logger LOG = LoggerFactory.getLogger(FriendsController.class);
@@ -32,44 +30,17 @@ public class FriendsController {
         this.userDataClient = userDataClient;
     }
 
-    @GetMapping("/friends")
+    @GetMapping("/all")
     public List<UserJson> friends(@AuthenticationPrincipal Jwt principal,
-                                  @RequestParam boolean includePending) {
+                                  @RequestParam(required = false) String searchQuery) {
         String username = principal.getClaim("sub");
-        return userDataClient.friends(username, includePending);
+        return userDataClient.friends(username, searchQuery);
     }
 
-    @GetMapping("/invitations")
-    public List<UserJson> invitations(@AuthenticationPrincipal Jwt principal) {
+    @DeleteMapping("/remove")
+    public void removeFriend(@AuthenticationPrincipal Jwt principal,
+                             @RequestParam("username") String targetUsername) {
         String username = principal.getClaim("sub");
-        return userDataClient.invitations(username);
-    }
-
-    @PostMapping("/acceptInvitation")
-    public List<UserJson> acceptInvitation(@AuthenticationPrincipal Jwt principal,
-                                           @Valid @RequestBody FriendJson invitation) {
-        String username = principal.getClaim("sub");
-        return userDataClient.acceptInvitation(username, invitation);
-    }
-
-    @PostMapping("/declineInvitation")
-    public List<UserJson> declineInvitation(@AuthenticationPrincipal Jwt principal,
-                                            @Valid @RequestBody FriendJson invitation) {
-        String username = principal.getClaim("sub");
-        return userDataClient.declineInvitation(username, invitation);
-    }
-
-    @PostMapping("/addFriend")
-    public UserJson addFriend(@AuthenticationPrincipal Jwt principal,
-                              @Valid @RequestBody FriendJson friend) {
-        String username = principal.getClaim("sub");
-        return userDataClient.addFriend(username, friend);
-    }
-
-    @DeleteMapping("/removeFriend")
-    public List<UserJson> removeFriend(@AuthenticationPrincipal Jwt principal,
-                                       @RequestParam("username") String friendUsername) {
-        String username = principal.getClaim("sub");
-        return userDataClient.removeFriend(username, friendUsername);
+        userDataClient.removeFriend(username, targetUsername);
     }
 }

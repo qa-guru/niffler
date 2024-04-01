@@ -15,7 +15,6 @@ import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.utils.DateUtils;
-import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -39,7 +38,7 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
 
     protected static final Config CFG = Config.getConfig();
 
-    private final SpendApiClient spendClient = new SpendApiClient();
+    private static final SpendApiClient spendClient = new SpendApiClient();
 
     public static final ExtensionContext.Namespace
             ON_METHOD_USERS_NAMESPACE = ExtensionContext.Namespace.create(AbstractCreateUserExtension.class, User.Selector.METHOD),
@@ -47,7 +46,6 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        final String testId = getTestId(context);
         Map<User.Selector, List<GenerateUser>> userAnnotations = extractGenerateUserAnnotations(context);
         for (Map.Entry<User.Selector, List<GenerateUser>> entry : userAnnotations.entrySet()) {
             UserJson[] resultCollector = new UserJson[entry.getValue().size()];
@@ -72,7 +70,10 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
                 resultCollector[i] = createdUser;
             }
             Object storedResult = resultCollector.length == 1 ? resultCollector[0] : resultCollector;
-            context.getStore(entry.getKey().getNamespace()).put(testId, storedResult);
+            context.getStore(entry.getKey().getNamespace()).put(
+                    context.getUniqueId(),
+                    storedResult
+            );
         }
     }
 
@@ -85,9 +86,9 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        final String testId = getTestId(extensionContext);
         User annotation = parameterContext.getParameter().getAnnotation(User.class);
-        return extensionContext.getStore(annotation.selector().getNamespace()).get(testId);
+        return extensionContext.getStore(annotation.selector().getNamespace())
+                .get(extensionContext.getUniqueId());
     }
 
     private void createSpendsIfPresent(@Nullable GenerateSpend[] spends, @Nonnull UserJson createdUser) throws Exception {
@@ -102,7 +103,7 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
                         spend.spendName(),
                         createdUser.username()
                 );
-                createdUser.testData().spendJsons().add(spendClient.createSpend(sj));
+                createdUser.testData().spends().add(spendClient.createSpend(sj));
             }
         }
     }
@@ -111,16 +112,9 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
         if (categories != null) {
             for (GenerateCategory category : categories) {
                 CategoryJson cj = new CategoryJson(null, category.value(), createdUser.username());
-                createdUser.testData().categoryJsons().add(spendClient.createCategory(cj));
+                createdUser.testData().categories().add(spendClient.createCategory(cj));
             }
         }
-    }
-
-    private String getTestId(ExtensionContext context) {
-        return AnnotationSupport.findAnnotation(
-                context.getRequiredTestMethod(),
-                AllureId.class
-        ).orElseThrow().value();
     }
 
     private Map<User.Selector, List<GenerateUser>> extractGenerateUserAnnotations(@Nonnull ExtensionContext context) {

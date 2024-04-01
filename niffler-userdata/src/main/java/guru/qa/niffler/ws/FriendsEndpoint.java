@@ -1,20 +1,10 @@
 package guru.qa.niffler.ws;
 
-import guru.qa.niffler.model.FriendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataService;
-import niffler_userdata.AcceptInvitationRequest;
-import niffler_userdata.AcceptInvitationResponse;
-import niffler_userdata.AddFriendRequest;
-import niffler_userdata.AddFriendResponse;
-import niffler_userdata.DeclineInvitationRequest;
-import niffler_userdata.DeclineInvitationResponse;
 import niffler_userdata.FriendsRequest;
-import niffler_userdata.FriendsResponse;
-import niffler_userdata.InvitationsRequest;
-import niffler_userdata.InvitationsResponse;
 import niffler_userdata.RemoveFriendRequest;
-import niffler_userdata.RemoveFriendResponse;
+import niffler_userdata.UsersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -36,9 +26,9 @@ public class FriendsEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "friendsRequest")
     @ResponsePayload
-    public FriendsResponse friendsRequest(@RequestPayload FriendsRequest request) {
-        FriendsResponse response = new FriendsResponse();
-        List<UserJson> users = userService.friends(request.getUsername(), request.isIncludePending());
+    public UsersResponse friendsRq(@RequestPayload FriendsRequest request) {
+        UsersResponse response = new UsersResponse();
+        List<UserJson> users = userService.friends(request.getUsername(), request.getSearchQuery());
         if (!users.isEmpty()) {
             response.getUser().addAll(
                     users.stream()
@@ -46,75 +36,13 @@ public class FriendsEndpoint {
                             .toList()
             );
         }
-        return response;
-    }
-
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "invitationsRequest")
-    @ResponsePayload
-    public InvitationsResponse invitationsRequest(@RequestPayload InvitationsRequest request) {
-        InvitationsResponse response = new InvitationsResponse();
-        List<UserJson> users = userService.invitations(request.getUsername());
-        if (!users.isEmpty()) {
-            response.getUser().addAll(
-                    users.stream()
-                            .map(UserJson::toJaxbUser)
-                            .toList()
-            );
-        }
-        return response;
-    }
-
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "acceptInvitationRequest")
-    @ResponsePayload
-    public AcceptInvitationResponse acceptInvitationRequest(@RequestPayload AcceptInvitationRequest request) {
-        AcceptInvitationResponse response = new AcceptInvitationResponse();
-        List<UserJson> users = userService.acceptInvitation(request.getUsername(), FriendJson.fromJaxb(request.getInvitation()));
-        if (!users.isEmpty()) {
-            response.getUser().addAll(
-                    users.stream()
-                            .map(UserJson::toJaxbUser)
-                            .toList()
-            );
-        }
-        return response;
-    }
-
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "declineInvitationRequest")
-    @ResponsePayload
-    public DeclineInvitationResponse declineInvitationRequest(@RequestPayload DeclineInvitationRequest request) {
-        DeclineInvitationResponse response = new DeclineInvitationResponse();
-        List<UserJson> users = userService.declineInvitation(request.getUsername(), FriendJson.fromJaxb(request.getInvitation()));
-        if (!users.isEmpty()) {
-            response.getUser().addAll(
-                    users.stream()
-                            .map(UserJson::toJaxbUser)
-                            .toList()
-            );
-        }
-        return response;
-    }
-
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addFriendRequest")
-    @ResponsePayload
-    public AddFriendResponse addFriendRequest(@RequestPayload AddFriendRequest request) {
-        AddFriendResponse response = new AddFriendResponse();
-        UserJson friend = userService.addFriend(request.getUsername(), FriendJson.fromJaxb(request.getFriend()));
-        response.setUser(friend.toJaxbUser());
         return response;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "removeFriendRequest")
-    @ResponsePayload
-    public RemoveFriendResponse removeFriendRequest(@RequestPayload RemoveFriendRequest request) {
-        RemoveFriendResponse response = new RemoveFriendResponse();
-        List<UserJson> users = userService.removeFriend(request.getUsername(), request.getFriendUsername());
-        if (!users.isEmpty()) {
-            response.getUser().addAll(
-                    users.stream()
-                            .map(UserJson::toJaxbUser)
-                            .toList()
-            );
-        }
-        return response;
+    public void removeFriendRq(@RequestPayload RemoveFriendRequest request) {
+        userService.removeFriend(
+                request.getUsername(), request.getFriendToBeRemoved()
+        );
     }
 }

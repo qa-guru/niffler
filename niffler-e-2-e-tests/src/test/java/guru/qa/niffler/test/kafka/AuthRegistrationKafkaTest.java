@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("[KAFKA][niffler-auth]: Паблишинг сообщений в кафку")
 public class AuthRegistrationKafkaTest extends BaseKafkaTest {
 
-    private final AuthApiClient authClient = new AuthApiClient();
+    private static final AuthApiClient authClient = new AuthApiClient();
 
     @Test
     @AllureId("600001")

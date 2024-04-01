@@ -3,13 +3,13 @@ package guru.qa.niffler.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.model.graphql.SpendInput;
 import guru.qa.niffler.model.graphql.UpdateSpendInput;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.UUID;
 

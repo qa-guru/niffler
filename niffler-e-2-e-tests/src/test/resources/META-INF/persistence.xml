@@ -6,8 +6,8 @@
         <class>guru.qa.niffler.data.entity.auth.AuthUserEntity</class>
         <class>guru.qa.niffler.data.entity.auth.AuthorityEntity</class>
         <class>guru.qa.niffler.data.entity.ud.UserEntity</class>
-        <class>guru.qa.niffler.data.entity.ud.FriendsEntity</class>
-        <class>guru.qa.niffler.data.entity.ud.FriendsId</class>
+        <class>guru.qa.niffler.data.entity.ud.FriendshipEntity</class>
+        <class>guru.qa.niffler.data.entity.ud.FriendShipId</class>
     </persistence-unit>
 
 </persistence>

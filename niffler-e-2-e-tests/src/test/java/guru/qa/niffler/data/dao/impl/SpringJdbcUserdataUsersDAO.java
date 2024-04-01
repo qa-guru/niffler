@@ -34,7 +34,7 @@ public class SpringJdbcUserdataUsersDAO implements UserdataUsersDAO {
     @Override
     public void createUser(UserEntity user) {
         userdataJdbcTpl.update(
-                "INSERT INTO users (username, currency) VALUES (?, ?)",
+                "INSERT INTO \"user\" (username, currency) VALUES (?, ?)",
                 user.getUsername(),
                 CurrencyValues.RUB.name()
         );
@@ -44,7 +44,7 @@ public class SpringJdbcUserdataUsersDAO implements UserdataUsersDAO {
     @Override
     public UserEntity updateUser(UserEntity user) {
         userdataTransactionTpl.execute(status -> {
-            userdataJdbcTpl.update("UPDATE users SET " +
+            userdataJdbcTpl.update("UPDATE \"user\" SET " +
                             "currency = ?, " +
                             "firstname = ?, " +
                             "surname = ?, " +
@@ -56,21 +56,21 @@ public class SpringJdbcUserdataUsersDAO implements UserdataUsersDAO {
                     user.getPhoto(),
                     user.getId());
 
-            userdataJdbcTpl.batchUpdate("INSERT INTO friends (user_id, friend_id, pending) " +
+            userdataJdbcTpl.batchUpdate("INSERT INTO friendship (requester_id, addressee_id, status) " +
                     "VALUES (?, ?, ?) " +
-                    "ON CONFLICT (user_id, friend_id) " +
-                    "DO UPDATE SET pending = ?", new BatchPreparedStatementSetter() {
+                    "ON CONFLICT (requester_id, addressee_id) " +
+                    "DO UPDATE SET status = ?", new BatchPreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
                     ps.setObject(1, user.getId());
-                    ps.setObject(2, user.getFriends().get(i).getFriend().getId());
-                    ps.setBoolean(3, user.getFriends().get(i).isPending());
-                    ps.setBoolean(4, user.getFriends().get(i).isPending());
+                    ps.setObject(2, user.getFriendshipRequests().get(i).getAddressee().getId());
+                    ps.setString(3, user.getFriendshipRequests().get(i).getStatus().name());
+                    ps.setString(4, user.getFriendshipRequests().get(i).getStatus().name());
                 }
 
                 @Override
                 public int getBatchSize() {
-                    return user.getFriends().size();
+                    return user.getFriendshipRequests().size();
                 }
             });
             return null;
@@ -82,9 +82,9 @@ public class SpringJdbcUserdataUsersDAO implements UserdataUsersDAO {
     @Override
     public void deleteUser(UserEntity user) {
         userdataTransactionTpl.execute(status -> {
-            userdataJdbcTpl.update("DELETE FROM friends WHERE user_id = ?", user.getId());
-            userdataJdbcTpl.update("DELETE FROM friends WHERE friend_id = ?", user.getId());
-            userdataJdbcTpl.update("DELETE FROM users WHERE id = ?", user.getId());
+            userdataJdbcTpl.update("DELETE FROM friendship WHERE requester_id = ?", user.getId());
+            userdataJdbcTpl.update("DELETE FROM friendship WHERE addressee_id = ?", user.getId());
+            userdataJdbcTpl.update("DELETE FROM \"user\" WHERE id = ?", user.getId());
             return null;
         });
     }
@@ -93,7 +93,7 @@ public class SpringJdbcUserdataUsersDAO implements UserdataUsersDAO {
     @Override
     public Optional<UserEntity> findUserByUsername(String username) {
         UserEntity user = userdataJdbcTpl.queryForObject(
-                "SELECT * FROM users WHERE username = ? ",
+                "SELECT * FROM \"user\" WHERE username = ? ",
                 UserEntityRowMapper.instance,
                 username
         );

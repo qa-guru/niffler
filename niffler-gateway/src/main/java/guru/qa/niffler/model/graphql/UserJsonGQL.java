@@ -6,9 +6,9 @@ import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.FriendState;
 import guru.qa.niffler.model.UserJson;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Size;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

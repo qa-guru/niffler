@@ -27,7 +27,7 @@ export const MainLayout = () => {
     const curContext = {selectedCurrency, setSelectedCurrency};
 
     const getStatistics = () => getData({
-        path: "/statistic",
+        path: "/api/spends/stat",
         params: {
             filterPeriod: filter === "ALL" ? null : filter,
             filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
@@ -42,7 +42,7 @@ export const MainLayout = () => {
 
     const getSpends = () => {
         getData({
-            path: `/spends`,
+            path: `/api/spends/all`,
             params: {
                 filterPeriod: filter === "ALL" ? null : filter,
                 filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
@@ -58,7 +58,7 @@ export const MainLayout = () => {
 
 
     useLoadedData({
-            path: "/categories",
+            path: "/api/categories/all",
             onSuccess: (data) => {
                 setCategories(Array.from(data.map((v) => {
                     return {value: v?.category, label: v?.category}
@@ -71,7 +71,7 @@ export const MainLayout = () => {
     );
 
     useLoadedData({
-        path: "/allCurrencies",
+        path: "/api/currencies/all",
         onSuccess: (data) => {
             const currencies = Array.from(data.map((v) => {
                 return {value: v?.currency, label: v?.currency}
@@ -98,7 +98,7 @@ export const MainLayout = () => {
         newSpendings.push(data);
         setSpendings(newSpendings);
         getData({
-            path: "/statistic",
+            path: "/api/spends/stat",
             onSuccess: (data) => {
                 setStatistic(data);
             },
@@ -110,7 +110,7 @@ export const MainLayout = () => {
 
     const handleDeleteItems = (ids) => {
         deleteData({
-            path: "/deleteSpends",
+            path: "/api/spends/remove",
             params: {
                 ids: ids.join(",")
             },

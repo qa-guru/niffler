@@ -21,7 +21,7 @@ export const SpendingRow = ({
     const handleDataSave = (evt) => {
         evt.preventDefault();
         patchData({
-            path: "/editSpend",
+            path: "/api/spends/edit",
             data: editableSpending,
             onSuccess: () => {
                 showSuccess("Spending successfully updated");

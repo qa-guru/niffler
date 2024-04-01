@@ -15,15 +15,17 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AuthApiClient extends RestClient {
 
+    private final AuthApi authApi;
+
     public AuthApiClient() {
         super(
                 CFG.authUrl(),
                 true,
                 new CodeInterceptor()
         );
+        this.authApi = retrofit.create(AuthApi.class);
     }
 
-    private final AuthApi authApi = retrofit.create(AuthApi.class);
 
     @Step("Perform API Oauth 2.0 authorization flow for user with username: {username}, password: {password}")
     public void login(@Nonnull ExtensionContext context,

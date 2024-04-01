@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.userdata.wsdl.Currency;
 import guru.qa.niffler.userdata.wsdl.User;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Size;
 
-import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public record UserJson(

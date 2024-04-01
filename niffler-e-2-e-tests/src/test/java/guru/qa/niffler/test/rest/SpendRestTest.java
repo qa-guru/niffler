@@ -24,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("[REST][niffler-spend]: Траты")
 public class SpendRestTest extends BaseRestTest {
 
-    private final SpendApiClient spendClient = new SpendApiClient();
+    private static final SpendApiClient spendClient = new SpendApiClient();
 
-    @AllureId("200004")
+    @AllureId("200001")
     @GenerateUser(categories = {
             @GenerateCategory("Рестораны"),
             @GenerateCategory("Бары"),

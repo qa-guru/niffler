@@ -85,7 +85,7 @@ export const AddSpending = ({categories, addSpendingCallback}) => {
                 currency: user?.currency
             };
             postData({
-                path: "/addSpend",
+                path: "/api/spends/add",
                 data: dataToSend,
                 onSuccess: (data) => {
                     addSpendingCallback(data);

@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(IssueExtension.class)
 public @interface DisabledByIssue {
-  String value();
+    String value();
 }

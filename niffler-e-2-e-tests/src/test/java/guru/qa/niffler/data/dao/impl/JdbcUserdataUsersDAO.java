@@ -2,7 +2,7 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.data.dao.UserdataUsersDAO;
 import guru.qa.niffler.data.entity.ud.CurrencyValues;
-import guru.qa.niffler.data.entity.ud.FriendsEntity;
+import guru.qa.niffler.data.entity.ud.FriendshipEntity;
 import guru.qa.niffler.data.entity.ud.UserEntity;
 import guru.qa.niffler.data.jdbc.DataSourceContext;
 import io.qameta.allure.Step;
@@ -26,7 +26,7 @@ public class JdbcUserdataUsersDAO implements UserdataUsersDAO {
     public void createUser(UserEntity user) {
         try (Connection conn = userdataDs.getConnection();
              PreparedStatement usersPs = conn.prepareStatement(
-                     "INSERT INTO users (username, currency) VALUES (?, ?)")
+                     "INSERT INTO \"user\" (username, currency) VALUES (?, ?)")
         ) {
             usersPs.setString(1, user.getUsername());
             usersPs.setString(2, CurrencyValues.RUB.name());
@@ -42,7 +42,7 @@ public class JdbcUserdataUsersDAO implements UserdataUsersDAO {
         try (Connection conn = userdataDs.getConnection()) {
             conn.setAutoCommit(false);
             try (PreparedStatement usersPs = conn.prepareStatement(
-                    "UPDATE users SET " +
+                    "UPDATE \"user\" SET " +
                             "currency = ?, " +
                             "firstname = ?, " +
                             "surname = ?, " +
@@ -50,10 +50,10 @@ public class JdbcUserdataUsersDAO implements UserdataUsersDAO {
                             "WHERE id = ? ");
 
                  PreparedStatement friendsPs = conn.prepareStatement(
-                         "INSERT INTO friends (user_id, friend_id, pending) " +
-                                 "VALUES (?, ?, ?) " +
-                                 "ON CONFLICT (user_id, friend_id) " +
-                                 "DO UPDATE SET pending = ?")
+                         "INSERT INTO friendship (requester_id, addressee_id, status) " +
+                                 "VALUES (?, ?, ?, ?) " +
+                                 "ON CONFLICT (requester_id, addressee_id) " +
+                                 "DO UPDATE SET status = ?")
             ) {
                 usersPs.setString(1, user.getCurrency().name());
                 usersPs.setString(2, user.getFirstname());
@@ -62,11 +62,11 @@ public class JdbcUserdataUsersDAO implements UserdataUsersDAO {
                 usersPs.setObject(5, user.getId());
                 usersPs.executeUpdate();
 
-                for (FriendsEntity fe : user.getFriends()) {
+                for (FriendshipEntity fe : user.getFriendshipRequests()) {
                     friendsPs.setObject(1, user.getId());
-                    friendsPs.setObject(2, fe.getFriend().getId());
-                    friendsPs.setBoolean(3, fe.isPending());
-                    friendsPs.setBoolean(4, fe.isPending());
+                    friendsPs.setObject(2, fe.getAddressee().getId());
+                    friendsPs.setString(3, fe.getStatus().name());
+                    friendsPs.setString(4, fe.getStatus().name());
                     friendsPs.addBatch();
                     friendsPs.clearParameters();
                 }
@@ -90,9 +90,9 @@ public class JdbcUserdataUsersDAO implements UserdataUsersDAO {
     public void deleteUser(UserEntity user) {
         try (Connection conn = userdataDs.getConnection()) {
             conn.setAutoCommit(false);
-            try (PreparedStatement usersPs = conn.prepareStatement("DELETE FROM users WHERE id = ?");
-                 PreparedStatement friendsPs = conn.prepareStatement("DELETE FROM friends WHERE user_id = ?");
-                 PreparedStatement invitesPs = conn.prepareStatement("DELETE FROM friends WHERE friend_id = ?")
+            try (PreparedStatement usersPs = conn.prepareStatement("DELETE FROM \"user\" WHERE id = ?");
+                 PreparedStatement friendsPs = conn.prepareStatement("DELETE FROM friendship WHERE requester_id = ?");
+                 PreparedStatement invitesPs = conn.prepareStatement("DELETE FROM friendship WHERE addressee_id = ?")
             ) {
                 usersPs.setObject(1, user.getId());
                 friendsPs.setObject(1, user.getId());
@@ -117,7 +117,7 @@ public class JdbcUserdataUsersDAO implements UserdataUsersDAO {
     public Optional<UserEntity> findUserByUsername(String username) {
         UserEntity user = new UserEntity();
         try (Connection conn = userdataDs.getConnection();
-             PreparedStatement usersPs = conn.prepareStatement("SELECT * FROM users WHERE username = ? ")) {
+             PreparedStatement usersPs = conn.prepareStatement("SELECT * FROM \"user\" WHERE username = ? ")) {
             usersPs.setObject(1, username);
 
             usersPs.execute();

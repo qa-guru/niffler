@@ -13,7 +13,7 @@ export const Controls = {
 
 const handleAddUserToFriends = (username, onInvite) => {
     postData({
-        path: "/addFriend",
+        path: "/api/invitations/send",
         data: {username: username},
         onSuccess: () => {
             showSuccess("Invitation is sent");
@@ -30,7 +30,7 @@ const handleAddUserToFriends = (username, onInvite) => {
 
 const handleSubmitInvitation = (username, onSubmit) => {
     postData({
-        path: "/acceptInvitation",
+        path: "/api/invitations/accept",
         data: {username: username},
         onSuccess: () => {
             showSuccess("Invitation is accepted");
@@ -47,7 +47,7 @@ const handleSubmitInvitation = (username, onSubmit) => {
 
 const handleDeclineInvitation = (username, onDecline) => {
     postData({
-        path: "/declineInvitation",
+        path: "/api/invitations/decline",
         data: {username: username},
         onSuccess: () => {
             showSuccess("Invitation is declined");
@@ -65,7 +65,7 @@ const handleDeclineInvitation = (username, onDecline) => {
 
 const handleDeleteFriend = (username, onDelete) => {
     deleteData({
-        path: "/removeFriend",
+        path: "/api/friends/remove",
         params: {
             username: username,
         },

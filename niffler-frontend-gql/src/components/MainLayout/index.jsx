@@ -57,7 +57,7 @@ export const MainLayout = () => {
     });
 
     const getStatistics = () => getData({
-        path: "/statistic",
+        path: "/api/spends/stat",
         params: {
             filterPeriod: filter === "ALL" ? null : filter,
             filterCurrency: selectedCurrency?.value === "ALL" ? null : selectedCurrency?.value,
@@ -77,7 +77,7 @@ export const MainLayout = () => {
 
     const addNewSpendingInTableCallback = (data) => {
         getData({
-            path: "/statistic",
+            path: "/api/spends/stat",
             onSuccess: (data) => {
                 setStatistic(data);
             },

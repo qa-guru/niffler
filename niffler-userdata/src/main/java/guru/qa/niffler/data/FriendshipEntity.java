@@ -1,8 +1,11 @@
-package guru.qa.niffler.data.entity.ud;
+package guru.qa.niffler.data;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -10,27 +13,31 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "friendship")
-public class FriendsEntity implements Serializable {
+@IdClass(FriendShipId.class)
+public class FriendshipEntity {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserEntity user;
+    @JoinColumn(name = "requester_id", referencedColumnName = "id")
+    private UserEntity requester;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "friend_id", referencedColumnName = "id")
-    private UserEntity friend;
+    @JoinColumn(name = "addressee_id", referencedColumnName = "id")
+    private UserEntity addressee;
 
-    @Column(name = "pending")
-    private boolean pending;
+    @Column(name = "created_date", columnDefinition = "DATE", nullable = false)
+    private Date createdDate;
+
+    @Enumerated(EnumType.STRING)
+    private FriendshipStatus status;
 
     @Override
     public final boolean equals(Object o) {
@@ -39,12 +46,13 @@ public class FriendsEntity implements Serializable {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        FriendsEntity that = (FriendsEntity) o;
-        return getUser() != null && Objects.equals(getUser(), that.getUser());
+        FriendshipEntity that = (FriendshipEntity) o;
+        return getRequester() != null && Objects.equals(getRequester(), that.getRequester())
+                && getAddressee() != null && Objects.equals(getAddressee(), that.getAddressee());
     }
 
     @Override
     public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+        return Objects.hash(requester, addressee);
     }
 }
