@@ -5,6 +5,7 @@ import guru.qa.niffler.model.page.RestPage;
 import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.SpendJson;
+import guru.qa.niffler.model.rest.StatisticJson;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
@@ -46,6 +47,18 @@ public class SpendApiClient extends RestClient {
                                                  @Nullable Integer size,
                                                  @Nullable List<String> sort) throws Exception {
         return spendApi.allSpendsPageable(username, currency, from, to, page, size, sort)
+                .execute()
+                .body();
+    }
+
+    @Step("Send REST GET('/internal/spends/stat') request to niffler-spend")
+    @Nullable
+    public List<StatisticJson> statistic(@Nonnull String username,
+                                         @Nullable CurrencyValues userCurrency,
+                                         @Nullable CurrencyValues filterCurrency,
+                                         @Nullable String from,
+                                         @Nullable String to) throws Exception {
+        return spendApi.stat(username, userCurrency, filterCurrency, from, to)
                 .execute()
                 .body();
     }

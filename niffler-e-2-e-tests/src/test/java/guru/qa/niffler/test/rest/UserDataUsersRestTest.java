@@ -31,7 +31,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Для нового пользователя должна возвращаться информация из niffler-userdata c дефолтными значениями")
-    @AllureId("200001")
+    @AllureId("200022")
     @Tag("REST")
     @GenerateUser()
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
@@ -50,7 +50,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: При обновлении юзера должны сохраняться значения в niffler-userdata")
-    @AllureId("200002")
+    @AllureId("200023")
     @Tag("REST")
     @GenerateUser()
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
@@ -89,7 +89,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Список всех пользователей системы не должен быть пустым")
-    @AllureId("200003")
+    @AllureId("200024")
     @Tag("REST")
     @GenerateUser()
     @Order(1)

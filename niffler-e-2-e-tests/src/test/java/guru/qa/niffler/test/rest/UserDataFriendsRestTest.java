@@ -31,7 +31,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Для пользователя должен возвращаться список друзей из niffler-userdata")
-    @AllureId("200009")
+    @AllureId("200012")
     @Tag("REST")
     @GenerateUser(
             friends = @Friends(count = 1),
@@ -60,7 +60,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
     @Test
     @DisplayName("REST: Для пользователя должен возвращаться список друзей из niffler-userdata " +
             "с фильтраций по username, если передан searchQuery")
-    @AllureId("200010")
+    @AllureId("200013")
     @Tag("REST")
     @GenerateUser(
             friends = @Friends(count = 2),
@@ -88,7 +88,7 @@ public class UserDataFriendsRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Удаление друга")
-    @AllureId("200011")
+    @AllureId("200014")
     @Tag("REST")
     @GenerateUser(
             friends = @Friends(count = 1)
