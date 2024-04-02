@@ -4,6 +4,8 @@ import guru.qa.niffler.data.CategoryEntity;
 import guru.qa.niffler.data.SpendEntity;
 import guru.qa.niffler.data.repository.CategoryRepository;
 import guru.qa.niffler.data.repository.SpendRepository;
+import guru.qa.niffler.ex.CategoryNotFoundException;
+import guru.qa.niffler.ex.SpendNotFoundException;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.StatisticByCategoryJson;
@@ -13,10 +15,8 @@ import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -62,8 +62,9 @@ public class SpendService {
                 .stream()
                 .filter(c -> c.getCategory().equals(category))
                 .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Can`t find category by given name: " + category));
+                .orElseThrow(() -> new CategoryNotFoundException(
+                        "Can`t find category by given name: " + category
+                ));
 
         spendEntity.setCategory(categoryEntity);
         return SpendJson.fromEntity(spendRepository.save(spendEntity));
@@ -74,15 +75,18 @@ public class SpendService {
     SpendJson editSpendForUser(@Nonnull SpendJson spend) {
         Optional<SpendEntity> spendById = spendRepository.findById(spend.id());
         if (spendById.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can`t find spend by given id: " + spend.id());
+            throw new SpendNotFoundException(
+                    "Can`t find spend by given id: " + spend.id()
+            );
         } else {
             final String category = spend.category();
             CategoryEntity categoryEntity = categoryRepository.findAllByUsername(spend.username())
                     .stream()
                     .filter(c -> c.getCategory().equals(category))
                     .findFirst()
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST, "Can`t find category by given name: " + category));
+                    .orElseThrow(() -> new CategoryNotFoundException(
+                            "Can`t find category by given name: " + category
+                    ));
 
             SpendEntity spendEntity = spendById.get();
             spendEntity.setSpendDate(spend.spendDate());

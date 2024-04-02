@@ -2,7 +2,7 @@ package guru.qa.niffler.controller.graphql;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
-import guru.qa.niffler.ex.ToManySubQueriesException;
+import guru.qa.niffler.ex.TooManySubQueriesException;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.model.graphql.UpdateUserInfoInput;
 import guru.qa.niffler.model.graphql.UserJsonGQL;
@@ -119,7 +119,7 @@ public class UserGraphqlController {
         for (String queryKey : queryKeys) {
             List<SelectedField> selectors = env.getSelectionSet().getFieldsGroupedByResultKey().get(queryKey);
             if (selectors != null && selectors.size() > depth) {
-                throw new ToManySubQueriesException("Can`t fetch over 2 " + queryKey + " sub-queries");
+                throw new TooManySubQueriesException("Can`t fetch over 2 " + queryKey + " sub-queries");
             }
         }
     }
