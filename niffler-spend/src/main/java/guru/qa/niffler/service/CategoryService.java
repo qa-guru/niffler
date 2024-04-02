@@ -30,7 +30,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public @Nonnull
     List<CategoryJson> getAllCategories(@Nonnull String username) {
-        return categoryRepository.findAllByUsername(username)
+        return categoryRepository.findAllByUsernameOrderByCategory(username)
                 .stream()
                 .map(CategoryJson::fromEntity)
                 .toList();
@@ -42,7 +42,7 @@ public class CategoryService {
         final String username = category.username();
         final String categoryName = category.category();
 
-        if (categoryRepository.findAllByUsername(username).size() > MAX_CATEGORIES_SIZE) {
+        if (categoryRepository.findAllByUsernameOrderByCategory(username).size() > MAX_CATEGORIES_SIZE) {
             LOG.error("### Can`t add over than 8 categories for user: " + username);
             throw new TooManyCategoriesException("Can`t add over than 8 categories for user: '" + username);
         }

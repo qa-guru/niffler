@@ -58,7 +58,7 @@ public class SpendService {
         spendEntity.setDescription(spend.description());
         spendEntity.setAmount(spend.amount());
 
-        CategoryEntity categoryEntity = categoryRepository.findAllByUsername(username)
+        CategoryEntity categoryEntity = categoryRepository.findAllByUsernameOrderByCategory(username)
                 .stream()
                 .filter(c -> c.getCategory().equals(category))
                 .findFirst()
@@ -80,7 +80,7 @@ public class SpendService {
             );
         } else {
             final String category = spend.category();
-            CategoryEntity categoryEntity = categoryRepository.findAllByUsername(spend.username())
+            CategoryEntity categoryEntity = categoryRepository.findAllByUsernameOrderByCategory(spend.username())
                     .stream()
                     .filter(c -> c.getCategory().equals(category))
                     .findFirst()
@@ -180,7 +180,7 @@ public class SpendService {
             ));
         }
 
-        categoryRepository.findAllByUsername(username).stream()
+        categoryRepository.findAllByUsernameOrderByCategory(username).stream()
                 .filter(c -> !spendsByCategory.containsKey(c.getCategory()))
                 .map(c -> new StatisticByCategoryJson(
                         c.getCategory(),

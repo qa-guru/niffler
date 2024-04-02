@@ -84,7 +84,7 @@ class SpendServiceTest {
                         secondSpend, thirdSpend
                 ));
 
-        lenient().when(categoryRepository.findAllByUsername(eq("dima")))
+        lenient().when(categoryRepository.findAllByUsernameOrderByCategory(eq("dima")))
                 .thenReturn(List.of(
                         firstCategory, secondCategory, thirdCategory
                 ));

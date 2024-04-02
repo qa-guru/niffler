@@ -14,5 +14,5 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, UUID> 
     CategoryEntity findByUsernameAndCategory(@Nonnull String username, @Nonnull String category);
 
     @Nonnull
-    List<CategoryEntity> findAllByUsername(@Nonnull String username);
+    List<CategoryEntity> findAllByUsernameOrderByCategory(@Nonnull String username);
 }
