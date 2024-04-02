@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -21,7 +22,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "friendship")
 @IdClass(FriendShipId.class)
-public class FriendshipEntity {
+public class FriendshipEntity implements Serializable {
 
     @Id
     @ManyToOne

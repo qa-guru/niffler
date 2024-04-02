@@ -1,9 +1,7 @@
 package guru.qa.niffler.service;
 
-import guru.qa.niffler.ex.CategoryNotFoundException;
-import guru.qa.niffler.ex.NotUniqCategoryException;
-import guru.qa.niffler.ex.SpendNotFoundException;
-import guru.qa.niffler.ex.TooManyCategoriesException;
+import guru.qa.niffler.ex.NotFoundException;
+import guru.qa.niffler.ex.SameUsernameException;
 import guru.qa.niffler.model.ErrorJson;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,22 +18,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Value("${spring.application.name}")
     private String appName;
 
-    @ExceptionHandler(TooManyCategoriesException.class)
-    public ResponseEntity<ErrorJson> handleNotAcceptableException(@Nonnull RuntimeException ex,
-                                                                  @Nonnull HttpServletRequest request) {
-        return withStatus("Bad request", HttpStatus.NOT_ACCEPTABLE, ex, request);
-    }
-
-    @ExceptionHandler(NotUniqCategoryException.class)
-    public ResponseEntity<ErrorJson> handleNotUniqCategoryException(@Nonnull RuntimeException ex,
-                                                                    @Nonnull HttpServletRequest request) {
-        return withStatus("Bad request", HttpStatus.CONFLICT, ex, request);
-    }
-
-    @ExceptionHandler({CategoryNotFoundException.class, SpendNotFoundException.class})
+    @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorJson> handleNotFoundException(@Nonnull RuntimeException ex,
                                                              @Nonnull HttpServletRequest request) {
         return withStatus("Bad request", HttpStatus.NOT_FOUND, ex, request);
+    }
+
+    @ExceptionHandler(SameUsernameException.class)
+    public ResponseEntity<ErrorJson> handleSameUsernameException(@Nonnull RuntimeException ex,
+                                                                 @Nonnull HttpServletRequest request) {
+        return withStatus("Bad request", HttpStatus.BAD_REQUEST, ex, request);
     }
 
     @ExceptionHandler(Exception.class)

@@ -2,10 +2,10 @@ package guru.qa.niffler.model;
 
 import jakarta.annotation.Nonnull;
 
-import java.util.Date;
-import java.util.List;
-
-public record ErrorJson(@Nonnull Date timestamp,
+public record ErrorJson(@Nonnull String type,
+                        @Nonnull String title,
                         int status,
-                        @Nonnull List<String> errors) {
+                        @Nonnull String detail,
+                        @Nonnull String instance) {
+
 }

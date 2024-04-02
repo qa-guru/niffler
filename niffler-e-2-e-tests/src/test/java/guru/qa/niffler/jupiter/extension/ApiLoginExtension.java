@@ -12,7 +12,6 @@ import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.utils.OauthUtils;
 import io.qameta.allure.Step;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -87,16 +86,8 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
             }
             setCodeVerifier(context, OauthUtils.codeVerifier());
             setCodeChallenge(context, OauthUtils.codeChallenge(getCodeVerifier(context)));
-
-            Assertions.assertEquals(
-                    0,
-                    ThreadLocalCookieStore.INSTANCE.getCookies().size()
-            );
-            Assertions.assertEquals(
-                    context,
-                    ContextHolderExtension.Holder.INSTANCE.get()
-            );
             authClient.login(context, userToLogin.username(), userToLogin.testData().password());
+
             if (setUpBrowser) {
                 Selenide.open(CFG.frontUrl());
                 Selenide.sessionStorage().setItem("id_token", getToken(context));

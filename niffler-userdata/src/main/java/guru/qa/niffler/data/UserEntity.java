@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
 @Setter
 @Entity
 @Table(name = "\"user\"")
-public class UserEntity {
+public class UserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")

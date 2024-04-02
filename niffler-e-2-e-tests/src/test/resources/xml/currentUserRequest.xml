@@ -2,8 +2,8 @@
                   xmlns:gs="niffler-userdata">
     <soapenv:Header/>
     <soapenv:Body>
-        <gs:currentUserRq>
+        <gs:currentUserRequest>
             <gs:username>pizzly</gs:username>
-        </gs:currentUserRq>
+        </gs:currentUserRequest>
     </soapenv:Body>
 </soapenv:Envelope>

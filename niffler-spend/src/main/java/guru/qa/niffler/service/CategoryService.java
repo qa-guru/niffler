@@ -44,7 +44,7 @@ public class CategoryService {
 
         if (categoryRepository.findAllByUsernameOrderByCategory(username).size() > MAX_CATEGORIES_SIZE) {
             LOG.error("### Can`t add over than 8 categories for user: " + username);
-            throw new TooManyCategoriesException("Can`t add over than 8 categories for user: '" + username);
+            throw new TooManyCategoriesException("Can`t add over than 8 categories for user: '" + username + "'");
         }
 
         CategoryEntity ce = new CategoryEntity();

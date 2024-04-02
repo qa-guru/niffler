@@ -6,6 +6,7 @@ import guru.qa.niffler.data.FriendshipStatus;
 import guru.qa.niffler.data.UserEntity;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.ex.NotFoundException;
+import guru.qa.niffler.ex.SameUsernameException;
 import guru.qa.niffler.model.UserJson;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 import static guru.qa.niffler.model.FriendState.FRIEND;
 import static guru.qa.niffler.model.FriendState.INVITE_RECEIVED;
@@ -169,6 +171,9 @@ public class UserDataService {
 
     @Transactional
     public UserJson createFriendshipRequest(@Nonnull String username, @Nonnull String targetUsername) {
+        if (Objects.equals(username, targetUsername)) {
+            throw new SameUsernameException("Can`t create friendship request for self user");
+        }
         UserEntity currentUser = getRequiredUser(username);
         UserEntity targetUser = getRequiredUser(targetUsername);
         currentUser.addFriends(FriendshipStatus.PENDING, targetUser);
@@ -179,6 +184,9 @@ public class UserDataService {
     @Transactional
     public @Nonnull
     UserJson acceptFriendshipRequest(@Nonnull String username, @Nonnull String targetUsername) {
+        if (Objects.equals(username, targetUsername)) {
+            throw new SameUsernameException("Can`t accept friendship request for self user");
+        }
         UserEntity currentUser = getRequiredUser(username);
         UserEntity targetUser = getRequiredUser(targetUsername);
 
@@ -186,7 +194,7 @@ public class UserDataService {
                 .stream()
                 .filter(fe -> fe.getRequester().getUsername().equals(targetUser.getUsername()))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("Can`t find invitation from username: '" + targetUsername + "'"));
 
         invite.setStatus(FriendshipStatus.ACCEPTED);
         currentUser.addFriends(FriendshipStatus.ACCEPTED, targetUser);
@@ -197,6 +205,9 @@ public class UserDataService {
     @Transactional
     public @Nonnull
     UserJson declineFriendshipRequest(@Nonnull String username, @Nonnull String targetUsername) {
+        if (Objects.equals(username, targetUsername)) {
+            throw new SameUsernameException("Can`t decline friendship request for self user");
+        }
         UserEntity currentUser = getRequiredUser(username);
         UserEntity targetUser = getRequiredUser(targetUsername);
 
@@ -210,6 +221,9 @@ public class UserDataService {
 
     @Transactional
     public void removeFriend(@Nonnull String username, @Nonnull String targetUsername) {
+        if (Objects.equals(username, targetUsername)) {
+            throw new SameUsernameException("Can`t remove friendship relation for self user");
+        }
         UserEntity currentUser = getRequiredUser(username);
         UserEntity targetUser = getRequiredUser(targetUsername);
 
@@ -225,7 +239,7 @@ public class UserDataService {
     @Nonnull
     UserEntity getRequiredUser(@Nonnull String username) {
         return userRepository.findByUsername(username).orElseThrow(
-                () -> new NotFoundException("Can`t find user by username: " + username)
+                () -> new NotFoundException("Can`t find user by username: '" + username + "'")
         );
     }
 
