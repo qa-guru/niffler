@@ -1,6 +1,11 @@
 ARG DOCKER
-FROM $DOCKER
-ENV JAVA_OPTS=""
+ARG ALLURE_DOCKER_API
+ARG GITHUB_TOKEN
+
+FROM ${DOCKER}
+
+ENV ALLURE_DOCKER_API=${ALLURE_DOCKER_API}
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
 
 WORKDIR /niffler
 COPY ./gradle ./gradle
@@ -10,4 +15,4 @@ COPY ./niffler-grpc-common ./niffler-grpc-common
 COPY ./build.gradle ./
 COPY ./settings.gradle ./
 
-CMD chmod +x ./niffler-e-2-e-tests/send_results.sh; ./gradlew test -Dtest.env=docker -Drepository=jpa; bash ./niffler-e-2-e-tests/send_results.sh
+CMD ./gradlew test -Dtest.env=docker -Drepository=jpa

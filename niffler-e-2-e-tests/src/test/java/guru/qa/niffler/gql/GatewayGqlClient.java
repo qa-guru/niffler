@@ -1,6 +1,6 @@
 package guru.qa.niffler.gql;
 
-import guru.qa.niffler.api.service.RestService;
+import guru.qa.niffler.api.service.RestClient;
 import guru.qa.niffler.model.gql.GqlRequest;
 import guru.qa.niffler.model.gql.UpdateUserDataGql;
 import guru.qa.niffler.model.gql.UserDataGql;
@@ -9,7 +9,7 @@ import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 
-public class GatewayGqlClient extends RestService {
+public class GatewayGqlClient extends RestClient {
 
     public GatewayGqlClient() {
         super(CFG.gatewayUrl());

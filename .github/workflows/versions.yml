@@ -1,0 +1,65 @@
+on:
+  workflow_call:
+    inputs:
+      runner:
+        required: true
+        type: string
+    outputs:
+      auth-ver:
+        value: ${{ jobs.collect-versions.outputs.auth }}
+      currency-ver:
+        value: ${{ jobs.collect-versions.outputs.currency }}
+      gateway-ver:
+        value: ${{ jobs.collect-versions.outputs.gateway }}
+      spend-ver:
+        value: ${{ jobs.collect-versions.outputs.spend }}
+      userdata-ver:
+        value: ${{ jobs.collect-versions.outputs.userdata }}
+      front-ver:
+        value: ${{ jobs.collect-versions.outputs.front }}
+
+jobs:
+  collect-versions:
+    runs-on: "${{ inputs.runner }}"
+    outputs:
+      auth: ${{ steps.auth_version.outputs.version }}
+      currency: ${{ steps.currency_version.outputs.version }}
+      gateway: ${{ steps.gateway_version.outputs.version }}
+      spend: ${{ steps.spend_version.outputs.version }}
+      userdata: ${{ steps.userdata_version.outputs.version }}
+      front: ${{ steps.front_version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Retrieve niffler-frontend version
+        id: front_version
+        run: |
+          echo "::set-output name=version::$(grep '^FRONT_VERSION=' docker.properties | cut -d '=' -f 2)"
+      - name: Retrieve niffler-auth version
+        run: |
+          echo "::set-output name=version::$(bash ./gradlew :niffler-auth:printVersion -q)"
+        id: auth_version
+      - name: Retrieve niffler-currency version
+        run: |
+          echo "::set-output name=version::$(bash ./gradlew :niffler-currency:printVersion -q)"
+        id: currency_version
+      - name: Retrieve niffler-gateway version
+        run: |
+          echo "::set-output name=version::$(bash ./gradlew :niffler-gateway:printVersion -q)"
+        id: gateway_version
+      - name: Retrieve niffler-spend version
+        run: |
+          echo "::set-output name=version::$(bash ./gradlew :niffler-spend:printVersion -q)"
+        id: spend_version
+      - name: Retrieve niffler-userdata version
+        run: |
+          echo "::set-output name=version::$(bash ./gradlew :niffler-userdata:printVersion -q)"
+        id: userdata_version
+      - name: Summary info
+        run: |
+          echo "### niffler-auth version will be used: ${{ steps.auth_version.outputs.version }}"
+          echo "### niffler-currency version will be used: ${{ steps.currency_version.outputs.version }}"
+          echo "### niffler-gateway version will be used: ${{ steps.gateway_version.outputs.version }}"
+          echo "### niffler-spend version will be used: ${{ steps.spend_version.outputs.version }}"
+          echo "### niffler-userdata version will be used: ${{ steps.userdata_version.outputs.version }}"
+          echo "### niffler-front version will be used: ${{ steps.front_version.outputs.version }}"

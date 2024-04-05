@@ -1,67 +1,48 @@
 package guru.qa.niffler.condition.users;
 
-import com.codeborne.selenide.CollectionCondition;
-import com.codeborne.selenide.ex.ElementNotFound;
-import com.codeborne.selenide.impl.CollectionSource;
+import com.codeborne.selenide.CheckResult;
+import com.codeborne.selenide.Driver;
+import com.codeborne.selenide.WebElementsCondition;
 import guru.qa.niffler.model.rest.UserJson;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 public class UsersCondition {
 
-    public static CollectionCondition users(List<UserJson> expectedUsers) {
-        return new CollectionCondition() {
+    public static WebElementsCondition users(UserJson... expectedUsers) {
+        return new WebElementsCondition() {
             @Override
-            public void fail(CollectionSource collection, @Nullable List<WebElement> elements, @Nullable Exception lastError, long timeoutMs) {
-                if (elements == null || elements.isEmpty()) {
-                    ElementNotFound elementNotFound = new ElementNotFound(collection, List.of("Can`t find elements"), lastError);
-                    throw elementNotFound;
-                } else if (elements.size() != expectedUsers.size()) {
-                    throw new UsersSizeMismatch(collection, expectedUsers, bindElementsToUsers(elements), explanation, timeoutMs);
-                } else {
-                    throw new UsersMismatch(collection, expectedUsers, bindElementsToUsers(elements), explanation, timeoutMs);
-                }
+            public String toString() {
+                return "Users " + Arrays.toString(expectedUsers);
             }
 
             @Override
-            public boolean missingElementSatisfiesCondition() {
-                return false;
-            }
-
-            @Override
-            public boolean test(List<WebElement> elements) {
-                if (elements.size() != expectedUsers.size()) {
-                    return false;
+            public CheckResult check(Driver driver, List<WebElement> elements) {
+                if (elements.size() != expectedUsers.length) {
+                    String message = String.format(
+                            "Users table size mismatch (expected: %s, actual: %s)",
+                            expectedUsers.length, elements.size()
+                    );
+                    return CheckResult.rejected(message, elements);
                 }
 
-                for (UserJson expectedUser : expectedUsers) {
-                    boolean found = false;
-                    for (WebElement row : elements) {
-                        List<WebElement> cells = row.findElements(By.cssSelector("td"));
-                        if (cells.get(1).getText().equals(expectedUser.username())) {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found) {
-                        return false;
+                for (int i = 0; i < expectedUsers.length; i++) {
+                    WebElement row = elements.get(i);
+                    UserJson expectedUser = expectedUsers[i];
+                    List<WebElement> cells = row.findElements(By.cssSelector("td"));
+                    if (!cells.get(1).getText().equals(expectedUser.username())) {
+                        String message = String.format(
+                                "Username mismatch (expected: %s, actual: %s)",
+                                expectedUser.username(), cells.get(1).getText()
+                        );
+                        return CheckResult.rejected(message, cells.get(1));
                     }
                 }
 
-                return true;
-            }
-
-            private List<UserJson> bindElementsToUsers(List<WebElement> elements) {
-                return elements.stream()
-                        .map(e -> {
-                            List<WebElement> cells = e.findElements(By.cssSelector("td"));
-                            return new UserJson(cells.get(1).getText());
-                        })
-                        .toList();
+                return CheckResult.accepted();
             }
         };
     }

@@ -100,10 +100,10 @@ spring:
     vault:
       authentication: TOKEN
       host: vault.qa.guru
-      port: 443
-      scheme: https
-      uri: https://vault.qa.guru:443
+      uri: https://vault.qa.guru
       token: ${VAULT_TOKEN}
+      kv:
+        enabled: true
   datasource:
     url: ${db.url}
     username: ${db.username}
@@ -128,10 +128,10 @@ spring:
     vault:
       authentication: TOKEN
       host: vault.qa.guru
-      port: 443
-      scheme: https
-      uri: https://vault.qa.guru:443
+      uri: https://vault.qa.guru
       token: ${VAULT_TOKEN}
+      kv:
+        enabled: true
   datasource:
     url: ${db.url}
     username: ${db.username}

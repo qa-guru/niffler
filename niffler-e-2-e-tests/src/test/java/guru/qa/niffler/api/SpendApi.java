@@ -8,9 +8,9 @@ import retrofit2.http.POST;
 
 public interface SpendApi {
 
-    @POST("/addSpend")
+    @POST("addSpend")
     Call<SpendJson> addSpend(@Body SpendJson spend);
 
-    @POST("/category")
+    @POST("category")
     Call<CategoryJson> addCategory(@Body CategoryJson category);
 }

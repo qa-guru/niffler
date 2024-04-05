@@ -31,7 +31,7 @@ public class NifflerCurrencyTest extends BaseGrpcTest {
     @Tag("gRPC")
     void getAllCurrenciesTest() {
         CurrencyResponse allCurrencies = step("Get all currencies", () ->
-                currencyStub.getAllCurrencies(Empty.getDefaultInstance())
+                blockingStub.getAllCurrencies(Empty.getDefaultInstance())
         );
         final List<Currency> currenciesList = allCurrencies.getAllCurrenciesList();
 
@@ -80,7 +80,7 @@ public class NifflerCurrencyTest extends BaseGrpcTest {
                 .build();
 
         final CalculateResponse calculateResponse = step("Calculate rate", () ->
-                currencyStub.calculateRate(request)
+                blockingStub.calculateRate(request)
         );
 
         step("Check calculated rate", () ->

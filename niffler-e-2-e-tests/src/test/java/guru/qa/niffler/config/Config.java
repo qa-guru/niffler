@@ -1,5 +1,7 @@
 package guru.qa.niffler.config;
 
+import okhttp3.logging.HttpLoggingInterceptor;
+
 import java.util.List;
 
 public interface Config {
@@ -24,7 +26,7 @@ public interface Config {
 
     String userdataUrl();
 
-    String currencyGrpcAddress();
+    String currencyGrpcHost();
 
     default int currencyGrpcPort() {
         return 8092;
@@ -36,7 +38,11 @@ public interface Config {
 
     String kafkaAddress();
 
+    String allureDockerUrl();
+
     default List<String> kafkaTopics() {
         return List.of("users");
     }
+
+    HttpLoggingInterceptor.Level restLoggingLevel();
 }

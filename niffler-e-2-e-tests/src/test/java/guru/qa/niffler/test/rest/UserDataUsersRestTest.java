@@ -1,6 +1,6 @@
 package guru.qa.niffler.test.rest;
 
-import guru.qa.niffler.api.UserdataRestClient;
+import guru.qa.niffler.api.UserdataApiClient;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.CurrencyValues;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserDataUsersRestTest extends BaseRestTest {
 
-    private final UserdataRestClient userdataClient = new UserdataRestClient();
+    private final UserdataApiClient userdataClient = new UserdataApiClient();
 
     @Test
     @DisplayName("REST: Для нового пользователя должна возвращаться информация из niffler-userdata c дефолтными значениями")

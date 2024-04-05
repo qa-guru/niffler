@@ -1,7 +1,7 @@
 package guru.qa.niffler.test.kafka;
 
-import guru.qa.niffler.api.AuthRestClient;
-import guru.qa.niffler.kafka.KafkaConsumerService;
+import guru.qa.niffler.api.AuthApiClient;
+import guru.qa.niffler.kafka.KafkaConsumer;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.utils.DataUtils;
 import io.qameta.allure.AllureId;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("[KAFKA][niffler-auth]: Паблишинг сообщений в кафку")
 public class AuthRegistrationKafkaTest extends BaseKafkaTest {
 
-    private final AuthRestClient authClient = new AuthRestClient();
+    private final AuthApiClient authClient = new AuthApiClient();
 
     @Test
     @AllureId("600001")
@@ -29,7 +29,7 @@ public class AuthRegistrationKafkaTest extends BaseKafkaTest {
         final String password = DataUtils.generateRandomPassword();
 
         authClient.register(username, password);
-        final UserJson messageFromKafka = KafkaConsumerService.getMessage(username, 10000L);
+        final UserJson messageFromKafka = KafkaConsumer.getMessage(username, 10000L);
 
         step("Check that message from kafka exist", () ->
                 assertNotNull(messageFromKafka)

@@ -29,62 +29,62 @@ public interface UserdataWsApi {
             "Content-Type: text/xml",
             "Accept-Charset: utf-8"
     })
-    @POST("/ws")
+    @POST("ws")
     Call<CurrentUserResponse> currentUserRequest(@Body CurrentUserRequest currentUserRequest);
 
     @Headers({
             "Content-Type: text/xml",
             "Accept-Charset: utf-8"
     })
-    @POST("/ws")
+    @POST("ws")
     Call<UpdateUserInfoResponse> updateUserInfoRequest(@Body UpdateUserInfoRequest updateUserInfoRequest);
 
     @Headers({
             "Content-Type: text/xml",
             "Accept-Charset: utf-8"
     })
-    @POST("/ws")
+    @POST("ws")
     Call<AllUsersResponse> allUsersRequest(@Body AllUsersRequest allUsersRequest);
 
     @Headers({
             "Content-Type: text/xml",
             "Accept-Charset: utf-8"
     })
-    @POST("/ws")
+    @POST("ws")
     Call<FriendsResponse> friendsRequest(@Body FriendsRequest friendsRequest);
 
     @Headers({
             "Content-Type: text/xml",
             "Accept-Charset: utf-8"
     })
-    @POST("/ws")
+    @POST("ws")
     Call<InvitationsResponse> invitationsRequest(@Body InvitationsRequest invitationsRequest);
 
     @Headers({
             "Content-Type: text/xml",
             "Accept-Charset: utf-8"
     })
-    @POST("/ws")
+    @POST("ws")
     Call<AcceptInvitationResponse> acceptInvitationRequest(@Body AcceptInvitationRequest acceptInvitationRequest);
 
     @Headers({
             "Content-Type: text/xml",
             "Accept-Charset: utf-8"
     })
-    @POST("/ws")
+    @POST("ws")
     Call<DeclineInvitationResponse> declineInvitationRequest(@Body DeclineInvitationRequest declineInvitationRequest);
 
     @Headers({
             "Content-Type: text/xml",
             "Accept-Charset: utf-8"
     })
-    @POST("/ws")
+    @POST("ws")
     Call<AddFriendResponse> addFriendRequest(@Body AddFriendRequest addFriendRequest);
 
     @Headers({
             "Content-Type: text/xml",
             "Accept-Charset: utf-8"
     })
-    @POST("/ws")
+    @POST("ws")
     Call<RemoveFriendResponse> removeFriendRequest(@Body RemoveFriendRequest removeFriendRequest);
 }

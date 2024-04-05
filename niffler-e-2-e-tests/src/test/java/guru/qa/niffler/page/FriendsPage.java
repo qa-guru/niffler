@@ -35,7 +35,9 @@ public class FriendsPage extends BasePage<FriendsPage> {
 
     @Step("Check that friends list contains data {0}")
     public FriendsPage checkExistingFriends(List<UserJson> expectedFriends) {
-        table.getAllRows().filter(text("You are friends")).shouldHave(users(expectedFriends));
+        table.getAllRows().filter(text("You are friends")).shouldHave(
+                users(expectedFriends.toArray(UserJson[]::new))
+        );
         return this;
     }
 

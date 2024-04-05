@@ -1,1 +1,2 @@
 guru.qa.niffler.jupiter.extension.JpaExtension
+guru.qa.niffler.jupiter.extension.AllureDockerExtension

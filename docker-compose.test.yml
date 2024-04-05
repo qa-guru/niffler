@@ -28,7 +28,6 @@ services:
       - "2181"
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
-      - ZOOKEEPER_TICK_TIME=2000
     networks:
       - test-network
     dns_search: .
@@ -55,8 +54,8 @@ services:
   auth.niffler.dc:
     container_name: auth.niffler.dc
     image: ${PREFIX}/niffler-auth-${PROFILE}:latest
-    ports:
-      - "9000:9000"
+    expose:
+      - "9000"
     healthcheck:
       test: "wget --spider http://localhost:9000/actuator/health || exit 1"
       interval: 5s
@@ -87,8 +86,8 @@ services:
   gateway.niffler.dc:
     container_name: gateway.niffler.dc
     image: ${PREFIX}/niffler-gateway-${PROFILE}:latest
-    ports:
-      - "8090:8090"
+    expose:
+      - "8090"
     depends_on:
       auth.niffler.dc:
         condition: service_healthy
@@ -123,8 +122,8 @@ services:
   frontend.niffler.dc:
     container_name: frontend.niffler.dc
     image: "${FRONT_IMAGE}"
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     depends_on:
       gateway.niffler.dc:
         condition: service_started
@@ -134,7 +133,7 @@ services:
 
   selenoid:
     container_name: selenoid
-    image: aerokube/selenoid:1.11.0
+    image: aerokube/selenoid:1.11.2
     platform: "${ARCH}"
     volumes:
       - ./selenoid:/etc/selenoid
@@ -149,12 +148,12 @@ services:
 
   selenoid-ui:
     container_name: selenoid-ui
-    image: aerokube/selenoid-ui:1.10.10
+    image: aerokube/selenoid-ui:1.10.11
     depends_on:
       - selenoid
     restart: unless-stopped
     ports:
-      - "9090:8080"
+      - "9091:8080"
     command: [ "--selenoid-uri", "http://selenoid:4444" ]
     networks:
       - test-network
@@ -163,26 +162,47 @@ services:
   niffler-e-2-e:
     container_name: niffler-e-2-e
     image: ${PREFIX}/niffler-e-2-e-tests:latest
+    environment:
+      - ALLURE_DOCKER_API=${ALLURE_DOCKER_API}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
     depends_on:
       frontend.niffler.dc:
         condition: service_started
+    volumes:
+      - allure-artifacts:/niffler/niffler-e-2-e-tests/build/allure-results/
     networks:
       - test-network
     dns_search: .
 
   allure:
     container_name: allure
-    image: frankescobar/allure-docker-service
+    image: frankescobar/allure-docker-service:2.21.0
     depends_on:
       - niffler-e-2-e
     environment:
       CHECK_RESULTS_EVERY_SECONDS: 3
-      KEEP_HISTORY: 0
+      KEEP_HISTORY: 1
     ports:
       - "5050:5050"
     networks:
       - test-network
     dns_search: .
+
+  allure-ui:
+    container_name: allure-ui
+    image: frankescobar/allure-docker-service-ui:7.0.3
+    depends_on:
+      - allure
+    environment:
+      ALLURE_DOCKER_PUBLIC_API_URL: "http://localhost:5050"
+    ports:
+      - "5252:5252"
+    networks:
+      - test-network
+    dns_search: .
+
+volumes:
+  allure-artifacts:
 
 networks:
   test-network:

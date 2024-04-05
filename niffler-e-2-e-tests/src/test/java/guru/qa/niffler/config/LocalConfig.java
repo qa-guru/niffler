@@ -1,6 +1,7 @@
 package guru.qa.niffler.config;
 
 import com.codeborne.selenide.Configuration;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class LocalConfig implements Config {
@@ -32,7 +33,7 @@ public class LocalConfig implements Config {
     }
 
     @Override
-    public String currencyGrpcAddress() {
+    public String currencyGrpcHost() {
         return "127.0.0.1";
     }
 
@@ -54,5 +55,15 @@ public class LocalConfig implements Config {
     @Override
     public String kafkaAddress() {
         return "127.0.0.1:9092";
+    }
+
+    @Override
+    public String allureDockerUrl() {
+        return "http://127.0.0.1:5050/";
+    }
+
+    @Override
+    public HttpLoggingInterceptor.Level restLoggingLevel() {
+        return HttpLoggingInterceptor.Level.BODY;
     }
 }

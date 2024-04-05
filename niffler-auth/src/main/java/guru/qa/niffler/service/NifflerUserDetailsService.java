@@ -25,7 +25,7 @@ public class NifflerUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException("Username: `" + username + "` not found");
         }
         return new NifflerUserPrincipal(user);
     }

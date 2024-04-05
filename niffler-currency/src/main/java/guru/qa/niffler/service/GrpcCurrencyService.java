@@ -13,6 +13,8 @@ import guru.qa.niffler.data.repository.CurrencyRepository;
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.Nonnull;
 import net.devh.boot.grpc.server.service.GrpcService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,8 @@ import java.util.List;
 
 @GrpcService
 public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurrencyServiceImplBase {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GrpcCurrencyService.class);
 
     private final CurrencyRepository currencyRepository;
 

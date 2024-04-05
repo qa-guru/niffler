@@ -3,30 +3,27 @@ package guru.qa.niffler.test.grpc;
 import guru.qa.grpc.niffler.grpc.NifflerCurrencyServiceGrpc;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.meta.GrpcTest;
+import guru.qa.niffler.utils.GrpcConsoleInterceptor;
 import io.grpc.Channel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.Metadata;
-import io.qameta.allure.grpc.AllureGrpc;
 
 @GrpcTest
 public abstract class BaseGrpcTest {
 
     protected static final Config CFG = Config.getConfig();
 
-    private static final Channel channel;
+    protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceStub stub;
+    protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub blockingStub;
+    protected static final Channel channel;
 
     static {
-        Metadata metadata = new Metadata();
-        metadata.put(Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER), "token");
-
         channel = ManagedChannelBuilder
-                .forAddress(CFG.currencyGrpcAddress(), CFG.currencyGrpcPort())
-                .intercept(new AllureGrpc())
-//                .intercept(new HeaderClientInterceptor(metadata))
+                .forAddress(CFG.currencyGrpcHost(), CFG.currencyGrpcPort())
+                .intercept(new GrpcConsoleInterceptor())
                 .usePlaintext()
                 .build();
-    }
 
-    protected final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub currencyStub =
-            NifflerCurrencyServiceGrpc.newBlockingStub(channel);
+        stub = NifflerCurrencyServiceGrpc.newStub(channel);
+        blockingStub = NifflerCurrencyServiceGrpc.newBlockingStub(channel);
+    }
 }
