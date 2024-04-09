@@ -18,6 +18,8 @@ public record UserJson(
         CurrencyValues currency,
         @JsonProperty("photo")
         String photo,
+        @JsonProperty("photoSmall")
+        String photoSmall,
         @JsonProperty("friendState")
         FriendState friendState,
         @JsonIgnore
@@ -28,10 +30,10 @@ public record UserJson(
     }
 
     public UserJson(String username, TestData testData) {
-        this(null, username, null, null, null, null, null, testData);
+        this(null, username, null, null, null, null, null, null, testData);
     }
 
     public UserJson addTestData(TestData testData) {
-        return new UserJson(id, username, firstname, surname, currency, photo, friendState, testData);
+        return new UserJson(id, username, firstname, surname, currency, photo, photoSmall, friendState, testData);
     }
 }

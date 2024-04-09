@@ -69,6 +69,7 @@ public class UserGraphqlController {
                 input.surname(),
                 input.currency(),
                 input.photo(),
+                null,
                 null
         )));
     }

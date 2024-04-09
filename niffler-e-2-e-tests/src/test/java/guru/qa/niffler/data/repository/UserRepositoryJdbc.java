@@ -139,6 +139,7 @@ public class UserRepositoryJdbc implements UserRepository {
                 user.setFirstname(resultSet.getString("firstname"));
                 user.setSurname(resultSet.getString("surname"));
                 user.setPhoto(resultSet.getBytes("photo"));
+                user.setPhotoSmall(resultSet.getBytes("photo_small"));
             } else {
                 return Optional.empty();
             }
@@ -210,7 +211,8 @@ public class UserRepositoryJdbc implements UserRepository {
                             "currency = ?, " +
                             "firstname = ?, " +
                             "surname = ?, " +
-                            "photo = ? " +
+                            "photo = ?, " +
+                            "photo_small = ? " +
                             "WHERE id = ? ");
 
                  PreparedStatement friendsPs = conn.prepareStatement(
@@ -223,7 +225,8 @@ public class UserRepositoryJdbc implements UserRepository {
                 usersPs.setString(2, user.getFirstname());
                 usersPs.setString(3, user.getSurname());
                 usersPs.setBytes(4, user.getPhoto());
-                usersPs.setObject(5, user.getId());
+                usersPs.setBytes(5, user.getPhotoSmall());
+                usersPs.setObject(6, user.getId());
                 usersPs.executeUpdate();
 
                 for (FriendshipEntity fe : user.getFriendshipRequests()) {

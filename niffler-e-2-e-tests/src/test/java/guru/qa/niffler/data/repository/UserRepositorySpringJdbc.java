@@ -172,12 +172,14 @@ public class UserRepositorySpringJdbc implements UserRepository {
                             "currency = ?, " +
                             "firstname = ?, " +
                             "surname = ?, " +
-                            "photo = ? " +
+                            "photo = ?, " +
+                            "photo_small = ? " +
                             "WHERE id = ? ",
                     user.getCurrency().name(),
                     user.getFirstname(),
                     user.getSurname(),
                     user.getPhoto(),
+                    user.getPhotoSmall(),
                     user.getId());
 
             userdataJdbcTemplate.batchUpdate("INSERT INTO friendship (requester_id, addressee_id, status) " +

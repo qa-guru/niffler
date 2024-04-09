@@ -1,14 +1,10 @@
 package guru.qa.niffler.model.gql;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UserDataGql extends GqlResponse<UserDataGql> {
-
     private UserGql user;
-
-    public UserGql getUser() {
-        return user;
-    }
-
-    public void setUser(UserGql user) {
-        this.user = user;
-    }
 }

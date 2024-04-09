@@ -52,6 +52,9 @@ public class UserEntity implements Serializable {
     @Column(name = "photo", columnDefinition = "bytea")
     private byte[] photo;
 
+    @Column(name = "photo_small", columnDefinition = "bytea")
+    private byte[] photoSmall;
+
     @OneToMany(mappedBy = "requester", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendshipEntity> friendshipRequests = new ArrayList<>();
 

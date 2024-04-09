@@ -10,6 +10,7 @@ import guru.qa.niffler.ex.SameUsernameException;
 import guru.qa.niffler.model.UserJson;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,13 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,6 +72,7 @@ public class UserDataService {
         userEntity.setSurname(user.surname());
         userEntity.setCurrency(user.currency());
         userEntity.setPhoto(user.photo() != null ? user.photo().getBytes(StandardCharsets.UTF_8) : null);
+        userEntity.setPhotoSmall(resizePhoto(user.photo()));
         UserEntity saved = userRepository.save(userEntity);
         return UserJson.fromEntity(saved);
     }
@@ -270,5 +278,35 @@ public class UserDataService {
                     ).orElse(UserJson.fromEntity(userEntity));
         }
         return UserJson.fromEntity(userEntity);
+    }
+
+    private @Nullable byte[] resizePhoto(@Nullable String photo) {
+        if (photo != null) {
+            try {
+                String base64Image = photo.split(",")[1];
+                BufferedImage img = ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(base64Image)));
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                Thumbnails.of(img)
+                        .height(100)
+                        .width(100)
+                        .outputQuality(1.0)
+                        .outputFormat("png")
+                        .toOutputStream(outputStream);
+
+                return concatArrays(
+                        "data:image/png;base64,".getBytes(StandardCharsets.UTF_8),
+                        Base64.getEncoder().encode(outputStream.toByteArray())
+                );
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    private @Nonnull byte[] concatArrays(@Nonnull byte[] first, @Nonnull byte[] second) {
+        byte[] result = Arrays.copyOf(first, first.length + second.length);
+        System.arraycopy(second, 0, result, first.length, second.length);
+        return result;
     }
 }

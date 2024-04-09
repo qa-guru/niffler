@@ -65,6 +65,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
                 CurrencyValues.KZT,
                 null,
                 null,
+                null,
                 null
         );
 

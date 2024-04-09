@@ -5,6 +5,7 @@ type User {
     surname: String
     currency: CurrencyValues!
     photo: String
+    photoSmall: String
     friendState: FriendState
     friends: [User]
     invitations: [User]

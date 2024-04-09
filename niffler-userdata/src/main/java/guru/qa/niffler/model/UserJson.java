@@ -25,6 +25,8 @@ public record UserJson(
         CurrencyValues currency,
         @JsonProperty("photo")
         String photo,
+        @JsonProperty("photoSmall")
+        String photoSmall,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonProperty("friendState")
         FriendState friendState) {
@@ -37,6 +39,7 @@ public record UserJson(
         jaxbUser.setSurname(surname);
         jaxbUser.setCurrency(Currency.valueOf(currency.name()));
         jaxbUser.setPhoto(photo);
+        jaxbUser.setPhotoSmall(photoSmall);
         jaxbUser.setFriendState(friendState() == null ?
                 niffler_userdata.FriendState.VOID :
                 niffler_userdata.FriendState.valueOf(friendState().name()));
@@ -51,6 +54,7 @@ public record UserJson(
                 jaxbUser.getSurname(),
                 CurrencyValues.valueOf(jaxbUser.getCurrency().name()),
                 jaxbUser.getPhoto(),
+                jaxbUser.getPhotoSmall(),
                 (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != niffler_userdata.FriendState.VOID)
                         ? FriendState.valueOf(jaxbUser.getFriendState().name())
                         : null
@@ -65,6 +69,7 @@ public record UserJson(
                 entity.getSurname(),
                 entity.getCurrency(),
                 entity.getPhoto() != null && entity.getPhoto().length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null,
+                entity.getPhotoSmall() != null && entity.getPhotoSmall().length > 0 ? new String(entity.getPhotoSmall(), StandardCharsets.UTF_8) : null,
                 friendState
         );
     }

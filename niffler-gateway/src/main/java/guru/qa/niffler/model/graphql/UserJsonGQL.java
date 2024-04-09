@@ -29,6 +29,8 @@ public record UserJsonGQL(
         @JsonProperty("photo")
         @Size(max = NifflerGatewayServiceConfig.ONE_MB)
         String photo,
+        @JsonProperty("photoSmall")
+        String photoSmall,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonProperty("friendState")
         FriendState friendState,
@@ -45,6 +47,7 @@ public record UserJsonGQL(
                 userJson.surname(),
                 userJson.currency(),
                 userJson.photo(),
+                userJson.photoSmall(),
                 userJson.friendState(),
                 new ArrayList<>(),
                 new ArrayList<>()
