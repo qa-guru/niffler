@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.entity.ud;
+package guru.qa.niffler.data.entity.userdata;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

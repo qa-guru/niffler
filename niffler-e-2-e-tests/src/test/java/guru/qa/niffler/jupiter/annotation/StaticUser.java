@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface User {
+public @interface StaticUser {
 
-    Selector selector() default Selector.NESTED;
+    Type value() default Type.COMMON;
 
-    enum Selector {
-        METHOD, NESTED;
+    enum Type {
+        ADMIN, COMMON;
     }
 }

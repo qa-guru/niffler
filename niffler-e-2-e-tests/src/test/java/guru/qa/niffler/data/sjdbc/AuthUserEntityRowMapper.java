@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.spring_jdbc;
+package guru.qa.niffler.data.sjdbc;
 
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import org.springframework.jdbc.core.RowMapper;

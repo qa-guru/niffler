@@ -1,7 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.data.entity.ud.UserEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
@@ -30,9 +30,9 @@ public class ProfileDBTest extends BaseWebTest {
 
     @BeforeEach
     void changeCurrencyBeforeTest(@User(selector = NESTED) UserJson user) {
-        UserEntity testUserFromUserdata = userRepository.getTestUserFromUserdata(user.username());
-        testUserFromUserdata.setCurrency(guru.qa.niffler.data.entity.ud.CurrencyValues.valueOf(testedCurrency.name()));
-        userRepository.updateUserForTest(testUserFromUserdata);
+        UserEntity testUserFromUserdata = userRepository.findByIdInUserdata(user.id()).orElseThrow();
+        testUserFromUserdata.setCurrency(guru.qa.niffler.data.entity.CurrencyValues.valueOf(testedCurrency.name()));
+        userRepository.updateInUserdata(testUserFromUserdata);
     }
 
     @Test

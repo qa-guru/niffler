@@ -22,7 +22,7 @@ import org.openqa.selenium.Cookie;
 
 import javax.annotation.Nonnull;
 
-import static guru.qa.niffler.jupiter.extension.AbstractCreateUserExtension.API_LOGIN_USERS_NAMESPACE;
+import static guru.qa.niffler.jupiter.annotation.User.Selector.NESTED;
 
 public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver {
 
@@ -47,18 +47,18 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
     }
 
     @Step("Login to niffler using api")
+    @SuppressWarnings("unchecked")
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         ApiLogin apiLoginAnnotation = AnnotationSupport.findAnnotation(
                 context.getRequiredTestMethod(),
                 ApiLogin.class
+        ).orElse(AnnotationSupport.findAnnotation(
+                context.getRequiredTestClass(),
+                ApiLogin.class
         ).orElse(
-                AnnotationSupport.findAnnotation(
-                        context.getRequiredTestClass(),
-                        ApiLogin.class
-                ).orElse(
-                        null
-                ));
+                null
+        ));
         if (apiLoginAnnotation != null) {
             GenerateUser generateUserAnnotation = apiLoginAnnotation.user();
             if ((!generateUserAnnotation.handleAnnotation()
@@ -70,10 +70,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
 
             UserJson userToLogin;
             if (generateUserAnnotation.handleAnnotation()) {
-                userToLogin = context.getStore(API_LOGIN_USERS_NAMESPACE).get(
-                        context.getUniqueId(),
-                        UserJson.class
-                );
+                userToLogin = AbstractCreateUserExtension.createdUsers(context, NESTED).getFirst();
             } else {
                 userToLogin = new UserJson(apiLoginAnnotation.username(), new TestData(
                         apiLoginAnnotation.password(),

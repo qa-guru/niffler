@@ -1,20 +1,22 @@
 package guru.qa.niffler.data.jpa;
 
 import guru.qa.niffler.data.DataBase;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public enum EmfContext {
     INSTANCE;
 
-    private final Map<DataBase, EntityManagerFactory> emfContext = new HashMap<>();
+    private final Map<DataBase, EntityManagerFactory> emfContext = new ConcurrentHashMap<>();
 
-    public synchronized EntityManagerFactory getEmf(DataBase dataBase) {
-        if (emfContext.get(dataBase) == null) {
+    private EntityManagerFactory emf(DataBase dataBase) {
+        return emfContext.computeIfAbsent(dataBase, key -> {
             Map<String, String> settings = new HashMap<>();
             settings.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 //            settings.put("hibernate.connection.driver_class", "org.postgresql.Driver");
@@ -23,20 +25,22 @@ public enum EmfContext {
             settings.put("hibernate.connection.password", "secret");
             settings.put("hibernate.connection.url", dataBase.getUrlForP6Spy());
 //            settings.put("hibernate.connection.url", dataBase.url);
-
-            this.emfContext.put(
-                    dataBase, new ThreadLocalEntityManagerFactory(
-                            Persistence.createEntityManagerFactory(
-                                    "niffler-persistence-unit-name",
-                                    settings
-                            )
-                    )
+            return Persistence.createEntityManagerFactory(
+                    "niffler-persistence-unit-name",
+                    settings
             );
-        }
-        return emfContext.get(dataBase);
+        });
     }
 
-    public Collection<EntityManagerFactory> storedEmf() {
-        return emfContext.values();
+    public static EntityManager entityManager(DataBase dataBase) {
+        return new TransactionalEntityManager(
+                new ThreadSafeEntityManager(
+                        INSTANCE.emf(dataBase).createEntityManager()
+                )
+        );
+    }
+
+    public static Collection<EntityManagerFactory> storedEmf() {
+        return INSTANCE.emfContext.values();
     }
 }

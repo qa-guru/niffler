@@ -2,17 +2,26 @@ package guru.qa.niffler.jupiter.extension;
 
 import com.google.common.base.Stopwatch;
 import guru.qa.niffler.api.AuthApiClient;
+import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.api.UserdataApiClient;
 import guru.qa.niffler.api.service.ThreadLocalCookieStore;
 import guru.qa.niffler.jupiter.annotation.Friends;
+import guru.qa.niffler.jupiter.annotation.GenerateCategory;
+import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
+import guru.qa.niffler.utils.DateUtils;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static guru.qa.niffler.utils.DataUtils.generateRandomPassword;
@@ -22,6 +31,7 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
     private static final AuthApiClient authClient = new AuthApiClient();
     private static final UserdataApiClient userdataClient = new UserdataApiClient();
+    private static final SpendApiClient spendClient = new SpendApiClient();
 
     @Step("Create user for test (REST)")
     @Override
@@ -77,6 +87,36 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
                 userdataClient.sendInvitation(createdUser.username(), friend.username());
                 userdataClient.acceptInvitation(friend.username(), createdUser.username());
                 createdUser.testData().friends().add(friend);
+            }
+        }
+    }
+
+    @Step("Create spends for test user (REST)")
+    @Override
+    protected void createSpendsIfPresent(@Nullable GenerateSpend[] spends, @Nonnull UserJson createdUser) throws Exception {
+        if (spends != null) {
+            for (GenerateSpend spend : spends) {
+                SpendJson sj = new SpendJson(
+                        null,
+                        DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()),
+                        spend.amount(),
+                        spend.currency(),
+                        spend.spendCategory(),
+                        spend.spendName(),
+                        createdUser.username()
+                );
+                createdUser.testData().spends().add(spendClient.createSpend(sj));
+            }
+        }
+    }
+
+    @Step("Create categories for test user (REST)")
+    @Override
+    protected void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, UserJson createdUser) throws Exception {
+        if (categories != null) {
+            for (GenerateCategory category : categories) {
+                CategoryJson cj = new CategoryJson(null, category.value(), createdUser.username());
+                createdUser.testData().categories().add(spendClient.createCategory(cj));
             }
         }
     }

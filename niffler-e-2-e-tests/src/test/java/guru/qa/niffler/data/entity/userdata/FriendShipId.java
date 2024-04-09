@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.entity.ud;
+package guru.qa.niffler.data.entity.userdata;
 
 import java.io.Serializable;
 import java.util.Objects;

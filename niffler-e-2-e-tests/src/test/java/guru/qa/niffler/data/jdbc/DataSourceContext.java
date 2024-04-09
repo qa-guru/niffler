@@ -13,7 +13,7 @@ public enum DataSourceContext {
 
     private final Map<DataBase, DataSource> dsContext = new HashMap<>();
 
-    public synchronized DataSource getDatatSource(DataBase dataBase) {
+    private synchronized DataSource getDataSource(DataBase dataBase) {
         if (dsContext.get(dataBase) == null) {
             PGSimpleDataSource ds = new PGSimpleDataSource();
             ds.setUser("postgres");
@@ -23,5 +23,9 @@ public enum DataSourceContext {
             this.dsContext.put(dataBase, p6DataSource);
         }
         return dsContext.get(dataBase);
+    }
+
+    public static DataSource dataSource(DataBase dataBase) {
+        return INSTANCE.getDataSource(dataBase);
     }
 }

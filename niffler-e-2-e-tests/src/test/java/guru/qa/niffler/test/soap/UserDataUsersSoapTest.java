@@ -1,6 +1,5 @@
 package guru.qa.niffler.test.soap;
 
-import guru.qa.niffler.api.UserdataWsClient;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.UserJson;
@@ -30,9 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("[SOAP][niffler-userdata]: Пользователи")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserDataUsersSoapTest extends BaseSoapTest {
-
-    private static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-    private static final UserdataWsClient wsClient = new UserdataWsClient();
 
     @Test
     @DisplayName("SOAP: Для нового пользователя должна возвращаться информация из niffler-userdata c дефолтными значениями")

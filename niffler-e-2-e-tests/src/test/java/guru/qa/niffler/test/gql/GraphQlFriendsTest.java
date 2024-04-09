@@ -1,6 +1,5 @@
 package guru.qa.niffler.test.gql;
 
-import guru.qa.niffler.api.GatewayGqlApiClient;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
@@ -30,8 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Epic("[GraphQL][niffler-gateway]: Друзья")
 @DisplayName("[GraphQL][niffler-gateway]: Друзья")
 public class GraphQlFriendsTest extends BaseGraphQlTest {
-
-    private static final GatewayGqlApiClient gqlClient = new GatewayGqlApiClient();
 
     @Test
     @DisplayName("GraphQL: Для нового пользователя должен возвращаться пустой список friends и invitations из niffler-gateway")

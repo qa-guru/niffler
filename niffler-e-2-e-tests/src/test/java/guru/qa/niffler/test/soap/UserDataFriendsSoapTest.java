@@ -1,6 +1,5 @@
 package guru.qa.niffler.test.soap;
 
-import guru.qa.niffler.api.UserdataWsClient;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
@@ -31,8 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Epic("[SOAP][niffler-userdata]: Друзья")
 @DisplayName("[SOAP][niffler-userdata]: Друзья")
 public class UserDataFriendsSoapTest extends BaseSoapTest {
-
-    private static final UserdataWsClient wsClient = new UserdataWsClient();
 
     @Test
     @DisplayName("SOAP: Для пользователя должен возвращаться список друзей из niffler-userdata")

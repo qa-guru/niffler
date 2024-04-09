@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Epic("[REST][niffler-userdata]: Друзья")
-@DisplayName("[REST][niffler-userdata]: Друзья")
+@Epic("[REST][niffler-userdata]: Приглашения")
+@DisplayName("[REST][niffler-userdata]: Приглашения")
 public class UserDataInvitationsRestTest extends BaseRestTest {
 
     private static final UserdataApiClient userdataClient = new UserdataApiClient();
