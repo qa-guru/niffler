@@ -11,6 +11,7 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.model.UserJsonBulk;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.PostConstruct;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -48,6 +49,27 @@ public class UserDataService {
     @Autowired
     public UserDataService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    /**
+     * only for migration V4__small_avatar.sql
+     */
+    @Transactional
+    @PostConstruct
+    public void compressAndSaveExistingPhotos() {
+        List<UserEntity> users = userRepository.findAll();
+        for (UserEntity user : users) {
+            if (user.getPhoto() != null && user.getPhoto().length > 0) {
+                try {
+                    String originalPhoto = new String(user.getPhoto(), StandardCharsets.UTF_8);
+                    user.setPhotoSmall(resizePhoto(originalPhoto));
+                    userRepository.save(user);
+                    LOG.info("### Resizing original user Photo for user done: " + user.getId());
+                } catch (Exception e) {
+                    LOG.error("### Error while resizing original user Photo for user :" + user.getId());
+                }
+            }
+        }
     }
 
     @Transactional
