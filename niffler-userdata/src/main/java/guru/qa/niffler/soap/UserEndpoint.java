@@ -1,6 +1,7 @@
 package guru.qa.niffler.soap;
 
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.UserJsonBulk;
 import guru.qa.niffler.service.UserDataService;
 import niffler_userdata.AllUsersPageRequest;
 import niffler_userdata.AllUsersRequest;
@@ -48,7 +49,7 @@ public class UserEndpoint extends BaseEndpoint {
     @ResponsePayload
     public UsersResponse allUsersRq(@RequestPayload AllUsersRequest request) {
         UsersResponse response = new UsersResponse();
-        List<UserJson> users = userService.allUsers(request.getUsername(), request.getSearchQuery());
+        List<UserJsonBulk> users = userService.allUsers(request.getUsername(), request.getSearchQuery());
         enrichUsersResponse(users, response);
         return response;
     }
@@ -57,7 +58,7 @@ public class UserEndpoint extends BaseEndpoint {
     @ResponsePayload
     public UsersResponse allUsersPageRq(@RequestPayload AllUsersPageRequest request) {
         UsersResponse response = new UsersResponse();
-        Page<UserJson> users = userService.allUsers(
+        Page<UserJsonBulk> users = userService.allUsers(
                 request.getUsername(),
                 PageRequest.of(request.getPage(), request.getSize(), sortFromRequest(request.getSort())),
                 request.getSearchQuery()

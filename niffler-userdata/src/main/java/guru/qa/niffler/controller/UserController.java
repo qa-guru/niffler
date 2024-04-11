@@ -1,5 +1,6 @@
 package guru.qa.niffler.controller;
 
+import guru.qa.niffler.model.IUserJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataService;
 import org.slf4j.Logger;
@@ -33,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<UserJson> allUsers(@RequestParam String username,
-                                   @RequestParam(required = false) String searchQuery) {
+    public List<? extends IUserJson> allUsers(@RequestParam String username,
+                                              @RequestParam(required = false) String searchQuery) {
         return userService.allUsers(username, searchQuery);
     }
 

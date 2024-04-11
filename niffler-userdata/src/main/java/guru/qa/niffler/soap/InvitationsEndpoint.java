@@ -1,6 +1,6 @@
 package guru.qa.niffler.soap;
 
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.UserJsonBulk;
 import guru.qa.niffler.service.UserDataService;
 import niffler_userdata.AcceptInvitationRequest;
 import niffler_userdata.DeclineInvitationRequest;
@@ -35,7 +35,7 @@ public class InvitationsEndpoint extends BaseEndpoint {
     @ResponsePayload
     public UsersResponse incomeInvitationsRq(@RequestPayload IncomeInvitationsRequest request) {
         UsersResponse response = new UsersResponse();
-        List<UserJson> users = userService.incomeInvitations(request.getUsername(), request.getSearchQuery());
+        List<UserJsonBulk> users = userService.incomeInvitations(request.getUsername(), request.getSearchQuery());
         enrichUsersResponse(users, response);
         return response;
     }
@@ -44,7 +44,7 @@ public class InvitationsEndpoint extends BaseEndpoint {
     @ResponsePayload
     public UsersResponse incomeInvitationsPageRq(@RequestPayload IncomeInvitationsPageRequest request) {
         UsersResponse response = new UsersResponse();
-        Page<UserJson> users = userService.incomeInvitations(
+        Page<UserJsonBulk> users = userService.incomeInvitations(
                 request.getUsername(),
                 PageRequest.of(request.getPage(), request.getSize(), sortFromRequest(request.getSort())),
                 request.getSearchQuery()
@@ -57,7 +57,7 @@ public class InvitationsEndpoint extends BaseEndpoint {
     @ResponsePayload
     public UsersResponse outcomeInvitationsRq(@RequestPayload OutcomeInvitationsRequest request) {
         UsersResponse response = new UsersResponse();
-        List<UserJson> users = userService.outcomeInvitations(request.getUsername(), request.getSearchQuery());
+        List<UserJsonBulk> users = userService.outcomeInvitations(request.getUsername(), request.getSearchQuery());
         enrichUsersResponse(users, response);
         return response;
     }
@@ -66,7 +66,7 @@ public class InvitationsEndpoint extends BaseEndpoint {
     @ResponsePayload
     public UsersResponse outcomeInvitationsPageRq(@RequestPayload OutcomeInvitationsPageRequest request) {
         UsersResponse response = new UsersResponse();
-        Page<UserJson> users = userService.outcomeInvitations(
+        Page<UserJsonBulk> users = userService.outcomeInvitations(
                 request.getUsername(),
                 PageRequest.of(request.getPage(), request.getSize(), sortFromRequest(request.getSort())),
                 request.getSearchQuery()

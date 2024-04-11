@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record UserJson(
+public record UserJsonBulk(
         @JsonProperty("id")
         UUID id,
         @JsonProperty("username")
@@ -24,12 +24,15 @@ public record UserJson(
         String surname,
         @JsonProperty("currency")
         CurrencyValues currency,
-        @JsonProperty("photo")
-        String photo,
         @JsonProperty("photoSmall")
         String photoSmall,
         @JsonProperty("friendState")
         FriendState friendState) implements IUserJson {
+
+    @Override
+    public String photo() {
+        return null;
+    }
 
     public @Nonnull User toJaxbUser() {
         User jaxbUser = new User();
@@ -38,7 +41,6 @@ public record UserJson(
         jaxbUser.setFirstname(firstname);
         jaxbUser.setSurname(surname);
         jaxbUser.setCurrency(Currency.valueOf(currency.name()));
-        jaxbUser.setPhoto(photo);
         jaxbUser.setPhotoSmall(photoSmall);
         jaxbUser.setFriendState(friendState() == null ?
                 niffler_userdata.FriendState.VOID :
@@ -46,14 +48,13 @@ public record UserJson(
         return jaxbUser;
     }
 
-    public static @Nonnull UserJson fromJaxb(@Nonnull User jaxbUser) {
-        return new UserJson(
+    public static @Nonnull UserJsonBulk fromJaxb(@Nonnull User jaxbUser) {
+        return new UserJsonBulk(
                 jaxbUser.getId() != null ? UUID.fromString(jaxbUser.getId()) : null,
                 jaxbUser.getUsername(),
                 jaxbUser.getFirstname(),
                 jaxbUser.getSurname(),
                 CurrencyValues.valueOf(jaxbUser.getCurrency().name()),
-                jaxbUser.getPhoto(),
                 jaxbUser.getPhotoSmall(),
                 (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != niffler_userdata.FriendState.VOID)
                         ? FriendState.valueOf(jaxbUser.getFriendState().name())
@@ -61,20 +62,19 @@ public record UserJson(
         );
     }
 
-    public static @Nonnull UserJson fromEntity(@Nonnull UserEntity entity, @Nullable FriendState friendState) {
-        return new UserJson(
+    public static @Nonnull UserJsonBulk fromEntity(@Nonnull UserEntity entity, @Nullable FriendState friendState) {
+        return new UserJsonBulk(
                 entity.getId(),
                 entity.getUsername(),
                 entity.getFirstname(),
                 entity.getSurname(),
                 entity.getCurrency(),
-                entity.getPhoto() != null && entity.getPhoto().length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null,
                 entity.getPhotoSmall() != null && entity.getPhotoSmall().length > 0 ? new String(entity.getPhotoSmall(), StandardCharsets.UTF_8) : null,
                 friendState
         );
     }
 
-    public static @Nonnull UserJson fromEntity(@Nonnull UserEntity entity) {
+    public static @Nonnull UserJsonBulk fromEntity(@Nonnull UserEntity entity) {
         return fromEntity(entity, null);
     }
 }

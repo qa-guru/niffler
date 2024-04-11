@@ -1,6 +1,6 @@
 package guru.qa.niffler.controller.pageable;
 
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.IUserJson;
 import guru.qa.niffler.service.UserDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,16 +27,16 @@ public class InvitationsV2Controller {
     }
 
     @GetMapping("/income")
-    public Page<UserJson> incomeInvitations(@RequestParam String username,
-                                            @PageableDefault Pageable pageable,
-                                            @RequestParam(required = false) String searchQuery) {
+    public Page<? extends IUserJson> incomeInvitations(@RequestParam String username,
+                                                       @PageableDefault Pageable pageable,
+                                                       @RequestParam(required = false) String searchQuery) {
         return userService.incomeInvitations(username, pageable, searchQuery);
     }
 
     @GetMapping("/outcome")
-    public Page<UserJson> outcomeInvitations(@RequestParam String username,
-                                             @PageableDefault Pageable pageable,
-                                             @RequestParam(required = false) String searchQuery) {
+    public Page<? extends IUserJson> outcomeInvitations(@RequestParam String username,
+                                                        @PageableDefault Pageable pageable,
+                                                        @RequestParam(required = false) String searchQuery) {
         return userService.outcomeInvitations(username, pageable, searchQuery);
     }
 }

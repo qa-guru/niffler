@@ -1,5 +1,6 @@
 package guru.qa.niffler.controller;
 
+import guru.qa.niffler.model.IUserJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataService;
 import org.slf4j.Logger;
@@ -27,14 +28,14 @@ public class InvitationsController {
     }
 
     @GetMapping("/income")
-    public List<UserJson> incomeInvitations(@RequestParam String username,
-                                            @RequestParam(required = false) String searchQuery) {
+    public List<? extends IUserJson> incomeInvitations(@RequestParam String username,
+                                                       @RequestParam(required = false) String searchQuery) {
         return userService.incomeInvitations(username, searchQuery);
     }
 
     @GetMapping("/outcome")
-    public List<UserJson> outcomeInvitations(@RequestParam String username,
-                                             @RequestParam(required = false) String searchQuery) {
+    public List<? extends IUserJson> outcomeInvitations(@RequestParam String username,
+                                                        @RequestParam(required = false) String searchQuery) {
         return userService.outcomeInvitations(username, searchQuery);
     }
 

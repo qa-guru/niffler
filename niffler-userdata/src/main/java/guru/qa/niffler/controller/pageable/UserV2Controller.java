@@ -1,6 +1,6 @@
 package guru.qa.niffler.controller.pageable;
 
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.IUserJson;
 import guru.qa.niffler.service.UserDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +28,9 @@ public class UserV2Controller {
 
 
     @GetMapping("/all")
-    public Page<UserJson> allUsers(@RequestParam String username,
-                                   @PageableDefault Pageable pageable,
-                                   @RequestParam(required = false) String searchQuery) {
+    public Page<? extends IUserJson> allUsers(@RequestParam String username,
+                                              @PageableDefault Pageable pageable,
+                                              @RequestParam(required = false) String searchQuery) {
         return userService.allUsers(username, pageable, searchQuery);
     }
 }

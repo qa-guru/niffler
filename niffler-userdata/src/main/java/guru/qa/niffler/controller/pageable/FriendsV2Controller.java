@@ -1,6 +1,6 @@
 package guru.qa.niffler.controller.pageable;
 
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.IUserJson;
 import guru.qa.niffler.service.UserDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +27,9 @@ public class FriendsV2Controller {
     }
 
     @GetMapping("/all")
-    public Page<UserJson> friends(@RequestParam String username,
-                                  @PageableDefault Pageable pageable,
-                                  @RequestParam(required = false) String searchQuery) {
+    public Page<? extends IUserJson> friends(@RequestParam String username,
+                                             @PageableDefault Pageable pageable,
+                                             @RequestParam(required = false) String searchQuery) {
         return userService.friends(username, pageable, searchQuery);
     }
 }

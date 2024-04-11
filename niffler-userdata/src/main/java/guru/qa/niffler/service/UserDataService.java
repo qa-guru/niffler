@@ -8,6 +8,7 @@ import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.ex.NotFoundException;
 import guru.qa.niffler.ex.SameUsernameException;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.UserJsonBulk;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import net.coobird.thumbnailator.Thumbnails;
@@ -85,8 +86,8 @@ public class UserDataService {
 
     @Transactional(readOnly = true)
     public @Nonnull
-    List<UserJson> allUsers(@Nonnull String username,
-                            @Nullable String searchQuery) {
+    List<UserJsonBulk> allUsers(@Nonnull String username,
+                                @Nullable String searchQuery) {
         List<UserEntity> usersFromDb = searchQuery == null
                 ? userRepository.findByUsernameNot(username)
                 : userRepository.findByUsernameNot(username, searchQuery);
@@ -98,9 +99,9 @@ public class UserDataService {
 
     @Transactional(readOnly = true)
     public @Nonnull
-    Page<UserJson> allUsers(@Nonnull String username,
-                            @Nonnull Pageable pageable,
-                            @Nullable String searchQuery) {
+    Page<UserJsonBulk> allUsers(@Nonnull String username,
+                                @Nonnull Pageable pageable,
+                                @Nullable String searchQuery) {
         Page<UserEntity> usersFromDb = searchQuery == null
                 ? userRepository.findByUsernameNot(username, pageable)
                 : userRepository.findByUsernameNot(username, searchQuery, pageable);
@@ -110,71 +111,71 @@ public class UserDataService {
 
     @Transactional(readOnly = true)
     public @Nonnull
-    List<UserJson> friends(@Nonnull String username,
-                           @Nullable String searchQuery) {
+    List<UserJsonBulk> friends(@Nonnull String username,
+                               @Nullable String searchQuery) {
         List<UserEntity> usersFromDb = searchQuery == null
                 ? userRepository.findFriends(getRequiredUser(username))
                 : userRepository.findFriends(getRequiredUser(username), searchQuery);
 
-        return usersFromDb.stream().map(f -> UserJson.fromEntity(f, FRIEND)).toList();
+        return usersFromDb.stream().map(f -> UserJsonBulk.fromEntity(f, FRIEND)).toList();
     }
 
     @Transactional(readOnly = true)
     public @Nonnull
-    Page<UserJson> friends(@Nonnull String username,
-                           @Nonnull Pageable pageable,
-                           @Nullable String searchQuery) {
+    Page<UserJsonBulk> friends(@Nonnull String username,
+                               @Nonnull Pageable pageable,
+                               @Nullable String searchQuery) {
         Page<UserEntity> usersFromDb = searchQuery == null
                 ? userRepository.findFriends(getRequiredUser(username), pageable)
                 : userRepository.findFriends(getRequiredUser(username), searchQuery, pageable);
 
-        return usersFromDb.map(f -> UserJson.fromEntity(f, FRIEND));
+        return usersFromDb.map(f -> UserJsonBulk.fromEntity(f, FRIEND));
     }
 
     @Transactional(readOnly = true)
     public @Nonnull
-    List<UserJson> incomeInvitations(@Nonnull String username,
-                                     @Nullable String searchQuery) {
+    List<UserJsonBulk> incomeInvitations(@Nonnull String username,
+                                         @Nullable String searchQuery) {
         List<UserEntity> usersFromDb = searchQuery == null
                 ? userRepository.findIncomeInvitations(getRequiredUser(username))
                 : userRepository.findIncomeInvitations(getRequiredUser(username), searchQuery);
 
-        return usersFromDb.stream().map(i -> UserJson.fromEntity(i, INVITE_RECEIVED)).toList();
+        return usersFromDb.stream().map(i -> UserJsonBulk.fromEntity(i, INVITE_RECEIVED)).toList();
     }
 
     @Transactional(readOnly = true)
     public @Nonnull
-    Page<UserJson> incomeInvitations(@Nonnull String username,
-                                     @Nonnull Pageable pageable,
-                                     @Nullable String searchQuery) {
+    Page<UserJsonBulk> incomeInvitations(@Nonnull String username,
+                                         @Nonnull Pageable pageable,
+                                         @Nullable String searchQuery) {
         Page<UserEntity> usersFromDb = searchQuery == null
                 ? userRepository.findIncomeInvitations(getRequiredUser(username), pageable)
                 : userRepository.findIncomeInvitations(getRequiredUser(username), searchQuery, pageable);
 
-        return usersFromDb.map(i -> UserJson.fromEntity(i, INVITE_RECEIVED));
+        return usersFromDb.map(i -> UserJsonBulk.fromEntity(i, INVITE_RECEIVED));
     }
 
     @Transactional(readOnly = true)
     public @Nonnull
-    List<UserJson> outcomeInvitations(@Nonnull String username,
-                                      @Nullable String searchQuery) {
+    List<UserJsonBulk> outcomeInvitations(@Nonnull String username,
+                                          @Nullable String searchQuery) {
         List<UserEntity> usersFromDb = searchQuery == null
                 ? userRepository.findOutcomeInvitations(getRequiredUser(username))
                 : userRepository.findOutcomeInvitations(getRequiredUser(username), searchQuery);
 
-        return usersFromDb.stream().map(i -> UserJson.fromEntity(i, INVITE_SENT)).toList();
+        return usersFromDb.stream().map(i -> UserJsonBulk.fromEntity(i, INVITE_SENT)).toList();
     }
 
     @Transactional(readOnly = true)
     public @Nonnull
-    Page<UserJson> outcomeInvitations(@Nonnull String username,
-                                      @Nonnull Pageable pageable,
-                                      @Nullable String searchQuery) {
+    Page<UserJsonBulk> outcomeInvitations(@Nonnull String username,
+                                          @Nonnull Pageable pageable,
+                                          @Nullable String searchQuery) {
         Page<UserEntity> usersFromDb = searchQuery == null
                 ? userRepository.findOutcomeInvitations(getRequiredUser(username), pageable)
                 : userRepository.findOutcomeInvitations(getRequiredUser(username), searchQuery, pageable);
 
-        return usersFromDb.map(i -> UserJson.fromEntity(i, INVITE_SENT));
+        return usersFromDb.map(i -> UserJsonBulk.fromEntity(i, INVITE_SENT));
     }
 
     @Transactional
@@ -252,8 +253,8 @@ public class UserDataService {
     }
 
     @Nonnull
-    UserJson mapToUserJsonWithFriendshipState(@Nonnull String username,
-                                              @Nonnull UserEntity userEntity) {
+    UserJsonBulk mapToUserJsonWithFriendshipState(@Nonnull String username,
+                                                  @Nonnull UserEntity userEntity) {
         List<FriendshipEntity> requests = userEntity.getFriendshipRequests();
         List<FriendshipEntity> addresses = userEntity.getFriendshipAddressees();
 
@@ -262,22 +263,22 @@ public class UserDataService {
                     .filter(i -> i.getAddressee().getUsername().equals(username))
                     .findFirst()
                     .map(
-                            itm -> UserJson.fromEntity(userEntity, itm.getStatus() == FriendshipStatus.PENDING
+                            itm -> UserJsonBulk.fromEntity(userEntity, itm.getStatus() == FriendshipStatus.PENDING
                                     ? INVITE_RECEIVED
                                     : FRIEND)
-                    ).orElse(UserJson.fromEntity(userEntity));
+                    ).orElse(UserJsonBulk.fromEntity(userEntity));
         }
         if (!addresses.isEmpty()) {
             return addresses.stream()
                     .filter(i -> i.getRequester().getUsername().equals(username))
                     .findFirst()
                     .map(
-                            itm -> UserJson.fromEntity(userEntity, itm.getStatus() == FriendshipStatus.PENDING
+                            itm -> UserJsonBulk.fromEntity(userEntity, itm.getStatus() == FriendshipStatus.PENDING
                                     ? INVITE_SENT
                                     : FRIEND)
-                    ).orElse(UserJson.fromEntity(userEntity));
+                    ).orElse(UserJsonBulk.fromEntity(userEntity));
         }
-        return UserJson.fromEntity(userEntity);
+        return UserJsonBulk.fromEntity(userEntity);
     }
 
     private @Nullable byte[] resizePhoto(@Nullable String photo) {
@@ -285,18 +286,19 @@ public class UserDataService {
             try {
                 String base64Image = photo.split(",")[1];
                 BufferedImage img = ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(base64Image)));
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                Thumbnails.of(img)
-                        .height(100)
-                        .width(100)
-                        .outputQuality(1.0)
-                        .outputFormat("png")
-                        .toOutputStream(outputStream);
+                try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                    Thumbnails.of(img)
+                            .height(100)
+                            .width(100)
+                            .outputQuality(1.0)
+                            .outputFormat("png")
+                            .toOutputStream(outputStream);
 
-                return concatArrays(
-                        "data:image/png;base64,".getBytes(StandardCharsets.UTF_8),
-                        Base64.getEncoder().encode(outputStream.toByteArray())
-                );
+                    return concatArrays(
+                            "data:image/png;base64,".getBytes(StandardCharsets.UTF_8),
+                            Base64.getEncoder().encode(outputStream.toByteArray())
+                    );
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

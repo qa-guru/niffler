@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record UserJson(
         @JsonProperty("id")
         UUID id,
@@ -28,7 +29,6 @@ public record UserJson(
         String photo,
         @JsonProperty("photoSmall")
         String photoSmall,
-        @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonProperty("friendState")
         FriendState friendState) {
 
