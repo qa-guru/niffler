@@ -1,6 +1,5 @@
 package guru.qa.niffler.test.gql;
 
-import guru.qa.niffler.gql.GatewayGqlClient;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.GenerateUsers;
@@ -30,8 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Epic("[GraphQL][niffler-gateway]: Пользователи")
 @DisplayName("[GraphQL][niffler-gateway]: Пользователи")
 public class GraphQlUsersTest extends BaseGraphQlTest {
-
-    private final GatewayGqlClient gqlClient = new GatewayGqlClient();
 
     @Test
     @DisplayName("GraphQL: Для нового пользователя должна возвращаться информация из niffler-gateway c дефолтными значениями")

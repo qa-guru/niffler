@@ -1,29 +1,42 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.data.CurrencyValues;
-import guru.qa.niffler.data.FriendsEntity;
+import guru.qa.niffler.data.FriendshipEntity;
+import guru.qa.niffler.data.FriendshipStatus;
 import guru.qa.niffler.data.UserEntity;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.ex.NotFoundException;
-import guru.qa.niffler.model.FriendJson;
-import guru.qa.niffler.model.FriendState;
+import guru.qa.niffler.ex.SameUsernameException;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.UserJsonBulk;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.annotation.PostConstruct;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.Objects;
+import java.util.UUID;
+
+import static guru.qa.niffler.model.FriendState.FRIEND;
+import static guru.qa.niffler.model.FriendState.INVITE_RECEIVED;
+import static guru.qa.niffler.model.FriendState.INVITE_SENT;
 
 @Component
 public class UserDataService {
@@ -38,10 +51,31 @@ public class UserDataService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * only for migration V4__small_avatar.sql
+     */
+    @Transactional
+    @PostConstruct
+    public void compressAndSaveExistingPhotos() {
+        List<UserEntity> users = userRepository.findAll();
+        for (UserEntity user : users) {
+            if ((user.getPhoto() != null && user.getPhoto().length > 0)
+                    && (user.getPhotoSmall() == null || user.getPhotoSmall().length == 0)) {
+                try {
+                    String originalPhoto = new String(user.getPhoto(), StandardCharsets.UTF_8);
+                    user.setPhotoSmall(resizePhoto(originalPhoto, user.getId()));
+                    userRepository.save(user);
+                    LOG.info("### Resizing original user Photo for user done: " + user.getId());
+                } catch (Exception e) {
+                    LOG.error("### Error while resizing original user Photo for user :" + user.getId());
+                }
+            }
+        }
+    }
+
     @Transactional
     @KafkaListener(topics = "users", groupId = "userdata")
     public void listener(@Payload UserJson user, ConsumerRecord<String, UserJson> cr) {
-        LOG.info("### Kafka topic [users] received message: " + user.username());
         LOG.info("### Kafka consumer record: " + cr.toString());
         UserEntity userDataEntity = new UserEntity();
         userDataEntity.setUsername(user.username());
@@ -62,6 +96,7 @@ public class UserDataService {
         userEntity.setSurname(user.surname());
         userEntity.setCurrency(user.currency());
         userEntity.setPhoto(user.photo() != null ? user.photo().getBytes(StandardCharsets.UTF_8) : null);
+        userEntity.setPhotoSmall(resizePhoto(user.photo(), userEntity.getId()));
         UserEntity saved = userRepository.save(userEntity);
         return UserJson.fromEntity(saved);
     }
@@ -74,147 +109,232 @@ public class UserDataService {
 
     @Transactional(readOnly = true)
     public @Nonnull
-    List<UserJson> allUsers(@Nonnull String username) {
-        Set<UserJson> result = new HashSet<>();
-        for (UserEntity user : userRepository.findByUsernameNot(username)) {
-            List<FriendsEntity> sendInvites = user.getFriends();
-            List<FriendsEntity> receivedInvites = user.getInvites();
+    List<UserJsonBulk> allUsers(@Nonnull String username,
+                                @Nullable String searchQuery) {
+        List<UserEntity> usersFromDb = searchQuery == null
+                ? userRepository.findByUsernameNot(username)
+                : userRepository.findByUsernameNot(username, searchQuery);
 
-            if (!sendInvites.isEmpty() || !receivedInvites.isEmpty()) {
-                Optional<FriendsEntity> inviteToMe = sendInvites.stream()
-                        .filter(i -> i.getFriend().getUsername().equals(username))
-                        .findFirst();
+        return usersFromDb.stream()
+                .map(ue -> mapToUserJsonWithFriendshipState(username, ue))
+                .toList();
+    }
 
-                Optional<FriendsEntity> inviteFromMe = receivedInvites.stream()
-                        .filter(i -> i.getUser().getUsername().equals(username))
-                        .findFirst();
+    @Transactional(readOnly = true)
+    public @Nonnull
+    Page<UserJsonBulk> allUsers(@Nonnull String username,
+                                @Nonnull Pageable pageable,
+                                @Nullable String searchQuery) {
+        Page<UserEntity> usersFromDb = searchQuery == null
+                ? userRepository.findByUsernameNot(username, pageable)
+                : userRepository.findByUsernameNot(username, searchQuery, pageable);
 
-                if (inviteToMe.isPresent()) {
-                    FriendsEntity invite = inviteToMe.get();
-                    result.add(UserJson.fromEntity(user, invite.isPending()
-                            ? FriendState.INVITE_RECEIVED
-                            : FriendState.FRIEND));
-                }
-                if (inviteFromMe.isPresent()) {
-                    FriendsEntity invite = inviteFromMe.get();
-                    result.add(UserJson.fromEntity(user, invite.isPending()
-                            ? FriendState.INVITE_SENT
-                            : FriendState.FRIEND));
-                }
-            } else {
-                result.add(UserJson.fromEntity(user));
-            }
+        return usersFromDb.map(ue -> mapToUserJsonWithFriendshipState(username, ue));
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull
+    List<UserJsonBulk> friends(@Nonnull String username,
+                               @Nullable String searchQuery) {
+        List<UserEntity> usersFromDb = searchQuery == null
+                ? userRepository.findFriends(getRequiredUser(username))
+                : userRepository.findFriends(getRequiredUser(username), searchQuery);
+
+        return usersFromDb.stream().map(f -> UserJsonBulk.fromEntity(f, FRIEND)).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull
+    Page<UserJsonBulk> friends(@Nonnull String username,
+                               @Nonnull Pageable pageable,
+                               @Nullable String searchQuery) {
+        Page<UserEntity> usersFromDb = searchQuery == null
+                ? userRepository.findFriends(getRequiredUser(username), pageable)
+                : userRepository.findFriends(getRequiredUser(username), searchQuery, pageable);
+
+        return usersFromDb.map(f -> UserJsonBulk.fromEntity(f, FRIEND));
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull
+    List<UserJsonBulk> incomeInvitations(@Nonnull String username,
+                                         @Nullable String searchQuery) {
+        List<UserEntity> usersFromDb = searchQuery == null
+                ? userRepository.findIncomeInvitations(getRequiredUser(username))
+                : userRepository.findIncomeInvitations(getRequiredUser(username), searchQuery);
+
+        return usersFromDb.stream().map(i -> UserJsonBulk.fromEntity(i, INVITE_RECEIVED)).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull
+    Page<UserJsonBulk> incomeInvitations(@Nonnull String username,
+                                         @Nonnull Pageable pageable,
+                                         @Nullable String searchQuery) {
+        Page<UserEntity> usersFromDb = searchQuery == null
+                ? userRepository.findIncomeInvitations(getRequiredUser(username), pageable)
+                : userRepository.findIncomeInvitations(getRequiredUser(username), searchQuery, pageable);
+
+        return usersFromDb.map(i -> UserJsonBulk.fromEntity(i, INVITE_RECEIVED));
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull
+    List<UserJsonBulk> outcomeInvitations(@Nonnull String username,
+                                          @Nullable String searchQuery) {
+        List<UserEntity> usersFromDb = searchQuery == null
+                ? userRepository.findOutcomeInvitations(getRequiredUser(username))
+                : userRepository.findOutcomeInvitations(getRequiredUser(username), searchQuery);
+
+        return usersFromDb.stream().map(i -> UserJsonBulk.fromEntity(i, INVITE_SENT)).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull
+    Page<UserJsonBulk> outcomeInvitations(@Nonnull String username,
+                                          @Nonnull Pageable pageable,
+                                          @Nullable String searchQuery) {
+        Page<UserEntity> usersFromDb = searchQuery == null
+                ? userRepository.findOutcomeInvitations(getRequiredUser(username), pageable)
+                : userRepository.findOutcomeInvitations(getRequiredUser(username), searchQuery, pageable);
+
+        return usersFromDb.map(i -> UserJsonBulk.fromEntity(i, INVITE_SENT));
+    }
+
+    @Transactional
+    public UserJson createFriendshipRequest(@Nonnull String username, @Nonnull String targetUsername) {
+        if (Objects.equals(username, targetUsername)) {
+            throw new SameUsernameException("Can`t create friendship request for self user");
         }
-        return new ArrayList<>(result);
-    }
-
-    @Transactional(readOnly = true)
-    public @Nonnull
-    List<UserJson> friends(@Nonnull String username, boolean includePending) {
-        return getRequiredUser(username)
-                .getFriends()
-                .stream()
-                .filter(fe -> includePending || !fe.isPending())
-                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
-                        ? FriendState.INVITE_SENT
-                        : FriendState.FRIEND))
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
-    public @Nonnull
-    List<UserJson> invitations(@Nonnull String username) {
-        return getRequiredUser(username)
-                .getInvites()
-                .stream()
-                .filter(FriendsEntity::isPending)
-                .map(fe -> UserJson.fromEntity(fe.getUser(), FriendState.INVITE_RECEIVED))
-                .toList();
-    }
-
-    @Transactional
-    public UserJson addFriend(@Nonnull String username, @Nonnull FriendJson friend) {
         UserEntity currentUser = getRequiredUser(username);
-        UserEntity friendEntity = getRequiredUser(friend.username());
-
-        currentUser.addFriends(true, friendEntity);
+        UserEntity targetUser = getRequiredUser(targetUsername);
+        currentUser.addFriends(FriendshipStatus.PENDING, targetUser);
         userRepository.save(currentUser);
-        return UserJson.fromEntity(friendEntity, FriendState.INVITE_SENT);
+        return UserJson.fromEntity(targetUser, INVITE_SENT);
     }
 
     @Transactional
     public @Nonnull
-    List<UserJson> acceptInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
+    UserJson acceptFriendshipRequest(@Nonnull String username, @Nonnull String targetUsername) {
+        if (Objects.equals(username, targetUsername)) {
+            throw new SameUsernameException("Can`t accept friendship request for self user");
+        }
         UserEntity currentUser = getRequiredUser(username);
-        UserEntity inviteUser = getRequiredUser(invitation.username());
+        UserEntity targetUser = getRequiredUser(targetUsername);
 
-        FriendsEntity invite = currentUser.getInvites()
+        FriendshipEntity invite = currentUser.getFriendshipAddressees()
                 .stream()
-                .filter(fe -> fe.getUser().getUsername().equals(inviteUser.getUsername()))
+                .filter(fe -> fe.getRequester().getUsername().equals(targetUser.getUsername()))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("Can`t find invitation from username: '" + targetUsername + "'"));
 
-        invite.setPending(false);
-        currentUser.addFriends(false, inviteUser);
+        invite.setStatus(FriendshipStatus.ACCEPTED);
+        currentUser.addFriends(FriendshipStatus.ACCEPTED, targetUser);
         userRepository.save(currentUser);
-
-        return currentUser
-                .getFriends()
-                .stream()
-                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
-                        ? FriendState.INVITE_SENT
-                        : FriendState.FRIEND))
-                .toList();
+        return UserJson.fromEntity(targetUser, FRIEND);
     }
 
     @Transactional
     public @Nonnull
-    List<UserJson> declineInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
+    UserJson declineFriendshipRequest(@Nonnull String username, @Nonnull String targetUsername) {
+        if (Objects.equals(username, targetUsername)) {
+            throw new SameUsernameException("Can`t decline friendship request for self user");
+        }
         UserEntity currentUser = getRequiredUser(username);
-        UserEntity friendToDecline = getRequiredUser(invitation.username());
+        UserEntity targetUser = getRequiredUser(targetUsername);
 
-        currentUser.removeInvites(friendToDecline);
-        friendToDecline.removeFriends(currentUser);
+        currentUser.removeInvites(targetUser);
+        targetUser.removeFriends(currentUser);
 
         userRepository.save(currentUser);
-        userRepository.save(friendToDecline);
-
-        return currentUser.getInvites()
-                .stream()
-                .filter(FriendsEntity::isPending)
-                .map(fe -> UserJson.fromEntity(fe.getUser(), FriendState.INVITE_RECEIVED))
-                .toList();
+        userRepository.save(targetUser);
+        return UserJson.fromEntity(targetUser);
     }
 
     @Transactional
-    public @Nonnull
-    List<UserJson> removeFriend(@Nonnull String username, @Nonnull String friendUsername) {
+    public void removeFriend(@Nonnull String username, @Nonnull String targetUsername) {
+        if (Objects.equals(username, targetUsername)) {
+            throw new SameUsernameException("Can`t remove friendship relation for self user");
+        }
         UserEntity currentUser = getRequiredUser(username);
-        UserEntity friendToRemove = getRequiredUser(friendUsername);
+        UserEntity targetUser = getRequiredUser(targetUsername);
 
-        currentUser.removeFriends(friendToRemove);
-        currentUser.removeInvites(friendToRemove);
-        friendToRemove.removeFriends(currentUser);
-        friendToRemove.removeInvites(currentUser);
+        currentUser.removeFriends(targetUser);
+        currentUser.removeInvites(targetUser);
+        targetUser.removeFriends(currentUser);
+        targetUser.removeInvites(currentUser);
 
         userRepository.save(currentUser);
-        userRepository.save(friendToRemove);
-
-        return currentUser
-                .getFriends()
-                .stream()
-                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
-                        ? FriendState.INVITE_SENT
-                        : FriendState.FRIEND))
-                .toList();
+        userRepository.save(targetUser);
     }
 
     @Nonnull
     UserEntity getRequiredUser(@Nonnull String username) {
-        UserEntity user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new NotFoundException("Can`t find user by username: " + username);
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new NotFoundException("Can`t find user by username: '" + username + "'")
+        );
+    }
+
+    @Nonnull
+    UserJsonBulk mapToUserJsonWithFriendshipState(@Nonnull String username,
+                                                  @Nonnull UserEntity userEntity) {
+        List<FriendshipEntity> requests = userEntity.getFriendshipRequests();
+        List<FriendshipEntity> addresses = userEntity.getFriendshipAddressees();
+
+        if (!requests.isEmpty()) {
+            return requests.stream()
+                    .filter(i -> i.getAddressee().getUsername().equals(username))
+                    .findFirst()
+                    .map(
+                            itm -> UserJsonBulk.fromEntity(userEntity, itm.getStatus() == FriendshipStatus.PENDING
+                                    ? INVITE_RECEIVED
+                                    : FRIEND)
+                    ).orElse(UserJsonBulk.fromEntity(userEntity));
         }
-        return user;
+        if (!addresses.isEmpty()) {
+            return addresses.stream()
+                    .filter(i -> i.getRequester().getUsername().equals(username))
+                    .findFirst()
+                    .map(
+                            itm -> UserJsonBulk.fromEntity(userEntity, itm.getStatus() == FriendshipStatus.PENDING
+                                    ? INVITE_SENT
+                                    : FRIEND)
+                    ).orElse(UserJsonBulk.fromEntity(userEntity));
+        }
+        return UserJsonBulk.fromEntity(userEntity);
+    }
+
+    private @Nullable byte[] resizePhoto(@Nullable String photo, @Nonnull UUID userId) {
+        if (photo != null) {
+            try {
+                String base64Image = photo.split(",")[1];
+
+                try (ByteArrayInputStream is = new ByteArrayInputStream(Base64.getDecoder().decode(base64Image));
+                     ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+
+                    Thumbnails.of(ImageIO.read(is))
+                            .height(100)
+                            .width(100)
+                            .outputQuality(1.0)
+                            .outputFormat("png")
+                            .toOutputStream(os);
+
+                    return concatArrays(
+                            "data:image/png;base64,".getBytes(StandardCharsets.UTF_8),
+                            Base64.getEncoder().encode(os.toByteArray())
+                    );
+                }
+            } catch (Exception e) {
+                LOG.error("### Error while resizing photo for user: " + userId);
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    private @Nonnull byte[] concatArrays(@Nonnull byte[] first, @Nonnull byte[] second) {
+        byte[] result = Arrays.copyOf(first, first.length + second.length);
+        System.arraycopy(second, 0, result, first.length, second.length);
+        return result;
     }
 }

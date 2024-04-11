@@ -31,10 +31,9 @@ public class UserDataUsersRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Для нового пользователя должна возвращаться информация из niffler-userdata c дефолтными значениями")
-    @AllureId("200001")
+    @AllureId("200022")
     @Tag("REST")
     @GenerateUser()
-    @Order(1)
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final UserJson currentUserResponse = userdataClient.getCurrentUser(user.username());
 
@@ -51,10 +50,9 @@ public class UserDataUsersRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: При обновлении юзера должны сохраняться значения в niffler-userdata")
-    @AllureId("200002")
+    @AllureId("200023")
     @Tag("REST")
     @GenerateUser()
-    @Order(2)
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String firstName = "Pizzly";
         final String secondName = "Pizzlyvich";
@@ -65,6 +63,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
                 firstName,
                 secondName,
                 CurrencyValues.KZT,
+                null,
                 null,
                 null,
                 null
@@ -91,12 +90,12 @@ public class UserDataUsersRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Список всех пользователей системы не должен быть пустым")
-    @AllureId("200003")
+    @AllureId("200024")
     @Tag("REST")
     @GenerateUser()
-    @Order(3)
+    @Order(1)
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<UserJson> allUsersResponse = userdataClient.allUsers(user.username());
+        final List<UserJson> allUsersResponse = userdataClient.allUsers(user.username(), null);
 
         step("Check that all users list is not empty", () ->
                 assertFalse(allUsersResponse.isEmpty())

@@ -19,7 +19,7 @@ public class ContextHolderExtension implements BeforeEachCallback, AfterEachCall
         Holder.INSTANCE.remove();
     }
 
-    public enum Holder {
+    private enum Holder {
         INSTANCE;
 
         private final ThreadLocal<ExtensionContext> holder = new ThreadLocal<>();
@@ -36,5 +36,9 @@ public class ContextHolderExtension implements BeforeEachCallback, AfterEachCall
         public void remove() {
             holder.remove();
         }
+    }
+
+    public static ExtensionContext context() {
+        return Holder.INSTANCE.get();
     }
 }

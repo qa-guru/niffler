@@ -6,20 +6,17 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.StatisticJson;
+import guru.qa.niffler.model.page.RestPage;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,99 +28,95 @@ public class RestSpendClient {
 
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
-    private final WebClient webClient;
-    private final String nifflerSpendUri;
+    private final RestTemplate restTemplate;
+    private final String nifflerSpendApiUri;
 
     @Autowired
-    public RestSpendClient(WebClient webClient,
+    public RestSpendClient(RestTemplate restTemplate,
                            @Value("${niffler-spend.base-uri}") String nifflerSpendUri) {
-        this.webClient = webClient;
-        this.nifflerSpendUri = nifflerSpendUri;
+        this.restTemplate = restTemplate;
+        this.nifflerSpendApiUri = nifflerSpendUri + "/internal";
     }
 
     public @Nonnull
     List<CategoryJson> getCategories(@Nonnull String username) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/categories").queryParams(params).build().toUri();
-
-        return Optional.ofNullable(
-                webClient.get()
-                        .uri(uri)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<List<CategoryJson>>() {
-                        })
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException(
-                "No REST List<CategoryJson> response is given [/categories Route]"
-        ));
+        return List.of(Optional.ofNullable(
+                restTemplate.getForObject(
+                        nifflerSpendApiUri + "/categories/all?username={username}",
+                        CategoryJson[].class,
+                        username
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<CategoryJson> response is given [/categories/all/ Route]")));
     }
 
     public @Nonnull
     CategoryJson addCategory(@Nonnull CategoryJson category) {
         return Optional.ofNullable(
-                webClient.post()
-                        .uri(nifflerSpendUri + "/category")
-                        .body(Mono.just(category), CategoryJson.class)
-                        .retrieve()
-                        .bodyToMono(CategoryJson.class)
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException(
-                "No REST CategoryJson response is given [/category Route]"
-        ));
+                restTemplate.postForObject(
+                        nifflerSpendApiUri + "/categories/add",
+                        category,
+                        CategoryJson.class
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST CategoryJson response is given [/categories/add/ Route]"));
     }
 
     public @Nonnull
     List<SpendJson> getSpends(@Nonnull String username,
                               @Nullable DataFilterValues filterPeriod,
                               @Nullable CurrencyValues filterCurrency) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        Optional.ofNullable(filterPeriod).ifPresent(f -> {
-            params.add("from", dateFormat(filterDate(filterPeriod)));
-            params.add("to", dateFormat(new Date()));
-        });
-        Optional.ofNullable(filterCurrency).ifPresent(dfv -> params.add("filterCurrency", filterCurrency.name()));
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/spends").queryParams(params).build().toUri();
+        return List.of(Optional.ofNullable(
+                restTemplate.getForObject(
+                        nifflerSpendApiUri + "/spends/all?username={username}&from={from}&to={to}&filterCurrency={filterCurrency}",
+                        SpendJson[].class,
+                        username,
+                        filterPeriod != null ? dateFormat(filterDate(filterPeriod)) : null,
+                        filterPeriod != null ? dateFormat(new Date()) : null,
+                        filterCurrency != null ? filterCurrency.name() : null
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<SpendJson> response is given [/spends/all/ Route]")));
+    }
 
+    @SuppressWarnings("unchecked")
+    public @Nonnull
+    Page<SpendJson> getSpends(@Nonnull String username,
+                              @Nonnull Pageable pageable,
+                              @Nullable DataFilterValues filterPeriod,
+                              @Nullable CurrencyValues filterCurrency) {
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(uri)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<List<SpendJson>>() {
-                        })
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException(
-                "No REST List<SpendJson> response is given [/spends Route]"
-        ));
+                restTemplate.getForObject(
+                        nifflerSpendApiUri + "/v2/spends/all?username={username}&from={from}&to={to}&filterCurrency={filterCurrency}" +
+                                "&page={page}&size={size}" + extractSort(pageable),
+                        RestPage.class,
+                        username,
+                        filterPeriod != null ? dateFormat(filterDate(filterPeriod)) : null,
+                        filterPeriod != null ? dateFormat(new Date()) : null,
+                        filterCurrency != null ? filterCurrency.name() : null,
+                        pageable.getPageNumber(),
+                        pageable.getPageSize()
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST Page<SpendJson> response is given [/v2/spends/all/ Route]"));
     }
 
     public @Nonnull
     SpendJson addSpend(@Nonnull SpendJson spend) {
         return Optional.ofNullable(
-                webClient.post()
-                        .uri(nifflerSpendUri + "/addSpend")
-                        .body(Mono.just(spend), SpendJson.class)
-                        .retrieve()
-                        .bodyToMono(SpendJson.class)
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException(
-                "No REST SpendJson response is given [/addSpend Route]"
-        ));
+                restTemplate.postForObject(
+                        nifflerSpendApiUri + "/spends/add",
+                        spend,
+                        SpendJson.class
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST SpendJson response is given [/spends/add/ Route]"));
     }
 
     public @Nonnull
     SpendJson editSpend(@Nonnull SpendJson spend) {
         return Optional.ofNullable(
-                webClient.patch()
-                        .uri(nifflerSpendUri + "/editSpend")
-                        .body(Mono.just(spend), SpendJson.class)
-                        .retrieve()
-                        .bodyToMono(SpendJson.class)
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException(
-                "No REST SpendJson response is given [/editSpend Route]"
-        ));
+                restTemplate.patchForObject(
+                        nifflerSpendApiUri + "/spends/edit",
+                        spend,
+                        SpendJson.class
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST SpendJson response is given [/spends/edit/ Route]"));
     }
 
     public @Nonnull
@@ -131,43 +124,25 @@ public class RestSpendClient {
                                   @Nonnull CurrencyValues userCurrency,
                                   @Nullable CurrencyValues filterCurrency,
                                   @Nullable DataFilterValues filterPeriod) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        params.add("userCurrency", userCurrency.name());
-        Optional.ofNullable(filterCurrency).ifPresent(c -> params.add("filterCurrency", c.name()));
-        Optional.ofNullable(filterPeriod).ifPresent(f -> {
-            params.add("from", dateFormat(filterDate(filterPeriod)));
-            params.add("to", dateFormat(new Date()));
-        });
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/statistic").queryParams(params).build().toUri();
-
-        return Optional.ofNullable(
-                webClient.get()
-                        .uri(uri)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<List<StatisticJson>>() {
-                        })
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException(
-                "No REST List<StatisticJson> response is given [/statistic Route]"
-        ));
+        return List.of(Optional.ofNullable(
+                restTemplate.getForObject(
+                        nifflerSpendApiUri + "/spends/stat?username={username}&userCurrency={userCurrency}&from={from}&to={to}&filterCurrency={filterCurrency}",
+                        StatisticJson[].class,
+                        username,
+                        userCurrency.name(),
+                        filterPeriod != null ? dateFormat(filterDate(filterPeriod)) : null,
+                        filterPeriod != null ? dateFormat(new Date()) : null,
+                        filterCurrency != null ? filterCurrency.name() : null
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<StatisticJson> response is given [/spends/stat/ Route]")));
     }
 
-    @Nonnull
-    public HttpStatusCode deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        params.add("ids", String.join(",", ids));
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerSpendUri + "/deleteSpends").queryParams(params).build().toUri();
-
-        return Optional.ofNullable(
-                webClient.delete()
-                        .uri(uri)
-                        .exchangeToMono(response -> Mono.just(response.statusCode()))
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException(
-                "No REST response is given [/deleteSpends Route]"
-        ));
+    public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
+        restTemplate.delete(
+                nifflerSpendApiUri + "/spends/remove?username={username}&ids={ids}",
+                username,
+                String.join(",", ids)
+        );
     }
 
     private @Nonnull
@@ -196,5 +171,19 @@ public class RestSpendClient {
         cal.setTime(date);
         cal.add(selector, days);
         return cal.getTime();
+    }
+
+    private @Nonnull String extractSort(@Nonnull Pageable pageable) {
+        if (!pageable.getSort().isEmpty()) {
+            StringBuilder sortQuery = new StringBuilder();
+            for (Sort.Order order : pageable.getSort()) {
+                sortQuery.append("&sort=");
+                sortQuery.append(order.getProperty());
+                sortQuery.append(",");
+                sortQuery.append(order.getDirection().name());
+            }
+            return sortQuery.toString();
+        }
+        return "";
     }
 }

@@ -11,7 +11,7 @@ export const Categories = () => {
 
     useEffect(() => {
         getData({
-            path: "/categories",
+            path: "/api/categories/all",
             onSuccess: (data) => {
                 setCategories(data);
             },
@@ -25,7 +25,7 @@ export const Categories = () => {
     const addNewSpendCategory = (e) => {
         e.preventDefault();
         postData({
-            path: "/category",
+            path: "/api/categories/add",
             data: {
                 category: newCategory,
             },

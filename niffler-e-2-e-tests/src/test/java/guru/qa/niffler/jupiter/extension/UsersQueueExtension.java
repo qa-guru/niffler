@@ -1,8 +1,7 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.StaticUser;
 import guru.qa.niffler.model.queue.UserModel;
-import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -36,56 +35,52 @@ public class UsersQueueExtension implements
 
     @Override
     public void beforeTestExecution(ExtensionContext context) {
-        String id = getTestId(context);
-        User.UserType desiredUserType = Arrays.stream(context.getRequiredTestMethod()
+        StaticUser.Type desiredUserType = Arrays.stream(context.getRequiredTestMethod()
                         .getParameters())
-                .filter(p -> AnnotationSupport.isAnnotated(p, User.class))
-                .map(p -> p.getAnnotation(User.class))
+                .filter(p -> AnnotationSupport.isAnnotated(p, StaticUser.class))
+                .map(p -> p.getAnnotation(StaticUser.class))
                 .findFirst()
                 .orElseThrow()
-                .userType();
+                .value();
 
         UserModel user = null;
         while (user == null) {
-            if (desiredUserType == User.UserType.ADMIN) {
+            if (desiredUserType == StaticUser.Type.ADMIN) {
                 user = USER_MODEL_ADMIN_QUEUE.poll();
             } else {
                 user = USER_MODEL_COMMON_QUEUE.poll();
             }
         }
         Objects.requireNonNull(user);
-        context.getStore(NAMESPACE).put(id, Map.of(desiredUserType, user));
+        context.getStore(NAMESPACE).put(
+                context.getUniqueId(),
+                Map.of(desiredUserType, user)
+        );
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void afterTestExecution(ExtensionContext context) {
-        String id = getTestId(context);
-        Map<User.UserType, UserModel> map = context.getStore(NAMESPACE).get(id, Map.class);
-        if (map.containsKey(User.UserType.ADMIN)) {
-            USER_MODEL_ADMIN_QUEUE.add(map.get(User.UserType.ADMIN));
+        Map<StaticUser.Type, UserModel> map = context.getStore(NAMESPACE).get(
+                context.getUniqueId(),
+                Map.class
+        );
+        if (map.containsKey(StaticUser.Type.ADMIN)) {
+            USER_MODEL_ADMIN_QUEUE.add(map.get(StaticUser.Type.ADMIN));
         } else {
-            USER_MODEL_COMMON_QUEUE.add(map.get(User.UserType.COMMON));
+            USER_MODEL_COMMON_QUEUE.add(map.get(StaticUser.Type.COMMON));
         }
-    }
-
-    private String getTestId(ExtensionContext context) {
-        return AnnotationSupport.findAnnotation(
-                context.getRequiredTestMethod(),
-                AllureId.class
-        ).orElseThrow().value();
     }
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return parameterContext.getParameter().getType().isAssignableFrom(UserModel.class)
-                && AnnotationSupport.isAnnotated(parameterContext.getParameter(), User.class);
+                && AnnotationSupport.isAnnotated(parameterContext.getParameter(), StaticUser.class);
     }
 
     @Override
     public UserModel resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        String id = getTestId(extensionContext);
-        return (UserModel) extensionContext.getStore(NAMESPACE).get(id, Map.class)
+        return (UserModel) extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class)
                 .values()
                 .iterator()
                 .next();

@@ -1,6 +1,5 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Friends;
@@ -11,11 +10,7 @@ import guru.qa.niffler.jupiter.annotation.GenerateUsers;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.model.rest.CategoryJson;
-import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
-import guru.qa.niffler.utils.DateUtils;
-import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -25,9 +20,8 @@ import org.junit.platform.commons.support.AnnotationSupport;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,21 +33,17 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
 
     protected static final Config CFG = Config.getConfig();
 
-    private final SpendApiClient spendClient = new SpendApiClient();
-
     public static final ExtensionContext.Namespace
-            ON_METHOD_USERS_NAMESPACE = ExtensionContext.Namespace.create(AbstractCreateUserExtension.class, User.Selector.METHOD),
-            API_LOGIN_USERS_NAMESPACE = ExtensionContext.Namespace.create(AbstractCreateUserExtension.class, User.Selector.NESTED);
+            NAMESPACE = ExtensionContext.Namespace.create(AbstractCreateUserExtension.class);
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        final String testId = getTestId(context);
-        Map<User.Selector, List<GenerateUser>> userAnnotations = extractGenerateUserAnnotations(context);
-        for (Map.Entry<User.Selector, List<GenerateUser>> entry : userAnnotations.entrySet()) {
-            UserJson[] resultCollector = new UserJson[entry.getValue().size()];
-            List<GenerateUser> value = entry.getValue();
-            for (int i = 0; i < value.size(); i++) {
-                GenerateUser user = value.get(i);
+        Map<User.Selector, List<UserJson>> createdUsers = new HashMap<>();
+
+        for (Map.Entry<User.Selector, List<GenerateUser>> entry : extractGenerateUserAnnotations(context).entrySet()) {
+            List<UserJson> usersForSelector = new ArrayList<>();
+
+            for (GenerateUser user : entry.getValue()) {
                 String username = user.username();
                 String password = user.password();
                 if ("".equals(username)) {
@@ -69,11 +59,15 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
                 createFriendsIfPresent(user.friends(), createdUser);
                 createIncomeInvitationsIfPresent(user.incomeInvitations(), createdUser);
                 createOutcomeInvitationsIfPresent(user.outcomeInvitations(), createdUser);
-                resultCollector[i] = createdUser;
+                usersForSelector.add(createdUser);
             }
-            Object storedResult = resultCollector.length == 1 ? resultCollector[0] : resultCollector;
-            context.getStore(entry.getKey().getNamespace()).put(testId, storedResult);
+            createdUsers.put(entry.getKey(), usersForSelector);
         }
+
+        context.getStore(NAMESPACE).put(
+                context.getUniqueId(),
+                createdUsers
+        );
     }
 
     @Override
@@ -85,42 +79,19 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        final String testId = getTestId(extensionContext);
         User annotation = parameterContext.getParameter().getAnnotation(User.class);
-        return extensionContext.getStore(annotation.selector().getNamespace()).get(testId);
+        List<UserJson> storedUsers = createdUsers(extensionContext, annotation.selector());
+
+        return parameterContext.getParameter().getType().isAssignableFrom(UserJson[].class)
+                ? storedUsers.toArray(new UserJson[0])
+                : storedUsers.getFirst();
     }
 
-    private void createSpendsIfPresent(@Nullable GenerateSpend[] spends, @Nonnull UserJson createdUser) throws Exception {
-        if (spends != null) {
-            for (GenerateSpend spend : spends) {
-                SpendJson sj = new SpendJson(
-                        null,
-                        DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()),
-                        spend.amount(),
-                        spend.currency(),
-                        spend.spendCategory(),
-                        spend.spendName(),
-                        createdUser.username()
-                );
-                createdUser.testData().spendJsons().add(spendClient.createSpend(sj));
-            }
-        }
-    }
-
-    private void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, UserJson createdUser) throws Exception {
-        if (categories != null) {
-            for (GenerateCategory category : categories) {
-                CategoryJson cj = new CategoryJson(null, category.value(), createdUser.username());
-                createdUser.testData().categoryJsons().add(spendClient.createCategory(cj));
-            }
-        }
-    }
-
-    private String getTestId(ExtensionContext context) {
-        return AnnotationSupport.findAnnotation(
-                context.getRequiredTestMethod(),
-                AllureId.class
-        ).orElseThrow().value();
+    @SuppressWarnings("unchecked")
+    public static List<UserJson> createdUsers(ExtensionContext context, User.Selector selector) {
+        return (List<UserJson>) context.getStore(NAMESPACE)
+                .get(context.getUniqueId(), Map.class)
+                .get(selector);
     }
 
     private Map<User.Selector, List<GenerateUser>> extractGenerateUserAnnotations(@Nonnull ExtensionContext context) {
@@ -150,4 +121,10 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
 
     protected abstract void createFriendsIfPresent(@Nonnull Friends friends,
                                                    @Nonnull UserJson createdUser) throws Exception;
+
+    protected abstract void createSpendsIfPresent(@Nullable GenerateSpend[] spends,
+                                                  @Nonnull UserJson createdUser) throws Exception;
+
+    protected abstract void createCategoriesIfPresent(@Nullable GenerateCategory[] categories,
+                                                      @Nonnull UserJson createdUser) throws Exception;
 }

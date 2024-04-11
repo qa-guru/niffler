@@ -4,14 +4,12 @@ import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.userdata.wsdl.AllUsersRequest;
-import guru.qa.niffler.userdata.wsdl.AllUsersResponse;
 import guru.qa.niffler.userdata.wsdl.Currency;
 import guru.qa.niffler.userdata.wsdl.CurrentUserRequest;
-import guru.qa.niffler.userdata.wsdl.CurrentUserResponse;
 import guru.qa.niffler.userdata.wsdl.FriendState;
-import guru.qa.niffler.userdata.wsdl.UpdateUserInfoRequest;
-import guru.qa.niffler.userdata.wsdl.UpdateUserInfoResponse;
-import guru.qa.niffler.ws.UserdataWsClient;
+import guru.qa.niffler.userdata.wsdl.UpdateUserRequest;
+import guru.qa.niffler.userdata.wsdl.UserResponse;
+import guru.qa.niffler.userdata.wsdl.UsersResponse;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
@@ -32,20 +30,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserDataUsersSoapTest extends BaseSoapTest {
 
-    private static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-    private static final UserdataWsClient wsClient = new UserdataWsClient();
-
     @Test
     @DisplayName("SOAP: Для нового пользователя должна возвращаться информация из niffler-userdata c дефолтными значениями")
     @AllureId("100001")
     @Tag("SOAP")
     @GenerateUser()
-    @Order(1)
     void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         CurrentUserRequest cur = new CurrentUserRequest();
         cur.setUsername(user.username());
 
-        final CurrentUserResponse currentUserResponse = wsClient.currentUser(cur);
+        final UserResponse currentUserResponse = wsClient.currentUser(cur);
 
         step("Check that response contains ID (GUID)", () ->
                 assertTrue(currentUserResponse.getUser().getId().matches(ID_REGEXP))
@@ -66,12 +60,11 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100002")
     @Tag("SOAP")
     @GenerateUser()
-    @Order(2)
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String firstName = "Pizzly";
         final String secondName = "Pizzlyvich";
 
-        UpdateUserInfoRequest uir = new UpdateUserInfoRequest();
+        UpdateUserRequest uir = new UpdateUserRequest();
         guru.qa.niffler.userdata.wsdl.User xmlUser = new guru.qa.niffler.userdata.wsdl.User();
         xmlUser.setUsername(user.username());
         xmlUser.setCurrency(Currency.USD);
@@ -79,7 +72,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
         xmlUser.setSurname(secondName);
         uir.setUser(xmlUser);
 
-        final UpdateUserInfoResponse updateUserInfoResponse = wsClient.updateUserInfo(uir);
+        final UserResponse updateUserInfoResponse = wsClient.updateUserInfo(uir);
 
         step("Check that response contains ID (GUID)", () ->
                 assertTrue(updateUserInfoResponse.getUser().getId().matches(ID_REGEXP))
@@ -103,12 +96,12 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @AllureId("100003")
     @Tag("SOAP")
     @GenerateUser()
-    @Order(3)
+    @Order(1)
     void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
         AllUsersRequest aur = new AllUsersRequest();
         aur.setUsername(user.username());
 
-        final AllUsersResponse allUsersResponse = wsClient.allUsersRequest(aur);
+        final UsersResponse allUsersResponse = wsClient.allUsersRequest(aur);
 
         step("Check that all users list is not empty", () ->
                 assertFalse(allUsersResponse.getUser().isEmpty())

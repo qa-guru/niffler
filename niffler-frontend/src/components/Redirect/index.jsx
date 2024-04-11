@@ -31,7 +31,7 @@ export const Redirect = ({}) => {
                     if (data?.id_token) {
                         sessionStorage.setItem('id_token', data.id_token);
                         getData({
-                            path: "/currentUser",
+                            path: "/api/users/current",
                             onSuccess: (data) => {
                                 setUser(data);
                                 navigate("/main");

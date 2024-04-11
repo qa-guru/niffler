@@ -15,9 +15,6 @@ services:
       timeout: 5s
       retries: 10
     restart: always
-    depends_on:
-      kafka:
-        condition: service_started
     networks:
       - niffler-network
     dns_search: .

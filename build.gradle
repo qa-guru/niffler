@@ -23,6 +23,7 @@ subprojects {
         springGraphqlDateTimeVersion = '6.0.0'
         glassfishJaxbVersion = '4.0.1'
         wsdl4jVersion = '1.6.3'
+        thumbnailatorVersion = '0.4.20'
 
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64v8/eclipse-temurin:21-jre"

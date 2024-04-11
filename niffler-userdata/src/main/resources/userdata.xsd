@@ -1,15 +1,8 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="niffler-userdata"
            targetNamespace="niffler-userdata" elementFormDefault="qualified">
 
-    <xs:element name="updateUserInfoRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="user" type="tns:user"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="updateUserInfoResponse">
+    <!-- REQUEST TYPES -->
+    <xs:element name="updateUserRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="user" type="tns:user"/>
@@ -25,27 +18,23 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="currentUserResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="user" type="tns:user"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
     <xs:element name="allUsersRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="username" type="xs:string"/>
+                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="allUsersResponse">
+    <xs:element name="allUsersPageRequest">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="user" type="tns:user" maxOccurs="unbounded" minOccurs="0">
-                </xs:element>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="page" type="xs:int"/>
+                <xs:element name="size" type="xs:int"/>
+                <xs:element name="sort" type="tns:sort" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -54,86 +43,19 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="username" type="xs:string"/>
-                <xs:element name="includePending" type="xs:boolean"/>
+                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="friendsResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="user" type="tns:user" maxOccurs="unbounded" minOccurs="0">
-                </xs:element>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="invitationsRequest">
+    <xs:element name="friendsPageRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="username" type="xs:string"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="invitationsResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="user" type="tns:user" maxOccurs="unbounded" minOccurs="0">
-                </xs:element>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="acceptInvitationRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="username" type="xs:string"/>
-                <xs:element name="invitation" type="tns:friend"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="acceptInvitationResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="user" type="tns:user" maxOccurs="unbounded" minOccurs="0">
-                </xs:element>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="declineInvitationRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="username" type="xs:string"/>
-                <xs:element name="invitation" type="tns:friend"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="declineInvitationResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="user" type="tns:user" maxOccurs="unbounded" minOccurs="0">
-                </xs:element>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="addFriendRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="username" type="xs:string"/>
-                <xs:element name="friend" type="tns:friend"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="addFriendResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="user" type="tns:user"/>
+                <xs:element name="page" type="xs:int"/>
+                <xs:element name="size" type="xs:int"/>
+                <xs:element name="sort" type="tns:sort" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -142,19 +64,102 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="username" type="xs:string"/>
-                <xs:element name="friendUsername" type="xs:string"/>
+                <xs:element name="friendToBeRemoved" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="removeFriendResponse">
+    <xs:element name="incomeInvitationsRequest">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="user" type="tns:user" maxOccurs="unbounded" minOccurs="0">
-                </xs:element>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:element name="incomeInvitationsPageRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="page" type="xs:int"/>
+                <xs:element name="size" type="xs:int"/>
+                <xs:element name="sort" type="tns:sort" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="outcomeInvitationsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="outcomeInvitationsPageRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="page" type="xs:int"/>
+                <xs:element name="size" type="xs:int"/>
+                <xs:element name="sort" type="tns:sort" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="sendInvitationRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="friendToBeRequested" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="acceptInvitationRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="friendToBeAdded" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="declineInvitationRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="invitationToBeDeclined" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- RESPONSE TYPES -->
+
+    <xs:element name="UserResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="user" type="tns:user"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="UsersResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="user" type="tns:user" minOccurs="0" maxOccurs="unbounded">
+                </xs:element>
+                <xs:element name="totalElements" type="xs:long" minOccurs="0"/>
+                <xs:element name="totalPages" type="xs:int" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- CUSTOM TYPES -->
 
     <xs:complexType name="user">
         <xs:sequence>
@@ -164,13 +169,8 @@
             <xs:element name="surname" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="currency" type="tns:currency"/>
             <xs:element name="photo" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="photoSmall" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="friendState" type="tns:friendState" minOccurs="0" maxOccurs="1"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="friend">
-        <xs:sequence>
-            <xs:element name="username" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -189,6 +189,20 @@
             <xs:enumeration value="INVITE_RECEIVED"/>
             <xs:enumeration value="FRIEND"/>
             <xs:enumeration value="VOID"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="sort">
+        <xs:sequence>
+            <xs:element name="property" type="xs:string" minOccurs="1"/>
+            <xs:element name="direction" type="tns:direction" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="direction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ASC"/>
+            <xs:enumeration value="DESC"/>
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>

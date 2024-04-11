@@ -6,9 +6,9 @@ import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.FriendState;
 import guru.qa.niffler.model.UserJson;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Size;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +29,8 @@ public record UserJsonGQL(
         @JsonProperty("photo")
         @Size(max = NifflerGatewayServiceConfig.ONE_MB)
         String photo,
+        @JsonProperty("photoSmall")
+        String photoSmall,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonProperty("friendState")
         FriendState friendState,
@@ -45,6 +47,7 @@ public record UserJsonGQL(
                 userJson.surname(),
                 userJson.currency(),
                 userJson.photo(),
+                userJson.photoSmall(),
                 userJson.friendState(),
                 new ArrayList<>(),
                 new ArrayList<>()

@@ -15,7 +15,7 @@ import java.io.InputStream;
 
 public class GqlReqResolver implements ParameterResolver {
 
-    private static final ObjectMapper om = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -32,7 +32,7 @@ public class GqlReqResolver implements ParameterResolver {
                 .orElseThrow()
                 .value();
         try (InputStream is = new ClassPathResource(path).getInputStream()) {
-            return om.readValue(is, GqlRequest.class);
+            return OBJECT_MAPPER.readValue(is, GqlRequest.class);
         } catch (IOException e) {
             throw new ParameterResolutionException("Error while reading resource", e);
         }

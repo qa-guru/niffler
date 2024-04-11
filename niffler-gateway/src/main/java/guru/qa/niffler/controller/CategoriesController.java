@@ -9,11 +9,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/categories")
 public class CategoriesController {
 
     private final RestSpendClient restSpendClient;
@@ -23,13 +25,13 @@ public class CategoriesController {
         this.restSpendClient = restSpendClient;
     }
 
-    @GetMapping("/categories")
+    @GetMapping("/all")
     public List<CategoryJson> getCategories(@AuthenticationPrincipal Jwt principal) {
         String username = principal.getClaim("sub");
         return restSpendClient.getCategories(username);
     }
 
-    @PostMapping("/category")
+    @PostMapping("/add")
     public CategoryJson addCategory(@AuthenticationPrincipal Jwt principal,
                                     @Valid @RequestBody CategoryJson category) {
         String username = principal.getClaim("sub");

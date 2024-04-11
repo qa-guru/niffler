@@ -1,6 +1,5 @@
 package guru.qa.niffler.test.gql;
 
-import guru.qa.niffler.gql.GatewayGqlClient;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
@@ -30,8 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Epic("[GraphQL][niffler-gateway]: Друзья")
 @DisplayName("[GraphQL][niffler-gateway]: Друзья")
 public class GraphQlFriendsTest extends BaseGraphQlTest {
-
-    private final GatewayGqlClient gqlClient = new GatewayGqlClient();
 
     @Test
     @DisplayName("GraphQL: Для нового пользователя должен возвращаться пустой список friends и invitations из niffler-gateway")
@@ -94,8 +91,8 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
     void friendsAndIncomeInvitationsListShouldReceived(@GqlReq("gql/getFriendsQuery.json") GqlRequest query,
                                                        @User UserJson user,
                                                        @Token String bearerToken) throws Exception {
-        UserJson friend = user.testData().friendsJsons().get(0);
-        UserJson invitation = user.testData().invitationsJsons().get(0);
+        UserJson friend = user.testData().friends().get(0);
+        UserJson invitation = user.testData().incomeInvitations().get(0);
 
         final UserDataGql response = gqlClient.friends(bearerToken, query);
 

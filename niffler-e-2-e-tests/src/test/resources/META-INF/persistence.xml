@@ -5,9 +5,11 @@
     <persistence-unit name="niffler-persistence-unit-name" transaction-type="RESOURCE_LOCAL">
         <class>guru.qa.niffler.data.entity.auth.AuthUserEntity</class>
         <class>guru.qa.niffler.data.entity.auth.AuthorityEntity</class>
-        <class>guru.qa.niffler.data.entity.ud.UserEntity</class>
-        <class>guru.qa.niffler.data.entity.ud.FriendsEntity</class>
-        <class>guru.qa.niffler.data.entity.ud.FriendsId</class>
+        <class>guru.qa.niffler.data.entity.userdata.UserEntity</class>
+        <class>guru.qa.niffler.data.entity.userdata.FriendshipEntity</class>
+        <class>guru.qa.niffler.data.entity.userdata.FriendShipId</class>
+        <class>guru.qa.niffler.data.entity.spend.SpendEntity</class>
+        <class>guru.qa.niffler.data.entity.spend.CategoryEntity</class>
     </persistence-unit>
 
 </persistence>

@@ -25,7 +25,7 @@ export const FriendsTable = () => {
 
     useEffect(() => {
         getData({
-                path: "/friends?includePending=false",
+                path: "/api/friends/all",
                 onSuccess: (data) => {
                     setFriends(data);
                 },
@@ -39,7 +39,7 @@ export const FriendsTable = () => {
 
     useEffect(() => {
         getData({
-                path: "/invitations",
+                path: "/api/invitations/income",
                 onSuccess: (data) => {
                     setInvitations(data);
                 },

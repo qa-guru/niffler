@@ -22,7 +22,7 @@ export const Profile = () => {
     const [currencies, setCurrencies] = useState([]);
 
     useLoadedData({
-        path: "/allCurrencies",
+        path: "/api/currencies/all",
         onSuccess: (data) => {
             setCurrencies(Array.from(data.map((v) => {
                 return {value: v?.currency, label: v?.currency}
@@ -37,7 +37,7 @@ export const Profile = () => {
         e.preventDefault();
         const dataToSend = {...userData, currency: userData.currency?.value};
         postData({
-            path: "/updateUserInfo",
+            path: "/api/users/update",
             data: dataToSend,
             onSuccess: (data) => {
                 setUser(data);

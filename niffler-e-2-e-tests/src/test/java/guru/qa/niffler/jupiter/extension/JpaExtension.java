@@ -7,7 +7,6 @@ public class JpaExtension implements SuiteExtension {
 
     @Override
     public void afterAllTests() {
-        EmfContext.INSTANCE.storedEmf()
-                .forEach(EntityManagerFactory::close);
+        EmfContext.storedEmf().forEach(EntityManagerFactory::close);
     }
 }

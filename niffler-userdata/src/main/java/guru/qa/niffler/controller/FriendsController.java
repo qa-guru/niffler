@@ -1,21 +1,20 @@
 package guru.qa.niffler.controller;
 
-import guru.qa.niffler.model.FriendJson;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.IUserJson;
 import guru.qa.niffler.service.UserDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/internal/friends")
 public class FriendsController {
 
     private static final Logger LOG = LoggerFactory.getLogger(FriendsController.class);
@@ -27,38 +26,15 @@ public class FriendsController {
         this.userService = userService;
     }
 
-    @GetMapping("/friends")
-    public List<UserJson> friends(@RequestParam String username,
-                                  @RequestParam boolean includePending) {
-        return userService.friends(username, includePending);
+    @GetMapping("/all")
+    public List<? extends IUserJson> friends(@RequestParam String username,
+                                             @RequestParam(required = false) String searchQuery) {
+        return userService.friends(username, searchQuery);
     }
 
-    @GetMapping("/invitations")
-    public List<UserJson> invitations(@RequestParam String username) {
-        return userService.invitations(username);
-    }
-
-    @PostMapping("/acceptInvitation")
-    public List<UserJson> acceptInvitation(@RequestParam String username,
-                                           @RequestBody FriendJson invitation) {
-        return userService.acceptInvitation(username, invitation);
-    }
-
-    @PostMapping("/declineInvitation")
-    public List<UserJson> declineInvitation(@RequestParam String username,
-                                            @RequestBody FriendJson invitation) {
-        return userService.declineInvitation(username, invitation);
-    }
-
-    @PostMapping("/addFriend")
-    public UserJson addFriend(@RequestParam String username,
-                              @RequestBody FriendJson friend) {
-        return userService.addFriend(username, friend);
-    }
-
-    @DeleteMapping("/removeFriend")
-    public List<UserJson> removeFriend(@RequestParam String username,
-                                       @RequestParam String friendUsername) {
-        return userService.removeFriend(username, friendUsername);
+    @DeleteMapping("/remove")
+    public void removeFriend(@RequestParam String username,
+                             @RequestParam String targetUsername) {
+        userService.removeFriend(username, targetUsername);
     }
 }

@@ -21,7 +21,7 @@ public class CodeInterceptor implements Interceptor {
             final String location = response.header("Location");
             if (location.contains(CODE_PARAM)) {
                 ApiLoginExtension.setCode(
-                        ContextHolderExtension.Holder.INSTANCE.get(),
+                        ContextHolderExtension.context(),
                         StringUtils.substringAfter(
                                 location, CODE_PARAM
                         )

@@ -16,6 +16,7 @@ buildscript {
         kafkaClientsVersion = '3.5.1'
         saajVersion = '3.0.2'
         jakartaXmlBind = '4.0.1'
+        springDataCommonsVersion = '3.2.4'
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
                 ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
                 : "http://127.0.0.1:8089/ws/userdata.wsdl"
@@ -29,7 +30,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '1.2.1'
+version = '1.3.0'
 
 allure {
     version.set("${allureVersion}")
@@ -104,6 +105,7 @@ dependencies {
     testImplementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
     testImplementation "com.squareup.okhttp3:logging-interceptor:${okhttp3Version}"
     testImplementation "com.squareup.okhttp3:okhttp-urlconnection:${okhttp3Version}"
+    testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
     // DB
     testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"

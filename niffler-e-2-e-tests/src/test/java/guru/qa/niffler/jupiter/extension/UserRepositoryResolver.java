@@ -21,7 +21,7 @@ public class UserRepositoryResolver implements TestInstancePostProcessor {
                 .toList();
 
         for (Field field : fields) {
-            field.set(testInstance, UserRepository.getRepository());
+            field.set(testInstance, UserRepository.getInstance());
         }
     }
 }

@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.userdata.wsdl.Currency;
 import guru.qa.niffler.userdata.wsdl.User;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Size;
 
-import javax.annotation.Nonnull;
 import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record UserJson(
         @JsonProperty("id")
         UUID id,
@@ -26,12 +27,13 @@ public record UserJson(
         @JsonProperty("photo")
         @Size(max = NifflerGatewayServiceConfig.ONE_MB)
         String photo,
-        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonProperty("photoSmall")
+        String photoSmall,
         @JsonProperty("friendState")
         FriendState friendState) {
 
     public @Nonnull UserJson addUsername(@Nonnull String username) {
-        return new UserJson(id, username, firstname, surname, currency, photo, friendState);
+        return new UserJson(id, username, firstname, surname, currency, photo, photoSmall, friendState);
     }
 
     public @Nonnull User toJaxbUser() {
@@ -42,6 +44,7 @@ public record UserJson(
         jaxbUser.setSurname(surname);
         jaxbUser.setCurrency(Currency.valueOf(currency.name()));
         jaxbUser.setPhoto(photo);
+        jaxbUser.setPhotoSmall(photoSmall);
         jaxbUser.setFriendState(friendState() == null ?
                 guru.qa.niffler.userdata.wsdl.FriendState.VOID :
                 guru.qa.niffler.userdata.wsdl.FriendState.valueOf(friendState().name()));
@@ -56,6 +59,7 @@ public record UserJson(
                 jaxbUser.getSurname(),
                 CurrencyValues.valueOf(jaxbUser.getCurrency().name()),
                 jaxbUser.getPhoto(),
+                jaxbUser.getPhotoSmall(),
                 (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != guru.qa.niffler.userdata.wsdl.FriendState.VOID)
                         ? FriendState.valueOf(jaxbUser.getFriendState().name())
                         : null

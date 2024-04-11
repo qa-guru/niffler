@@ -1,22 +1,21 @@
 package guru.qa.niffler.service.api;
 
 import guru.qa.niffler.ex.NoRestResponseException;
-import guru.qa.niffler.model.FriendJson;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.page.RestPage;
 import guru.qa.niffler.service.UserDataClient;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,178 +23,230 @@ import java.util.Optional;
 @ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "rest")
 public class RestUserDataClient implements UserDataClient {
 
-    private final WebClient webClient;
-    private final String nifflerUserdataBaseUri;
+    private final RestTemplate restTemplate;
+    private final String nifflerUserdataApiUri;
 
     @Autowired
-    public RestUserDataClient(WebClient webClient,
+    public RestUserDataClient(RestTemplate restTemplate,
                               @Value("${niffler-userdata.base-uri}") String nifflerUserdataBaseUri) {
-        this.webClient = webClient;
-        this.nifflerUserdataBaseUri = nifflerUserdataBaseUri;
+        this.restTemplate = restTemplate;
+        this.nifflerUserdataApiUri = nifflerUserdataBaseUri + "/internal";
     }
 
+    @Nonnull
     @Override
-    public @Nonnull
-    UserJson updateUserInfo(@Nonnull UserJson user) {
+    public UserJson currentUser(@Nonnull String username) {
         return Optional.ofNullable(
-                webClient.post()
-                        .uri(nifflerUserdataBaseUri + "/updateUserInfo")
-                        .body(Mono.just(user), UserJson.class)
-                        .retrieve()
-                        .bodyToMono(UserJson.class)
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/updateUserInfo Route]"));
+                restTemplate.getForObject(
+                        nifflerUserdataApiUri + "/users/current?username={username}",
+                        UserJson.class,
+                        username
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/users/current/ Route]"));
     }
 
+    @Nonnull
     @Override
-    public @Nonnull
-    UserJson currentUser(@Nonnull String username) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/currentUser").queryParams(params).build().toUri();
-
+    public UserJson updateUserInfo(@Nonnull UserJson user) {
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(uri)
-                        .retrieve()
-                        .bodyToMono(UserJson.class)
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/currentUser Route]"));
+                restTemplate.postForObject(
+                        nifflerUserdataApiUri + "/users/update",
+                        user,
+                        UserJson.class
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/users/update/ Route]"));
     }
 
+    @Nonnull
     @Override
-    public @Nonnull
-    List<UserJson> allUsers(@Nonnull String username) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/allUsers").queryParams(params).build().toUri();
+    public List<UserJson> allUsers(@Nonnull String username, @Nullable String searchQuery) {
+        return Arrays.asList(
+                Optional.ofNullable(
+                        restTemplate.getForObject(
+                                nifflerUserdataApiUri + "/users/all?username={username}&searchQuery={searchQuery}",
+                                UserJson[].class,
+                                username,
+                                searchQuery
+                        )
+                ).orElseThrow(() -> new NoRestResponseException("No REST UserJson[] response is given [/users/all/ Route]"))
+        );
+    }
 
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public Page<UserJson> allUsers(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(uri)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                        })
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/allUsers Route]"));
+                restTemplate.getForObject(
+                        nifflerUserdataApiUri + "/v2/users/all?username={username}&searchQuery={searchQuery}" +
+                                "&page={page}&size={size}" + extractSort(pageable),
+                        RestPage.class,
+                        username,
+                        searchQuery,
+                        pageable.getPageNumber(),
+                        pageable.getPageSize()
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST Page<UserJson> response is given [/v2/users/all/ Route]"));
     }
 
+    @Nonnull
     @Override
-    public @Nonnull
-    List<UserJson> friends(@Nonnull String username, boolean includePending) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        params.add("includePending", String.valueOf(includePending));
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/friends").queryParams(params).build().toUri();
+    public List<UserJson> friends(@Nonnull String username, @Nullable String searchQuery) {
+        return Arrays.asList(
+                Optional.ofNullable(
+                        restTemplate.getForObject(
+                                nifflerUserdataApiUri + "/friends/all?username={username}&searchQuery={searchQuery}",
+                                UserJson[].class,
+                                username,
+                                searchQuery
+                        )
+                ).orElseThrow(() -> new NoRestResponseException("No REST UserJson[] response is given [/friends/all/ Route]"))
+        );
+    }
 
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public Page<UserJson> friends(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(uri)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                        })
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/friends Route]"));
+                restTemplate.getForObject(
+                        nifflerUserdataApiUri + "/v2/friends/all?username={username}&searchQuery={searchQuery}" +
+                                "&page={page}&size={size}" + extractSort(pageable),
+                        RestPage.class,
+                        username,
+                        searchQuery,
+                        pageable.getPageNumber(),
+                        pageable.getPageSize()
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST Page<UserJson> response is given [/v2/friends/all/ Route]"));
     }
 
+    @Nonnull
     @Override
-    public @Nonnull
-    List<UserJson> invitations(@Nonnull String username) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/invitations").queryParams(params).build().toUri();
+    public List<UserJson> incomeInvitations(@Nonnull String username, @Nullable String searchQuery) {
+        return Arrays.asList(
+                Optional.ofNullable(
+                        restTemplate.getForObject(
+                                nifflerUserdataApiUri + "/invitations/income?username={username}&searchQuery={searchQuery}",
+                                UserJson[].class,
+                                username,
+                                searchQuery
+                        )
+                ).orElseThrow(() -> new NoRestResponseException("No REST UserJson[] response is given [/invitations/income/ Route]"))
+        );
+    }
 
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public Page<UserJson> incomeInvitations(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(uri)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                        })
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/invitations Route]"));
+                restTemplate.getForObject(
+                        nifflerUserdataApiUri + "/v2/invitations/income?username={username}&searchQuery={searchQuery}" +
+                                "&page={page}&size={size}" + extractSort(pageable),
+                        RestPage.class,
+                        username,
+                        searchQuery,
+                        pageable.getPageNumber(),
+                        pageable.getPageSize()
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST Page<UserJson> response is given [/v2/invitations/income/ Route]"));
     }
 
+    @Nonnull
     @Override
-    public @Nonnull
-    List<UserJson> acceptInvitation(@Nonnull String username,
-                                    @Nonnull FriendJson invitation) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/acceptInvitation").queryParams(params).build().toUri();
+    public List<UserJson> outcomeInvitations(@Nonnull String username, @Nullable String searchQuery) {
+        return Arrays.asList(
+                Optional.ofNullable(
+                        restTemplate.getForObject(
+                                nifflerUserdataApiUri + "/invitations/outcome?username={username}&searchQuery={searchQuery}",
+                                UserJson[].class,
+                                username,
+                                searchQuery
+                        )
+                ).orElseThrow(() -> new NoRestResponseException("No REST UserJson[] response is given [/invitations/outcome/ Route]"))
+        );
+    }
 
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public Page<UserJson> outcomeInvitations(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
         return Optional.ofNullable(
-                webClient.post()
-                        .uri(uri)
-                        .body(Mono.just(invitation), FriendJson.class)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                        })
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/acceptInvitation Route]"));
+                restTemplate.getForObject(
+                        nifflerUserdataApiUri + "/v2/invitations/outcome?username={username}&searchQuery={searchQuery}" +
+                                "&page={page}&size={size}" + extractSort(pageable),
+                        RestPage.class,
+                        username,
+                        searchQuery,
+                        pageable.getPageNumber(),
+                        pageable.getPageSize()
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST Page<UserJson> response is given [/v2/invitations/outcome/ Route]"));
     }
 
+    @Nonnull
     @Override
-    public @Nonnull
-    UserJson acceptInvitationAndReturnFriend(@Nonnull String username,
-                                             @Nonnull FriendJson invitation) {
-        return acceptInvitation(username, invitation).stream()
-                .filter(friend -> friend.username().equals(invitation.username()))
-                .findFirst()
-                .orElseThrow();
-    }
-
-    @Override
-    public @Nonnull
-    List<UserJson> declineInvitation(@Nonnull String username,
-                                     @Nonnull FriendJson invitation) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/declineInvitation").queryParams(params).build().toUri();
-
+    public UserJson sendInvitation(@Nonnull String username, @Nonnull String targetUsername) {
         return Optional.ofNullable(
-                webClient.post()
-                        .uri(uri)
-                        .body(Mono.just(invitation), FriendJson.class)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                        })
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/declineInvitation Route]"));
+                restTemplate.postForObject(
+                        nifflerUserdataApiUri + "/invitations/send?username={username}&targetUsername={targetUsername}",
+                        null,
+                        UserJson.class,
+                        username,
+                        targetUsername
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/invitations/send/ Route]"));
+    }
+
+    @Nonnull
+    @Override
+    public UserJson acceptInvitation(@Nonnull String username, @Nonnull String targetUsername) {
+        return Optional.ofNullable(
+                restTemplate.postForObject(
+                        nifflerUserdataApiUri + "/invitations/accept?username={username}&targetUsername={targetUsername}",
+                        null,
+                        UserJson.class,
+                        username,
+                        targetUsername
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/invitations/accept/ Route]"));
+    }
+
+    @Nonnull
+    @Override
+    public UserJson declineInvitation(@Nonnull String username, @Nonnull String targetUsername) {
+        return Optional.ofNullable(
+                restTemplate.postForObject(
+                        nifflerUserdataApiUri + "/invitations/decline?username={username}&targetUsername={targetUsername}",
+                        null,
+                        UserJson.class,
+                        username,
+                        targetUsername
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/invitations/decline/ Route]"));
     }
 
     @Override
-    public @Nonnull UserJson addFriend(@Nonnull String username,
-                                       @Nonnull FriendJson friend) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/addFriend").queryParams(params).build().toUri();
-
-        return Optional.ofNullable(
-                webClient.post()
-                        .uri(uri)
-                        .body(Mono.just(friend), FriendJson.class)
-                        .retrieve()
-                        .bodyToMono(UserJson.class)
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException("No REST UserJson response is given [/addFriend Route]"));
+    public void removeFriend(@Nonnull String username, @Nonnull String targetUsername) {
+        restTemplate.delete(
+                nifflerUserdataApiUri + "/friends/remove?username={username}&targetUsername={targetUsername}",
+                username,
+                targetUsername
+        );
     }
 
-    @Override
-    public @Nonnull
-    List<UserJson> removeFriend(@Nonnull String username,
-                                @Nonnull String friendUsername) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("username", username);
-        params.add("friendUsername", friendUsername);
-        URI uri = UriComponentsBuilder.fromHttpUrl(nifflerUserdataBaseUri + "/removeFriend").queryParams(params).build().toUri();
-
-        return Optional.ofNullable(
-                webClient.delete()
-                        .uri(uri)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<List<UserJson>>() {
-                        })
-                        .block()
-        ).orElseThrow(() -> new NoRestResponseException("No REST List<UserJson> response is given [/removeFriend Route]"));
+    private @Nonnull String extractSort(@Nonnull Pageable pageable) {
+        if (!pageable.getSort().isEmpty()) {
+            StringBuilder sortQuery = new StringBuilder();
+            for (Sort.Order order : pageable.getSort()) {
+                sortQuery.append("&sort=");
+                sortQuery.append(order.getProperty());
+                sortQuery.append(",");
+                sortQuery.append(order.getDirection().name());
+            }
+            return sortQuery.toString();
+        }
+        return "";
     }
 }

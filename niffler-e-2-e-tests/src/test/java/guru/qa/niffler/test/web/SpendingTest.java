@@ -141,7 +141,7 @@ public class SpendingTest extends BaseWebTest {
     ))
     void shouldEditSpendingTest(@User UserJson user) {
         Date newSpendDate = DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_MONTH, -4);
-        SpendJson testSpend = user.testData().spendJsons().get(0);
+        SpendJson testSpend = user.testData().spends().get(0);
         SpendJson editedSpending = new SpendJson(
                 null,
                 testSpend.spendDate(),
@@ -180,7 +180,7 @@ public class SpendingTest extends BaseWebTest {
         Selenide.open(MainPage.URL, MainPage.class)
                 .getSpendingTable()
                 .clickByButton("Last week")
-                .checkTableContains(user.testData().spendJsons().get(0));
+                .checkTableContains(user.testData().spends().get(0));
     }
 
     @Disabled("Not implemented")

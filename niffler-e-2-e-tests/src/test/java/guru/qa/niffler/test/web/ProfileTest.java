@@ -8,6 +8,7 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.ProfilePage;
+import guru.qa.niffler.utils.SuccessMessage;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
@@ -76,7 +77,8 @@ public class ProfileTest extends BaseWebTest {
         String newCategory = generateNewCategory();
         ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
                 .waitForPageLoaded()
-                .addCategory(newCategory);
+                .addCategory(newCategory)
+                .checkToasterMessage(SuccessMessage.CATEGORY_ADDED.content);
         Selenide.refresh();
         profilePage.checkCategoryExists(newCategory);
     }

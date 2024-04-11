@@ -3,7 +3,7 @@ package guru.qa.niffler.model.graphql;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.model.CurrencyValues;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
@@ -15,8 +15,7 @@ public record SpendInput(
         @PastOrPresent(message = "Spend date must not be future")
         Date spendDate,
         @JsonProperty("category")
-        @NotNull(message = "Category can not be null")
-        @NotEmpty(message = "Category can not be empty")
+        @NotBlank(message = "Category can not be blank")
         String category,
         @JsonProperty("currency")
         CurrencyValues currency,

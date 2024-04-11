@@ -23,7 +23,7 @@ public class AllureDockerExtension implements SuiteExtension {
     private static final String allureResultsDirectory = "./niffler-e-2-e-tests/build/allure-results";
     private static final String projectId = "niffler";
 
-    private final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
+    private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
 
     @Override
     public void afterAllTests() {

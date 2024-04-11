@@ -1,30 +1,27 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.data.CurrencyValues;
+import guru.qa.niffler.data.FriendshipStatus;
 import guru.qa.niffler.data.UserEntity;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.ex.NotFoundException;
-import guru.qa.niffler.model.FriendState;
 import guru.qa.niffler.model.UserJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import static guru.qa.niffler.model.FriendState.FRIEND;
 import static guru.qa.niffler.model.FriendState.INVITE_SENT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -75,7 +72,7 @@ class UserDataServiceTest {
     @ParameterizedTest
     void userShouldBeUpdated(String photo, @Mock UserRepository userRepository) {
         when(userRepository.findByUsername(eq(mainTestUserName)))
-                .thenReturn(mainTestUser);
+                .thenReturn(Optional.of(mainTestUser));
 
         when(userRepository.save(any(UserEntity.class)))
                 .thenAnswer(answer -> answer.getArguments()[0]);
@@ -106,7 +103,7 @@ class UserDataServiceTest {
     @Test
     void getRequiredUserShouldThrowNotFoundExceptionIfUserNotFound(@Mock UserRepository userRepository) {
         when(userRepository.findByUsername(eq(notExistingUser)))
-                .thenReturn(null);
+                .thenReturn(Optional.empty());
 
         testedObject = new UserDataService(userRepository);
 
@@ -125,7 +122,7 @@ class UserDataServiceTest {
 
         testedObject = new UserDataService(userRepository);
 
-        final List<UserJson> users = testedObject.allUsers(mainTestUserName);
+        final List<UserJson> users = testedObject.allUsers(mainTestUserName, null);
         assertEquals(2, users.size());
         final UserJson invitation = users.stream()
                 .filter(u -> u.friendState() == INVITE_SENT)
@@ -142,48 +139,12 @@ class UserDataServiceTest {
         assertEquals(thirdTestUserName, friend.username());
     }
 
-
-    static Stream<Arguments> friendsShouldReturnDifferentListsBasedOnIncludePendingParam() {
-        return Stream.of(
-                Arguments.of(true, List.of(INVITE_SENT, FRIEND)),
-                Arguments.of(false, List.of(FRIEND))
-        );
-    }
-
-    @MethodSource
-    @ParameterizedTest
-    void friendsShouldReturnDifferentListsBasedOnIncludePendingParam(boolean includePending,
-                                                                     List<FriendState> expectedStates,
-                                                                     @Mock UserRepository userRepository) {
-        when(userRepository.findByUsername(eq(mainTestUserName)))
-                .thenReturn(enrichTestUser());
-
-        testedObject = new UserDataService(userRepository);
-        final List<UserJson> result = testedObject.friends(mainTestUserName, includePending);
-        assertEquals(expectedStates.size(), result.size());
-
-        assertTrue(result.stream()
-                .map(UserJson::friendState)
-                .toList()
-                .containsAll(expectedStates));
-    }
-
-    private UserEntity enrichTestUser() {
-        mainTestUser.addFriends(true, secondTestUser);
-        secondTestUser.addInvitations(mainTestUser);
-
-        mainTestUser.addFriends(false, thirdTestUser);
-        thirdTestUser.addFriends(false, mainTestUser);
-        return mainTestUser;
-    }
-
-
     private List<UserEntity> getMockUsersMappingFromDb() {
-        mainTestUser.addFriends(true, secondTestUser);
+        mainTestUser.addFriends(FriendshipStatus.PENDING, secondTestUser);
         secondTestUser.addInvitations(mainTestUser);
 
-        mainTestUser.addFriends(false, thirdTestUser);
-        thirdTestUser.addFriends(false, mainTestUser);
+        mainTestUser.addFriends(FriendshipStatus.ACCEPTED, thirdTestUser);
+        thirdTestUser.addFriends(FriendshipStatus.ACCEPTED, mainTestUser);
 
         return List.of(secondTestUser, thirdTestUser);
     }

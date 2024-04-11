@@ -111,7 +111,7 @@ export const AbstractTable = ({data, onDelete, onDecline}) => {
                     <tr key={item.username}>
                         <td>
                             <img className="people__user-avatar"
-                                 src={item.photo ?? "/images/niffler_avatar.jpeg"}
+                                 src={item.photoSmall ?? "/images/niffler_avatar.jpeg"}
                                  alt={`Аватар пользователя ${item.username}`}
                                  width={50} height={50}/>
                         </td>

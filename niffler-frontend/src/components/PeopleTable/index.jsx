@@ -28,7 +28,7 @@ export const PeopleTable = ({}) => {
     useEffect(() => {
         setIsLoading(true);
         getData({
-                path: "/allUsers",
+                path: "/api/users/all",
                 onSuccess: (data) => {
                     setAllUsers(data);
                     setIsLoading(false);

@@ -2,16 +2,16 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.data.CategoryEntity;
 import guru.qa.niffler.data.repository.CategoryRepository;
+import guru.qa.niffler.ex.NotUniqCategoryException;
+import guru.qa.niffler.ex.TooManyCategoriesException;
 import guru.qa.niffler.model.CategoryJson;
 import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public @Nonnull
     List<CategoryJson> getAllCategories(@Nonnull String username) {
-        return categoryRepository.findAllByUsername(username)
+        return categoryRepository.findAllByUsernameOrderByCategory(username)
                 .stream()
                 .map(CategoryJson::fromEntity)
                 .toList();
@@ -42,10 +42,9 @@ public class CategoryService {
         final String username = category.username();
         final String categoryName = category.category();
 
-        if (categoryRepository.findAllByUsername(username).size() > MAX_CATEGORIES_SIZE) {
-            LOG.error("### Can`t add over than 7 categories for user: " + username);
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                    "Can`t add over than 7 categories for user: '" + username);
+        if (categoryRepository.findAllByUsernameOrderByCategory(username).size() > MAX_CATEGORIES_SIZE) {
+            LOG.error("### Can`t add over than 8 categories for user: " + username);
+            throw new TooManyCategoriesException("Can`t add over than 8 categories for user: '" + username + "'");
         }
 
         CategoryEntity ce = new CategoryEntity();
@@ -55,8 +54,7 @@ public class CategoryService {
             return CategoryJson.fromEntity(categoryRepository.save(ce));
         } catch (DataIntegrityViolationException e) {
             LOG.error("### Error while creating category: " + e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Category with name '" + categoryName + "' already exists", e);
+            throw new NotUniqCategoryException("Category with name '" + categoryName + "' already exists");
         }
     }
 }

@@ -80,7 +80,7 @@ export const Header = () => {
                         data-tooltip-content="Profile">
                         <Link className="header__link" to={"/profile"}>
                             <img className="header__avatar"
-                                 src={user?.photo ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
+                                 src={user?.photoSmall ?? "/images/niffler_avatar.jpeg"} alt="Аватар профиля"
                                  width={65} height={65}/>
                         </Link>
                         <Tooltip className="tooltip" id="profile"/>

@@ -1,7 +1,6 @@
 package guru.qa.niffler.api;
 
 import guru.qa.niffler.api.service.RestClient;
-import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
 
@@ -11,13 +10,14 @@ import java.util.List;
 
 public class UserdataApiClient extends RestClient {
 
+    private final UserdataApi userdataApi;
+
     public UserdataApiClient() {
         super(CFG.userdataUrl());
+        this.userdataApi = retrofit.create(UserdataApi.class);
     }
 
-    private final UserdataApi userdataApi = retrofit.create(UserdataApi.class);
-
-    @Step("Send REST GET('/currentUser') request to niffler-userdata")
+    @Step("Send REST GET('/internal/users/current') request to niffler-userdata")
     @Nullable
     public UserJson getCurrentUser(@Nonnull String username) throws Exception {
         return userdataApi.currentUser(username)
@@ -25,7 +25,7 @@ public class UserdataApiClient extends RestClient {
                 .body();
     }
 
-    @Step("Send REST POST('/updateUserInfo') request to niffler-userdata")
+    @Step("Send REST POST('/internal/users/update') request to niffler-userdata")
     @Nullable
     public UserJson updateUser(@Nonnull UserJson userJson) throws Exception {
         return userdataApi.updateUserInfo(userJson)
@@ -33,61 +33,73 @@ public class UserdataApiClient extends RestClient {
                 .body();
     }
 
-    @Step("Send REST GET('/allUsers') request to niffler-userdata")
+    @Step("Send REST GET('/internal/users/all') request to niffler-userdata")
     @Nullable
-    public List<UserJson> allUsers(@Nonnull String username) throws Exception {
-        return userdataApi.allUsers(username)
+    public List<UserJson> allUsers(@Nonnull String username,
+                                   @Nullable String searchQuery) throws Exception {
+        return userdataApi.allUsers(username, searchQuery)
                 .execute()
                 .body();
     }
 
-    @Step("Send REST GET('/friends') request to niffler-userdata")
+    @Step("Send REST GET('/internal/friends/all') request to niffler-userdata")
     @Nullable
-    public List<UserJson> friends(@Nonnull String username, boolean includePending) throws Exception {
-        return userdataApi.friends(username, includePending)
+    public List<UserJson> friends(@Nonnull String username,
+                                  @Nullable String searchQuery) throws Exception {
+        return userdataApi.friends(username, searchQuery)
                 .execute()
                 .body();
     }
 
-    @Step("Send REST GET('/invitations') request to niffler-userdata")
+    @Step("Send REST GET('/internal/invitations/income') request to niffler-userdata")
     @Nullable
-    public List<UserJson> invitations(@Nonnull String username) throws Exception {
-        return userdataApi.invitations(username)
+    public List<UserJson> incomeInvitations(@Nonnull String username,
+                                            @Nullable String searchQuery) throws Exception {
+        return userdataApi.incomeInvitations(username, searchQuery)
                 .execute()
                 .body();
     }
 
-    @Step("Send REST POST('/acceptInvitation') request to niffler-userdata")
+    @Step("Send REST GET('/internal/invitations/outcome') request to niffler-userdata")
     @Nullable
-    public List<UserJson> acceptInvitation(@Nonnull String username,
-                                           @Nonnull FriendJson invitation) throws Exception {
-        return userdataApi.acceptInvitation(username, invitation)
+    public List<UserJson> outcomeInvitations(@Nonnull String username,
+                                             @Nullable String searchQuery) throws Exception {
+        return userdataApi.outcomeInvitations(username, searchQuery)
                 .execute()
                 .body();
     }
 
-    @Step("Send REST POST('/declineInvitation') request to niffler-userdata")
+    @Step("Send REST POST('/internal/invitations/accept') request to niffler-userdata")
     @Nullable
-    public List<UserJson> declineInvitation(@Nonnull String username,
-                                            @Nonnull FriendJson invitation) throws Exception {
-        return userdataApi.declineInvitation(username, invitation)
+    public UserJson acceptInvitation(@Nonnull String username,
+                                     @Nonnull String targetUsername) throws Exception {
+        return userdataApi.acceptInvitation(username, targetUsername)
                 .execute()
                 .body();
     }
 
-    @Step("Send REST POST('/addFriend') request to niffler-userdata")
+    @Step("Send REST POST('/internal/invitations/decline') request to niffler-userdata")
     @Nullable
-    public UserJson addFriend(@Nonnull String username, @Nonnull FriendJson friend) throws Exception {
-        return userdataApi.addFriend(username, friend)
+    public UserJson declineInvitation(@Nonnull String username,
+                                      @Nonnull String targetUsername) throws Exception {
+        return userdataApi.declineInvitation(username, targetUsername)
                 .execute()
                 .body();
     }
 
-    @Step("Send REST DELETE('/removeFriend') request to niffler-userdata")
+    @Step("Send REST POST('/internal/invitations/send') request to niffler-userdata")
     @Nullable
-    public List<UserJson> removeFriend(@Nonnull String username, @Nonnull String friendUsername) throws Exception {
-        return userdataApi.removeFriend(username, friendUsername)
+    public UserJson sendInvitation(@Nonnull String username,
+                                   @Nonnull String targetUsername) throws Exception {
+        return userdataApi.sendInvitation(username, targetUsername)
                 .execute()
                 .body();
+    }
+
+    @Step("Send REST DELETE('/internal/friends/remove') request to niffler-userdata")
+    public void removeFriend(@Nonnull String username,
+                             @Nonnull String targetUsername) throws Exception {
+        userdataApi.removeFriend(username, targetUsername)
+                .execute();
     }
 }
