@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +32,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static guru.qa.niffler.model.FriendState.FRIEND;
 import static guru.qa.niffler.model.FriendState.INVITE_RECEIVED;
@@ -59,10 +59,11 @@ public class UserDataService {
     public void compressAndSaveExistingPhotos() {
         List<UserEntity> users = userRepository.findAll();
         for (UserEntity user : users) {
-            if (user.getPhoto() != null && user.getPhoto().length > 0) {
+            if ((user.getPhoto() != null && user.getPhoto().length > 0)
+                    && (user.getPhotoSmall() == null || user.getPhotoSmall().length == 0)) {
                 try {
                     String originalPhoto = new String(user.getPhoto(), StandardCharsets.UTF_8);
-                    user.setPhotoSmall(resizePhoto(originalPhoto));
+                    user.setPhotoSmall(resizePhoto(originalPhoto, user.getId()));
                     userRepository.save(user);
                     LOG.info("### Resizing original user Photo for user done: " + user.getId());
                 } catch (Exception e) {
@@ -95,7 +96,7 @@ public class UserDataService {
         userEntity.setSurname(user.surname());
         userEntity.setCurrency(user.currency());
         userEntity.setPhoto(user.photo() != null ? user.photo().getBytes(StandardCharsets.UTF_8) : null);
-        userEntity.setPhotoSmall(resizePhoto(user.photo()));
+        userEntity.setPhotoSmall(resizePhoto(user.photo(), userEntity.getId()));
         UserEntity saved = userRepository.save(userEntity);
         return UserJson.fromEntity(saved);
     }
@@ -303,25 +304,28 @@ public class UserDataService {
         return UserJsonBulk.fromEntity(userEntity);
     }
 
-    private @Nullable byte[] resizePhoto(@Nullable String photo) {
+    private @Nullable byte[] resizePhoto(@Nullable String photo, @Nonnull UUID userId) {
         if (photo != null) {
             try {
                 String base64Image = photo.split(",")[1];
-                BufferedImage img = ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(base64Image)));
-                try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                    Thumbnails.of(img)
+
+                try (ByteArrayInputStream is = new ByteArrayInputStream(Base64.getDecoder().decode(base64Image));
+                     ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+
+                    Thumbnails.of(ImageIO.read(is))
                             .height(100)
                             .width(100)
                             .outputQuality(1.0)
                             .outputFormat("png")
-                            .toOutputStream(outputStream);
+                            .toOutputStream(os);
 
                     return concatArrays(
                             "data:image/png;base64,".getBytes(StandardCharsets.UTF_8),
-                            Base64.getEncoder().encode(outputStream.toByteArray())
+                            Base64.getEncoder().encode(os.toByteArray())
                     );
                 }
             } catch (Exception e) {
+                LOG.error("### Error while resizing photo for user: " + userId);
                 throw new RuntimeException(e);
             }
         }
