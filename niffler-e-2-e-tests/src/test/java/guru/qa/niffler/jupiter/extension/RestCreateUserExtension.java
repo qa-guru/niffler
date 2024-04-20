@@ -112,7 +112,7 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
     @Step("Create categories for test user (REST)")
     @Override
-    protected void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, UserJson createdUser) throws Exception {
+    protected void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, @Nonnull UserJson createdUser) throws Exception {
         if (categories != null) {
             for (GenerateCategory category : categories) {
                 CategoryJson cj = new CategoryJson(null, category.value(), createdUser.username());
