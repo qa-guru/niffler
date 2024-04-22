@@ -51,7 +51,7 @@ public class SpendApiClient extends RestClient {
                 .body();
     }
 
-    @Step("Send REST GET('/internal/spends/stat') request to niffler-spend")
+    @Step("Send REST GET('/internal/stat/total') request to niffler-spend")
     @Nullable
     public List<StatisticJson> statistic(@Nonnull String username,
                                          @Nullable CurrencyValues userCurrency,

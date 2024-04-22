@@ -1,6 +1,5 @@
 package guru.qa.niffler.service;
 
-import guru.qa.niffler.data.UserEntity;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.domain.NifflerUserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,8 @@ public class NifflerUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("Username: `" + username + "` not found");
-        }
-        return new NifflerUserPrincipal(user);
+        return userRepository.findByUsername(username)
+                .map(NifflerUserPrincipal::new)
+                .orElseThrow(() -> new UsernameNotFoundException("Username: `" + username + "` not found"));
     }
 }

@@ -29,9 +29,9 @@ public class GrpcConsoleInterceptor implements ClientInterceptor {
 
             @Override
             public void sendMessage(ReqT message) {
-                LOG.info("Send gRPC request to: " + methodDescriptor.getFullMethodName());
+                LOG.info("Send gRPC request to: {}", methodDescriptor.getFullMethodName());
                 try {
-                    LOG.info("Request body:\n\n" + jsonPrinter.print((MessageOrBuilder) message));
+                    LOG.info("Request body:\n\n{}", jsonPrinter.print((MessageOrBuilder) message));
                 } catch (InvalidProtocolBufferException e) {
                     LOG.warn("Can`t parse gRPC request", e);
                 }
@@ -54,7 +54,7 @@ public class GrpcConsoleInterceptor implements ClientInterceptor {
                     @Override
                     public void onMessage(RespT message) {
                         try {
-                            LOG.info("Response body:\n\n" + jsonPrinter.print((MessageOrBuilder) message));
+                            LOG.info("Response body:\n\n{}", jsonPrinter.print((MessageOrBuilder) message));
                         } catch (InvalidProtocolBufferException e) {
                             LOG.warn("Can`t parse gRPC response", e);
                         }

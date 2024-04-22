@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '1.2.1'
+version = '1.2.2'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -19,11 +19,13 @@ dependencies {
     implementation "org.springframework.kafka:spring-kafka:${project.ext.springKafkaVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
     implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
+    implementation "org.flywaydb:flyway-database-postgresql:${project.ext.flywayVersion}"
     annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
     runtimeOnly "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.h2database:h2:2.2.224'
 }
 
 jib {
@@ -47,6 +49,9 @@ jib {
         tags = ['latest', "${project.version}"]
     }
 }
+
+tasks.jib.dependsOn test
+tasks.jibDockerBuild.dependsOn test
 
 tasks.register('printVersion') {
     doLast {

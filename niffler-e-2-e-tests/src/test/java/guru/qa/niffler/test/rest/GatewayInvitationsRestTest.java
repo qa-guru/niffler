@@ -1,12 +1,15 @@
 package guru.qa.niffler.test.rest;
 
 import guru.qa.niffler.api.UserdataApiClient;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.GenerateUsers;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
+import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.FriendState;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
@@ -26,24 +29,27 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Epic("[REST][niffler-userdata]: Приглашения")
-@DisplayName("[REST][niffler-userdata]: Приглашения")
-public class UserDataInvitationsRestTest extends BaseRestTest {
+@Epic("[REST][niffler-gateway]: Приглашения")
+@DisplayName("[REST][niffler-gateway]: Приглашения")
+public class GatewayInvitationsRestTest extends BaseRestTest {
 
-    private static final UserdataApiClient userdataClient = new UserdataApiClient();
+    private static final UserdataApiClient userdataApiClient = new UserdataApiClient();
 
     @Test
     @DisplayName("REST: Для пользователя должен возвращаться список исходящих инвайтов из niffler-userdata")
     @AllureId("200015")
     @Tag("REST")
-    @GenerateUser(
-            friends = @Friends(count = 1),
-            outcomeInvitations = @OutcomeInvitations(count = 1)
+    @ApiLogin(
+            user = @GenerateUser(
+                    friends = @Friends(count = 1),
+                    outcomeInvitations = @OutcomeInvitations(count = 1)
+            )
     )
-    void getAllOutcomeInvitationsListTest(@User(selector = METHOD) UserJson user) throws Exception {
+    void getAllOutcomeInvitationsListTest(@User UserJson user,
+                                          @Token String bearerToken) throws Exception {
         UserJson testOutInvitation = user.testData().outcomeInvitations().get(0);
 
-        final List<UserJson> outcomeInvitations = userdataClient.outcomeInvitations(user.username(), null);
+        final List<UserJson> outcomeInvitations = gatewayApiClient.outcomeInvitations(bearerToken, null);
         step("Check that response not null", () ->
                 assertNotNull(outcomeInvitations)
         );
@@ -65,14 +71,17 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
             "с фильтраций по username, если передан searchQuery")
     @AllureId("200016")
     @Tag("REST")
-    @GenerateUser(
-            friends = @Friends(count = 1),
-            outcomeInvitations = @OutcomeInvitations(count = 2)
+    @ApiLogin(
+            user = @GenerateUser(
+                    friends = @Friends(count = 1),
+                    outcomeInvitations = @OutcomeInvitations(count = 2)
+            )
     )
-    void getFilteredOutcomeInvitationsListTest(@User(selector = METHOD) UserJson user) throws Exception {
+    void getFilteredOutcomeInvitationsListTest(@User UserJson user,
+                                               @Token String bearerToken) throws Exception {
         UserJson testOutInvitation = user.testData().outcomeInvitations().get(0);
 
-        final List<UserJson> outcomeInvitations = userdataClient.outcomeInvitations(user.username(), testOutInvitation.username());
+        final List<UserJson> outcomeInvitations = gatewayApiClient.outcomeInvitations(bearerToken, testOutInvitation.username());
         step("Check that response not null", () ->
                 assertNotNull(outcomeInvitations)
         );
@@ -93,12 +102,15 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
     @DisplayName("REST: Для пользователя должен возвращаться список приглашений дружить из niffler-userdata")
     @AllureId("200017")
     @Tag("REST")
-    @GenerateUser(
-            incomeInvitations = @IncomeInvitations(count = 1)
+    @ApiLogin(
+            user = @GenerateUser(
+                    incomeInvitations = @IncomeInvitations(count = 1)
+            )
     )
-    void getAllIncomeInvitationsListTest(@User(selector = METHOD) UserJson user) throws Exception {
+    void getAllIncomeInvitationsListTest(@User UserJson user,
+                                         @Token String bearerToken) throws Exception {
         UserJson testInvitation = user.testData().incomeInvitations().get(0);
-        final List<UserJson> invitations = userdataClient.incomeInvitations(user.username(), null);
+        final List<UserJson> invitations = gatewayApiClient.incomeInvitations(bearerToken, null);
         step("Check that response not null", () ->
                 assertNotNull(invitations)
         );
@@ -119,12 +131,15 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
             "с фильтраций по username, если передан searchQuery")
     @AllureId("200018")
     @Tag("REST")
-    @GenerateUser(
-            incomeInvitations = @IncomeInvitations(count = 2)
+    @ApiLogin(
+            user = @GenerateUser(
+                    incomeInvitations = @IncomeInvitations(count = 2)
+            )
     )
-    void getFilteredIncomeInvitationsListTest(@User(selector = METHOD) UserJson user) throws Exception {
+    void getFilteredIncomeInvitationsListTest(@User UserJson user,
+                                              @Token String bearerToken) throws Exception {
         UserJson testInvitation = user.testData().incomeInvitations().get(0);
-        final List<UserJson> invitations = userdataClient.incomeInvitations(user.username(), testInvitation.username());
+        final List<UserJson> invitations = gatewayApiClient.incomeInvitations(bearerToken, testInvitation.username());
         step("Check that response not null", () ->
                 assertNotNull(invitations)
         );
@@ -144,14 +159,18 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
     @DisplayName("REST: Прием заявки в друзья")
     @AllureId("200019")
     @Tag("REST")
-    @GenerateUser(
-            incomeInvitations = @IncomeInvitations(count = 1)
+    @ApiLogin(
+            user = @GenerateUser(
+                    incomeInvitations = @IncomeInvitations(count = 1)
+            )
     )
-    void acceptInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String currentUser = user.username();
+    void acceptInvitationTest(@User UserJson user,
+                              @Token String bearerToken) throws Exception {
         final String incomeInvitation = user.testData().incomeInvitations().get(0).username();
 
-        final UserJson friend = userdataClient.acceptInvitation(currentUser, incomeInvitation);
+        final UserJson friend = gatewayApiClient.acceptInvitation(bearerToken, new FriendJson(
+                incomeInvitation
+        ));
         step("Check that response not null", () ->
                 assertNotNull(friend)
         );
@@ -165,12 +184,12 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
                 Assertions.assertAll(
                         () -> assertEquals(
                                 1,
-                                userdataClient.friends(currentUser, null).size(),
+                                gatewayApiClient.allFriends(bearerToken, null).size(),
                                 "Current user should have friend after accepting"
                         ),
                         () -> assertEquals(
                                 1,
-                                userdataClient.friends(incomeInvitation, null).size(),
+                                userdataApiClient.friends(incomeInvitation, null).size(),
                                 "Target friend should have friend after accepting"
                         )
                 )
@@ -181,14 +200,18 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
     @DisplayName("REST: Отклонение заявки в друзья")
     @AllureId("200020")
     @Tag("REST")
-    @GenerateUser(
-            incomeInvitations = @IncomeInvitations(count = 1)
+    @ApiLogin(
+            user = @GenerateUser(
+                    incomeInvitations = @IncomeInvitations(count = 1)
+            )
     )
-    void declineInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String currentUser = user.username();
+    void declineInvitationTest(@User UserJson user,
+                               @Token String bearerToken) throws Exception {
         final String incomeInvitation = user.testData().incomeInvitations().get(0).username();
 
-        final UserJson declinedFriend = userdataClient.declineInvitation(currentUser, incomeInvitation);
+        final UserJson declinedFriend = gatewayApiClient.declineInvitation(bearerToken, new FriendJson(
+                incomeInvitation
+        ));
         step("Check that response not null", () ->
                 assertNotNull(declinedFriend)
         );
@@ -201,10 +224,10 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
         step("Check that outcome & income invitations removed for both users", () ->
                 Assertions.assertAll(
                         () -> assertTrue(
-                                userdataClient.incomeInvitations(currentUser, null).isEmpty(),
+                                gatewayApiClient.incomeInvitations(bearerToken, null).isEmpty(),
                                 "Current user should not have income invitations after declining"),
                         () -> assertTrue(
-                                userdataClient.outcomeInvitations(incomeInvitation, null).isEmpty(),
+                                userdataApiClient.outcomeInvitations(incomeInvitation, null).isEmpty(),
                                 "Inviter should not have outcome invitations after declining"
                         )
                 )
@@ -216,14 +239,16 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
     @AllureId("200021")
     @Tag("REST")
     @GenerateUsers({
-            @GenerateUser,
             @GenerateUser
     })
-    void sendInvitationTest(@User(selector = METHOD) UserJson[] users) throws Exception {
-        final String currentUser = users[0].username();
-        final String friendWillBeAdded = users[1].username();
+    @ApiLogin(user = @GenerateUser)
+    void sendInvitationTest(@User(selector = METHOD) UserJson friend,
+                            @Token String bearerToken) throws Exception {
+        final String friendWillBeAdded = friend.username();
 
-        final UserJson outcomeInvitation = userdataClient.sendInvitation(currentUser, friendWillBeAdded);
+        final UserJson outcomeInvitation = gatewayApiClient.sendInvitation(bearerToken, new FriendJson(
+                friendWillBeAdded
+        ));
         step("Check that response not null", () ->
                 assertNotNull(outcomeInvitation)
         );
@@ -237,11 +262,11 @@ public class UserDataInvitationsRestTest extends BaseRestTest {
                 Assertions.assertAll(
                         () -> assertEquals(
                                 1,
-                                userdataClient.outcomeInvitations(currentUser, null).size(),
+                                gatewayApiClient.outcomeInvitations(bearerToken, null).size(),
                                 "Current user should have pending friend after adding"),
                         () -> assertEquals(
                                 1,
-                                userdataClient.incomeInvitations(friendWillBeAdded, null).size(),
+                                userdataApiClient.incomeInvitations(friend.username(), null).size(),
                                 "Target friend should have 1 invitation"
                         )
                 )

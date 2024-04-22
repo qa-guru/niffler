@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class PropertiesLogger implements ApplicationListener<ApplicationPreparedEvent> {
 
-    private static final Logger log = LoggerFactory.getLogger(PropertiesLogger.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PropertiesLogger.class);
 
     private ConfigurableEnvironment environment;
     private boolean isFirstRun = true;
@@ -32,16 +32,16 @@ public class PropertiesLogger implements ApplicationListener<ApplicationPrepared
 
     public void printProperties() {
         for (EnumerablePropertySource<?> propertySource : findPropertiesPropertySources()) {
-            log.info("******* " + propertySource.getName() + " *******");
+            LOG.info("******* {} *******", propertySource.getName());
             String[] propertyNames = propertySource.getPropertyNames();
             Arrays.sort(propertyNames);
             for (String propertyName : propertyNames) {
                 String resolvedProperty = environment.getProperty(propertyName);
                 String sourceProperty = Objects.requireNonNull(propertySource.getProperty(propertyName)).toString();
                 if (Objects.equals(resolvedProperty, sourceProperty)) {
-                    log.info("{}={}", propertyName, resolvedProperty);
+                    LOG.info("{}={}", propertyName, resolvedProperty);
                 } else {
-                    log.info("{}={} OVERRIDDEN to {}", propertyName, sourceProperty, resolvedProperty);
+                    LOG.info("{}={} OVERRIDDEN to {}", propertyName, sourceProperty, resolvedProperty);
                 }
             }
         }

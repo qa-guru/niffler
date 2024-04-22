@@ -65,9 +65,9 @@ public class UserDataService {
                     String originalPhoto = new String(user.getPhoto(), StandardCharsets.UTF_8);
                     user.setPhotoSmall(resizePhoto(originalPhoto, user.getId()));
                     userRepository.save(user);
-                    LOG.info("### Resizing original user Photo for user done: " + user.getId());
+                    LOG.info("### Resizing original user Photo for user done: {}", user.getId());
                 } catch (Exception e) {
-                    LOG.error("### Error while resizing original user Photo for user :" + user.getId());
+                    LOG.error("### Error while resizing original user Photo for user :{}", user.getId());
                 }
             }
         }
@@ -76,16 +76,16 @@ public class UserDataService {
     @Transactional
     @KafkaListener(topics = "users", groupId = "userdata")
     public void listener(@Payload UserJson user, ConsumerRecord<String, UserJson> cr) {
-        LOG.info("### Kafka consumer record: " + cr.toString());
+        LOG.info("### Kafka consumer record: {}", cr.toString());
         UserEntity userDataEntity = new UserEntity();
         userDataEntity.setUsername(user.username());
         userDataEntity.setCurrency(DEFAULT_USER_CURRENCY);
         UserEntity userEntity = userRepository.save(userDataEntity);
-        LOG.info(String.format(
-                "### User '%s' successfully saved to database with id: %s",
+        LOG.info(
+                "### User '{}' successfully saved to database with id: {}",
                 user.username(),
                 userEntity.getId()
-        ));
+        );
     }
 
     @Transactional
@@ -325,7 +325,7 @@ public class UserDataService {
                     );
                 }
             } catch (Exception e) {
-                LOG.error("### Error while resizing photo for user: " + userId);
+                LOG.error("### Error while resizing photo for user: {}", userId);
                 throw new RuntimeException(e);
             }
         }

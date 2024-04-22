@@ -92,7 +92,7 @@ public class KafkaConsumer implements Runnable {
     @Override
     public void run() {
         try {
-            LOG.info("### Consumer subscribed... " + Arrays.toString(stringConsumer.subscription().toArray()) + "###");
+            LOG.info("### Consumer subscribed... {}###", Arrays.toString(stringConsumer.subscription().toArray()));
             running.set(true);
             while (running.get()) {
                 ConsumerRecords<String, String> strRecords = stringConsumer.poll(Duration.ofMillis(500));
@@ -103,7 +103,7 @@ public class KafkaConsumer implements Runnable {
                 try {
                     stringConsumer.commitSync();
                 } catch (CommitFailedException e) {
-                    LOG.error("### Commit failed: " + e.getMessage());
+                    LOG.error("### Commit failed", e);
                 }
             }
         } finally {
@@ -115,14 +115,12 @@ public class KafkaConsumer implements Runnable {
 
     private void deserializeRecord(@Nonnull String recordValue) {
         try {
-            UserJson userJson = OM.readValue(recordValue, UserJson.class);
-            if (userJson == null || userJson.username() == null) {
-                LOG.warn("### Empty username in message ###");
-                return;
-            }
+            UserJson userJson = Objects.requireNonNull(
+                    OM.readValue(recordValue, UserJson.class)
+            );
             MESSAGES.provide(userJson.username(), userJson);
         } catch (JsonProcessingException e) {
-            LOG.error("### Parse message fail: " + e.getMessage());
+            LOG.error("### Parse message fail", e);
         }
     }
 

@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,10 +52,10 @@ class NifflerUserDetailsServiceTest {
         testUserEntity.setId(UUID.randomUUID());
 
         lenient().when(userRepository.findByUsername("correct"))
-                .thenReturn(testUserEntity);
+                .thenReturn(Optional.of(testUserEntity));
 
         lenient().when(userRepository.findByUsername(not(eq("correct"))))
-                .thenReturn(null);
+                .thenReturn(Optional.empty());
 
         nifflerUserDetailsService = new NifflerUserDetailsService(userRepository);
     }

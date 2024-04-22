@@ -1,32 +1,26 @@
 package guru.qa.niffler.test.rest;
 
-import guru.qa.niffler.api.SpendApiClient;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
+import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.converter.SpendConverter;
 import guru.qa.niffler.model.rest.CurrencyValues;
-import guru.qa.niffler.model.rest.SpendJson;
+import guru.qa.niffler.model.rest.DataFilterValues;
 import guru.qa.niffler.model.rest.StatisticByCategoryJson;
 import guru.qa.niffler.model.rest.StatisticJson;
 import guru.qa.niffler.model.rest.UserJson;
-import guru.qa.niffler.utils.DateUtils;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.converter.ConvertWith;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static guru.qa.niffler.model.rest.CurrencyValues.EUR;
 import static guru.qa.niffler.model.rest.CurrencyValues.KZT;
 import static guru.qa.niffler.model.rest.CurrencyValues.RUB;
@@ -35,56 +29,31 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Epic("[REST][niffler-spend]: Траты")
-@DisplayName("[REST][niffler-spend]: Траты")
-public class SpendRestTest extends BaseRestTest {
+@Epic("[REST][niffler-gateway]: Stat")
+@DisplayName("[REST][niffler-gateway]: Stat")
+public class GatewayStatRestTest extends BaseRestTest {
 
-    private static final SpendApiClient spendClient = new SpendApiClient();
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-    @AllureId("200008")
-    @GenerateUser(categories = {
-            @GenerateCategory("Рестораны"),
-            @GenerateCategory("Бары"),
-    })
-    @ValueSource(strings = {
-            "rest/spend0.json",
-            "rest/spend1.json"
-    })
-    @DisplayName("REST: При создании нового spend возвращается ID из niffler-spend")
-    @ParameterizedTest(name = "Тестовые данные для запроса: {0}")
-    @Tag("REST")
-    void apiShouldReturnIdOfCreatedSpend(@ConvertWith(SpendConverter.class) SpendJson spend,
-                                         @User(selector = METHOD) UserJson user) throws Exception {
-        final SpendJson created = spendClient.createSpend(spend.addUsername(user.username()));
-
-        step("Check that response contains ID (GUID)", () ->
-                assertTrue(created.id().toString().matches(ID_REGEXP))
-        );
-        step("Check that response contains username", () ->
-                assertEquals(user.username(), created.username())
-        );
-    }
 
     @Test
     @DisplayName("REST: Статистика содержит корректные данные при рассчете за все время и без фильтрации по валюте")
     @AllureId("200009")
     @Tag("REST")
-    @GenerateUser(
-            categories = {@GenerateCategory("Бар"), @GenerateCategory("Азс")},
-            spends = {
-                    @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = RUB, addDaysToSpendDate = -2),
-                    @GenerateSpend(spendName = "Кофе", spendCategory = "Бар", amount = 200, currency = RUB, addDaysToSpendDate = -1),
-                    @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 300, currency = RUB),
-            }
+    @ApiLogin(
+            user = @GenerateUser(
+                    categories = {@GenerateCategory("Бар"), @GenerateCategory("Азс")},
+                    spends = {
+                            @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = RUB, addDaysToSpendDate = -2),
+                            @GenerateSpend(spendName = "Кофе", spendCategory = "Бар", amount = 200, currency = RUB, addDaysToSpendDate = -1),
+                            @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 300, currency = RUB),
+                    }
+            )
     )
-    void statForOpenPeriodWithoutFilteringTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<StatisticJson> statistic = spendClient.statistic(
-                user.username(),
-                user.currency(),
-                null,
+    void statForOpenPeriodWithoutFilteringTest(@User UserJson user,
+                                               @Token String bearerToken) throws Exception {
+        final List<StatisticJson> statistic = gatewayApiClient.totalStat(
+                bearerToken,
                 null,
                 null
         );
@@ -239,20 +208,21 @@ public class SpendRestTest extends BaseRestTest {
     @DisplayName("REST: Статистика содержит корректные данные при рассчете за все время c фильтрацией по валюте")
     @AllureId("200010")
     @Tag("REST")
-    @GenerateUser(
-            categories = @GenerateCategory("Бар"),
-            spends = {
-                    @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = RUB),
-                    @GenerateSpend(spendName = "Кофе", spendCategory = "Бар", amount = 200, currency = RUB),
-                    @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 4, currency = USD, addDaysToSpendDate = -2),
-            }
+    @ApiLogin(
+            user = @GenerateUser(
+                    categories = @GenerateCategory("Бар"),
+                    spends = {
+                            @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = RUB),
+                            @GenerateSpend(spendName = "Кофе", spendCategory = "Бар", amount = 200, currency = RUB),
+                            @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 4, currency = USD, addDaysToSpendDate = -2),
+                    }
+            )
     )
-    void statForOpenPeriodWithFilteringTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<StatisticJson> statistic = spendClient.statistic(
-                user.username(),
-                user.currency(),
+    void statForOpenPeriodWithFilteringTest(@User UserJson user,
+                                            @Token String bearerToken) throws Exception {
+        final List<StatisticJson> statistic = gatewayApiClient.totalStat(
+                bearerToken,
                 USD,
-                null,
                 null
         );
         step("Check that response contains statistic only for USD (filterCurrency)", () ->
@@ -296,24 +266,23 @@ public class SpendRestTest extends BaseRestTest {
     @DisplayName("REST: Статистика содержит корректные данные при рассчете за период c фильтрацией по валюте")
     @AllureId("200011")
     @Tag("REST")
-    @GenerateUser(
-            categories = {@GenerateCategory("Бар"), @GenerateCategory("Азс")},
-            spends = {
-                    @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = RUB, addDaysToSpendDate = -2),
-                    @GenerateSpend(spendName = "Бензин", spendCategory = "Азс", amount = 2000, currency = RUB, addDaysToSpendDate = -3),
-                    @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 300, currency = RUB),
-            }
+    @ApiLogin(
+            user = @GenerateUser(
+                    categories = {@GenerateCategory("Бар"), @GenerateCategory("Азс")},
+                    spends = {
+                            @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = RUB, addDaysToSpendDate = -2),
+                            @GenerateSpend(spendName = "Бензин", spendCategory = "Азс", amount = 2000, currency = RUB, addDaysToSpendDate = -3),
+                            @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 300, currency = RUB, addDaysToSpendDate = -8),
+                    }
+            )
     )
-    void statForPeriodWithFilteringTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String dateFrom = formatter.format(DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, -4));
-        final String dateTo = formatter.format(DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, -1));
-
-        final List<StatisticJson> statistic = spendClient.statistic(
-                user.username(),
-                user.currency(),
+    void statForPeriodWithFilteringTest(@User UserJson user,
+                                        @Token String bearerToken) throws Exception {
+        final String dateTo = formatter.format(new Date());
+        final List<StatisticJson> statistic = gatewayApiClient.totalStat(
+                bearerToken,
                 null,
-                dateFrom,
-                dateTo
+                DataFilterValues.WEEK
         );
 
         step("Check that response contains statistic for each system currencies", () ->

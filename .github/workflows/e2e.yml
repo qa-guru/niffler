@@ -31,12 +31,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           : # build backends with profile `docker`, only for testing
-          bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
+          bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test || exit 1
           : # build container with tests `qaguru/niffler-e-2-e-tests:latest`     
-          docker build --build-arg DOCKER=eclipse-temurin:21-jdk --build-arg ALLURE_DOCKER_API=${{ env.ALLURE_DOCKER_API }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t qaguru/niffler-e-2-e-tests:latest -f ./niffler-e-2-e-tests/Dockerfile .
+          docker build --build-arg DOCKER=eclipse-temurin:21-jdk --build-arg ALLURE_DOCKER_API=${{ env.ALLURE_DOCKER_API }} --build-arg GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} -t qaguru/niffler-e-2-e-tests:latest -f ./niffler-e-2-e-tests/Dockerfile . || exit 1
           : # build frontend container `qaguru/niffler-frontend-docker:latest`
           cd ./niffler-frontend/ || exit 1
-          bash docker-build.sh docker
+          bash docker-build.sh docker || exit 1
           cd ../ || exit 1
           : # pull browser (see browsers.json)        
           docker pull selenoid/vnc_chrome:117.0

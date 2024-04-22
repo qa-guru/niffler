@@ -62,7 +62,7 @@ public class RegisterController {
                 response.setStatus(HttpServletResponse.SC_CREATED);
                 model.addAttribute(MODEL_USERNAME_ATTR, registeredUserName);
             } catch (DataIntegrityViolationException e) {
-                LOG.error("### Error while registration user: " + e.getMessage());
+                LOG.error("### Error while registration user", e);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 addErrorToRegistrationModel(
                         registrationModel,

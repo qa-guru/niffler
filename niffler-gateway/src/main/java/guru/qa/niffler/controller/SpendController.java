@@ -3,8 +3,6 @@ package guru.qa.niffler.controller;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.model.StatisticJson;
-import guru.qa.niffler.service.StatisticAggregator;
 import guru.qa.niffler.service.UserDataClient;
 import guru.qa.niffler.service.api.RestSpendClient;
 import jakarta.validation.Valid;
@@ -31,13 +29,11 @@ public class SpendController {
 
     private final RestSpendClient restSpendClient;
     private final UserDataClient userDataClient;
-    private final StatisticAggregator statisticAggregator;
 
     @Autowired
-    public SpendController(RestSpendClient restSpendClient, UserDataClient userDataClient, StatisticAggregator statisticAggregator) {
+    public SpendController(RestSpendClient restSpendClient, UserDataClient userDataClient) {
         this.restSpendClient = restSpendClient;
         this.userDataClient = userDataClient;
-        this.statisticAggregator = statisticAggregator;
     }
 
     @GetMapping("/all")
@@ -68,14 +64,6 @@ public class SpendController {
         }
         String username = principal.getClaim("sub");
         return restSpendClient.editSpend(spend.addUsername(username));
-    }
-
-    @GetMapping("/stat")
-    public List<StatisticJson> getTotalStatistic(@AuthenticationPrincipal Jwt principal,
-                                                 @RequestParam(required = false) CurrencyValues filterCurrency,
-                                                 @RequestParam(required = false) DataFilterValues filterPeriod) {
-        String username = principal.getClaim("sub");
-        return statisticAggregator.enrichStatisticRequest(username, filterCurrency, filterPeriod);
     }
 
     @DeleteMapping("/remove")

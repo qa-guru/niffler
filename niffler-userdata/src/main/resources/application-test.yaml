@@ -1,0 +1,21 @@
+spring:
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+      - 'org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration'
+
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:niffler-userdata;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+  jpa:
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+
+niffler-userdata:
+  base-uri: 'http://userdata.niffler.dc:8089'
