@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '1.2.1'
+version = '1.2.2'
 
 dependencies {
     implementation project(':niffler-grpc-common')
@@ -15,6 +15,7 @@ dependencies {
     implementation "net.devh:grpc-server-spring-boot-starter:${project.ext.springGrpcVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
     implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
+    implementation "org.flywaydb:flyway-database-postgresql:${project.ext.flywayVersion}"
     annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
     runtimeOnly "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
@@ -43,6 +44,9 @@ jib {
         tags = ['latest', "${project.version}"]
     }
 }
+
+tasks.jib.dependsOn test
+tasks.jibDockerBuild.dependsOn test
 
 tasks.register('printVersion') {
     doLast {

@@ -1,9 +1,11 @@
 package guru.qa.niffler.test.rest;
 
 import guru.qa.niffler.api.UserdataApiClient;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
+import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.FriendState;
 import guru.qa.niffler.model.rest.UserJson;
@@ -16,31 +18,33 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Epic("[REST][niffler-userdata]: Друзья")
-@DisplayName("[REST][niffler-userdata]: Друзья")
-public class UserDataFriendsRestTest extends BaseRestTest {
+@Epic("[REST][niffler-gateway]: Друзья")
+@DisplayName("[REST][niffler-gateway]: Друзья")
+public class GatewayFriendsRestTest extends BaseRestTest {
 
-    private static final UserdataApiClient userdataClient = new UserdataApiClient();
+    private static final UserdataApiClient userdataApiClient = new UserdataApiClient();
 
     @Test
     @DisplayName("REST: Для пользователя должен возвращаться список друзей из niffler-userdata")
     @AllureId("200012")
     @Tag("REST")
-    @GenerateUser(
-            friends = @Friends(count = 1),
-            outcomeInvitations = @OutcomeInvitations(count = 1)
+    @ApiLogin(
+            user = @GenerateUser(
+                    friends = @Friends(count = 1),
+                    outcomeInvitations = @OutcomeInvitations(count = 1)
+            )
     )
-    void getAllFriendsListTest(@User(selector = METHOD) UserJson user) throws Exception {
+    void getAllFriendsListTest(@User UserJson user,
+                               @Token String bearerToken) throws Exception {
         UserJson testFriend = user.testData().friends().get(0);
 
-        final List<UserJson> friends = userdataClient.friends(user.username(), null);
+        final List<UserJson> friends = gatewayApiClient.allFriends(bearerToken, null);
         step("Check that response not null", () ->
                 assertNotNull(friends)
         );
@@ -62,14 +66,17 @@ public class UserDataFriendsRestTest extends BaseRestTest {
             "с фильтраций по username, если передан searchQuery")
     @AllureId("200013")
     @Tag("REST")
-    @GenerateUser(
-            friends = @Friends(count = 2),
-            outcomeInvitations = @OutcomeInvitations(count = 1)
+    @ApiLogin(
+            user = @GenerateUser(
+                    friends = @Friends(count = 2),
+                    outcomeInvitations = @OutcomeInvitations(count = 1)
+            )
     )
-    void getFilteredFriendsListTest(@User(selector = METHOD) UserJson user) throws Exception {
+    void getFilteredFriendsListTest(@User UserJson user,
+                                    @Token String bearerToken) throws Exception {
         UserJson testFriend = user.testData().friends().get(0);
 
-        final List<UserJson> friends = userdataClient.friends(user.username(), testFriend.username());
+        final List<UserJson> friends = gatewayApiClient.allFriends(bearerToken, testFriend.username());
         step("Check that response not null", () ->
                 assertNotNull(friends)
         );
@@ -90,22 +97,24 @@ public class UserDataFriendsRestTest extends BaseRestTest {
     @DisplayName("REST: Удаление друга")
     @AllureId("200014")
     @Tag("REST")
-    @GenerateUser(
-            friends = @Friends(count = 1)
+    @ApiLogin(
+            user = @GenerateUser(
+                    friends = @Friends(count = 1)
+            )
     )
-    void removeFriendTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String currentUsername = user.username();
+    void removeFriendTest(@User UserJson user,
+                          @Token String bearerToken) throws Exception {
         final String friendUsername = user.testData().friends().get(0).username();
-        userdataClient.removeFriend(currentUsername, friendUsername);
+        gatewayApiClient.removeFriend(bearerToken, friendUsername);
 
         step("Check that no friends present in GET /friends request for both users", () ->
                 Assertions.assertAll(
                         () -> assertTrue(
-                                userdataClient.friends(currentUsername, null).isEmpty(),
+                                gatewayApiClient.allFriends(bearerToken, null).isEmpty(),
                                 "Current user should not have friend after removing"
                         ),
                         () -> assertTrue(
-                                userdataClient.friends(friendUsername, null).isEmpty(),
+                                userdataApiClient.friends(friendUsername, null).isEmpty(),
                                 "Target friend should not have friend after removing"
                         )
                 )

@@ -34,8 +34,8 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
     public static final ExtensionContext.Namespace NAMESPACE
             = ExtensionContext.Namespace.create(ApiLoginExtension.class);
 
-    public static ApiLoginExtension create(boolean setUpBrowser) {
-        return new ApiLoginExtension(setUpBrowser);
+    public static ApiLoginExtension rest() {
+        return new ApiLoginExtension(false);
     }
 
     public ApiLoginExtension() {

@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'guru.qa'
-sourceCompatibility = '17'
+sourceCompatibility = '21'
 
 subprojects {
     repositories {
@@ -12,16 +12,16 @@ subprojects {
     ext {
         dockerHubName = "qaguru"
 
-        lombokVersion = '1.18.30'
-        springKafkaVersion = '3.1.2'
-        postgresDriverVersion = '42.6.0'
-        flywayVersion = '9.22.2'
-        oauth2AuthorizationServerVersion = '1.2.2'
-        oauth2ResourceServerVersion = '3.2.3'
-        springVaultVersion = '4.1.0'
+        lombokVersion = '1.18.32'
+        springKafkaVersion = '3.1.4'
+        postgresDriverVersion = '42.7.3'
+        flywayVersion = '10.11.0'
+        oauth2AuthorizationServerVersion = '1.2.4'
+        oauth2ResourceServerVersion = '3.2.5'
+        springVaultVersion = '4.1.1'
         springGrpcVersion = '3.0.0.RELEASE'
         springGraphqlDateTimeVersion = '6.0.0'
-        glassfishJaxbVersion = '4.0.1'
+        glassfishJaxbVersion = '4.0.5'
         wsdl4jVersion = '1.6.3'
         thumbnailatorVersion = '0.4.20'
 

@@ -42,8 +42,8 @@ public class CategoryService {
         final String username = category.username();
         final String categoryName = category.category();
 
-        if (categoryRepository.findAllByUsernameOrderByCategory(username).size() > MAX_CATEGORIES_SIZE) {
-            LOG.error("### Can`t add over than 8 categories for user: " + username);
+        if (categoryRepository.countByUsername(username) > MAX_CATEGORIES_SIZE) {
+            LOG.error("### Can`t add over than 8 categories for user: {}", username);
             throw new TooManyCategoriesException("Can`t add over than 8 categories for user: '" + username + "'");
         }
 
@@ -53,7 +53,7 @@ public class CategoryService {
         try {
             return CategoryJson.fromEntity(categoryRepository.save(ce));
         } catch (DataIntegrityViolationException e) {
-            LOG.error("### Error while creating category: " + e.getMessage());
+            LOG.error("### Error while creating category", e);
             throw new NotUniqCategoryException("Category with name '" + categoryName + "' already exists");
         }
     }

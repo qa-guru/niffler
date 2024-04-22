@@ -37,7 +37,7 @@ jobs:
         run: |
           pwd
           echo "### niffler-auth version will be used: ${{ env.AUTH_VER }}"
-          bash ./gradlew :niffler-auth:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          bash ./gradlew :niffler-auth:jib -Pskipjaxb -x :niffler-e-2-e-tests:test || exit 1
           docker-compose -f docker-compose.ci.yml pull auth.niffler.dc
           docker-compose -f docker-compose.ci.yml stop auth.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps auth.niffler.dc
           docker system prune -a -f

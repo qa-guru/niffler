@@ -1,22 +1,24 @@
 buildscript {
     ext {
-        protobufVersion = '3.24.3'
-        grpcVersion = '1.58.0'
-        junitVersion = '5.10.0'
-        allureVersion = '2.25.0'
-        selenideVersion = '7.2.1'
-        retrofitVersion = '2.9.0'
+        protobufVersion = '3.25.3'
+        grpcVersion = '1.62.2'
+        junitVersion = '5.10.2'
+        allureVersion = '2.27.0'
+        selenideVersion = '7.2.3'
+        retrofitVersion = '2.11.0'
         okhttp3Version = '3.14.9'
         logbackVersion = '1.4.11'
         slf4jVersion = '2.0.9'
-        springJdbcVersion = '6.0.12'
-        springCryptoVersion = '6.1.0'
+        springJdbcVersion = '6.1.6'
+        springCryptoVersion = '6.2.3'
         p6spyVersion = '3.9.1'
-        hibernateVersion = '6.3.0.Final'
-        kafkaClientsVersion = '3.5.1'
-        saajVersion = '3.0.2'
-        jakartaXmlBind = '4.0.1'
-        springDataCommonsVersion = '3.2.4'
+        hibernateVersion = '6.4.4.Final'
+        kafkaClientsVersion = '3.7.0'
+        saajVersion = '3.0.3'
+        jakartaXmlBind = '4.0.2'
+        springDataCommonsVersion = '3.2.5'
+        wiremockVersion = '3.0.1'
+        fakerVersion = '1.0.2'
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
                 ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
                 : "http://127.0.0.1:8089/ws/userdata.wsdl"
@@ -30,12 +32,12 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '1.3.0'
+version = '1.3.1'
 
 allure {
     version.set("${allureVersion}")
     adapter {
-        aspectjVersion.set("1.9.21.1")
+        aspectjVersion.set("1.9.22")
         autoconfigure.set(true)
         aspectjWeaver.set(true)
     }
@@ -81,7 +83,7 @@ tasks.register('genJaxb') {
     }
 }
 
-genJaxb.onlyIf {
+tasks.genJaxb.onlyIf {
     !project.hasProperty("skipjaxb")
 }
 
@@ -125,7 +127,9 @@ dependencies {
     // WEB
     testImplementation "com.codeborne:selenide:${selenideVersion}"
     // Utils
-    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation("com.github.javafaker:javafaker:${fakerVersion}") {
+        exclude group: 'org.yaml'
+    }
     testImplementation 'commons-io:commons-io:2.11.0'
     testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
     testImplementation 'com.github.vertical-blank:sql-formatter:2.0.3'
@@ -145,8 +149,8 @@ dependencies {
     // Kafka
     testImplementation "org.apache.kafka:kafka-clients:${kafkaClientsVersion}"
     // Wiremock
-    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.1'
-    testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
+    testImplementation "com.github.tomakehurst:wiremock-jre8:${wiremockVersion}"
+    testImplementation "com.github.tomakehurst:wiremock-standalone:${wiremockVersion}"
     // Lombok
     testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"

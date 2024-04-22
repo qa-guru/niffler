@@ -32,14 +32,14 @@ fi
 
 if [ "$1" = "push" ] || [ "$2" = "push" ]; then
   echo "### Build & push images (front: $front) ###"
-  bash ./gradlew --stacktrace -Pskipjaxb jib -x :niffler-e-2-e-tests:test
+  bash ./gradlew --stacktrace -Pskipjaxb jib -x :niffler-e-2-e-tests:test || exit 1
   cd "$front" || exit
-  bash ./docker-build.sh ${PROFILE} push
+  bash ./docker-build.sh ${PROFILE} push || exit 1
 else
   echo "### Build images (front: $front) ###"
-  bash ./gradlew --stacktrace -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
+  bash ./gradlew --stacktrace -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test || exit 1
   cd "$front" || exit
-  bash ./docker-build.sh ${PROFILE}
+  bash ./docker-build.sh ${PROFILE} || exit 1
 fi
 
 cd ../

@@ -37,15 +37,14 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
     @Transactional(readOnly = true)
     @Override
     public void getAllCurrencies(Empty request, StreamObserver<CurrencyResponse> responseObserver) {
-        List<CurrencyEntity> all = currencyRepository.findAll();
-
         CurrencyResponse response = CurrencyResponse.newBuilder()
-                .addAllAllCurrencies(all.stream().map(e -> Currency.newBuilder()
+                .addAllAllCurrencies(currencyRepository.findAll().stream()
+                        .map(e -> Currency.newBuilder()
                                 .setCurrency(CurrencyValues.valueOf(e.getCurrency().name()))
                                 .setCurrencyRate(e.getCurrencyRate())
-                                .build())
-                        .toList())
-                .build();
+                                .build()
+                        ).toList()
+                ).build();
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -76,7 +75,11 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
                 ? BigDecimal.valueOf(spend)
                 : BigDecimal.valueOf(spend).multiply(courseForCurrency(spendCurrency, currencyRates));
 
-        return spendInUsd.divide(courseForCurrency(desiredCurrency, currencyRates), 2, RoundingMode.HALF_UP);
+        return spendInUsd.divide(
+                courseForCurrency(desiredCurrency, currencyRates),
+                2,
+                RoundingMode.HALF_UP
+        );
     }
 
     private @Nonnull

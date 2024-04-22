@@ -51,7 +51,8 @@ public class FriendsEndpoint extends BaseEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "removeFriendRequest")
     public void removeFriendRq(@RequestPayload RemoveFriendRequest request) {
         userService.removeFriend(
-                request.getUsername(), request.getFriendToBeRemoved()
+                request.getUsername(),
+                request.getFriendToBeRemoved()
         );
     }
 }

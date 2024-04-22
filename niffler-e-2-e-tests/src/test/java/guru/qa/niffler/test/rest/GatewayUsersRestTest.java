@@ -1,7 +1,8 @@
 package guru.qa.niffler.test.rest;
 
-import guru.qa.niffler.api.UserdataApiClient;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
+import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.UserJson;
@@ -16,26 +17,26 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.List;
 
-import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Epic("[REST][niffler-userdata]: Пользователи")
-@DisplayName("[REST][niffler-userdata]: Пользователи")
+@Epic("[REST][niffler-gateway]: Пользователи")
+@DisplayName("[REST][niffler-gateway]: Пользователи")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserDataUsersRestTest extends BaseRestTest {
-
-    private final UserdataApiClient userdataClient = new UserdataApiClient();
+public class GatewayUsersRestTest extends BaseRestTest {
 
     @Test
     @DisplayName("REST: Для нового пользователя должна возвращаться информация из niffler-userdata c дефолтными значениями")
     @AllureId("200022")
     @Tag("REST")
-    @GenerateUser()
-    void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final UserJson currentUserResponse = userdataClient.getCurrentUser(user.username());
+    @ApiLogin(
+            user = @GenerateUser()
+    )
+    void currentUserTest(@User UserJson user,
+                         @Token String bearerToken) throws Exception {
+        final UserJson currentUserResponse = gatewayApiClient.currentUser(bearerToken);
 
         step("Check that response contains ID (GUID)", () ->
                 assertTrue(currentUserResponse.id().toString().matches(ID_REGEXP))
@@ -52,8 +53,11 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @DisplayName("REST: При обновлении юзера должны сохраняться значения в niffler-userdata")
     @AllureId("200023")
     @Tag("REST")
-    @GenerateUser()
-    void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
+    @ApiLogin(
+            user = @GenerateUser()
+    )
+    void updateUserTest(@User UserJson user,
+                        @Token String bearerToken) throws Exception {
         final String firstName = "Pizzly";
         final String secondName = "Pizzlyvich";
 
@@ -69,7 +73,7 @@ public class UserDataUsersRestTest extends BaseRestTest {
                 null
         );
 
-        final UserJson updateUserInfoResponse = userdataClient.updateUser(jsonUser);
+        final UserJson updateUserInfoResponse = gatewayApiClient.updateUser(bearerToken, jsonUser);
 
         step("Check that response contains ID (GUID)", () ->
                 assertTrue(updateUserInfoResponse.id().toString().matches(ID_REGEXP))
@@ -92,10 +96,13 @@ public class UserDataUsersRestTest extends BaseRestTest {
     @DisplayName("REST: Список всех пользователей системы не должен быть пустым")
     @AllureId("200024")
     @Tag("REST")
-    @GenerateUser()
+    @ApiLogin(
+            user = @GenerateUser()
+    )
     @Order(1)
-    void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final List<UserJson> allUsersResponse = userdataClient.allUsers(user.username(), null);
+    void allUsersTest(@User UserJson user,
+                      @Token String bearerToken) throws Exception {
+        final List<UserJson> allUsersResponse = gatewayApiClient.allUsers(bearerToken, null);
 
         step("Check that all users list is not empty", () ->
                 assertFalse(allUsersResponse.isEmpty())

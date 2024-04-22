@@ -8,15 +8,16 @@ import io.grpc.ForwardingClientCall.SimpleForwardingClientCall;
 import io.grpc.ForwardingClientCallListener.SimpleForwardingClientCallListener;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.logging.Logger;
 
 /**
  * A interceptor to handle client header.
  */
 public class HeaderClientInterceptor implements ClientInterceptor {
 
-    private static final Logger logger = Logger.getLogger(HeaderClientInterceptor.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(HeaderClientInterceptor.class.getName());
 
     private final Metadata metadata;
 
@@ -41,7 +42,7 @@ public class HeaderClientInterceptor implements ClientInterceptor {
                          * you can use {@link io.grpc.stub.MetadataUtils#attachHeaders}
                          * directly to send header
                          */
-                        logger.info("header received from server:" + headers);
+                        LOG.info("header received from server:{}", headers);
                         super.onHeaders(headers);
                     }
                 }, headers);

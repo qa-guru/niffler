@@ -25,7 +25,7 @@ public interface SpendApi {
     @GET("internal/categories/all")
     Call<List<CategoryJson>> allCategories(@Query("username") String username);
 
-    @GET("internal/spends/stat")
+    @GET("internal/stat/total")
     Call<List<StatisticJson>> stat(@Query("username") String username,
                                    @Query("userCurrency") CurrencyValues userCurrency,
                                    @Query("filterCurrency") @Nullable CurrencyValues filterCurrency,

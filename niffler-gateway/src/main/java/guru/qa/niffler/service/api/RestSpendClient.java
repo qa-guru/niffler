@@ -126,7 +126,7 @@ public class RestSpendClient {
                                   @Nullable DataFilterValues filterPeriod) {
         return List.of(Optional.ofNullable(
                 restTemplate.getForObject(
-                        nifflerSpendApiUri + "/spends/stat?username={username}&userCurrency={userCurrency}&from={from}&to={to}&filterCurrency={filterCurrency}",
+                        nifflerSpendApiUri + "/stat/total?username={username}&userCurrency={userCurrency}&from={from}&to={to}&filterCurrency={filterCurrency}",
                         StatisticJson[].class,
                         username,
                         userCurrency.name(),
