@@ -1,7 +1,7 @@
 package guru.qa.niffler.test.grpc;
 
-import guru.qa.grpc.niffler.grpc.NifflerCurrencyServiceGrpc;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.grpc.NifflerCurrencyServiceGrpc;
 import guru.qa.niffler.jupiter.annotation.meta.GrpcTest;
 import guru.qa.niffler.utils.GrpcConsoleInterceptor;
 import io.grpc.Channel;

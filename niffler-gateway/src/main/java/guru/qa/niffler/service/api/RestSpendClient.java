@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -84,15 +83,13 @@ public class RestSpendClient {
                               @Nullable CurrencyValues filterCurrency) {
         return Optional.ofNullable(
                 restTemplate.getForObject(
-                        nifflerSpendApiUri + "/v2/spends/all?username={username}&from={from}&to={to}&filterCurrency={filterCurrency}" +
-                                "&page={page}&size={size}" + extractSort(pageable),
+                        nifflerSpendApiUri + "/v2/spends/all?username={username}&from={from}&to={to}&filterCurrency={filterCurrency}"
+                                + new HttpQueryPaginationAndSort(pageable),
                         RestPage.class,
                         username,
                         filterPeriod != null ? dateFormat(filterDate(filterPeriod)) : null,
                         filterPeriod != null ? dateFormat(new Date()) : null,
-                        filterCurrency != null ? filterCurrency.name() : null,
-                        pageable.getPageNumber(),
-                        pageable.getPageSize()
+                        filterCurrency != null ? filterCurrency.name() : null
                 )
         ).orElseThrow(() -> new NoRestResponseException("No REST Page<SpendJson> response is given [/v2/spends/all/ Route]"));
     }
@@ -171,19 +168,5 @@ public class RestSpendClient {
         cal.setTime(date);
         cal.add(selector, days);
         return cal.getTime();
-    }
-
-    private @Nonnull String extractSort(@Nonnull Pageable pageable) {
-        if (!pageable.getSort().isEmpty()) {
-            StringBuilder sortQuery = new StringBuilder();
-            for (Sort.Order order : pageable.getSort()) {
-                sortQuery.append("&sort=");
-                sortQuery.append(order.getProperty());
-                sortQuery.append(",");
-                sortQuery.append(order.getDirection().name());
-            }
-            return sortQuery.toString();
-        }
-        return "";
     }
 }

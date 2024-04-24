@@ -60,7 +60,7 @@ public class FriendsTest extends BaseWebTest {
     @Tag("WEB")
     @ApiLogin(user = @GenerateUser(friends = @Friends(count = 2)))
     void shouldRemoveFriend(@User(selector = NESTED) UserJson user) {
-        UserJson userToRemove = user.testData().friends().remove(0);
+        UserJson userToRemove = user.testData().friends().removeFirst();
         FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
                 .waitForPageLoaded()
                 .removeFriend(userToRemove.username())
@@ -77,7 +77,7 @@ public class FriendsTest extends BaseWebTest {
     @Tag("WEB")
     @ApiLogin(user = @GenerateUser(incomeInvitations = @IncomeInvitations(count = 2)))
     void shouldAcceptInvitation(@User UserJson user) {
-        UserJson userToAcceptInvitation = user.testData().incomeInvitations().remove(0);
+        UserJson userToAcceptInvitation = user.testData().incomeInvitations().removeFirst();
         user.testData().friends().add(userToAcceptInvitation);
         FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
                 .waitForPageLoaded()
@@ -95,7 +95,7 @@ public class FriendsTest extends BaseWebTest {
     @Tag("WEB")
     @ApiLogin(user = @GenerateUser(incomeInvitations = @IncomeInvitations(count = 2)))
     void shouldDeclineInvitation(@User UserJson user) {
-        UserJson userToDeclineInvitation = user.testData().incomeInvitations().get(0);
+        UserJson userToDeclineInvitation = user.testData().incomeInvitations().getFirst();
         FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
                 .waitForPageLoaded()
                 .removeFriend(userToDeclineInvitation.username())

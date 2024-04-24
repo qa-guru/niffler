@@ -40,7 +40,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllFriendsListTest(@User(selector = METHOD) UserJson user) throws Exception {
-        UserJson testFriend = user.testData().friends().get(0);
+        UserJson testFriend = user.testData().friends().getFirst();
         FriendsRequest fr = friendsRequest(user.username(), null);
         final UsersResponse usersResponse = wsClient.friendsRequest(fr);
 
@@ -51,7 +51,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
                 assertEquals(1, usersResponse.getUser().size())
         );
 
-        final var foundedFriend = usersResponse.getUser().get(0);
+        final var foundedFriend = usersResponse.getUser().getFirst();
 
         step("Check friend in response", () -> {
             assertSame(FriendState.FRIEND, foundedFriend.getFriendState());
@@ -70,7 +70,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getFiltersFriendsListTest(@User(selector = METHOD) UserJson user) throws Exception {
-        UserJson testFriend = user.testData().friends().get(0);
+        UserJson testFriend = user.testData().friends().getFirst();
         FriendsRequest fr = friendsRequest(user.username(), testFriend.username());
         final UsersResponse usersResponse = wsClient.friendsRequest(fr);
 
@@ -81,7 +81,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
                 assertEquals(1, usersResponse.getUser().size())
         );
 
-        final var foundedFriend = usersResponse.getUser().get(0);
+        final var foundedFriend = usersResponse.getUser().getFirst();
 
         step("Check friend in response", () -> {
             assertSame(FriendState.FRIEND, foundedFriend.getFriendState());
@@ -99,7 +99,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
     )
     void removeFriendTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String currentUsername = user.username();
-        final String friendUsername = user.testData().friends().get(0).username();
+        final String friendUsername = user.testData().friends().getFirst().username();
 
         RemoveFriendRequest rfr = removeFriendRequest(currentUsername, friendUsername);
 

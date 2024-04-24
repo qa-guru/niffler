@@ -67,7 +67,7 @@ public class GatewayStatRestTest extends BaseRestTest {
         final StatisticJson eurStat = statistic.stream().filter(s -> s.currency() == EUR).findFirst().orElseThrow();
         final StatisticJson kztStat = statistic.stream().filter(s -> s.currency() == KZT).findFirst().orElseThrow();
 
-        final Date expectedFromDateInStat = user.testData().spends().get(0).spendDate();
+        final Date expectedFromDateInStat = user.testData().spends().getFirst().spendDate();
         // Check RUB stat
         step("Check that `dateFrom` date equal to the earliest date of spends", () ->
                 assertEquals(formatter.format(expectedFromDateInStat), formatter.format(rubStat.dateFrom()))
@@ -249,7 +249,7 @@ public class GatewayStatRestTest extends BaseRestTest {
                 assertEquals(user.testData().categories().size(), usdStat.categoryStatistics().size())
         );
 
-        final StatisticByCategoryJson usdBarStat = usdStat.categoryStatistics().get(0);
+        final StatisticByCategoryJson usdBarStat = usdStat.categoryStatistics().getFirst();
 
         step("Check that `total` is equal to sum of all spends by category `Бар`", () ->
                 assertEquals(4.0, usdBarStat.total())

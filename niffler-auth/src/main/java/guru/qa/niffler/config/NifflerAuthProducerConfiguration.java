@@ -5,6 +5,7 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.boot.ssl.DefaultSslBundleRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -32,7 +33,9 @@ public class NifflerAuthProducerConfiguration {
 
     @Bean
     public Map<String, Object> producerConfiguration() {
-        Map<String, Object> properties = new HashMap<>(kafkaProperties.buildProducerProperties());
+        Map<String, Object> properties = new HashMap<>(kafkaProperties.buildProducerProperties(
+                new DefaultSslBundleRegistry()
+        ));
         properties.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return properties;

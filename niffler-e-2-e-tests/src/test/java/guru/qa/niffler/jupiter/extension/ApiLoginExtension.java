@@ -47,7 +47,6 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
     }
 
     @Step("Login to niffler using api")
-    @SuppressWarnings("unchecked")
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         ApiLogin apiLoginAnnotation = AnnotationSupport.findAnnotation(

@@ -1,11 +1,11 @@
 package guru.qa.niffler.test.grpc;
 
 import com.google.protobuf.Empty;
-import guru.qa.grpc.niffler.grpc.CalculateRequest;
-import guru.qa.grpc.niffler.grpc.CalculateResponse;
-import guru.qa.grpc.niffler.grpc.Currency;
-import guru.qa.grpc.niffler.grpc.CurrencyResponse;
-import guru.qa.grpc.niffler.grpc.CurrencyValues;
+import guru.qa.niffler.grpc.CalculateRequest;
+import guru.qa.niffler.grpc.CalculateResponse;
+import guru.qa.niffler.grpc.Currency;
+import guru.qa.niffler.grpc.CurrencyResponse;
+import guru.qa.niffler.grpc.CurrencyValues;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
@@ -39,8 +39,8 @@ public class NifflerCurrencyTest extends BaseGrpcTest {
                 assertEquals(4, allCurrencies.getAllCurrenciesList().size())
         );
         step("Check RUB currency rate", () -> {
-            assertEquals(CurrencyValues.RUB, currenciesList.get(0).getCurrency());
-            assertEquals(0.015, currenciesList.get(0).getCurrencyRate());
+            assertEquals(CurrencyValues.RUB, currenciesList.getFirst().getCurrency());
+            assertEquals(0.015, currenciesList.getFirst().getCurrencyRate());
         });
         step("Check KZT currency rate", () -> {
             assertEquals(CurrencyValues.KZT, currenciesList.get(1).getCurrency());

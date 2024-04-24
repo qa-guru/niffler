@@ -1,8 +1,5 @@
 server:
   port: 8091
-  error:
-    include:
-      message: true
 
 grpc:
   server:

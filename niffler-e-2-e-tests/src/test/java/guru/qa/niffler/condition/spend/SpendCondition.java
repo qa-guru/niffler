@@ -25,7 +25,7 @@ public class SpendCondition {
 
             @Nonnull
             @Override
-            public CheckResult check(Driver driver, List<WebElement> elements) {
+            public CheckResult check(@Nonnull Driver driver, @Nonnull List<WebElement> elements) {
                 if (elements.size() != expectedSpends.length) {
                     String message = String.format(
                             "Spends table size mismatch (expected: %s, actual: %s)",

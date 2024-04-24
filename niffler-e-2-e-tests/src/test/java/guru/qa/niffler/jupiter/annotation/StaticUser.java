@@ -13,6 +13,6 @@ public @interface StaticUser {
     Type value() default Type.COMMON;
 
     enum Type {
-        ADMIN, COMMON;
+        ADMIN, COMMON
     }
 }

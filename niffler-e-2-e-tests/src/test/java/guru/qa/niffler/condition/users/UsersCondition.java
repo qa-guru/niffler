@@ -7,6 +7,7 @@ import guru.qa.niffler.model.rest.UserJson;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class UsersCondition {
             }
 
             @Override
-            public CheckResult check(Driver driver, List<WebElement> elements) {
+            public CheckResult check(@Nonnull Driver driver, @Nonnull List<WebElement> elements) {
                 if (elements.size() != expectedUsers.length) {
                     String message = String.format(
                             "Users table size mismatch (expected: %s, actual: %s)",

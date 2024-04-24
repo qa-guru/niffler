@@ -47,7 +47,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
     )
     void getAllOutcomeInvitationsListTest(@User UserJson user,
                                           @Token String bearerToken) throws Exception {
-        UserJson testOutInvitation = user.testData().outcomeInvitations().get(0);
+        UserJson testOutInvitation = user.testData().outcomeInvitations().getFirst();
 
         final List<UserJson> outcomeInvitations = gatewayApiClient.outcomeInvitations(bearerToken, null);
         step("Check that response not null", () ->
@@ -57,7 +57,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
                 assertEquals(1, outcomeInvitations.size())
         );
 
-        final var foundedInvitation = outcomeInvitations.get(0);
+        final var foundedInvitation = outcomeInvitations.getFirst();
 
         step("Check outcome invitation in response", () -> {
             assertSame(FriendState.INVITE_SENT, foundedInvitation.friendState());
@@ -79,7 +79,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
     )
     void getFilteredOutcomeInvitationsListTest(@User UserJson user,
                                                @Token String bearerToken) throws Exception {
-        UserJson testOutInvitation = user.testData().outcomeInvitations().get(0);
+        UserJson testOutInvitation = user.testData().outcomeInvitations().getFirst();
 
         final List<UserJson> outcomeInvitations = gatewayApiClient.outcomeInvitations(bearerToken, testOutInvitation.username());
         step("Check that response not null", () ->
@@ -89,7 +89,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
                 assertEquals(1, outcomeInvitations.size())
         );
 
-        final var foundedInvitation = outcomeInvitations.get(0);
+        final var foundedInvitation = outcomeInvitations.getFirst();
 
         step("Check outcome invitation in response", () -> {
             assertSame(FriendState.INVITE_SENT, foundedInvitation.friendState());
@@ -109,7 +109,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
     )
     void getAllIncomeInvitationsListTest(@User UserJson user,
                                          @Token String bearerToken) throws Exception {
-        UserJson testInvitation = user.testData().incomeInvitations().get(0);
+        UserJson testInvitation = user.testData().incomeInvitations().getFirst();
         final List<UserJson> invitations = gatewayApiClient.incomeInvitations(bearerToken, null);
         step("Check that response not null", () ->
                 assertNotNull(invitations)
@@ -118,7 +118,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
                 assertEquals(1, invitations.size())
         );
 
-        final var invitation = invitations.get(0);
+        final var invitation = invitations.getFirst();
 
         step("Check invitation in response", () -> {
             assertSame(FriendState.INVITE_RECEIVED, invitation.friendState());
@@ -138,7 +138,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
     )
     void getFilteredIncomeInvitationsListTest(@User UserJson user,
                                               @Token String bearerToken) throws Exception {
-        UserJson testInvitation = user.testData().incomeInvitations().get(0);
+        UserJson testInvitation = user.testData().incomeInvitations().getFirst();
         final List<UserJson> invitations = gatewayApiClient.incomeInvitations(bearerToken, testInvitation.username());
         step("Check that response not null", () ->
                 assertNotNull(invitations)
@@ -147,7 +147,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
                 assertEquals(1, invitations.size())
         );
 
-        final var invitation = invitations.get(0);
+        final var invitation = invitations.getFirst();
 
         step("Check invitation in response", () -> {
             assertSame(FriendState.INVITE_RECEIVED, invitation.friendState());
@@ -166,7 +166,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
     )
     void acceptInvitationTest(@User UserJson user,
                               @Token String bearerToken) throws Exception {
-        final String incomeInvitation = user.testData().incomeInvitations().get(0).username();
+        final String incomeInvitation = user.testData().incomeInvitations().getFirst().username();
 
         final UserJson friend = gatewayApiClient.acceptInvitation(bearerToken, new FriendJson(
                 incomeInvitation
@@ -176,7 +176,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
         );
 
         step("Check friend in response", () -> {
-            assertEquals(user.testData().incomeInvitations().get(0).username(), friend.username());
+            assertEquals(user.testData().incomeInvitations().getFirst().username(), friend.username());
             assertEquals(FriendState.FRIEND, friend.friendState());
         });
 
@@ -207,7 +207,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
     )
     void declineInvitationTest(@User UserJson user,
                                @Token String bearerToken) throws Exception {
-        final String incomeInvitation = user.testData().incomeInvitations().get(0).username();
+        final String incomeInvitation = user.testData().incomeInvitations().getFirst().username();
 
         final UserJson declinedFriend = gatewayApiClient.declineInvitation(bearerToken, new FriendJson(
                 incomeInvitation
@@ -217,7 +217,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
         );
 
         step("Check declined friend in response", () -> {
-            assertEquals(user.testData().incomeInvitations().get(0).username(), declinedFriend.username());
+            assertEquals(user.testData().incomeInvitations().getFirst().username(), declinedFriend.username());
             assertNull(declinedFriend.friendState());
         });
 

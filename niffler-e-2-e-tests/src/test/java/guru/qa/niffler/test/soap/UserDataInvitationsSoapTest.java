@@ -47,7 +47,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
             outcomeInvitations = @OutcomeInvitations(count = 1)
     )
     void getAllOutcomeInvitationsListTest(@User(selector = METHOD) UserJson user) throws Exception {
-        UserJson testOutInvitation = user.testData().outcomeInvitations().get(0);
+        UserJson testOutInvitation = user.testData().outcomeInvitations().getFirst();
         OutcomeInvitationsRequest oir = outcomeInvitationsRequest(user.username(), null);
 
         final UsersResponse usersResponse = wsClient.outcomeInvitationsRequest(oir);
@@ -58,7 +58,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
                 assertEquals(1, usersResponse.getUser().size())
         );
 
-        final var foundedInvitation = usersResponse.getUser().get(0);
+        final var foundedInvitation = usersResponse.getUser().getFirst();
 
         step("Check outcome invitation in response", () -> {
             assertSame(FriendState.INVITE_SENT, foundedInvitation.getFriendState());
@@ -77,7 +77,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
             outcomeInvitations = @OutcomeInvitations(count = 2)
     )
     void getFilteredOutcomeInvitationsListTest(@User(selector = METHOD) UserJson user) throws Exception {
-        UserJson testOutInvitation = user.testData().outcomeInvitations().get(0);
+        UserJson testOutInvitation = user.testData().outcomeInvitations().getFirst();
         OutcomeInvitationsRequest oir = outcomeInvitationsRequest(user.username(), testOutInvitation.username());
 
         final UsersResponse usersResponse = wsClient.outcomeInvitationsRequest(oir);
@@ -88,7 +88,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
                 assertEquals(1, usersResponse.getUser().size())
         );
 
-        final var foundedInvitation = usersResponse.getUser().get(0);
+        final var foundedInvitation = usersResponse.getUser().getFirst();
 
         step("Check outcome invitation in response", () -> {
             assertSame(FriendState.INVITE_SENT, foundedInvitation.getFriendState());
@@ -106,7 +106,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
             incomeInvitations = @IncomeInvitations(count = 1)
     )
     void getAllIncomeInvitationsListTest(@User(selector = METHOD) UserJson user) throws Exception {
-        UserJson testInvitation = user.testData().incomeInvitations().get(0);
+        UserJson testInvitation = user.testData().incomeInvitations().getFirst();
         IncomeInvitationsRequest ir = incomeInvitationsRequest(user.username(), null);
 
         final UsersResponse usersResponse = wsClient.incomeInvitationsRequest(ir);
@@ -117,7 +117,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
                 assertEquals(1, usersResponse.getUser().size())
         );
 
-        final var foundedInvitation = usersResponse.getUser().get(0);
+        final var foundedInvitation = usersResponse.getUser().getFirst();
 
         step("Check income invitation in response", () -> {
             assertSame(FriendState.INVITE_RECEIVED, foundedInvitation.getFriendState());
@@ -136,7 +136,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
             incomeInvitations = @IncomeInvitations(count = 2)
     )
     void getFilteredIncomeInvitationsListTest(@User(selector = METHOD) UserJson user) throws Exception {
-        UserJson testInvitation = user.testData().incomeInvitations().get(0);
+        UserJson testInvitation = user.testData().incomeInvitations().getFirst();
         IncomeInvitationsRequest ir = incomeInvitationsRequest(user.username(), testInvitation.username());
 
         final UsersResponse usersResponse = wsClient.incomeInvitationsRequest(ir);
@@ -147,7 +147,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
                 assertEquals(1, usersResponse.getUser().size())
         );
 
-        final var foundedInvitation = usersResponse.getUser().get(0);
+        final var foundedInvitation = usersResponse.getUser().getFirst();
 
         step("Check income invitation in response", () -> {
             assertSame(FriendState.INVITE_RECEIVED, foundedInvitation.getFriendState());
@@ -165,7 +165,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
     )
     void acceptInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String currentUsername = user.username();
-        final UserJson incomeInvitationUser = user.testData().incomeInvitations().get(0);
+        final UserJson incomeInvitationUser = user.testData().incomeInvitations().getFirst();
 
         AcceptInvitationRequest air = acceptInvitationRequest(currentUsername, incomeInvitationUser.username());
 
@@ -208,7 +208,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
     )
     void declineInvitationTest(@User(selector = METHOD) UserJson user) throws Exception {
         final String currentUsername = user.username();
-        final UserJson incomeInvitationUser = user.testData().incomeInvitations().get(0);
+        final UserJson incomeInvitationUser = user.testData().incomeInvitations().getFirst();
 
         DeclineInvitationRequest dir = declineInvitationRequest(currentUsername, incomeInvitationUser.username());
 

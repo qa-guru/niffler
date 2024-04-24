@@ -8,7 +8,6 @@ import niffler_userdata.RemoveFriendRequest;
 import niffler_userdata.UsersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -31,8 +30,7 @@ public class FriendsEndpoint extends BaseEndpoint {
     public UsersResponse friendsRq(@RequestPayload FriendsRequest request) {
         UsersResponse response = new UsersResponse();
         List<UserJsonBulk> users = userService.friends(request.getUsername(), request.getSearchQuery());
-        enrichUsersResponse(users, response);
-        return response;
+        return enrichUsersResponse(users, response);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "friendsPageRequest")
@@ -41,11 +39,10 @@ public class FriendsEndpoint extends BaseEndpoint {
         UsersResponse response = new UsersResponse();
         Page<UserJsonBulk> users = userService.friends(
                 request.getUsername(),
-                PageRequest.of(request.getPage(), request.getSize(), sortFromRequest(request.getSort())),
+                new SpringPageable(request.getPageInfo()).pageable(),
                 request.getSearchQuery()
         );
-        enrichUsersResponse(users, response);
-        return response;
+        return enrichUsersResponse(users, response);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "removeFriendRequest")

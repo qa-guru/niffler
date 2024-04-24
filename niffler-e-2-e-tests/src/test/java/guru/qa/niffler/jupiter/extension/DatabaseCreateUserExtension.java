@@ -45,7 +45,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
     @Override
     @Nonnull
     protected UserJson createUser(@Nonnull String username,
-                                  @Nonnull String password) throws Exception {
+                                  @Nonnull String password) {
         AuthUserEntity authUser = new AuthUserEntity();
         authUser.setUsername(username);
         authUser.setPassword(pe.encode(password));
@@ -150,7 +150,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
     }
 
     @Override
-    protected void createSpendsIfPresent(@Nullable GenerateSpend[] spends, @Nonnull UserJson createdUser) throws Exception {
+    protected void createSpendsIfPresent(@Nullable GenerateSpend[] spends, @Nonnull UserJson createdUser) {
         if (spends != null) {
             for (GenerateSpend spend : spends) {
                 SpendEntity se = new SpendEntity();
@@ -182,7 +182,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
     }
 
     @Override
-    protected void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, @Nonnull UserJson createdUser) throws Exception {
+    protected void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, @Nonnull UserJson createdUser) {
         if (categories != null) {
             for (GenerateCategory category : categories) {
                 CategoryEntity ce = new CategoryEntity();

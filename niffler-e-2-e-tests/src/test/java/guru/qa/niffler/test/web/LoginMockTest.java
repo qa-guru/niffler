@@ -20,7 +20,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 @Disabled
 public class LoginMockTest extends BaseWebTest {
 
-    private WireMockServer wireMockServer = new WireMockServer(8089);
+    private final WireMockServer wireMockServer = new WireMockServer(8089);
 
     @BeforeEach
     void configure() {

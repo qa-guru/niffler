@@ -1,7 +1,7 @@
 package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.grpc.niffler.grpc.Currency;
+import guru.qa.niffler.grpc.Currency;
 import jakarta.annotation.Nonnull;
 
 public record CurrencyJson(

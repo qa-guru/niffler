@@ -207,10 +207,9 @@ class StatServiceTest {
 
     @Test
     void bindSpendsToCategoriesTest() {
-        Date dateTo = new Date();
         CurrencyValues statisticCurrency = CurrencyValues.RUB;
-        StatisticJson defaultStatisticJson = statService.createDefaultStatisticJson(statisticCurrency, userCurrency, dateTo);
-        List<SpendEntity> sortedSpends = List.of(secondSpend, firstSpend, thirdSpend).stream()
+
+        List<SpendEntity> sortedSpends = Stream.of(secondSpend, firstSpend, thirdSpend)
                 .filter(se -> se.getCurrency() == statisticCurrency)
                 .sorted(Comparator.comparing(SpendEntity::getSpendDate))
                 .toList();

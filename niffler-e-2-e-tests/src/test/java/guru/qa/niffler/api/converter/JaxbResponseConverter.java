@@ -32,7 +32,10 @@ final class JaxbResponseConverter<T> implements Converter<ResponseBody, T> {
         try (value; Reader reader = value.charStream()) {
             SOAPMessage response = MessageFactory.newInstance().createMessage(
                     new MimeHeaders(),
-                    new ReaderInputStream(reader, Charsets.UTF_8)
+                    ReaderInputStream.builder()
+                            .setReader(reader)
+                            .setCharset(Charsets.UTF_8)
+                            .get()
             );
             Document responseDoc = response.getSOAPBody().extractContentAsDocument();
             Unmarshaller unmarshaller = context.createUnmarshaller();

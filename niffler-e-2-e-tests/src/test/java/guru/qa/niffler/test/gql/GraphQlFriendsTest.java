@@ -72,7 +72,7 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
         step("Check error message", () ->
                 assertEquals(
                         "Can`t fetch over 2 " + expectedMessagePart + " sub-queries",
-                        response.getErrors().get(0).message()
+                        response.getErrors().getFirst().message()
                 )
         );
     }
@@ -91,14 +91,14 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
     void friendsAndIncomeInvitationsListShouldReceived(@GqlReq("gql/getFriendsQuery.json") GqlRequest query,
                                                        @User UserJson user,
                                                        @Token String bearerToken) throws Exception {
-        UserJson friend = user.testData().friends().get(0);
-        UserJson invitation = user.testData().incomeInvitations().get(0);
+        UserJson friend = user.testData().friends().getFirst();
+        UserJson invitation = user.testData().incomeInvitations().getFirst();
 
         final UserDataGql response = gqlClient.friends(bearerToken, query);
 
         step("Check friend in response", () -> {
             assertEquals(1, response.getData().getUser().getFriends().size());
-            final UserGql friendResp = response.getData().getUser().getFriends().get(0);
+            final UserGql friendResp = response.getData().getUser().getFriends().getFirst();
 
             assertEquals(friend.id(), friendResp.getId());
             assertEquals(friend.username(), friendResp.getUsername());
@@ -106,7 +106,7 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
         });
         step("Check income invitation in response", () -> {
             assertEquals(1, response.getData().getUser().getInvitations().size());
-            final UserGql invResp = response.getData().getUser().getInvitations().get(0);
+            final UserGql invResp = response.getData().getUser().getInvitations().getFirst();
 
             assertEquals(invitation.id(), invResp.getId());
             assertEquals(invitation.username(), invResp.getUsername());

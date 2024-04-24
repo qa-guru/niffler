@@ -36,7 +36,7 @@ public class LoginPage extends BasePage<LoginPage> {
     }
 
     @Step("Submit login")
-    public <T extends BasePage> T submit(T expectedPage) {
+    public <T extends BasePage<?>> T submit(T expectedPage) {
         submitButton.click();
         return expectedPage;
     }
