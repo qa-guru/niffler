@@ -66,13 +66,13 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         final List<UserJson> firstPageContent = firstPage.getContent();
 
         List<UserJson> userFriends = user.testData().friends();
-        Collections.sort(userFriends, Comparator.comparing(UserJson::username));
+        userFriends.sort(Comparator.comparing(UserJson::username));
 
         step("Check elements size", () ->
                 assertEquals(2, firstPageContent.size())
         );
         step("Check first element of first page", () ->
-                assertEquals(userFriends.get(0).username(), firstPageContent.get(0).username())
+                assertEquals(userFriends.getFirst().username(), firstPageContent.getFirst().username())
         );
         step("Check second element of first page", () ->
                 assertEquals(userFriends.get(1).username(), firstPageContent.get(1).username())
@@ -109,14 +109,14 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         final List<UserJson> firstPageContent = firstPage.getContent();
 
         List<UserJson> userFriends = user.testData().friends();
-        Collections.sort(userFriends, Comparator.comparing(UserJson::username));
+        userFriends.sort(Comparator.comparing(UserJson::username));
         Collections.reverse(userFriends);
 
         step("Check elements size", () ->
                 assertEquals(2, firstPageContent.size())
         );
         step("Check first element of first page", () ->
-                assertEquals(userFriends.get(0).username(), firstPageContent.get(0).username())
+                assertEquals(userFriends.getFirst().username(), firstPageContent.getFirst().username())
         );
         step("Check second element of first page", () ->
                 assertEquals(userFriends.get(1).username(), firstPageContent.get(1).username())
@@ -154,13 +154,13 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         final List<UserJson> firstPageContent = firstPage.getContent();
 
         List<UserJson> userInvitations = user.testData().incomeInvitations();
-        Collections.sort(userInvitations, Comparator.comparing(UserJson::username));
+        userInvitations.sort(Comparator.comparing(UserJson::username));
 
         step("Check elements size", () ->
                 assertEquals(2, firstPageContent.size())
         );
         step("Check first element of first page", () ->
-                assertEquals(userInvitations.get(0).username(), firstPageContent.get(0).username())
+                assertEquals(userInvitations.getFirst().username(), firstPageContent.getFirst().username())
         );
         step("Check second element of first page", () ->
                 assertEquals(userInvitations.get(1).username(), firstPageContent.get(1).username())
@@ -198,13 +198,13 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         final List<UserJson> firstPageContent = firstPage.getContent();
 
         List<UserJson> userInvitations = user.testData().outcomeInvitations();
-        Collections.sort(userInvitations, Comparator.comparing(UserJson::username));
+        userInvitations.sort(Comparator.comparing(UserJson::username));
 
         step("Check elements size", () ->
                 assertEquals(2, firstPageContent.size())
         );
         step("Check first element of first page", () ->
-                assertEquals(userInvitations.get(0).username(), firstPageContent.get(0).username())
+                assertEquals(userInvitations.getFirst().username(), firstPageContent.getFirst().username())
         );
         step("Check second element of first page", () ->
                 assertEquals(userInvitations.get(1).username(), firstPageContent.get(1).username())

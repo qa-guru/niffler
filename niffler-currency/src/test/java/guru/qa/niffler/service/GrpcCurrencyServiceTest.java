@@ -54,18 +54,18 @@ class GrpcCurrencyServiceTest {
 
     static Stream<Arguments> convertSpendTo() {
         return Stream.of(
-                Arguments.of(150.00, guru.qa.grpc.niffler.grpc.CurrencyValues.RUB, guru.qa.grpc.niffler.grpc.CurrencyValues.KZT, 1071.43),
-                Arguments.of(34.00, guru.qa.grpc.niffler.grpc.CurrencyValues.USD, guru.qa.grpc.niffler.grpc.CurrencyValues.EUR, 31.48),
-                Arguments.of(150.00, guru.qa.grpc.niffler.grpc.CurrencyValues.RUB, guru.qa.grpc.niffler.grpc.CurrencyValues.RUB, 150.00),
-                Arguments.of(0.00, guru.qa.grpc.niffler.grpc.CurrencyValues.KZT, guru.qa.grpc.niffler.grpc.CurrencyValues.RUB, 0.00)
+                Arguments.of(150.00, guru.qa.niffler.grpc.CurrencyValues.RUB, guru.qa.niffler.grpc.CurrencyValues.KZT, 1071.43),
+                Arguments.of(34.00, guru.qa.niffler.grpc.CurrencyValues.USD, guru.qa.niffler.grpc.CurrencyValues.EUR, 31.48),
+                Arguments.of(150.00, guru.qa.niffler.grpc.CurrencyValues.RUB, guru.qa.niffler.grpc.CurrencyValues.RUB, 150.00),
+                Arguments.of(0.00, guru.qa.niffler.grpc.CurrencyValues.KZT, guru.qa.niffler.grpc.CurrencyValues.RUB, 0.00)
         );
     }
 
     @MethodSource
     @ParameterizedTest
     void convertSpendTo(double spend,
-                        guru.qa.grpc.niffler.grpc.CurrencyValues spendCurrency,
-                        guru.qa.grpc.niffler.grpc.CurrencyValues desiredCurrency,
+                        guru.qa.niffler.grpc.CurrencyValues spendCurrency,
+                        guru.qa.niffler.grpc.CurrencyValues desiredCurrency,
                         double expectedResult) {
 
         BigDecimal result = grpcCurrencyService.convertSpendTo(spend, spendCurrency,

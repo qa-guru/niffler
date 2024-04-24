@@ -13,7 +13,6 @@ import niffler_userdata.UserResponse;
 import niffler_userdata.UsersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -36,8 +35,7 @@ public class InvitationsEndpoint extends BaseEndpoint {
     public UsersResponse incomeInvitationsRq(@RequestPayload IncomeInvitationsRequest request) {
         UsersResponse response = new UsersResponse();
         List<UserJsonBulk> users = userService.incomeInvitations(request.getUsername(), request.getSearchQuery());
-        enrichUsersResponse(users, response);
-        return response;
+        return enrichUsersResponse(users, response);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "incomeInvitationsPageRequest")
@@ -46,11 +44,10 @@ public class InvitationsEndpoint extends BaseEndpoint {
         UsersResponse response = new UsersResponse();
         Page<UserJsonBulk> users = userService.incomeInvitations(
                 request.getUsername(),
-                PageRequest.of(request.getPage(), request.getSize(), sortFromRequest(request.getSort())),
+                new SpringPageable(request.getPageInfo()).pageable(),
                 request.getSearchQuery()
         );
-        enrichUsersResponse(users, response);
-        return response;
+        return enrichUsersResponse(users, response);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "outcomeInvitationsRequest")
@@ -58,8 +55,7 @@ public class InvitationsEndpoint extends BaseEndpoint {
     public UsersResponse outcomeInvitationsRq(@RequestPayload OutcomeInvitationsRequest request) {
         UsersResponse response = new UsersResponse();
         List<UserJsonBulk> users = userService.outcomeInvitations(request.getUsername(), request.getSearchQuery());
-        enrichUsersResponse(users, response);
-        return response;
+        return enrichUsersResponse(users, response);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "outcomeInvitationsPageRequest")
@@ -68,11 +64,10 @@ public class InvitationsEndpoint extends BaseEndpoint {
         UsersResponse response = new UsersResponse();
         Page<UserJsonBulk> users = userService.outcomeInvitations(
                 request.getUsername(),
-                PageRequest.of(request.getPage(), request.getSize(), sortFromRequest(request.getSort())),
+                new SpringPageable(request.getPageInfo()).pageable(),
                 request.getSearchQuery()
         );
-        enrichUsersResponse(users, response);
-        return response;
+        return enrichUsersResponse(users, response);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "sendInvitationRequest")

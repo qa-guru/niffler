@@ -11,7 +11,6 @@ import niffler_userdata.UserResponse;
 import niffler_userdata.UsersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -50,8 +49,7 @@ public class UserEndpoint extends BaseEndpoint {
     public UsersResponse allUsersRq(@RequestPayload AllUsersRequest request) {
         UsersResponse response = new UsersResponse();
         List<UserJsonBulk> users = userService.allUsers(request.getUsername(), request.getSearchQuery());
-        enrichUsersResponse(users, response);
-        return response;
+        return enrichUsersResponse(users, response);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "allUsersPageRequest")
@@ -60,11 +58,9 @@ public class UserEndpoint extends BaseEndpoint {
         UsersResponse response = new UsersResponse();
         Page<UserJsonBulk> users = userService.allUsers(
                 request.getUsername(),
-                PageRequest.of(request.getPage(), request.getSize(), sortFromRequest(request.getSort())),
+                new SpringPageable(request.getPageInfo()).pageable(),
                 request.getSearchQuery()
         );
-
-        enrichUsersResponse(users, response);
-        return response;
+        return enrichUsersResponse(users, response);
     }
 }

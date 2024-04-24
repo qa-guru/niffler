@@ -42,7 +42,7 @@ public class GatewayFriendsRestTest extends BaseRestTest {
     )
     void getAllFriendsListTest(@User UserJson user,
                                @Token String bearerToken) throws Exception {
-        UserJson testFriend = user.testData().friends().get(0);
+        UserJson testFriend = user.testData().friends().getFirst();
 
         final List<UserJson> friends = gatewayApiClient.allFriends(bearerToken, null);
         step("Check that response not null", () ->
@@ -52,7 +52,7 @@ public class GatewayFriendsRestTest extends BaseRestTest {
                 assertEquals(1, friends.size())
         );
 
-        final var foundedFriend = friends.get(0);
+        final var foundedFriend = friends.getFirst();
 
         step("Check friend in response", () -> {
             assertSame(FriendState.FRIEND, foundedFriend.friendState());
@@ -74,7 +74,7 @@ public class GatewayFriendsRestTest extends BaseRestTest {
     )
     void getFilteredFriendsListTest(@User UserJson user,
                                     @Token String bearerToken) throws Exception {
-        UserJson testFriend = user.testData().friends().get(0);
+        UserJson testFriend = user.testData().friends().getFirst();
 
         final List<UserJson> friends = gatewayApiClient.allFriends(bearerToken, testFriend.username());
         step("Check that response not null", () ->
@@ -84,7 +84,7 @@ public class GatewayFriendsRestTest extends BaseRestTest {
                 assertEquals(1, friends.size())
         );
 
-        final var foundedFriend = friends.get(0);
+        final var foundedFriend = friends.getFirst();
 
         step("Check friend in response", () -> {
             assertSame(FriendState.FRIEND, foundedFriend.friendState());
@@ -104,7 +104,7 @@ public class GatewayFriendsRestTest extends BaseRestTest {
     )
     void removeFriendTest(@User UserJson user,
                           @Token String bearerToken) throws Exception {
-        final String friendUsername = user.testData().friends().get(0).username();
+        final String friendUsername = user.testData().friends().getFirst().username();
         gatewayApiClient.removeFriend(bearerToken, friendUsername);
 
         step("Check that no friends present in GET /friends request for both users", () ->

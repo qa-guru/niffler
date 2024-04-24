@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '1.3.2'
+version = '1.3.3'
 
 configurations {
     jaxb
@@ -63,7 +63,7 @@ jib {
 }
 
 tasks.register('genJaxb') {
-    ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
+    ext.sourcesDir = layout.buildDirectory.dir("generated-sources/jaxb").get()
     ext.schema = "src/main/resources/userdata.xsd"
 
     outputs.dir sourcesDir

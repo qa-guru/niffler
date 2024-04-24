@@ -2,7 +2,7 @@ package guru.qa.niffler.service.api;
 
 
 import com.google.protobuf.Empty;
-import guru.qa.grpc.niffler.grpc.NifflerCurrencyServiceGrpc;
+import guru.qa.niffler.grpc.NifflerCurrencyServiceGrpc;
 import guru.qa.niffler.model.CurrencyJson;
 import io.grpc.StatusRuntimeException;
 import jakarta.annotation.Nonnull;

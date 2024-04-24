@@ -34,20 +34,20 @@ class UserDataServiceTest {
 
     private UserDataService testedObject;
 
-    private UUID mainTestUserUuid = UUID.randomUUID();
-    private String mainTestUserName = "dima";
+    private final UUID mainTestUserUuid = UUID.randomUUID();
+    private final String mainTestUserName = "dima";
     private UserEntity mainTestUser;
 
-    private UUID secondTestUserUuid = UUID.randomUUID();
-    private String secondTestUserName = "barsik";
+    private final UUID secondTestUserUuid = UUID.randomUUID();
+    private final String secondTestUserName = "barsik";
     private UserEntity secondTestUser;
 
-    private UUID thirdTestUserUuid = UUID.randomUUID();
-    private String thirdTestUserName = "emma";
+    private final UUID thirdTestUserUuid = UUID.randomUUID();
+    private final String thirdTestUserName = "emma";
     private UserEntity thirdTestUser;
 
 
-    private String notExistingUser = "not_existing_user";
+    private final String notExistingUser = "not_existing_user";
 
 
     @BeforeEach
@@ -101,7 +101,7 @@ class UserDataServiceTest {
 
         testedObject = new UserDataService(userRepository);
 
-        final String photoForTest = photo.equals("") ? null : photo;
+        final String photoForTest = photo.isEmpty() ? null : photo;
 
         final UserJson toBeUpdated = new UserJson(
                 null,

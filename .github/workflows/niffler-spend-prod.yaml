@@ -36,7 +36,9 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          echo "### niffler-spend version will be used: ${{ env.SPEND_VER }}"
+          echo "### niffler-spend version will be used: ${{ env.SPEND_VER }} ###"
+          echo "### java version ###"
+          java -version
           bash ./gradlew :niffler-spend:jib -Pskipjaxb -x :niffler-e-2-e-tests:test || exit 1
           docker-compose -f docker-compose.ci.yml pull spend.niffler.dc
           docker-compose -f docker-compose.ci.yml stop spend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps spend.niffler.dc

@@ -77,7 +77,7 @@ public class GatewayV2SpendRestTest extends BaseRestTest {
                 assertEquals(2, firstPageContent.size())
         );
         step("Check first element of first page", () ->
-                assertEquals(firstExpected, firstPageContent.get(0).description())
+                assertEquals(firstExpected, firstPageContent.getFirst().description())
         );
         step("Check second element of first page", () ->
                 assertEquals(secondExpected, firstPageContent.get(1).description())
@@ -120,7 +120,7 @@ public class GatewayV2SpendRestTest extends BaseRestTest {
                 assertEquals(2, firstPageContent.size())
         );
         step("Check first element of first page", () ->
-                assertEquals("Коктейль", firstPageContent.get(0).description())
+                assertEquals("Коктейль", firstPageContent.getFirst().description())
         );
         step("Check second element of first page", () ->
                 assertEquals("Кофе", firstPageContent.get(1).description())

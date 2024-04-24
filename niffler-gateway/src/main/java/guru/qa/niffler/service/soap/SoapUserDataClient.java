@@ -8,7 +8,6 @@ import guru.qa.niffler.userdata.wsdl.AllUsersPageRequest;
 import guru.qa.niffler.userdata.wsdl.AllUsersRequest;
 import guru.qa.niffler.userdata.wsdl.CurrentUserRequest;
 import guru.qa.niffler.userdata.wsdl.DeclineInvitationRequest;
-import guru.qa.niffler.userdata.wsdl.Direction;
 import guru.qa.niffler.userdata.wsdl.FriendsPageRequest;
 import guru.qa.niffler.userdata.wsdl.FriendsRequest;
 import guru.qa.niffler.userdata.wsdl.IncomeInvitationsPageRequest;
@@ -27,11 +26,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,9 +76,9 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         AllUsersPageRequest request = new AllUsersPageRequest();
         request.setUsername(username);
         request.setSearchQuery(searchQuery);
-        request.setPage(pageable.getPageNumber());
-        request.setSize(pageable.getPageSize());
-        request.getSort().addAll(extractSort(pageable));
+        request.setPageInfo(
+                new SoapPageable(pageable).pageInfo()
+        );
 
         UsersResponse response = sendAndReceive(UsersResponse.class, request);
 
@@ -110,9 +107,9 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         FriendsPageRequest request = new FriendsPageRequest();
         request.setUsername(username);
         request.setSearchQuery(searchQuery);
-        request.setPage(pageable.getPageNumber());
-        request.setSize(pageable.getPageSize());
-        request.getSort().addAll(extractSort(pageable));
+        request.setPageInfo(
+                new SoapPageable(pageable).pageInfo()
+        );
 
         UsersResponse response = sendAndReceive(UsersResponse.class, request);
 
@@ -141,9 +138,9 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         IncomeInvitationsPageRequest request = new IncomeInvitationsPageRequest();
         request.setUsername(username);
         request.setSearchQuery(searchQuery);
-        request.setPage(pageable.getPageNumber());
-        request.setSize(pageable.getPageSize());
-        request.getSort().addAll(extractSort(pageable));
+        request.setPageInfo(
+                new SoapPageable(pageable).pageInfo()
+        );
 
         UsersResponse response = sendAndReceive(UsersResponse.class, request);
 
@@ -172,9 +169,9 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         OutcomeInvitationsPageRequest request = new OutcomeInvitationsPageRequest();
         request.setUsername(username);
         request.setSearchQuery(searchQuery);
-        request.setPage(pageable.getPageNumber());
-        request.setSize(pageable.getPageSize());
-        request.getSort().addAll(extractSort(pageable));
+        request.setPageInfo(
+                new SoapPageable(pageable).pageInfo()
+        );
 
         UsersResponse response = sendAndReceive(UsersResponse.class, request);
 
@@ -232,19 +229,6 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
                 getDefaultUri(),
                 request
         );
-    }
-
-    private @Nonnull List<guru.qa.niffler.userdata.wsdl.Sort> extractSort(@Nonnull Pageable pageable) {
-        List<guru.qa.niffler.userdata.wsdl.Sort> result = new ArrayList<>();
-        if (!pageable.getSort().isEmpty()) {
-            for (Sort.Order order : pageable.getSort()) {
-                guru.qa.niffler.userdata.wsdl.Sort sort = new guru.qa.niffler.userdata.wsdl.Sort();
-                sort.setProperty(order.getProperty());
-                sort.setDirection(Direction.valueOf(order.getDirection().name()));
-                result.add(sort);
-            }
-        }
-        return result;
     }
 
     private @Nonnull <T> T sendAndReceive(@Nonnull Class<T> responseType, @Nonnull Object request) {

@@ -6,15 +6,15 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '1.3.1'
+version = '1.3.2'
 
 configurations {
     jaxb
 }
 
 tasks.register('genJaxb') {
-    ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
-    ext.classesDir = "${buildDir}/classes/jaxb"
+    ext.sourcesDir = layout.buildDirectory.dir("generated-sources/jaxb").get()
+    ext.classesDir = layout.buildDirectory.dir("classes/jaxb").get()
     ext.schema = "userdata.wsdl"
 
     outputs.dir classesDir
@@ -30,7 +30,7 @@ tasks.register('genJaxb') {
                 produces(dir: sourcesDir, includes: "**/*.java")
             }
 
-            javac(destdir: classesDir, source: 17, target: 17, debug: true,
+            javac(destdir: classesDir, source: 21, target: 21, debug: true,
                     debugLevel: "lines,vars,source",
                     classpath: configurations.jaxb.asPath) {
                 src(path: sourcesDir)

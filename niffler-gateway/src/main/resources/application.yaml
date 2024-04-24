@@ -1,8 +1,5 @@
 server:
   port: 8090
-  error:
-    include:
-      message: true
 
 spring:
   application:

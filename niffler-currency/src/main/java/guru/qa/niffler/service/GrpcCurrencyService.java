@@ -2,14 +2,14 @@ package guru.qa.niffler.service;
 
 
 import com.google.protobuf.Empty;
-import guru.qa.grpc.niffler.grpc.CalculateRequest;
-import guru.qa.grpc.niffler.grpc.CalculateResponse;
-import guru.qa.grpc.niffler.grpc.Currency;
-import guru.qa.grpc.niffler.grpc.CurrencyResponse;
-import guru.qa.grpc.niffler.grpc.CurrencyValues;
-import guru.qa.grpc.niffler.grpc.NifflerCurrencyServiceGrpc;
 import guru.qa.niffler.data.CurrencyEntity;
 import guru.qa.niffler.data.repository.CurrencyRepository;
+import guru.qa.niffler.grpc.CalculateRequest;
+import guru.qa.niffler.grpc.CalculateResponse;
+import guru.qa.niffler.grpc.Currency;
+import guru.qa.niffler.grpc.CurrencyResponse;
+import guru.qa.niffler.grpc.CurrencyValues;
+import guru.qa.niffler.grpc.NifflerCurrencyServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.Nonnull;
 import net.devh.boot.grpc.server.service.GrpcService;
