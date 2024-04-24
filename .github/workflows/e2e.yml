@@ -106,6 +106,8 @@ jobs:
           echo "### niffler-spend version will be used: ${{ env.PREFIX }}/niffler-spend-${{ env.PROFILE }}:${{ env.SPEND_VER }}"
           echo "### niffler-userdata version will be used: ${{ env.PREFIX }}/niffler-userdata-${{ env.PROFILE }}:${{ env.USERDATA_VER }}"
           echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
+          echo "### java version ###"
+          java -version
 
       - name: Check changes path
         uses: dorny/paths-filter@v3
