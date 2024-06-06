@@ -41,14 +41,7 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         authClient.register(username, password);
         ThreadLocalCookieStore.INSTANCE.removeAll();
         UserJson currentUser = waitWhileUserToBeConsumed(username, 10000L);
-        return currentUser.addTestData(new TestData(
-                password,
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>()
-        ));
+        return currentUser.addTestData(new TestData(password));
     }
 
     @Step("Create income invitations for test user (REST)")

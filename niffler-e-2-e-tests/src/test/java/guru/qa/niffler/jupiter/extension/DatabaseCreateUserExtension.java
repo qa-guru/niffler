@@ -76,14 +76,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
                 userdataUser.getPhoto() != null ? new String(userdataUser.getPhoto()) : null,
                 userdataUser.getPhotoSmall() != null ? new String(userdataUser.getPhotoSmall()) : null,
                 null,
-                new TestData(
-                        password,
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        new ArrayList<>()
-                )
+                new TestData(password)
         );
     }
 

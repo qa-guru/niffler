@@ -10,6 +10,7 @@ import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 public class SpendApiClient extends RestClient {
@@ -27,6 +28,12 @@ public class SpendApiClient extends RestClient {
         return spendApi.addSpend(spend)
                 .execute()
                 .body();
+    }
+
+    @Step("Send REST DELETE('/internal/spends/remove') request to niffler-spend")
+    public void removeSpends(@Nonnull String username, @Nonnull String... ids) throws Exception {
+        spendApi.removeSpends(username, Arrays.stream(ids).toList())
+                .execute();
     }
 
     @Step("Send REST POST('/internal/categories/add') request to niffler-spend")

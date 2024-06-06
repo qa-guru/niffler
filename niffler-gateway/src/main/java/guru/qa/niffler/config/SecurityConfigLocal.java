@@ -16,7 +16,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 
 @EnableWebSecurity
 @Configuration
-@Profile("local")
+@Profile({"local", "docker"})
 public class SecurityConfigLocal {
 
     private final CorsCustomizer corsCustomizer;
@@ -34,11 +34,10 @@ public class SecurityConfigLocal {
                 .authorizeHttpRequests(customizer ->
                         customizer.requestMatchers(
                                         antMatcher("/api/session/current"),
+                                        antMatcher("/swagger-ui/**"),
+                                        antMatcher("/v3/api-docs/**"),
                                         antMatcher("/actuator/health"),
-                                        antMatcher("/graphiql/**"),
-                                        antMatcher("/graphql/**"),
-                                        antMatcher("/favicon.ico"),
-                                        antMatcher(HttpMethod.POST, "/graphql")
+                                        antMatcher("/graphiql/**")
                                 ).permitAll()
                                 .anyRequest()
                                 .authenticated()

@@ -76,22 +76,37 @@ public class UserDataService {
     @Transactional
     @KafkaListener(topics = "users", groupId = "userdata")
     public void listener(@Payload UserJson user, ConsumerRecord<String, UserJson> cr) {
-        LOG.info("### Kafka consumer record: {}", cr.toString());
-        UserEntity userDataEntity = new UserEntity();
-        userDataEntity.setUsername(user.username());
-        userDataEntity.setCurrency(DEFAULT_USER_CURRENCY);
-        UserEntity userEntity = userRepository.save(userDataEntity);
-        LOG.info(
-                "### User '{}' successfully saved to database with id: {}",
-                user.username(),
-                userEntity.getId()
-        );
+        userRepository.findByUsername(user.username())
+                .ifPresentOrElse(
+                        u -> LOG.info("### User already exist in DB, kafka event will be skipped: {}", cr.toString()),
+                        () -> {
+                            LOG.info("### Kafka consumer record: {}", cr.toString());
+
+                            UserEntity userDataEntity = new UserEntity();
+                            userDataEntity.setUsername(user.username());
+                            userDataEntity.setCurrency(DEFAULT_USER_CURRENCY);
+                            UserEntity userEntity = userRepository.save(userDataEntity);
+
+                            LOG.info(
+                                    "### User '{}' successfully saved to database with id: {}",
+                                    user.username(),
+                                    userEntity.getId()
+                            );
+                        }
+                );
     }
 
     @Transactional
     public @Nonnull
     UserJson update(@Nonnull UserJson user) {
-        UserEntity userEntity = getRequiredUser(user.username());
+        UserEntity userEntity = userRepository.findByUsername(user.username())
+                .orElseGet(() -> {
+                    UserEntity emptyUser = new UserEntity();
+                    emptyUser.setUsername(user.username());
+                    emptyUser.setCurrency(user.currency() == null ? DEFAULT_USER_CURRENCY : user.currency());
+                    return emptyUser;
+                });
+
         userEntity.setFirstname(user.firstname());
         userEntity.setSurname(user.surname());
         userEntity.setCurrency(user.currency());
@@ -104,7 +119,10 @@ public class UserDataService {
     @Transactional(readOnly = true)
     public @Nonnull
     UserJson getCurrentUser(@Nonnull String username) {
-        return UserJson.fromEntity(getRequiredUser(username));
+        return UserJson.fromEntity(
+                userRepository.findByUsername(username)
+                        .orElse(new UserEntity())
+        );
     }
 
     @Transactional(readOnly = true)

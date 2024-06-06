@@ -73,6 +73,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation "net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${project.ext.openApiVersion}"
     // For Java 11:
     implementation "org.glassfish.jaxb:jaxb-runtime:${project.ext.glassfishJaxbVersion}"
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
