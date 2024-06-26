@@ -1,9 +1,8 @@
 name: e2e
 
 on:
-  push:
-    branches-ignore:
-      - master
+  pull_request:
+    types: [opened, reopened, synchronize]
 
 jobs:
   e2e-tests:

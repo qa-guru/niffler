@@ -12,13 +12,13 @@ public class KafkaExtension implements SuiteExtension {
     private static final ExecutorService es = Executors.newSingleThreadExecutor();
 
     @Override
-    public void beforeAllTests(ExtensionContext context) {
+    public void beforeSuite(ExtensionContext context) {
         es.execute(KAFKA_CONSUMER);
         es.shutdown();
     }
 
     @Override
-    public void afterAllTests() {
+    public void afterSuite() {
         KAFKA_CONSUMER.shutdown();
     }
 }
