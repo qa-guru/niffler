@@ -46,7 +46,7 @@ fi
 cd "$front" || exit 1
 bash ./docker-build.sh ${PROFILE} || exit 1
 cd ../ || exit 1
-docker pull selenoid/vnc_chrome:117.0
+docker pull selenoid/vnc_chrome:125.0
 docker images
 ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" PROFILE="${PROFILE}" docker-compose -f docker-compose.test.yml up -d
 docker ps -a

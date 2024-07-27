@@ -6,7 +6,6 @@ import guru.qa.niffler.model.graphql.UpdateSpendInput;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
@@ -21,9 +20,10 @@ public record SpendJson(
         @PastOrPresent(message = "Spend date must not be future")
         Date spendDate,
         @JsonProperty("category")
-        @NotBlank(message = "Category can not be blank")
-        String category,
+        @NotNull(message = "Category can not be null")
+        CategoryJson category,
         @JsonProperty("currency")
+        @NotNull(message = "Currency can not be null")
         CurrencyValues currency,
         @JsonProperty("amount")
         @NotNull(message = "Amount can not be null")
@@ -35,7 +35,19 @@ public record SpendJson(
         String username) {
 
     public @Nonnull SpendJson addUsername(@Nonnull String username) {
-        return new SpendJson(id, spendDate, category, currency, amount, description, username);
+        return new SpendJson(
+                id,
+                spendDate,
+                new CategoryJson(
+                        category.id(),
+                        category.category(),
+                        username
+                ),
+                currency,
+                amount,
+                description,
+                username
+        );
     }
 
     public static SpendJson fromSpendInput(@Nonnull SpendInput input) {

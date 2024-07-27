@@ -38,7 +38,7 @@ jobs:
           bash docker-build.sh docker || exit 1
           cd ../ || exit 1
           : # pull browser (see browsers.json)        
-          docker pull selenoid/vnc_chrome:117.0
+          docker pull selenoid/vnc_chrome:125.0
           : # run e2e tests
           docker-compose -f docker-compose.test.yml up -d
           docker ps -a

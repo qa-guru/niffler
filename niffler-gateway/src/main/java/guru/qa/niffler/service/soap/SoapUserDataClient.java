@@ -10,10 +10,6 @@ import guru.qa.niffler.userdata.wsdl.CurrentUserRequest;
 import guru.qa.niffler.userdata.wsdl.DeclineInvitationRequest;
 import guru.qa.niffler.userdata.wsdl.FriendsPageRequest;
 import guru.qa.niffler.userdata.wsdl.FriendsRequest;
-import guru.qa.niffler.userdata.wsdl.IncomeInvitationsPageRequest;
-import guru.qa.niffler.userdata.wsdl.IncomeInvitationsRequest;
-import guru.qa.niffler.userdata.wsdl.OutcomeInvitationsPageRequest;
-import guru.qa.niffler.userdata.wsdl.OutcomeInvitationsRequest;
 import guru.qa.niffler.userdata.wsdl.RemoveFriendRequest;
 import guru.qa.niffler.userdata.wsdl.SendInvitationRequest;
 import guru.qa.niffler.userdata.wsdl.UpdateUserRequest;
@@ -105,68 +101,6 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
     @Override
     public Page<UserJson> friends(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
         FriendsPageRequest request = new FriendsPageRequest();
-        request.setUsername(username);
-        request.setSearchQuery(searchQuery);
-        request.setPageInfo(
-                new SoapPageable(pageable).pageInfo()
-        );
-
-        UsersResponse response = sendAndReceive(UsersResponse.class, request);
-
-        return new PageImpl<>(
-                response.getUser().stream().map(UserJson::fromJaxb).toList(),
-                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
-                response.getTotalElements()
-        );
-    }
-
-    @Override
-    public @Nonnull
-    List<UserJson> incomeInvitations(@Nonnull String username, @Nullable String searchQuery) {
-        IncomeInvitationsRequest request = new IncomeInvitationsRequest();
-        request.setUsername(username);
-        request.setSearchQuery(searchQuery);
-
-        UsersResponse response = sendAndReceive(UsersResponse.class, request);
-
-        return response.getUser().stream().map(UserJson::fromJaxb).toList();
-    }
-
-    @Nonnull
-    @Override
-    public Page<UserJson> incomeInvitations(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
-        IncomeInvitationsPageRequest request = new IncomeInvitationsPageRequest();
-        request.setUsername(username);
-        request.setSearchQuery(searchQuery);
-        request.setPageInfo(
-                new SoapPageable(pageable).pageInfo()
-        );
-
-        UsersResponse response = sendAndReceive(UsersResponse.class, request);
-
-        return new PageImpl<>(
-                response.getUser().stream().map(UserJson::fromJaxb).toList(),
-                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
-                response.getTotalElements()
-        );
-    }
-
-    @Override
-    public @Nonnull
-    List<UserJson> outcomeInvitations(@Nonnull String username, @Nullable String searchQuery) {
-        OutcomeInvitationsRequest request = new OutcomeInvitationsRequest();
-        request.setUsername(username);
-        request.setSearchQuery(searchQuery);
-
-        UsersResponse response = sendAndReceive(UsersResponse.class, request);
-
-        return response.getUser().stream().map(UserJson::fromJaxb).toList();
-    }
-
-    @Nonnull
-    @Override
-    public Page<UserJson> outcomeInvitations(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
-        OutcomeInvitationsPageRequest request = new OutcomeInvitationsPageRequest();
         request.setUsername(username);
         request.setSearchQuery(searchQuery);
         request.setPageInfo(

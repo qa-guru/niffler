@@ -11,32 +11,27 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.model.UserJsonBulk;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import jakarta.annotation.PostConstruct;
-import net.coobird.thumbnailator.Thumbnails;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.imageio.ImageIO;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Base64;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import static guru.qa.niffler.model.FriendState.FRIEND;
 import static guru.qa.niffler.model.FriendState.INVITE_RECEIVED;
 import static guru.qa.niffler.model.FriendState.INVITE_SENT;
+import static java.util.Comparator.comparing;
 
 @Component
 public class UserDataService {
@@ -49,28 +44,6 @@ public class UserDataService {
     @Autowired
     public UserDataService(UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    /**
-     * only for migration V4__small_avatar.sql
-     */
-    @Transactional
-    @PostConstruct
-    public void compressAndSaveExistingPhotos() {
-        List<UserEntity> users = userRepository.findAll();
-        for (UserEntity user : users) {
-            if ((user.getPhoto() != null && user.getPhoto().length > 0)
-                    && (user.getPhotoSmall() == null || user.getPhotoSmall().length == 0)) {
-                try {
-                    String originalPhoto = new String(user.getPhoto(), StandardCharsets.UTF_8);
-                    user.setPhotoSmall(resizePhoto(originalPhoto, user.getId()));
-                    userRepository.save(user);
-                    LOG.info("### Resizing original user Photo for user done: {}", user.getId());
-                } catch (Exception e) {
-                    LOG.error("### Error while resizing original user Photo for user :{}", user.getId());
-                }
-            }
-        }
     }
 
     @Transactional
@@ -107,11 +80,10 @@ public class UserDataService {
                     return emptyUser;
                 });
 
-        userEntity.setFirstname(user.firstname());
-        userEntity.setSurname(user.surname());
+        userEntity.setFullname(user.fullname());
         userEntity.setCurrency(user.currency());
         userEntity.setPhoto(user.photo() != null ? user.photo().getBytes(StandardCharsets.UTF_8) : null);
-        userEntity.setPhotoSmall(resizePhoto(user.photo(), userEntity.getId()));
+        userEntity.setPhotoSmall(new SmallPhoto(100, 100, user.photo()).bytes());
         UserEntity saved = userRepository.save(userEntity);
         return UserJson.fromEntity(saved);
     }
@@ -135,6 +107,11 @@ public class UserDataService {
 
         return usersFromDb.stream()
                 .map(ue -> mapToUserJsonWithFriendshipState(username, ue))
+                .sorted(
+                        Comparator.comparing(UserJsonBulk::friendState,
+                                Comparator.nullsLast(Comparator.reverseOrder())
+                        )
+                )
                 .toList();
     }
 
@@ -158,7 +135,10 @@ public class UserDataService {
                 ? userRepository.findFriends(getRequiredUser(username))
                 : userRepository.findFriends(getRequiredUser(username), searchQuery);
 
-        return usersFromDb.stream().map(f -> UserJsonBulk.fromEntity(f, FRIEND)).toList();
+        return usersFromDb.stream()
+                .map(f -> mapToUserJsonWithFriendshipState(username, f))
+                .sorted(comparing(UserJsonBulk::friendState))
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -170,53 +150,14 @@ public class UserDataService {
                 ? userRepository.findFriends(getRequiredUser(username), pageable)
                 : userRepository.findFriends(getRequiredUser(username), searchQuery, pageable);
 
-        return usersFromDb.map(f -> UserJsonBulk.fromEntity(f, FRIEND));
-    }
-
-    @Transactional(readOnly = true)
-    public @Nonnull
-    List<UserJsonBulk> incomeInvitations(@Nonnull String username,
-                                         @Nullable String searchQuery) {
-        List<UserEntity> usersFromDb = searchQuery == null
-                ? userRepository.findIncomeInvitations(getRequiredUser(username))
-                : userRepository.findIncomeInvitations(getRequiredUser(username), searchQuery);
-
-        return usersFromDb.stream().map(i -> UserJsonBulk.fromEntity(i, INVITE_RECEIVED)).toList();
-    }
-
-    @Transactional(readOnly = true)
-    public @Nonnull
-    Page<UserJsonBulk> incomeInvitations(@Nonnull String username,
-                                         @Nonnull Pageable pageable,
-                                         @Nullable String searchQuery) {
-        Page<UserEntity> usersFromDb = searchQuery == null
-                ? userRepository.findIncomeInvitations(getRequiredUser(username), pageable)
-                : userRepository.findIncomeInvitations(getRequiredUser(username), searchQuery, pageable);
-
-        return usersFromDb.map(i -> UserJsonBulk.fromEntity(i, INVITE_RECEIVED));
-    }
-
-    @Transactional(readOnly = true)
-    public @Nonnull
-    List<UserJsonBulk> outcomeInvitations(@Nonnull String username,
-                                          @Nullable String searchQuery) {
-        List<UserEntity> usersFromDb = searchQuery == null
-                ? userRepository.findOutcomeInvitations(getRequiredUser(username))
-                : userRepository.findOutcomeInvitations(getRequiredUser(username), searchQuery);
-
-        return usersFromDb.stream().map(i -> UserJsonBulk.fromEntity(i, INVITE_SENT)).toList();
-    }
-
-    @Transactional(readOnly = true)
-    public @Nonnull
-    Page<UserJsonBulk> outcomeInvitations(@Nonnull String username,
-                                          @Nonnull Pageable pageable,
-                                          @Nullable String searchQuery) {
-        Page<UserEntity> usersFromDb = searchQuery == null
-                ? userRepository.findOutcomeInvitations(getRequiredUser(username), pageable)
-                : userRepository.findOutcomeInvitations(getRequiredUser(username), searchQuery, pageable);
-
-        return usersFromDb.map(i -> UserJsonBulk.fromEntity(i, INVITE_SENT));
+        return new PageImpl<>(
+                usersFromDb.getContent().stream()
+                        .map(f -> mapToUserJsonWithFriendshipState(username, f))
+                        .sorted(comparing(UserJsonBulk::friendState))
+                        .toList(),
+                pageable,
+                usersFromDb.getTotalElements()
+        );
     }
 
     @Transactional
@@ -320,39 +261,5 @@ public class UserDataService {
                     ).orElse(UserJsonBulk.fromEntity(userEntity));
         }
         return UserJsonBulk.fromEntity(userEntity);
-    }
-
-    private @Nullable byte[] resizePhoto(@Nullable String photo, @Nonnull UUID userId) {
-        if (photo != null) {
-            try {
-                String base64Image = photo.split(",")[1];
-
-                try (ByteArrayInputStream is = new ByteArrayInputStream(Base64.getDecoder().decode(base64Image));
-                     ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-
-                    Thumbnails.of(ImageIO.read(is))
-                            .height(100)
-                            .width(100)
-                            .outputQuality(1.0)
-                            .outputFormat("png")
-                            .toOutputStream(os);
-
-                    return concatArrays(
-                            "data:image/png;base64,".getBytes(StandardCharsets.UTF_8),
-                            Base64.getEncoder().encode(os.toByteArray())
-                    );
-                }
-            } catch (Exception e) {
-                LOG.error("### Error while resizing photo for user: {}", userId);
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
-    }
-
-    private @Nonnull byte[] concatArrays(@Nonnull byte[] first, @Nonnull byte[] second) {
-        byte[] result = Arrays.copyOf(first, first.length + second.length);
-        System.arraycopy(second, 0, result, first.length, second.length);
-        return result;
     }
 }

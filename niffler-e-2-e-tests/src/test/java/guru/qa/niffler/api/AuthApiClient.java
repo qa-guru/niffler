@@ -9,9 +9,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.Base64;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AuthApiClient extends RestClient {
 
@@ -47,7 +44,6 @@ public class AuthApiClient extends RestClient {
         ).execute();
 
         JsonNode response = authApi.token(
-                "Basic " + new String(Base64.getEncoder().encode("client:secret".getBytes(UTF_8))),
                 "client",
                 CFG.frontUrl() + "authorized",
                 "authorization_code",

@@ -38,7 +38,26 @@ public class CategoryService {
 
     @Transactional
     public @Nonnull
+    CategoryJson getOrAddCategory(@Nonnull CategoryJson category) {
+        return CategoryJson.fromEntity(getOrSave(category));
+    }
+
+    @Transactional
+    public @Nonnull
     CategoryJson addCategory(@Nonnull CategoryJson category) {
+        return CategoryJson.fromEntity(save(category));
+    }
+
+    @Nonnull
+    @Transactional
+    CategoryEntity getOrSave(@Nonnull CategoryJson category) {
+        return categoryRepository.findByUsernameAndCategory(category.username(), category.category())
+                .orElseGet(() -> this.save(category));
+    }
+
+    @Nonnull
+    @Transactional
+    CategoryEntity save(@Nonnull CategoryJson category) {
         final String username = category.username();
         final String categoryName = category.category();
 
@@ -51,7 +70,7 @@ public class CategoryService {
         ce.setCategory(categoryName);
         ce.setUsername(username);
         try {
-            return CategoryJson.fromEntity(categoryRepository.save(ce));
+            return categoryRepository.save(ce);
         } catch (DataIntegrityViolationException e) {
             LOG.error("### Error while creating category", e);
             throw new NotUniqCategoryException("Category with name '" + categoryName + "' already exists");

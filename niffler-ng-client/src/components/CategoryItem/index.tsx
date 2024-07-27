@@ -1,6 +1,5 @@
 import {FC, useState} from "react";
-import {Box, Chip, IconButton} from "@mui/material";
-import {Icon} from "../Icon";
+import {Box, Chip, IconButton, useTheme} from "@mui/material";
 import EditIcon from "../../assets/icons/ic_edit.svg?react";
 import ArchiveIcon from "../../assets/icons/ic_archive.svg?react";
 
@@ -10,6 +9,7 @@ interface CategoryItemInterface {
 }
 export const CategoryItem: FC<CategoryItemInterface> = ({name}) => {
     const [isEdit, setEdit] = useState<boolean>(false);
+    const theme = useTheme();
     return(
         <Box sx={{
             display: "flex",
@@ -19,10 +19,10 @@ export const CategoryItem: FC<CategoryItemInterface> = ({name}) => {
             <Chip label={name}/>
             <Box>
                 <IconButton color="primary" aria-label="Edit category" onClick={() => {setEdit(true)}}>
-                    <EditIcon color={"#A8ACC0"}/>
+                    <EditIcon color={theme.palette.gray_600.main}/>
                 </IconButton>
                 <IconButton color="primary" aria-label="Archive category" onClick={() => {}}>
-                    <ArchiveIcon color={"#A8ACC0"}/>
+                    <ArchiveIcon color={theme.palette.gray_600.main}/>
                 </IconButton>
             </Box>
         </Box>

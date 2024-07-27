@@ -3,6 +3,7 @@ package guru.qa.niffler.condition.spend;
 import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementsCondition;
+import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.utils.DateUtils;
@@ -89,7 +90,11 @@ public class SpendCondition {
                             DateUtils.fromString(cells.get(1).getText()),
                             Double.valueOf(cells.get(2).getText()),
                             CurrencyValues.valueOf(cells.get(3).getText()),
-                            cells.get(4).getText(),
+                            new CategoryJson(
+                                    null,
+                                    cells.get(4).getText(),
+                                    null
+                            ),
                             cells.get(5).getText(),
                             null
                     );

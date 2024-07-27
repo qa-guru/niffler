@@ -22,6 +22,8 @@ public record UserJson(
         String firstname,
         @JsonProperty("surname")
         String surname,
+        @JsonProperty("fullname")
+        String fullname,
         @JsonProperty("currency")
         CurrencyValues currency,
         @JsonProperty("photo")
@@ -37,6 +39,7 @@ public record UserJson(
         jaxbUser.setUsername(username);
         jaxbUser.setFirstname(firstname);
         jaxbUser.setSurname(surname);
+        jaxbUser.setFullname(fullname);
         jaxbUser.setCurrency(Currency.valueOf(currency.name()));
         jaxbUser.setPhoto(photo);
         jaxbUser.setPhotoSmall(photoSmall);
@@ -52,6 +55,7 @@ public record UserJson(
                 jaxbUser.getUsername(),
                 jaxbUser.getFirstname(),
                 jaxbUser.getSurname(),
+                jaxbUser.getFullname(),
                 CurrencyValues.valueOf(jaxbUser.getCurrency().name()),
                 jaxbUser.getPhoto(),
                 jaxbUser.getPhotoSmall(),
@@ -67,6 +71,7 @@ public record UserJson(
                 entity.getUsername(),
                 entity.getFirstname(),
                 entity.getSurname(),
+                entity.getFullname(),
                 entity.getCurrency(),
                 entity.getPhoto() != null && entity.getPhoto().length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null,
                 entity.getPhotoSmall() != null && entity.getPhotoSmall().length > 0 ? new String(entity.getPhotoSmall(), StandardCharsets.UTF_8) : null,

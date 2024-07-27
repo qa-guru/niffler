@@ -164,7 +164,7 @@ public class StatService {
     Map<String, List<SpendJson>> bindSpendsToCategories(@Nonnull List<SpendEntity> sortedSpends) {
         return sortedSpends.stream().map(SpendJson::fromEntity)
                 .collect(Collectors.groupingBy(
-                        SpendJson::category,
+                        (SpendJson sj) -> sj.category().category(),
                         HashMap::new,
                         Collectors.toCollection(ArrayList::new)
                 ));

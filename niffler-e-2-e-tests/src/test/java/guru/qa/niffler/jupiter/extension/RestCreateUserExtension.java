@@ -19,7 +19,6 @@ import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -94,7 +93,11 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
                         DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()),
                         spend.amount(),
                         spend.currency(),
-                        spend.spendCategory(),
+                        new CategoryJson(
+                                null,
+                                spend.spendCategory(),
+                                createdUser.username()
+                        ),
                         spend.spendName(),
                         createdUser.username()
                 );

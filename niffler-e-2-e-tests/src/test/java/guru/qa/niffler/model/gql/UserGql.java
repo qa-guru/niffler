@@ -32,8 +32,6 @@ public class UserGql {
     private FriendState friendState;
     @JsonProperty("friends")
     private List<UserGql> friends;
-    @JsonProperty("invitations")
-    private List<UserGql> invitations;
     @JsonProperty("__typename")
     private String typeName;
 }

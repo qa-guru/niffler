@@ -44,6 +44,9 @@ public class UserEntity implements Serializable {
     private CurrencyValues currency;
 
     @Column()
+    private String fullname;
+
+    @Column()
     private String firstname;
 
     @Column()

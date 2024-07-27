@@ -9,6 +9,8 @@ public record UpdateUserInfoInput(
         String firstname,
         @JsonProperty("surname")
         String surname,
+        @JsonProperty("fullname")
+        String fullname,
         @JsonProperty("currency")
         CurrencyValues currency,
         @JsonProperty("photo")

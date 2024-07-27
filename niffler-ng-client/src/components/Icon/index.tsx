@@ -9,17 +9,20 @@ import signOutIcon from "../../assets/icons/ic_signout.svg";
 import editIcon from "../../assets/icons/ic_edit.svg";
 import archiveIcon from "../../assets/icons/ic_archive.svg";
 import uploadIcon from "../../assets/icons/ic_upload.svg";
+import calendarIcon from "../../assets/icons/ic_cal.svg";
+import deleteIcon from "../../assets/icons/ic_delete.svg";
 
 
 import {FC} from "react";
 
-export type IconType = "addFriendIcon" | "checkIcon" | "crossIcon" | "plusIcon" | "userIcon" | "friendsIcon" | "allIcon"| "signOutIcon" | "editIcon" | "archiveIcon" | "uploadIcon";
+export type IconType = "addFriendIcon" | "checkIcon" | "crossIcon" | "plusIcon" | "userIcon" | "friendsIcon" | "allIcon"| "signOutIcon" | "editIcon" | "archiveIcon" | "deleteIcon" | "uploadIcon" | "calendarIcon";
 
 export interface IconProps {
     type: IconType,
+    color?: string,
 }
 
-export const Icon: FC<IconProps> = ({type}) => <img src={getIcon(type)} alt="" style={{color: '#A8ACC0',}}/>
+export const Icon: FC<IconProps> = ({type, color}) => <img src={getIcon(type)} alt="" style={{color: color ?? '#A8ACC0'}}/>
 
 const getIcon = (type: IconType): string => {
     switch(type) {
@@ -45,5 +48,9 @@ const getIcon = (type: IconType): string => {
             return archiveIcon;
         case "uploadIcon":
             return uploadIcon;
+        case "calendarIcon":
+            return calendarIcon;
+        case "deleteIcon":
+            return deleteIcon;
     }
 }

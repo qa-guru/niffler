@@ -35,23 +35,6 @@ public interface UserDataClient {
                            @Nullable String searchQuery);
 
     @Nonnull
-    List<UserJson> incomeInvitations(@Nonnull String username,
-                                     @Nullable String searchQuery);
-
-    @Nonnull
-    Page<UserJson> incomeInvitations(@Nonnull String username,
-                                     @Nonnull Pageable pageable,
-                                     @Nullable String searchQuery);
-
-    @Nonnull
-    List<UserJson> outcomeInvitations(@Nonnull String username, @Nullable String searchQuery);
-
-    @Nonnull
-    Page<UserJson> outcomeInvitations(@Nonnull String username,
-                                      @Nonnull Pageable pageable,
-                                      @Nullable String searchQuery);
-
-    @Nonnull
     UserJson sendInvitation(@Nonnull String username,
                             @Nonnull String targetUsername);
 

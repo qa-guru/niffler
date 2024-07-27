@@ -43,7 +43,7 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
         rowElement.$(".button-icon_type_edit").click();
         setSpendingAmount(rowElement, editedSpending.amount());
         setSpendingDescription(rowElement, editedSpending.description());
-        setSpendingCategory(rowElement, editedSpending.category());
+        setSpendingCategory(rowElement, editedSpending.category().category());
 //        setSpendingDate(rowElement, editedSpending.getSpendDate());
         submitEditSpending(rowElement);
         return this;

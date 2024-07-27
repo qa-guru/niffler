@@ -22,6 +22,8 @@ public record UserJsonBulk(
         String firstname,
         @JsonProperty("surname")
         String surname,
+        @JsonProperty("fullname")
+        String fullname,
         @JsonProperty("currency")
         CurrencyValues currency,
         @JsonProperty("photoSmall")
@@ -40,6 +42,7 @@ public record UserJsonBulk(
         jaxbUser.setUsername(username);
         jaxbUser.setFirstname(firstname);
         jaxbUser.setSurname(surname);
+        jaxbUser.setFullname(fullname);
         jaxbUser.setCurrency(Currency.valueOf(currency.name()));
         jaxbUser.setPhotoSmall(photoSmall);
         jaxbUser.setFriendState(friendState() == null ?
@@ -54,6 +57,7 @@ public record UserJsonBulk(
                 jaxbUser.getUsername(),
                 jaxbUser.getFirstname(),
                 jaxbUser.getSurname(),
+                jaxbUser.getFullname(),
                 CurrencyValues.valueOf(jaxbUser.getCurrency().name()),
                 jaxbUser.getPhotoSmall(),
                 (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != niffler_userdata.FriendState.VOID)
@@ -67,6 +71,7 @@ public record UserJsonBulk(
                 entity.getId(),
                 entity.getUsername(),
                 entity.getFirstname(),
+                entity.getFullname(),
                 entity.getSurname(),
                 entity.getCurrency(),
                 entity.getPhotoSmall() != null && entity.getPhotoSmall().length > 0 ? new String(entity.getPhotoSmall(), StandardCharsets.UTF_8) : null,

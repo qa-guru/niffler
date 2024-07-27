@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @GrpcService
@@ -42,6 +43,7 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
                         .map(e -> Currency.newBuilder()
                                 .setCurrency(CurrencyValues.valueOf(e.getCurrency().name()))
                                 .setCurrencyRate(e.getCurrencyRate())
+                                .setSymbol(e.getSymbol() != null && e.getSymbol().length > 0 ? new String(e.getSymbol(), StandardCharsets.UTF_8) : null)
                                 .build()
                         ).toList()
                 ).build();

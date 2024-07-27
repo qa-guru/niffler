@@ -65,44 +65,6 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="incomeInvitationsRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="username" type="xs:string"/>
-                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="incomeInvitationsPageRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="username" type="xs:string"/>
-                <xs:element name="pageInfo" type="tns:pageInfo"/>
-                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="outcomeInvitationsRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="username" type="xs:string"/>
-                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="outcomeInvitationsPageRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="username" type="xs:string"/>
-                <xs:element name="pageInfo" type="tns:pageInfo"/>
-                <xs:element name="searchQuery" type="xs:string" minOccurs="0"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
     <xs:element name="sendInvitationRequest">
         <xs:complexType>
             <xs:sequence>
@@ -159,6 +121,7 @@
             <xs:element name="username" type="xs:string"/>
             <xs:element name="firstname" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="surname" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="fullname" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="currency" type="tns:currency"/>
             <xs:element name="photo" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="photoSmall" type="xs:string" minOccurs="0" maxOccurs="1"/>

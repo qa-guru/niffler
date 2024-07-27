@@ -20,6 +20,7 @@ message CurrencyResponse {
 message Currency {
   CurrencyValues currency = 1;
   double currencyRate = 2;
+  string symbol = 3;
 }
 
 message CalculateRequest {

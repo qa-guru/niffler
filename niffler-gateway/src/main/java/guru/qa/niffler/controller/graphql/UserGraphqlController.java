@@ -33,12 +33,10 @@ public class UserGraphqlController {
 
     @SchemaMapping(typeName = "User", field = "friends")
     public List<UserJsonGQL> getFriends(UserJsonGQL user) {
-        return getFriends(user.username());
-    }
-
-    @SchemaMapping(typeName = "User", field = "invitations")
-    public List<UserJsonGQL> getIncomeInvitations(UserJsonGQL user) {
-        return getIncomeInvitations(user.username());
+        return userDataClient.friends(user.username(), null)
+                .stream()
+                .map(UserJsonGQL::fromUserJson)
+                .toList();
     }
 
     @QueryMapping
@@ -67,6 +65,7 @@ public class UserGraphqlController {
                 username,
                 input.firstname(),
                 input.surname(),
+                input.fullname(),
                 input.currency(),
                 input.photo(),
                 null,
@@ -100,20 +99,6 @@ public class UserGraphqlController {
                              @Argument String friendUsername) {
         String username = principal.getClaim("sub");
         userDataClient.removeFriend(username, friendUsername);
-    }
-
-    private List<UserJsonGQL> getFriends(String username) {
-        return userDataClient.friends(username, null)
-                .stream()
-                .map(UserJsonGQL::fromUserJson)
-                .toList();
-    }
-
-    private List<UserJsonGQL> getIncomeInvitations(String username) {
-        return userDataClient.incomeInvitations(username, null)
-                .stream()
-                .map(UserJsonGQL::fromUserJson)
-                .collect(Collectors.toList());
     }
 
     private void checkSubQueries(@Nonnull DataFetchingEnvironment env, int depth, @Nonnull String... queryKeys) {

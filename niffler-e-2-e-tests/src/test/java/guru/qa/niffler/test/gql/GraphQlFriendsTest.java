@@ -22,6 +22,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
+import static guru.qa.niffler.model.rest.FriendState.INVITE_RECEIVED;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,19 +41,14 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
         final UserDataGql response = gqlClient.friends(bearerToken, query);
 
         final List<UserGql> friends = response.getData().getUser().getFriends();
-        final List<UserGql> invitations = response.getData().getUser().getInvitations();
 
         step("Check that friends list is empty", () ->
                 assertTrue(friends.isEmpty())
         );
-        step("Check that invitations list is empty", () ->
-                assertTrue(invitations.isEmpty())
-        );
     }
 
     @CsvSource({
-            "friends, gql/getFriends2FriedsSubQuery.json",
-            "invitations, gql/getFriends2InvitationsSubQuery.json"
+            "friends, gql/getFriends2FriedsSubQuery.json"
     })
     @ParameterizedTest(name = "Получена ошибка Can`t fetch over 2 {0} sub-queries")
     @DisplayName("GraphQL: Невозможно получить более 2-х уровней вложенности запросов")
@@ -96,21 +92,26 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
 
         final UserDataGql response = gqlClient.friends(bearerToken, query);
 
-        step("Check friend in response", () -> {
-            assertEquals(1, response.getData().getUser().getFriends().size());
-            final UserGql friendResp = response.getData().getUser().getFriends().getFirst();
+        final var friends = response.getData().getUser().getFriends();
 
-            assertEquals(friend.id(), friendResp.getId());
-            assertEquals(friend.username(), friendResp.getUsername());
-            assertEquals(FriendState.FRIEND, friendResp.getFriendState());
+        step("Check friend in response", () -> {
+            assertEquals(2, friends.size());
+            step("Check sorting by status", () ->
+                    assertEquals(INVITE_RECEIVED, friends.getFirst().getFriendState())
+            );
+
+            final UserGql friendUser = friends.getLast();
+
+            assertEquals(friend.id(), friendUser.getId());
+            assertEquals(friend.username(), friendUser.getUsername());
+            assertEquals(FriendState.FRIEND, friendUser.getFriendState());
         });
         step("Check income invitation in response", () -> {
-            assertEquals(1, response.getData().getUser().getInvitations().size());
-            final UserGql invResp = response.getData().getUser().getInvitations().getFirst();
+            final UserGql invitationUser = friends.getFirst();
 
-            assertEquals(invitation.id(), invResp.getId());
-            assertEquals(invitation.username(), invResp.getUsername());
-            assertEquals(FriendState.INVITE_RECEIVED, invResp.getFriendState());
+            assertEquals(invitation.id(), invitationUser.getId());
+            assertEquals(invitation.username(), invitationUser.getUsername());
+            assertEquals(FriendState.INVITE_RECEIVED, invitationUser.getFriendState());
         });
     }
 }

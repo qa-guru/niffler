@@ -15,13 +15,25 @@ public record SpendJson(
         @JsonProperty("currency")
         CurrencyValues currency,
         @JsonProperty("category")
-        String category,
+        CategoryJson category,
         @JsonProperty("description")
         String description,
         @JsonProperty("username")
         String username) {
 
     public SpendJson addUsername(String username) {
-        return new SpendJson(id, spendDate, amount, currency, category, description, username);
+        return new SpendJson(
+                id,
+                spendDate,
+                amount,
+                currency,
+                new CategoryJson(
+                        category.id(),
+                        category.category(),
+                        username
+                ),
+                description,
+                username
+        );
     }
 }

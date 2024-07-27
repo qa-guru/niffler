@@ -9,9 +9,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
+
+    @Nonnull
+    Optional<SpendEntity> findByIdAndUsername(@Nonnull UUID id, @Nonnull String username);
 
     @Nonnull
     List<SpendEntity> findAllByUsername(@Nonnull String username);

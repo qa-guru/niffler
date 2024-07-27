@@ -26,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -70,6 +69,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
         return new UserJson(
                 userdataUser.getId(),
                 username,
+                userdataUser.getFullname(),
                 userdataUser.getFirstname(),
                 userdataUser.getSurname(),
                 CurrencyValues.valueOf(userdataUser.getCurrency().name()),
@@ -159,15 +159,21 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
                         ).orElseThrow()
                 );
                 se = spendRepository.createSpend(se);
+                final CategoryEntity categoryEntity = se.getCategory();
+                final String username = createdUser.username();
                 createdUser.testData().spends().add(
                         new SpendJson(
                                 se.getId(),
                                 se.getSpendDate(),
                                 se.getAmount(),
                                 CurrencyValues.valueOf(se.getCurrency().name()),
-                                se.getCategory().getCategory(),
+                                new CategoryJson(
+                                        categoryEntity.getId(),
+                                        categoryEntity.getCategory(),
+                                        username
+                                ),
                                 se.getDescription(),
-                                createdUser.username()
+                                username
                         )
                 );
             }

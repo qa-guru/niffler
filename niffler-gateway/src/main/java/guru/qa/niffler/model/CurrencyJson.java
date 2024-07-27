@@ -8,13 +8,16 @@ public record CurrencyJson(
         @JsonProperty("currency")
         CurrencyValues currency,
         @JsonProperty("currencyRate")
-        Double currencyRate) {
+        Double currencyRate,
+        @JsonProperty("symbol")
+        String symbol) {
 
 
     public static @Nonnull CurrencyJson fromGrpcMessage(@Nonnull Currency currencyMessage) {
         return new CurrencyJson(
                 CurrencyValues.valueOf(currencyMessage.getCurrency().name()),
-                currencyMessage.getCurrencyRate()
+                currencyMessage.getCurrencyRate(),
+                currencyMessage.getSymbol()
         );
     }
 }

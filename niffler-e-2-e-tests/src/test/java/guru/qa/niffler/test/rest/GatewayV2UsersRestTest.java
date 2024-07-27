@@ -41,12 +41,14 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
     @DisplayName("REST: Список друзей получен в виде Page при передаче параметров page, size c учетом сортировки по полю username ASC")
     @Tag("REST")
     @ApiLogin(user = @GenerateUser(
-            friends = @Friends(
-                    count = 3
-            )
+            friends = @Friends(count = 2),
+            incomeInvitations = @IncomeInvitations(count = 1)
     ))
     void pageableFriendsWithSortAscTest(@User UserJson user,
                                         @Token String bearerToken) throws Exception {
+        List<UserJson> userFriends = user.testData().friends();
+        UserJson userInvitation = user.testData().incomeInvitations().getFirst();
+
         RestPage<UserJson> firstPage = gatewayV2client.allFriendsPageable(
                 bearerToken,
                 null,
@@ -65,7 +67,7 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         );
         final List<UserJson> firstPageContent = firstPage.getContent();
 
-        List<UserJson> userFriends = user.testData().friends();
+
         userFriends.sort(Comparator.comparing(UserJson::username));
 
         step("Check elements size", () ->
@@ -120,94 +122,6 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         );
         step("Check second element of first page", () ->
                 assertEquals(userFriends.get(1).username(), firstPageContent.get(1).username())
-        );
-    }
-
-    @Test
-    @AllureId("200005")
-    @DisplayName("REST: Список входящих предложений дружбы получен в виде Page при передаче параметров page, size" +
-            " c учетом сортировки по полю username ASC")
-    @Tag("REST")
-    @ApiLogin(user = @GenerateUser(
-            incomeInvitations = @IncomeInvitations(
-                    count = 3
-            )
-    ))
-    void pageableIncomeInvitationsWithSortAscTest(@User UserJson user,
-                                                  @Token String bearerToken) throws Exception {
-        RestPage<UserJson> firstPage = gatewayV2client.incomeInvitationsPageable(
-                bearerToken,
-                null,
-                0,
-                2,
-                List.of("username," + Sort.Direction.ASC)
-        );
-        step("Check that response not null", () ->
-                assertNotNull(firstPage)
-        );
-        step("Check total elements count", () ->
-                assertEquals(3L, firstPage.getTotalElements())
-        );
-        step("Check total pages", () ->
-                assertEquals(2, firstPage.getTotalPages())
-        );
-        final List<UserJson> firstPageContent = firstPage.getContent();
-
-        List<UserJson> userInvitations = user.testData().incomeInvitations();
-        userInvitations.sort(Comparator.comparing(UserJson::username));
-
-        step("Check elements size", () ->
-                assertEquals(2, firstPageContent.size())
-        );
-        step("Check first element of first page", () ->
-                assertEquals(userInvitations.getFirst().username(), firstPageContent.getFirst().username())
-        );
-        step("Check second element of first page", () ->
-                assertEquals(userInvitations.get(1).username(), firstPageContent.get(1).username())
-        );
-    }
-
-    @Test
-    @AllureId("200006")
-    @DisplayName("REST: Список исходящих предложений дружбы получен в виде Page при передаче параметров page, size" +
-            " c учетом сортировки по полю username ASC")
-    @Tag("REST")
-    @ApiLogin(user = @GenerateUser(
-            outcomeInvitations = @OutcomeInvitations(
-                    count = 3
-            )
-    ))
-    void pageableOutcomeInvitationsWithSortAscTest(@User UserJson user,
-                                                   @Token String bearerToken) throws Exception {
-        RestPage<UserJson> firstPage = gatewayV2client.outcomeInvitationsPageable(
-                bearerToken,
-                null,
-                0,
-                2,
-                List.of("username," + Sort.Direction.ASC)
-        );
-        step("Check that response not null", () ->
-                assertNotNull(firstPage)
-        );
-        step("Check total elements count", () ->
-                assertEquals(3L, firstPage.getTotalElements())
-        );
-        step("Check total pages", () ->
-                assertEquals(2, firstPage.getTotalPages())
-        );
-        final List<UserJson> firstPageContent = firstPage.getContent();
-
-        List<UserJson> userInvitations = user.testData().outcomeInvitations();
-        userInvitations.sort(Comparator.comparing(UserJson::username));
-
-        step("Check elements size", () ->
-                assertEquals(2, firstPageContent.size())
-        );
-        step("Check first element of first page", () ->
-                assertEquals(userInvitations.getFirst().username(), firstPageContent.getFirst().username())
-        );
-        step("Check second element of first page", () ->
-                assertEquals(userInvitations.get(1).username(), firstPageContent.get(1).username())
         );
     }
 

@@ -4,6 +4,7 @@ import guru.qa.niffler.api.UserdataApiClient;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
+import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static guru.qa.niffler.model.rest.FriendState.INVITE_RECEIVED;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,33 +33,44 @@ public class GatewayFriendsRestTest extends BaseRestTest {
     private static final UserdataApiClient userdataApiClient = new UserdataApiClient();
 
     @Test
-    @DisplayName("REST: Для пользователя должен возвращаться список друзей из niffler-userdata")
+    @DisplayName("REST: Для пользователя должен возвращаться список друзей и входящих предложений дружить из niffler-userdata")
     @AllureId("200012")
     @Tag("REST")
     @ApiLogin(
             user = @GenerateUser(
                     friends = @Friends(count = 1),
-                    outcomeInvitations = @OutcomeInvitations(count = 1)
+                    outcomeInvitations = @OutcomeInvitations(count = 1),
+                    incomeInvitations = @IncomeInvitations(count = 1)
             )
     )
-    void getAllFriendsListTest(@User UserJson user,
-                               @Token String bearerToken) throws Exception {
+    void getAllFriendsAndIncomeInvitationsTest(@User UserJson user,
+                                               @Token String bearerToken) throws Exception {
         UserJson testFriend = user.testData().friends().getFirst();
+        UserJson incomeInvitation = user.testData().incomeInvitations().getFirst();
 
         final List<UserJson> friends = gatewayApiClient.allFriends(bearerToken, null);
         step("Check that response not null", () ->
                 assertNotNull(friends)
         );
         step("Check that response contains expected users", () ->
-                assertEquals(1, friends.size())
+                assertEquals(2, friends.size())
+        );
+        step("Check sorting by status", () ->
+                assertEquals(INVITE_RECEIVED, friends.getFirst().friendState())
         );
 
-        final var foundedFriend = friends.getFirst();
+        final var foundedInvitation = friends.getFirst();
+        final var foundedFriend = friends.getLast();
 
         step("Check friend in response", () -> {
             assertSame(FriendState.FRIEND, foundedFriend.friendState());
             assertEquals(testFriend.id(), foundedFriend.id());
             assertEquals(testFriend.username(), foundedFriend.username());
+        });
+        step("Check income invitation in response", () -> {
+            assertSame(FriendState.INVITE_RECEIVED, foundedInvitation.friendState());
+            assertEquals(incomeInvitation.id(), foundedInvitation.id());
+            assertEquals(incomeInvitation.username(), foundedInvitation.username());
         });
     }
 
@@ -72,8 +85,8 @@ public class GatewayFriendsRestTest extends BaseRestTest {
                     outcomeInvitations = @OutcomeInvitations(count = 1)
             )
     )
-    void getFilteredFriendsListTest(@User UserJson user,
-                                    @Token String bearerToken) throws Exception {
+    void getFilteredFriendsAndIncomeInvitationsTest(@User UserJson user,
+                                                    @Token String bearerToken) throws Exception {
         UserJson testFriend = user.testData().friends().getFirst();
 
         final List<UserJson> friends = gatewayApiClient.allFriends(bearerToken, testFriend.username());

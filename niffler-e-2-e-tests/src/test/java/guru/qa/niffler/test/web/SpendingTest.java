@@ -6,6 +6,7 @@ import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.MainPage;
@@ -48,7 +49,11 @@ public class SpendingTest extends BaseWebTest {
                 currentDate,
                 (double) amount,
                 user.currency(),
-                category,
+                new CategoryJson(
+                        null,
+                        category,
+                        null
+                ),
                 description,
                 null
         );
@@ -147,7 +152,11 @@ public class SpendingTest extends BaseWebTest {
                 testSpend.spendDate(),
                 1000.0,
                 testSpend.currency(),
-                "Friends",
+                new CategoryJson(
+                        null,
+                        "Friends",
+                        null
+                ),
                 generateRandomSentence(3),
                 null
         );

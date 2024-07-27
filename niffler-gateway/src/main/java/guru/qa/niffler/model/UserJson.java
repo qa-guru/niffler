@@ -22,6 +22,9 @@ public record UserJson(
         @JsonProperty("surname")
         @Size(max = 50, message = "Surname can`t be longer than 50 characters")
         String surname,
+        @JsonProperty("fullname")
+        @Size(max = 100, message = "Fullname can`t be longer than 100 characters")
+        String fullname,
         @JsonProperty("currency")
         CurrencyValues currency,
         @JsonProperty("photo")
@@ -33,7 +36,7 @@ public record UserJson(
         FriendState friendState) {
 
     public @Nonnull UserJson addUsername(@Nonnull String username) {
-        return new UserJson(id, username, firstname, surname, currency, photo, photoSmall, friendState);
+        return new UserJson(id, username, firstname, surname, fullname, currency, photo, photoSmall, friendState);
     }
 
     public @Nonnull User toJaxbUser() {
@@ -42,6 +45,7 @@ public record UserJson(
         jaxbUser.setUsername(username);
         jaxbUser.setFirstname(firstname);
         jaxbUser.setSurname(surname);
+        jaxbUser.setFullname(fullname);
         jaxbUser.setCurrency(Currency.valueOf(currency.name()));
         jaxbUser.setPhoto(photo);
         jaxbUser.setPhotoSmall(photoSmall);
@@ -57,6 +61,7 @@ public record UserJson(
                 jaxbUser.getUsername(),
                 jaxbUser.getFirstname(),
                 jaxbUser.getSurname(),
+                jaxbUser.getFullname(),
                 CurrencyValues.valueOf(jaxbUser.getCurrency().name()),
                 jaxbUser.getPhoto(),
                 jaxbUser.getPhotoSmall(),

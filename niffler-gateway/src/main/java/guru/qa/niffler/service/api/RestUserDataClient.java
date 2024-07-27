@@ -118,66 +118,6 @@ public class RestUserDataClient implements UserDataClient {
 
     @Nonnull
     @Override
-    public List<UserJson> incomeInvitations(@Nonnull String username, @Nullable String searchQuery) {
-        return Arrays.asList(
-                Optional.ofNullable(
-                        restTemplate.getForObject(
-                                nifflerUserdataApiUri + "/invitations/income?username={username}&searchQuery={searchQuery}",
-                                UserJson[].class,
-                                username,
-                                searchQuery
-                        )
-                ).orElseThrow(() -> new NoRestResponseException("No REST UserJson[] response is given [/invitations/income/ Route]"))
-        );
-    }
-
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    @Override
-    public Page<UserJson> incomeInvitations(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
-        return Optional.ofNullable(
-                restTemplate.getForObject(
-                        nifflerUserdataApiUri + "/v2/invitations/income?username={username}&searchQuery={searchQuery}"
-                                + new HttpQueryPaginationAndSort(pageable),
-                        RestPage.class,
-                        username,
-                        searchQuery
-                )
-        ).orElseThrow(() -> new NoRestResponseException("No REST Page<UserJson> response is given [/v2/invitations/income/ Route]"));
-    }
-
-    @Nonnull
-    @Override
-    public List<UserJson> outcomeInvitations(@Nonnull String username, @Nullable String searchQuery) {
-        return Arrays.asList(
-                Optional.ofNullable(
-                        restTemplate.getForObject(
-                                nifflerUserdataApiUri + "/invitations/outcome?username={username}&searchQuery={searchQuery}",
-                                UserJson[].class,
-                                username,
-                                searchQuery
-                        )
-                ).orElseThrow(() -> new NoRestResponseException("No REST UserJson[] response is given [/invitations/outcome/ Route]"))
-        );
-    }
-
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    @Override
-    public Page<UserJson> outcomeInvitations(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
-        return Optional.ofNullable(
-                restTemplate.getForObject(
-                        nifflerUserdataApiUri + "/v2/invitations/outcome?username={username}&searchQuery={searchQuery}"
-                                + new HttpQueryPaginationAndSort(pageable),
-                        RestPage.class,
-                        username,
-                        searchQuery
-                )
-        ).orElseThrow(() -> new NoRestResponseException("No REST Page<UserJson> response is given [/v2/invitations/outcome/ Route]"));
-    }
-
-    @Nonnull
-    @Override
     public UserJson sendInvitation(@Nonnull String username, @Nonnull String targetUsername) {
         return Optional.ofNullable(
                 restTemplate.postForObject(

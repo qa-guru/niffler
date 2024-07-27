@@ -60,6 +60,19 @@ public class RestSpendClient {
     }
 
     public @Nonnull
+    SpendJson getSpend(@Nonnull String id,
+                       @Nonnull String username) {
+        return Optional.ofNullable(
+                restTemplate.getForObject(
+                        nifflerSpendApiUri + "/spends/{id}?username={username}",
+                        SpendJson.class,
+                        id,
+                        username
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST SpendJson response is given [/spend/{id}/ Route]"));
+    }
+
+    public @Nonnull
     List<SpendJson> getSpends(@Nonnull String username,
                               @Nullable DataFilterValues filterPeriod,
                               @Nullable CurrencyValues filterCurrency) {
