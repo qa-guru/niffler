@@ -170,7 +170,8 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
                                 new CategoryJson(
                                         categoryEntity.getId(),
                                         categoryEntity.getCategory(),
-                                        username
+                                        username,
+                                        categoryEntity.isArchived()
                                 ),
                                 se.getDescription(),
                                 username
@@ -192,7 +193,8 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
                         new CategoryJson(
                                 ce.getId(),
                                 ce.getCategory(),
-                                ce.getUsername()
+                                ce.getUsername(),
+                                ce.isArchived()
                         )
                 );
             }

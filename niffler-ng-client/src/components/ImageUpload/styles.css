@@ -1,0 +1,5 @@
+.image-upload__image {
+    object-fit: cover;
+    width: 128px;
+    height: 128px;
+}

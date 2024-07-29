@@ -30,6 +30,9 @@ public class CategoryEntity implements Serializable {
     @Column(nullable = false)
     private String username;
 
+    @Column(nullable = false)
+    private boolean archived;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

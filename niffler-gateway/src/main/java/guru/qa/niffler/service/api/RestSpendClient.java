@@ -60,6 +60,17 @@ public class RestSpendClient {
     }
 
     public @Nonnull
+    CategoryJson updateCategory(@Nonnull CategoryJson category) {
+        return Optional.ofNullable(
+                restTemplate.postForObject(
+                        nifflerSpendApiUri + "/categories/update",
+                        category,
+                        CategoryJson.class
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST CategoryJson response is given [/categories/update/ Route]"));
+    }
+
+    public @Nonnull
     SpendJson getSpend(@Nonnull String id,
                        @Nonnull String username) {
         return Optional.ofNullable(

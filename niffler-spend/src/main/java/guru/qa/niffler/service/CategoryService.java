@@ -2,6 +2,7 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.data.CategoryEntity;
 import guru.qa.niffler.data.repository.CategoryRepository;
+import guru.qa.niffler.ex.CategoryNotFoundException;
 import guru.qa.niffler.ex.NotUniqCategoryException;
 import guru.qa.niffler.ex.TooManyCategoriesException;
 import guru.qa.niffler.model.CategoryJson;
@@ -13,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
@@ -29,11 +31,29 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public @Nonnull
-    List<CategoryJson> getAllCategories(@Nonnull String username) {
+    List<CategoryJson> getAllCategories(@Nonnull String username, boolean excludeArchived) {
         return categoryRepository.findAllByUsernameOrderByCategory(username)
                 .stream()
+                .filter(ce -> !excludeArchived || !ce.isArchived())
                 .map(CategoryJson::fromEntity)
                 .toList();
+    }
+
+    @Transactional
+    public @Nonnull
+    CategoryJson update(@Nonnull CategoryJson category) {
+        CategoryEntity categoryEntity = categoryRepository.findByUsernameAndId(category.username(), category.id())
+                .orElseThrow(() -> new CategoryNotFoundException("Can`t find category by id: '" + category.id() + "'"));
+
+        categoryEntity.setCategory(category.category());
+        if (!category.archived() && categoryEntity.isArchived()) {
+            if (categoryRepository.countByUsernameAndArchived(category.username(), false) > MAX_CATEGORIES_SIZE) {
+                LOG.error("### Can`t unarchive category for user: {}", category.username());
+                throw new TooManyCategoriesException("Can`t unarchive category for user: '" + category.username() + "'");
+            }
+        }
+        categoryEntity.setArchived(category.archived());
+        return CategoryJson.fromEntity(categoryRepository.save(categoryEntity));
     }
 
     @Transactional
@@ -45,7 +65,7 @@ public class CategoryService {
     @Transactional
     public @Nonnull
     CategoryJson addCategory(@Nonnull CategoryJson category) {
-        return CategoryJson.fromEntity(save(category));
+        return CategoryJson.fromEntity(this.save(category));
     }
 
     @Nonnull
@@ -61,7 +81,7 @@ public class CategoryService {
         final String username = category.username();
         final String categoryName = category.category();
 
-        if (categoryRepository.countByUsername(username) > MAX_CATEGORIES_SIZE) {
+        if (categoryRepository.countByUsernameAndArchived(username, false) > MAX_CATEGORIES_SIZE) {
             LOG.error("### Can`t add over than 8 categories for user: {}", username);
             throw new TooManyCategoriesException("Can`t add over than 8 categories for user: '" + username + "'");
         }
@@ -69,6 +89,7 @@ public class CategoryService {
         CategoryEntity ce = new CategoryEntity();
         ce.setCategory(categoryName);
         ce.setUsername(username);
+        ce.setArchived(false);
         try {
             return categoryRepository.save(ce);
         } catch (DataIntegrityViolationException e) {

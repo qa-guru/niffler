@@ -63,7 +63,19 @@ export const apiClient = {
             onFailure(e)
         }
     },
-
+    editCategory: async (name: string, {onSuccess, onFailure}: RequestHandler<Category>) => {
+        try {
+            const result = await makeRequest("/categories/edit", {
+                method: "PATCH",
+                body: JSON.stringify({
+                    category: name,
+                }),
+            });
+            onSuccess(result);
+        } catch(e: Error) {
+            onFailure(e)
+        }
+    },
     getCurrencies: async({ onSuccess, onFailure }: RequestHandler<Currency[]>) => {
         try {
             const result = await makeRequest("/currencies/all");

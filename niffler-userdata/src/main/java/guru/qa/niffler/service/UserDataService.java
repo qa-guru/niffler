@@ -4,6 +4,7 @@ import guru.qa.niffler.data.CurrencyValues;
 import guru.qa.niffler.data.FriendshipEntity;
 import guru.qa.niffler.data.FriendshipStatus;
 import guru.qa.niffler.data.UserEntity;
+import guru.qa.niffler.data.projection.UserWithStatus;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.ex.NotFoundException;
 import guru.qa.niffler.ex.SameUsernameException;
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -24,12 +24,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 import static guru.qa.niffler.model.FriendState.FRIEND;
-import static guru.qa.niffler.model.FriendState.INVITE_RECEIVED;
 import static guru.qa.niffler.model.FriendState.INVITE_SENT;
 import static java.util.Comparator.comparing;
 
@@ -101,17 +99,12 @@ public class UserDataService {
     public @Nonnull
     List<UserJsonBulk> allUsers(@Nonnull String username,
                                 @Nullable String searchQuery) {
-        List<UserEntity> usersFromDb = searchQuery == null
+        List<UserWithStatus> usersFromDb = searchQuery == null
                 ? userRepository.findByUsernameNot(username)
                 : userRepository.findByUsernameNot(username, searchQuery);
 
         return usersFromDb.stream()
-                .map(ue -> mapToUserJsonWithFriendshipState(username, ue))
-                .sorted(
-                        Comparator.comparing(UserJsonBulk::friendState,
-                                Comparator.nullsLast(Comparator.reverseOrder())
-                        )
-                )
+                .map(UserJsonBulk::fromUserEntityProjection)
                 .toList();
     }
 
@@ -120,24 +113,23 @@ public class UserDataService {
     Page<UserJsonBulk> allUsers(@Nonnull String username,
                                 @Nonnull Pageable pageable,
                                 @Nullable String searchQuery) {
-        Page<UserEntity> usersFromDb = searchQuery == null
+        Page<UserWithStatus> usersFromDb = searchQuery == null
                 ? userRepository.findByUsernameNot(username, pageable)
                 : userRepository.findByUsernameNot(username, searchQuery, pageable);
 
-        return usersFromDb.map(ue -> mapToUserJsonWithFriendshipState(username, ue));
+        return usersFromDb.map(UserJsonBulk::fromUserEntityProjection);
     }
 
     @Transactional(readOnly = true)
     public @Nonnull
     List<UserJsonBulk> friends(@Nonnull String username,
                                @Nullable String searchQuery) {
-        List<UserEntity> usersFromDb = searchQuery == null
+        List<UserWithStatus> usersFromDb = searchQuery == null
                 ? userRepository.findFriends(getRequiredUser(username))
                 : userRepository.findFriends(getRequiredUser(username), searchQuery);
 
         return usersFromDb.stream()
-                .map(f -> mapToUserJsonWithFriendshipState(username, f))
-                .sorted(comparing(UserJsonBulk::friendState))
+                .map(UserJsonBulk::fromFriendEntityProjection)
                 .toList();
     }
 
@@ -146,18 +138,11 @@ public class UserDataService {
     Page<UserJsonBulk> friends(@Nonnull String username,
                                @Nonnull Pageable pageable,
                                @Nullable String searchQuery) {
-        Page<UserEntity> usersFromDb = searchQuery == null
+        Page<UserWithStatus> usersFromDb = searchQuery == null
                 ? userRepository.findFriends(getRequiredUser(username), pageable)
                 : userRepository.findFriends(getRequiredUser(username), searchQuery, pageable);
 
-        return new PageImpl<>(
-                usersFromDb.getContent().stream()
-                        .map(f -> mapToUserJsonWithFriendshipState(username, f))
-                        .sorted(comparing(UserJsonBulk::friendState))
-                        .toList(),
-                pageable,
-                usersFromDb.getTotalElements()
-        );
+        return usersFromDb.map(UserJsonBulk::fromFriendEntityProjection);
     }
 
     @Transactional
@@ -232,34 +217,5 @@ public class UserDataService {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new NotFoundException("Can`t find user by username: '" + username + "'")
         );
-    }
-
-    @Nonnull
-    UserJsonBulk mapToUserJsonWithFriendshipState(@Nonnull String username,
-                                                  @Nonnull UserEntity userEntity) {
-        List<FriendshipEntity> requests = userEntity.getFriendshipRequests();
-        List<FriendshipEntity> addresses = userEntity.getFriendshipAddressees();
-
-        if (!requests.isEmpty()) {
-            return requests.stream()
-                    .filter(i -> i.getAddressee().getUsername().equals(username))
-                    .findFirst()
-                    .map(
-                            itm -> UserJsonBulk.fromEntity(userEntity, itm.getStatus() == FriendshipStatus.PENDING
-                                    ? INVITE_RECEIVED
-                                    : FRIEND)
-                    ).orElse(UserJsonBulk.fromEntity(userEntity));
-        }
-        if (!addresses.isEmpty()) {
-            return addresses.stream()
-                    .filter(i -> i.getRequester().getUsername().equals(username))
-                    .findFirst()
-                    .map(
-                            itm -> UserJsonBulk.fromEntity(userEntity, itm.getStatus() == FriendshipStatus.PENDING
-                                    ? INVITE_SENT
-                                    : FRIEND)
-                    ).orElse(UserJsonBulk.fromEntity(userEntity));
-        }
-        return UserJsonBulk.fromEntity(userEntity);
     }
 }

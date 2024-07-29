@@ -11,7 +11,9 @@ export const CategorySection = () => {
 
     const fetchCategories = () =>  apiClient.getCategories({
             onSuccess: (res) => setCategories(res),
-            onFailure: (e) => {},
+            onFailure: (e) => {
+                console.error(e.message);
+            },
         }
     );
 

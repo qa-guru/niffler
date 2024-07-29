@@ -52,7 +52,8 @@ public class SpendingTest extends BaseWebTest {
                 new CategoryJson(
                         null,
                         category,
-                        null
+                        null,
+                        false
                 ),
                 description,
                 null
@@ -155,7 +156,8 @@ public class SpendingTest extends BaseWebTest {
                 new CategoryJson(
                         null,
                         "Friends",
-                        null
+                        null,
+                        false
                 ),
                 generateRandomSentence(3),
                 null

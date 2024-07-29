@@ -93,7 +93,8 @@ public class SpendCondition {
                             new CategoryJson(
                                     null,
                                     cells.get(4).getText(),
-                                    null
+                                    null,
+                                    false
                             ),
                             cells.get(5).getText(),
                             null

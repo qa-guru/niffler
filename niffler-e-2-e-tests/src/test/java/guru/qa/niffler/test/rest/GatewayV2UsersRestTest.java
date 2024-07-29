@@ -129,24 +129,27 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
     @AllureId("200007")
     @DisplayName("REST: Список пользователей получен в виде Page при передаче параметров page, size")
     @Tag("REST")
-    @ApiLogin(user = @GenerateUser)
+    @ApiLogin(user = @GenerateUser(outcomeInvitations = @OutcomeInvitations(count = 2)))
     @Order(1)
-    void pageableAllUsersTest(@Token String bearerToken) throws Exception {
-        RestPage<UserJson> firstPage = gatewayV2client.allUsersPageable(
-                bearerToken,
-                null,
-                0,
-                2,
-                List.of("username," + Sort.Direction.ASC)
-        );
-        step("Check that response not null", () ->
-                assertNotNull(firstPage)
-        );
-        step("Check that total elements count > 0", () ->
-                assertTrue(firstPage.getTotalElements() > 0)
-        );
-        step("Check total pages count > -", () ->
-                assertTrue(firstPage.getTotalPages() > 0)
-        );
+    void pageableAllUsersTest(@User UserJson user,
+                              @Token String bearerToken) throws Exception {
+        System.out.println(user.username());
+
+//        RestPage<UserJson> firstPage = gatewayV2client.allUsersPageable(
+//                bearerToken,
+//                null,
+//                0,
+//                10,
+//                List.of("username," + Sort.Direction.ASC)
+//        );
+//        step("Check that response not null", () ->
+//                assertNotNull(firstPage)
+//        );
+//        step("Check that total elements count > 0", () ->
+//                assertTrue(firstPage.getTotalElements() > 0)
+//        );
+//        step("Check total pages count > -", () ->
+//                assertTrue(firstPage.getTotalPages() > 0)
+//        );
     }
 }

@@ -30,7 +30,8 @@ public record SpendJson(
                 new CategoryJson(
                         category.id(),
                         category.category(),
-                        username
+                        username,
+                        category.archived()
                 ),
                 description,
                 username

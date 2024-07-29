@@ -1,6 +1,7 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.data.SpendEntity;
+import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.StatisticByCategoryJson;
@@ -91,7 +92,7 @@ public class StatService {
             ));
         }
 
-        categoryService.getAllCategories(username).stream()
+        categoryService.getAllCategories(username, true).stream()
                 .filter(c -> !spendsByCategory.containsKey(c.category()))
                 .map(c -> new StatisticByCategoryJson(
                         c.category(),
@@ -164,7 +165,12 @@ public class StatService {
     Map<String, List<SpendJson>> bindSpendsToCategories(@Nonnull List<SpendEntity> sortedSpends) {
         return sortedSpends.stream().map(SpendJson::fromEntity)
                 .collect(Collectors.groupingBy(
-                        (SpendJson sj) -> sj.category().category(),
+                        (SpendJson sj) -> {
+                            CategoryJson ce = sj.category();
+                            return ce.archived()
+                                    ? "Archived"
+                                    : ce.category();
+                        },
                         HashMap::new,
                         Collectors.toCollection(ArrayList::new)
                 ));

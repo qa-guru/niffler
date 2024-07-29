@@ -14,7 +14,10 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, UUID> 
     Optional<CategoryEntity> findByUsernameAndCategory(@Nonnull String username, @Nonnull String category);
 
     @Nonnull
+    Optional<CategoryEntity> findByUsernameAndId(@Nonnull String username, @Nonnull UUID id);
+
+    @Nonnull
     List<CategoryEntity> findAllByUsernameOrderByCategory(@Nonnull String username);
 
-    long countByUsername(@Nonnull String username);
+    long countByUsernameAndArchived(@Nonnull String username, boolean archived);
 }

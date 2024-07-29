@@ -17,10 +17,8 @@ public class UserGql {
     private UUID id;
     @JsonProperty("username")
     private String username;
-    @JsonProperty("firstname")
-    private String firstname;
-    @JsonProperty("surname")
-    private String surname;
+    @JsonProperty("fullname")
+    private String fullname;
     @JsonProperty("currency")
     private CurrencyValues currency;
     @JsonProperty("photo")

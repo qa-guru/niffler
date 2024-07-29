@@ -36,7 +36,8 @@ public class CategoriesGraphqlController {
         return restSpendClient.addCategory(new CategoryJson(
                 null,
                 input.category(),
-                username
+                username,
+                input.archived()
         ));
     }
 }

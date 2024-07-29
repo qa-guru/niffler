@@ -96,7 +96,8 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
                         new CategoryJson(
                                 null,
                                 spend.spendCategory(),
-                                createdUser.username()
+                                createdUser.username(),
+                                false
                         ),
                         spend.spendName(),
                         createdUser.username()
@@ -111,7 +112,7 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
     protected void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, @Nonnull UserJson createdUser) throws Exception {
         if (categories != null) {
             for (GenerateCategory category : categories) {
-                CategoryJson cj = new CategoryJson(null, category.value(), createdUser.username());
+                CategoryJson cj = new CategoryJson(null, category.value(), createdUser.username(), category.archived());
                 createdUser.testData().categories().add(spendClient.createCategory(cj));
             }
         }

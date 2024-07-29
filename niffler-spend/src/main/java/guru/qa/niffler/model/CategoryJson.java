@@ -12,13 +12,16 @@ public record CategoryJson(
         @JsonProperty("category")
         String category,
         @JsonProperty("username")
-        String username) {
+        String username,
+        @JsonProperty("archived")
+        boolean archived) {
 
     public static @Nonnull CategoryJson fromEntity(@Nonnull CategoryEntity entity) {
         return new CategoryJson(
                 entity.getId(),
                 entity.getCategory(),
-                entity.getUsername()
+                entity.getUsername(),
+                entity.isArchived()
         );
     }
 }

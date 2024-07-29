@@ -1,6 +1,7 @@
 package guru.qa.niffler.data.repository;
 
 import guru.qa.niffler.data.UserEntity;
+import guru.qa.niffler.data.projection.UserWithStatus;
 import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,60 +18,98 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findByUsername(@Nonnull String username);
 
     @Nonnull
-    List<UserEntity> findByUsernameNot(@Nonnull String username);
-
-    @Nonnull
-    @Query("select u from UserEntity u where u.username <> :username" +
-            " and (u.username like %:searchQuery% or u.fullname like %:searchQuery%)")
-    List<UserEntity> findByUsernameNot(@Nonnull @Param("username") String username,
-                                       @Nonnull @Param("searchQuery") String searchQuery);
-
-    @Nonnull
-    Page<UserEntity> findByUsernameNot(@Nonnull String username,
-                                       @Nonnull Pageable pageable);
-
-    @Nonnull
-    @Query("select u from UserEntity u where u.username <> :username" +
-            " and (u.username like %:searchQuery% or u.fullname like %:searchQuery%)")
-    Page<UserEntity> findByUsernameNot(@Nonnull @Param("username") String username,
-                                       @Nonnull @Param("searchQuery") String searchQuery,
-                                       @Nonnull Pageable pageable);
-
-    @Nonnull
     @Query(
-            "select u from UserEntity u join FriendshipEntity f on u = f.requester where " +
-                    "(f.status = guru.qa.niffler.data.FriendshipStatus.ACCEPTED or f.status = guru.qa.niffler.data.FriendshipStatus.PENDING) " +
-                    "and f.addressee = :addressee"
+            "select new guru.qa.niffler.data.projection.UserWithStatus(u.id, u.username, u.currency, u.fullname, u.photoSmall, f.status) " +
+                    "from UserEntity u left join FriendshipEntity f on " +
+                    "(u = f.addressee and f.requester.username = :username) " +
+                    "where u.username <> :username " +
+                    "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
+                    "order by f.status asc"
     )
-    List<UserEntity> findFriends(@Param("addressee") UserEntity addressee);
+    List<UserWithStatus> findByUsernameNot(@Nonnull String username);
 
     @Nonnull
     @Query(
-            "select u from UserEntity u join FriendshipEntity f on u = f.requester where " +
-                    "(f.status = guru.qa.niffler.data.FriendshipStatus.ACCEPTED or f.status = guru.qa.niffler.data.FriendshipStatus.PENDING) " +
+            "select new guru.qa.niffler.data.projection.UserWithStatus(u.id, u.username, u.currency, u.fullname, u.photoSmall, f.status) " +
+                    "from UserEntity u left join FriendshipEntity f on " +
+                    "(u = f.addressee and f.requester.username = :username) " +
+                    "where u.username <> :username " +
+                    "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
+                    "and (u.username like %:searchQuery% or u.fullname like %:searchQuery%) " +
+                    "order by f.status asc"
+    )
+    List<UserWithStatus> findByUsernameNot(@Nonnull @Param("username") String username,
+                                           @Nonnull @Param("searchQuery") String searchQuery);
+
+    @Nonnull
+    @Query(
+            "select new guru.qa.niffler.data.projection.UserWithStatus(u.id, u.username, u.currency, u.fullname, u.photoSmall, f.status) " +
+                    "from UserEntity u left join FriendshipEntity f on " +
+                    "(u = f.addressee and f.requester.username = :username) " +
+                    "where u.username <> :username " +
+                    "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
+                    "order by f.status asc"
+    )
+    Page<UserWithStatus> findByUsernameNot(@Nonnull String username,
+                                           @Nonnull Pageable pageable);
+
+    @Nonnull
+    @Query(
+            "select new guru.qa.niffler.data.projection.UserWithStatus(u.id, u.username, u.currency, u.fullname, u.photoSmall, f.status) " +
+                    "from UserEntity u left join FriendshipEntity f on " +
+                    "(u = f.addressee and f.requester.username = :username) " +
+                    "where u.username <> :username " +
+                    "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
+                    "and (u.username like %:searchQuery% or u.fullname like %:searchQuery%) " +
+                    "order by f.status asc"
+    )
+    Page<UserWithStatus> findByUsernameNot(@Nonnull @Param("username") String username,
+                                           @Nonnull @Param("searchQuery") String searchQuery,
+                                           @Nonnull Pageable pageable);
+
+    @Nonnull
+    @Query(
+            "select new guru.qa.niffler.data.projection.UserWithStatus(u.id, u.username, u.currency, u.fullname, u.photoSmall, f.status) " +
+                    "from UserEntity u join FriendshipEntity f on u = f.requester where " +
+                    "(f.status is not null) " +
                     "and f.addressee = :addressee " +
-                    "and (u.username like %:searchQuery% or u.fullname like %:searchQuery%)"
+                    "order by f.status desc"
     )
-    List<UserEntity> findFriends(@Param("addressee") UserEntity addressee,
-                                 @Param("searchQuery") String searchQuery);
+    List<UserWithStatus> findFriends(@Param("addressee") UserEntity addressee);
 
     @Nonnull
     @Query(
-            "select u from UserEntity u join FriendshipEntity f on u = f.requester where " +
-                    "(f.status = guru.qa.niffler.data.FriendshipStatus.ACCEPTED or f.status = guru.qa.niffler.data.FriendshipStatus.PENDING) " +
-                    "and f.addressee = :addressee"
-    )
-    Page<UserEntity> findFriends(@Param("addressee") UserEntity addressee,
-                                 @Nonnull Pageable pageable);
-
-    @Nonnull
-    @Query(
-            "select u from UserEntity u join FriendshipEntity f on u = f.requester where " +
-                    "(f.status = guru.qa.niffler.data.FriendshipStatus.ACCEPTED or f.status = guru.qa.niffler.data.FriendshipStatus.PENDING) " +
+            "select new guru.qa.niffler.data.projection.UserWithStatus(u.id, u.username, u.currency, u.fullname, u.photoSmall, f.status) " +
+                    "from UserEntity u join FriendshipEntity f on u = f.requester where " +
+                    "(f.status is not null) " +
                     "and f.addressee = :addressee " +
-                    "and (u.username like %:searchQuery% or u.fullname like %:searchQuery%)"
+                    "and (u.username like %:searchQuery% or u.fullname like %:searchQuery%) " +
+                    "order by f.status desc"
     )
-    Page<UserEntity> findFriends(@Param("addressee") UserEntity addressee,
-                                 @Param("searchQuery") String searchQuery,
-                                 @Nonnull Pageable pageable);
+    List<UserWithStatus> findFriends(@Param("addressee") UserEntity addressee,
+                                     @Param("searchQuery") String searchQuery);
+
+    @Nonnull
+    @Query(
+            "select new guru.qa.niffler.data.projection.UserWithStatus(u.id, u.username, u.currency, u.fullname, u.photoSmall, f.status) " +
+                    "from UserEntity u join FriendshipEntity f on u = f.requester where " +
+                    "(f.status is not null) " +
+                    "and f.addressee = :addressee " +
+                    "order by f.status desc"
+    )
+    Page<UserWithStatus> findFriends(@Param("addressee") UserEntity addressee,
+                                     @Nonnull Pageable pageable);
+
+    @Nonnull
+    @Query(
+            "select new guru.qa.niffler.data.projection.UserWithStatus(u.id, u.username, u.currency, u.fullname, u.photoSmall, f.status) " +
+                    "from UserEntity u join FriendshipEntity f on u = f.requester where " +
+                    "(f.status is not null) " +
+                    "and f.addressee = :addressee " +
+                    "and (u.username like %:searchQuery% or u.fullname like %:searchQuery%) " +
+                    "order by f.status desc"
+    )
+    Page<UserWithStatus> findFriends(@Param("addressee") UserEntity addressee,
+                                     @Param("searchQuery") String searchQuery,
+                                     @Nonnull Pageable pageable);
 }

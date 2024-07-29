@@ -3,9 +3,9 @@ package guru.qa.niffler.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.CurrencyValues;
-import guru.qa.niffler.data.UserEntity;
+import guru.qa.niffler.data.FriendshipStatus;
+import guru.qa.niffler.data.projection.UserWithStatus;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import niffler_userdata.Currency;
 import niffler_userdata.User;
 
@@ -18,10 +18,6 @@ public record UserJsonBulk(
         UUID id,
         @JsonProperty("username")
         String username,
-        @JsonProperty("firstname")
-        String firstname,
-        @JsonProperty("surname")
-        String surname,
         @JsonProperty("fullname")
         String fullname,
         @JsonProperty("currency")
@@ -36,12 +32,20 @@ public record UserJsonBulk(
         return null;
     }
 
+    @Override
+    public String firstname() {
+        return null;
+    }
+
+    @Override
+    public String surname() {
+        return null;
+    }
+
     public @Nonnull User toJaxbUser() {
         User jaxbUser = new User();
         jaxbUser.setId(id != null ? id.toString() : null);
         jaxbUser.setUsername(username);
-        jaxbUser.setFirstname(firstname);
-        jaxbUser.setSurname(surname);
         jaxbUser.setFullname(fullname);
         jaxbUser.setCurrency(Currency.valueOf(currency.name()));
         jaxbUser.setPhotoSmall(photoSmall);
@@ -55,8 +59,6 @@ public record UserJsonBulk(
         return new UserJsonBulk(
                 jaxbUser.getId() != null ? UUID.fromString(jaxbUser.getId()) : null,
                 jaxbUser.getUsername(),
-                jaxbUser.getFirstname(),
-                jaxbUser.getSurname(),
                 jaxbUser.getFullname(),
                 CurrencyValues.valueOf(jaxbUser.getCurrency().name()),
                 jaxbUser.getPhotoSmall(),
@@ -66,20 +68,25 @@ public record UserJsonBulk(
         );
     }
 
-    public static @Nonnull UserJsonBulk fromEntity(@Nonnull UserEntity entity, @Nullable FriendState friendState) {
+    public static @Nonnull UserJsonBulk fromFriendEntityProjection(@Nonnull UserWithStatus projection) {
         return new UserJsonBulk(
-                entity.getId(),
-                entity.getUsername(),
-                entity.getFirstname(),
-                entity.getFullname(),
-                entity.getSurname(),
-                entity.getCurrency(),
-                entity.getPhotoSmall() != null && entity.getPhotoSmall().length > 0 ? new String(entity.getPhotoSmall(), StandardCharsets.UTF_8) : null,
-                friendState
+                projection.id(),
+                projection.username(),
+                projection.fullname(),
+                projection.currency(),
+                projection.photoSmall() != null && projection.photoSmall().length > 0 ? new String(projection.photoSmall(), StandardCharsets.UTF_8) : null,
+                projection.status() == FriendshipStatus.PENDING ? FriendState.INVITE_RECEIVED : FriendState.FRIEND
         );
     }
 
-    public static @Nonnull UserJsonBulk fromEntity(@Nonnull UserEntity entity) {
-        return fromEntity(entity, null);
+    public static @Nonnull UserJsonBulk fromUserEntityProjection(@Nonnull UserWithStatus projection) {
+        return new UserJsonBulk(
+                projection.id(),
+                projection.username(),
+                projection.fullname(),
+                projection.currency(),
+                projection.photoSmall() != null && projection.photoSmall().length > 0 ? new String(projection.photoSmall(), StandardCharsets.UTF_8) : null,
+                projection.status() == FriendshipStatus.PENDING ? FriendState.INVITE_SENT : null
+        );
     }
 }
