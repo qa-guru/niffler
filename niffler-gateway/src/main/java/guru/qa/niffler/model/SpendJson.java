@@ -40,7 +40,7 @@ public record SpendJson(
                 spendDate,
                 new CategoryJson(
                         category.id(),
-                        category.category(),
+                        category.name(),
                         username,
                         category.archived()
                 ),

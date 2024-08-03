@@ -96,14 +96,6 @@ public class GatewayApiClient extends RestClient {
                 .execute();
     }
 
-    @Step("Send REST GET('/api/invitations/income') request to niffler-gateway")
-    @Nullable
-    public List<UserJson> incomeInvitations(String bearerToken, @Nullable String searchQuery) throws Exception {
-        return gatewayApi.incomeInvitations(bearerToken, searchQuery)
-                .execute()
-                .body();
-    }
-
     @Step("Send REST POST('/api/spends/add') request to niffler-gateway")
     @Nullable
     public SpendJson addSpend(String bearerToken, SpendJson spend) throws Exception {
@@ -116,14 +108,6 @@ public class GatewayApiClient extends RestClient {
     @Nullable
     public UserJson updateUser(String bearerToken, UserJson user) throws Exception {
         return gatewayApi.updateUser(bearerToken, user)
-                .execute()
-                .body();
-    }
-
-    @Step("Send REST GET('/api/invitations/outcome') request to niffler-gateway")
-    @Nullable
-    public List<UserJson> outcomeInvitations(String bearerToken, @Nullable String searchQuery) throws Exception {
-        return gatewayApi.outcomeInvitations(bearerToken, searchQuery)
                 .execute()
                 .body();
     }

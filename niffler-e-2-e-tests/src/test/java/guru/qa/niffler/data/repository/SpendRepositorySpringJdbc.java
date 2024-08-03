@@ -72,11 +72,12 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
 
         spendJdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO \"category\" (category, username)" +
+                    "INSERT INTO \"category\" (name, username, archived)" +
                             " VALUES (?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, category.getCategory());
+            ps.setString(1, category.getName());
             ps.setString(2, category.getUsername());
+            ps.setBoolean(3, category.isArchived());
             return ps;
         }, kh);
         final UUID generatedUserId = (UUID) kh.getKeys().get("id");
@@ -96,12 +97,12 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     }
 
     @Override
-    public Optional<CategoryEntity> findUserCategoryByName(String username, String category) {
+    public Optional<CategoryEntity> findUserCategoryByName(String username, String categoryName) {
         return Optional.ofNullable(
                 spendJdbcTemplate.queryForObject(
-                        "SELECT * FROM \"category\" WHERE \"category\".category = ? and username = ?",
+                        "SELECT * FROM \"category\" WHERE \"category\".name = ? and username = ?",
                         CategoryEntityRowMapper.instance,
-                        category,
+                        categoryName,
                         username
                 )
         );

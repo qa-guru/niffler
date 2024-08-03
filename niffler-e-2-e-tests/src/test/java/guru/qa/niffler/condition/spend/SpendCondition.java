@@ -61,10 +61,10 @@ public class SpendCondition {
                         );
                         return CheckResult.rejected(message, bindElementsToSpends(elements));
                     }
-                    if (!cells.get(4).getText().equals(expectedSpending.category())) {
+                    if (!cells.get(4).getText().equals(expectedSpending.category().name())) {
                         String message = String.format(
                                 "Spend category mismatch (expected: %s, actual: %s)",
-                                expectedSpending.category(), cells.get(4).getText()
+                                expectedSpending.category().name(), cells.get(4).getText()
                         );
                         return CheckResult.rejected(message, bindElementsToSpends(elements));
                     }

@@ -35,7 +35,7 @@ public class CategoriesGraphqlController {
         String username = principal.getClaim("sub");
         return restSpendClient.addCategory(new CategoryJson(
                 null,
-                input.category(),
+                input.name(),
                 username,
                 input.archived()
         ));

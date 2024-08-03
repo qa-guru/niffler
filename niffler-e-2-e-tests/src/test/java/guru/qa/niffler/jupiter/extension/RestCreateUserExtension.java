@@ -122,7 +122,7 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         Stopwatch sw = Stopwatch.createStarted();
         while (sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
             UserJson userJson = userdataClient.getCurrentUser(username);
-            if (userJson != null) {
+            if (userJson != null && userJson.id() != null) {
                 return userJson;
             } else {
                 Thread.sleep(100);

@@ -2,7 +2,7 @@ package guru.qa.niffler.test.soap;
 
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
-import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
+import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.userdata.wsdl.FriendState;
@@ -32,15 +32,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class UserDataFriendsSoapTest extends BaseSoapTest {
 
     @Test
-    @DisplayName("SOAP: Для пользователя должен возвращаться список друзей из niffler-userdata")
+    @DisplayName("SOAP: Для пользователя должен возвращаться список друзей и входящих предложений дружить, " +
+            "с сортировкой по статусу (первые - приглашения)")
     @AllureId("100004")
     @Tag("SOAP")
     @GenerateUser(
             friends = @Friends(count = 1),
-            outcomeInvitations = @OutcomeInvitations(count = 1)
+            incomeInvitations = @IncomeInvitations(count = 1)
     )
     void getAllFriendsListTest(@User(selector = METHOD) UserJson user) throws Exception {
         UserJson testFriend = user.testData().friends().getFirst();
+        UserJson testInvitation = user.testData().incomeInvitations().getFirst();
+
         FriendsRequest fr = friendsRequest(user.username(), null);
         final UsersResponse usersResponse = wsClient.friendsRequest(fr);
 
@@ -48,10 +51,17 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
                 assertNotNull(usersResponse)
         );
         step("Check response list size", () ->
-                assertEquals(1, usersResponse.getUser().size())
+                assertEquals(2, usersResponse.getUser().size())
         );
 
-        final var foundedFriend = usersResponse.getUser().getFirst();
+        final var foundedInvitation = usersResponse.getUser().getFirst();
+        final var foundedFriend = usersResponse.getUser().getLast();
+
+        step("Check income invitation in response", () -> {
+            assertSame(FriendState.INVITE_RECEIVED, foundedInvitation.getFriendState());
+            assertEquals(testInvitation.id(), UUID.fromString(foundedInvitation.getId()));
+            assertEquals(testInvitation.username(), foundedInvitation.getUsername());
+        });
 
         step("Check friend in response", () -> {
             assertSame(FriendState.FRIEND, foundedFriend.getFriendState());
@@ -67,7 +77,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
     @Tag("SOAP")
     @GenerateUser(
             friends = @Friends(count = 2),
-            outcomeInvitations = @OutcomeInvitations(count = 1)
+            incomeInvitations = @IncomeInvitations(count = 1)
     )
     void getFiltersFriendsListTest(@User(selector = METHOD) UserJson user) throws Exception {
         UserJson testFriend = user.testData().friends().getFirst();

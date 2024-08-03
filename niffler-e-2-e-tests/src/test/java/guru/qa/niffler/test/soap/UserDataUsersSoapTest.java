@@ -61,15 +61,13 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
     @Tag("SOAP")
     @GenerateUser()
     void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String firstName = "Pizzly";
-        final String secondName = "Pizzlyvich";
+        final String fullname = "Pizzly Pizzlyvich";
 
         UpdateUserRequest uir = new UpdateUserRequest();
         guru.qa.niffler.userdata.wsdl.User xmlUser = new guru.qa.niffler.userdata.wsdl.User();
         xmlUser.setUsername(user.username());
         xmlUser.setCurrency(Currency.USD);
-        xmlUser.setFirstname(firstName);
-        xmlUser.setSurname(secondName);
+        xmlUser.setFullname(fullname);
         uir.setUser(xmlUser);
 
         final UserResponse updateUserInfoResponse = wsClient.updateUserInfo(uir);
@@ -83,11 +81,8 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
         step("Check that response contains updated currency (USD)", () ->
                 assertEquals(Currency.USD, updateUserInfoResponse.getUser().getCurrency())
         );
-        step("Check that response contains updated firstname (Pizzly)", () ->
-                assertEquals(firstName, updateUserInfoResponse.getUser().getFirstname())
-        );
-        step("Check that response contains updated surname (Pizzlyvich)", () ->
-                assertEquals(secondName, updateUserInfoResponse.getUser().getSurname())
+        step("Check that response contains updated fullname (Pizzly Pizzlyvich)", () ->
+                assertEquals(fullname, updateUserInfoResponse.getUser().getFullname())
         );
     }
 

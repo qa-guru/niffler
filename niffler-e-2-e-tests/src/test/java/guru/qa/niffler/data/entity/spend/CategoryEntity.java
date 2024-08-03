@@ -25,7 +25,7 @@ public class CategoryEntity implements Serializable {
     private UUID id;
 
     @Column(nullable = false)
-    private String category;
+    private String name;
 
     @Column(nullable = false)
     private String username;

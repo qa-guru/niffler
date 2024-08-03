@@ -40,7 +40,7 @@ jobs:
           bash ./docker-build.sh prod push || exit 1
       - name: deploy
         run: |
-          docker-compose -f docker-compose.ci.yml pull frontend.niffler.dc
-          docker-compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
+          docker compose -f docker-compose.ci.yml pull frontend.niffler.dc
+          docker compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
           docker system prune -a -f
           echo "Done!"

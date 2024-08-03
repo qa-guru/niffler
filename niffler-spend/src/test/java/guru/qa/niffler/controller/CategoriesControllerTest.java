@@ -29,7 +29,7 @@ class CategoriesControllerTest {
     void getCategories() throws Exception {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setUsername("dima");
-        categoryEntity.setCategory("Обучение");
+        categoryEntity.setName("Обучение");
         categoryRepository.save(categoryEntity);
 
         mockMvc.perform(get("/internal/categories/all")
@@ -38,6 +38,6 @@ class CategoriesControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].username").value("dima"))
-                .andExpect(jsonPath("$[0].category").value("Обучение"));
+                .andExpect(jsonPath("$[0].name").value("Обучение"));
     }
 }

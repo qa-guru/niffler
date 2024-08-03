@@ -33,7 +33,7 @@ public record SpendJson(
                 entity.getSpendDate(),
                 new CategoryJson(
                         category.getId(),
-                        category.getCategory(),
+                        category.getName(),
                         username,
                         category.isArchived()
                 ),

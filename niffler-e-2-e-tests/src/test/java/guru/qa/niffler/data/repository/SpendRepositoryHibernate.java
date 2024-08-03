@@ -43,10 +43,10 @@ public class SpendRepositoryHibernate implements SpendRepository {
 
     @Override
     public Optional<CategoryEntity> findUserCategoryByName(String username,
-                                                           String category) {
+                                                           String name) {
         try {
-            return Optional.of(spendEm.createQuery("select c from CategoryEntity c where c.category=:category and c.username=:username", CategoryEntity.class)
-                    .setParameter("category", category)
+            return Optional.of(spendEm.createQuery("select c from CategoryEntity c where c.name=:name and c.username=:username", CategoryEntity.class)
+                    .setParameter("name", name)
                     .setParameter("username", username)
                     .getSingleResult());
         } catch (NoResultException e) {

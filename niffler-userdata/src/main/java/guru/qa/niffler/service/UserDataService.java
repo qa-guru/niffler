@@ -29,7 +29,6 @@ import java.util.Objects;
 
 import static guru.qa.niffler.model.FriendState.FRIEND;
 import static guru.qa.niffler.model.FriendState.INVITE_SENT;
-import static java.util.Comparator.comparing;
 
 @Component
 public class UserDataService {

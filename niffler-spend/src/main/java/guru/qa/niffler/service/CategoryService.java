@@ -14,7 +14,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
@@ -32,7 +31,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public @Nonnull
     List<CategoryJson> getAllCategories(@Nonnull String username, boolean excludeArchived) {
-        return categoryRepository.findAllByUsernameOrderByCategory(username)
+        return categoryRepository.findAllByUsernameOrderByName(username)
                 .stream()
                 .filter(ce -> !excludeArchived || !ce.isArchived())
                 .map(CategoryJson::fromEntity)
@@ -45,7 +44,7 @@ public class CategoryService {
         CategoryEntity categoryEntity = categoryRepository.findByUsernameAndId(category.username(), category.id())
                 .orElseThrow(() -> new CategoryNotFoundException("Can`t find category by id: '" + category.id() + "'"));
 
-        categoryEntity.setCategory(category.category());
+        categoryEntity.setName(category.name());
         if (!category.archived() && categoryEntity.isArchived()) {
             if (categoryRepository.countByUsernameAndArchived(category.username(), false) > MAX_CATEGORIES_SIZE) {
                 LOG.error("### Can`t unarchive category for user: {}", category.username());
@@ -71,7 +70,7 @@ public class CategoryService {
     @Nonnull
     @Transactional
     CategoryEntity getOrSave(@Nonnull CategoryJson category) {
-        return categoryRepository.findByUsernameAndCategory(category.username(), category.category())
+        return categoryRepository.findByUsernameAndName(category.username(), category.name())
                 .orElseGet(() -> this.save(category));
     }
 
@@ -79,7 +78,7 @@ public class CategoryService {
     @Transactional
     CategoryEntity save(@Nonnull CategoryJson category) {
         final String username = category.username();
-        final String categoryName = category.category();
+        final String categoryName = category.name();
 
         if (categoryRepository.countByUsernameAndArchived(username, false) > MAX_CATEGORIES_SIZE) {
             LOG.error("### Can`t add over than 8 categories for user: {}", username);
@@ -87,7 +86,7 @@ public class CategoryService {
         }
 
         CategoryEntity ce = new CategoryEntity();
-        ce.setCategory(categoryName);
+        ce.setName(categoryName);
         ce.setUsername(username);
         ce.setArchived(false);
         try {

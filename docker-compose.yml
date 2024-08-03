@@ -14,7 +14,7 @@ services:
       timeout: 3s
       retries: 5
     ports:
-      - "5432:5432"
+      - 5432:5432
     networks:
       - niffler-network
 
@@ -22,7 +22,7 @@ services:
     container_name: zookeeper
     image: confluentinc/cp-zookeeper:7.3.2
     ports:
-      - "2181:2181"
+      - 2181:2181
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
     networks:
@@ -32,7 +32,7 @@ services:
     container_name: kafka
     image: confluentinc/cp-kafka:7.3.2
     ports:
-      - "9092:9092"
+      - 9092:9092
     depends_on:
       zookeeper:
         condition: service_started
@@ -48,14 +48,14 @@ services:
 
   auth.niffler.dc:
     container_name: auth.niffler.dc
-    image: ${PREFIX}/niffler-auth-${PROFILE}:latest
+    image: ${PREFIX}/niffler-auth-docker:latest
     ports:
-      - "9000:9000"
+      - 9000:9000
     healthcheck:
       test: "wget --spider http://localhost:9000/actuator/health || exit 1"
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 5
     restart: always
     depends_on:
       niffler-all-db:
@@ -67,10 +67,10 @@ services:
 
   currency.niffler.dc:
     container_name: currency.niffler.dc
-    image: ${PREFIX}/niffler-currency-${PROFILE}:latest
+    image: ${PREFIX}/niffler-currency-docker:latest
     ports:
-      - "8091:8091"
-      - "8092:8092"
+      - 8091:8091
+      - 8092:8092
     restart: always
     depends_on:
       niffler-all-db:
@@ -80,14 +80,14 @@ services:
 
   gateway.niffler.dc:
     container_name: gateway.niffler.dc
-    image: ${PREFIX}/niffler-gateway-${PROFILE}:latest
+    image: ${PREFIX}/niffler-gateway-docker:latest
     ports:
-      - "8090:8090"
+      - 8090:8090
     healthcheck:
       test: "wget --spider http://localhost:8090/actuator/health || exit 1"
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 5
     restart: always
     depends_on:
       auth.niffler.dc:
@@ -97,9 +97,9 @@ services:
 
   spend.niffler.dc:
     container_name: spend.niffler.dc
-    image: ${PREFIX}/niffler-spend-${PROFILE}:latest
+    image: ${PREFIX}/niffler-spend-docker:latest
     ports:
-      - "8093:8093"
+      - 8093:8093
     restart: always
     depends_on:
       niffler-all-db:
@@ -109,9 +109,9 @@ services:
 
   userdata.niffler.dc:
     container_name: userdata.niffler.dc
-    image: ${PREFIX}/niffler-userdata-${PROFILE}:latest
+    image: ${PREFIX}/niffler-userdata-docker:latest
     ports:
-      - "8089:8089"
+      - 8089:8089
     restart: always
     depends_on:
       auth.niffler.dc:
@@ -121,19 +121,22 @@ services:
 
   frontend.niffler.dc:
     container_name: frontend.niffler.dc
-    image: "${FRONT_IMAGE}"
+    build:
+      context: ./${FRONT}
+      dockerfile: ./Dockerfile
+      tags:
+        - ${PREFIX}/${FRONT}-docker:latest
+        - ${PREFIX}/${FRONT}-docker:${FRONT_VERSION}
+      args:
+        NPM_COMMAND: build:docker
+    image: ${PREFIX}/${FRONT}-docker:latest
     ports:
-      - "80:80"
-    restart: always
+      - 80:80
     depends_on:
       gateway.niffler.dc:
-        condition: service_healthy
+        condition: service_started
     networks:
       - niffler-network
-
-volumes:
-  pgdata:
-    external: true
 
 networks:
   niffler-network:

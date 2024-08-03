@@ -1,12 +1,12 @@
 package guru.qa.niffler.api;
 
 import guru.qa.niffler.userdata.wsdl.AcceptInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.AllUsersPageRequest;
 import guru.qa.niffler.userdata.wsdl.AllUsersRequest;
 import guru.qa.niffler.userdata.wsdl.CurrentUserRequest;
 import guru.qa.niffler.userdata.wsdl.DeclineInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.FriendsPageRequest;
 import guru.qa.niffler.userdata.wsdl.FriendsRequest;
-import guru.qa.niffler.userdata.wsdl.IncomeInvitationsRequest;
-import guru.qa.niffler.userdata.wsdl.OutcomeInvitationsRequest;
 import guru.qa.niffler.userdata.wsdl.RemoveFriendRequest;
 import guru.qa.niffler.userdata.wsdl.SendInvitationRequest;
 import guru.qa.niffler.userdata.wsdl.UpdateUserRequest;
@@ -45,6 +45,13 @@ public interface UserdataWsApi {
             "Accept-Charset: utf-8"
     })
     @POST("ws")
+    Call<UsersResponse> allUsersPageRequest(@Body AllUsersPageRequest allUsersPageRequest);
+
+    @Headers({
+            "Content-Type: text/xml",
+            "Accept-Charset: utf-8"
+    })
+    @POST("ws")
     Call<UsersResponse> friendsRequest(@Body FriendsRequest friendsRequest);
 
     @Headers({
@@ -52,21 +59,14 @@ public interface UserdataWsApi {
             "Accept-Charset: utf-8"
     })
     @POST("ws")
+    Call<UsersResponse> friendsPageRequest(@Body FriendsPageRequest friendsPageRequest);
+
+    @Headers({
+            "Content-Type: text/xml",
+            "Accept-Charset: utf-8"
+    })
+    @POST("ws")
     Call<Void> removeFriendRequest(@Body RemoveFriendRequest removeFriendRequest);
-
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UsersResponse> incomeInvitationsRequest(@Body IncomeInvitationsRequest incomeInvitationsRequest);
-
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UsersResponse> outcomeInvitationsRequest(@Body OutcomeInvitationsRequest outcomeInvitationsRequest);
 
     @Headers({
             "Content-Type: text/xml",

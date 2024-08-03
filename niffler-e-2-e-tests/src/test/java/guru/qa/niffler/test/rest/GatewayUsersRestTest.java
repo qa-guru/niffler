@@ -1,13 +1,11 @@
 package guru.qa.niffler.test.rest;
 
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
-import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.CurrencyValues;
-import guru.qa.niffler.model.rest.FriendState;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
@@ -20,14 +18,10 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.List;
 
-import static guru.qa.niffler.model.rest.FriendState.FRIEND;
-import static guru.qa.niffler.model.rest.FriendState.INVITE_RECEIVED;
 import static guru.qa.niffler.model.rest.FriendState.INVITE_SENT;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("[REST][niffler-gateway]: Пользователи")
@@ -66,15 +60,14 @@ public class GatewayUsersRestTest extends BaseRestTest {
     )
     void updateUserTest(@User UserJson user,
                         @Token String bearerToken) throws Exception {
-        final String firstName = "Pizzly";
-        final String secondName = "Pizzlyvich";
+        final String fullname = "Pizzly Pizzlyvich";
 
         UserJson jsonUser = new UserJson(
                 null,
                 user.username(),
-                firstName + " " + secondName,
-                firstName,
-                secondName,
+                fullname,
+                null,
+                null,
                 CurrencyValues.KZT,
                 null,
                 null,
@@ -93,11 +86,8 @@ public class GatewayUsersRestTest extends BaseRestTest {
         step("Check that response contains updated currency (KZT)", () ->
                 assertEquals(CurrencyValues.KZT, updateUserInfoResponse.currency())
         );
-        step("Check that response contains updated firstname (Pizzly)", () ->
-                assertEquals(firstName, updateUserInfoResponse.firstname())
-        );
-        step("Check that response contains updated surname (Pizzlyvich)", () ->
-                assertEquals(secondName, updateUserInfoResponse.surname())
+        step("Check that response contains updated fullname (Pizzly Pizzlyvich)", () ->
+                assertEquals(fullname, updateUserInfoResponse.fullname())
         );
     }
 

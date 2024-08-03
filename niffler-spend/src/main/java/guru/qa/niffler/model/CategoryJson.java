@@ -9,8 +9,8 @@ import java.util.UUID;
 public record CategoryJson(
         @JsonProperty("id")
         UUID id,
-        @JsonProperty("category")
-        String category,
+        @JsonProperty("name")
+        String name,
         @JsonProperty("username")
         String username,
         @JsonProperty("archived")
@@ -19,7 +19,7 @@ public record CategoryJson(
     public static @Nonnull CategoryJson fromEntity(@Nonnull CategoryEntity entity) {
         return new CategoryJson(
                 entity.getId(),
-                entity.getCategory(),
+                entity.getName(),
                 entity.getUsername(),
                 entity.isArchived()
         );

@@ -3,12 +3,12 @@ package guru.qa.niffler.api;
 import guru.qa.niffler.api.converter.JaxbConverterFactory;
 import guru.qa.niffler.api.service.RestClient;
 import guru.qa.niffler.userdata.wsdl.AcceptInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.AllUsersPageRequest;
 import guru.qa.niffler.userdata.wsdl.AllUsersRequest;
 import guru.qa.niffler.userdata.wsdl.CurrentUserRequest;
 import guru.qa.niffler.userdata.wsdl.DeclineInvitationRequest;
+import guru.qa.niffler.userdata.wsdl.FriendsPageRequest;
 import guru.qa.niffler.userdata.wsdl.FriendsRequest;
-import guru.qa.niffler.userdata.wsdl.IncomeInvitationsRequest;
-import guru.qa.niffler.userdata.wsdl.OutcomeInvitationsRequest;
 import guru.qa.niffler.userdata.wsdl.RemoveFriendRequest;
 import guru.qa.niffler.userdata.wsdl.SendInvitationRequest;
 import guru.qa.niffler.userdata.wsdl.UpdateUserRequest;
@@ -57,6 +57,14 @@ public class UserdataWsClient extends RestClient {
                 .body();
     }
 
+    @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: allUsersPageRequest")
+    @Nullable
+    public UsersResponse allUsersPageRequest(@Nonnull AllUsersPageRequest allUsersPageRequest) throws Exception {
+        return userdataWs.allUsersPageRequest(allUsersPageRequest)
+                .execute()
+                .body();
+    }
+
     @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: friendsRequest")
     @Nullable
     public UsersResponse friendsRequest(@Nonnull FriendsRequest friendsRequest) throws Exception {
@@ -65,26 +73,18 @@ public class UserdataWsClient extends RestClient {
                 .body();
     }
 
+    @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: friendsPageRequest")
+    @Nullable
+    public UsersResponse friendsPageRequest(@Nonnull FriendsPageRequest friendsPageRequest) throws Exception {
+        return userdataWs.friendsPageRequest(friendsPageRequest)
+                .execute()
+                .body();
+    }
+
     @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: removeFriendRequest")
     public void removeFriendRequest(@Nonnull RemoveFriendRequest removeFriendRequest) throws Exception {
         userdataWs.removeFriendRequest(removeFriendRequest)
                 .execute();
-    }
-
-    @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: incomeInvitationsRequest")
-    @Nullable
-    public UsersResponse incomeInvitationsRequest(@Nonnull IncomeInvitationsRequest incomeInvitationsRequest) throws Exception {
-        return userdataWs.incomeInvitationsRequest(incomeInvitationsRequest)
-                .execute()
-                .body();
-    }
-
-    @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: outcomeInvitationsRequest")
-    @Nullable
-    public UsersResponse outcomeInvitationsRequest(@Nonnull OutcomeInvitationsRequest outcomeInvitationsRequest) throws Exception {
-        return userdataWs.outcomeInvitationsRequest(outcomeInvitationsRequest)
-                .execute()
-                .body();
     }
 
     @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: acceptInvitationRequest")

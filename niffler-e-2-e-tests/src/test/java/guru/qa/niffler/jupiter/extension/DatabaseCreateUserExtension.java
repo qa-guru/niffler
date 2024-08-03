@@ -169,7 +169,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
                                 CurrencyValues.valueOf(se.getCurrency().name()),
                                 new CategoryJson(
                                         categoryEntity.getId(),
-                                        categoryEntity.getCategory(),
+                                        categoryEntity.getName(),
                                         username,
                                         categoryEntity.isArchived()
                                 ),
@@ -187,12 +187,12 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
             for (GenerateCategory category : categories) {
                 CategoryEntity ce = new CategoryEntity();
                 ce.setUsername(createdUser.username());
-                ce.setCategory(category.value());
+                ce.setName(category.value());
                 ce = spendRepository.createCategory(ce);
                 createdUser.testData().categories().add(
                         new CategoryJson(
                                 ce.getId(),
-                                ce.getCategory(),
+                                ce.getName(),
                                 ce.getUsername(),
                                 ce.isArchived()
                         )

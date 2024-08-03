@@ -55,7 +55,7 @@ export const apiClient = {
             const result = await makeRequest("/categories/add", {
                 method: "POST",
                 body: JSON.stringify({
-                    category: name,
+                    name: name,
                 }),
             });
             onSuccess(result);
@@ -68,7 +68,7 @@ export const apiClient = {
             const result = await makeRequest("/categories/edit", {
                 method: "PATCH",
                 body: JSON.stringify({
-                    category: name,
+                    name: name,
                 }),
             });
             onSuccess(result);

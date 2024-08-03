@@ -37,7 +37,7 @@ public class CategoriesController {
         String username = principal.getClaim("sub");
         return restSpendClient.addCategory(new CategoryJson(
                 category.id(),
-                category.category(),
+                category.name(),
                 username,
                 category.archived()
         ));
@@ -49,7 +49,7 @@ public class CategoriesController {
         String username = principal.getClaim("sub");
         return restSpendClient.updateCategory(new CategoryJson(
                 category.id(),
-                category.category(),
+                category.name(),
                 username,
                 category.archived()
         ));

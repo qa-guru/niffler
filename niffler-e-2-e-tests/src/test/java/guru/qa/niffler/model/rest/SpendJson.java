@@ -29,7 +29,7 @@ public record SpendJson(
                 currency,
                 new CategoryJson(
                         category.id(),
-                        category.category(),
+                        category.name(),
                         username,
                         category.archived()
                 ),

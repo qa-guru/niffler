@@ -93,9 +93,9 @@ public class StatService {
         }
 
         categoryService.getAllCategories(username, true).stream()
-                .filter(c -> !spendsByCategory.containsKey(c.category()))
+                .filter(c -> !spendsByCategory.containsKey(c.name()))
                 .map(c -> new StatisticByCategoryJson(
-                        c.category(),
+                        c.name(),
                         0.0,
                         0.0,
                         Collections.emptyList()
@@ -169,7 +169,7 @@ public class StatService {
                             CategoryJson ce = sj.category();
                             return ce.archived()
                                     ? "Archived"
-                                    : ce.category();
+                                    : ce.name();
                         },
                         HashMap::new,
                         Collectors.toCollection(ArrayList::new)
