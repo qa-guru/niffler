@@ -25,10 +25,13 @@ public class CategoryEntity implements Serializable {
     private UUID id;
 
     @Column(nullable = false)
-    private String category;
+    private String name;
 
     @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
+    private boolean archived;
 
     @Override
     public final boolean equals(Object o) {

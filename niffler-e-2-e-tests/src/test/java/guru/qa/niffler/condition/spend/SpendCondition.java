@@ -3,6 +3,7 @@ package guru.qa.niffler.condition.spend;
 import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementsCondition;
+import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.utils.DateUtils;
@@ -25,7 +26,7 @@ public class SpendCondition {
 
             @Nonnull
             @Override
-            public CheckResult check(Driver driver, List<WebElement> elements) {
+            public CheckResult check(@Nonnull Driver driver, @Nonnull List<WebElement> elements) {
                 if (elements.size() != expectedSpends.length) {
                     String message = String.format(
                             "Spends table size mismatch (expected: %s, actual: %s)",
@@ -60,10 +61,10 @@ public class SpendCondition {
                         );
                         return CheckResult.rejected(message, bindElementsToSpends(elements));
                     }
-                    if (!cells.get(4).getText().equals(expectedSpending.category())) {
+                    if (!cells.get(4).getText().equals(expectedSpending.category().name())) {
                         String message = String.format(
                                 "Spend category mismatch (expected: %s, actual: %s)",
-                                expectedSpending.category(), cells.get(4).getText()
+                                expectedSpending.category().name(), cells.get(4).getText()
                         );
                         return CheckResult.rejected(message, bindElementsToSpends(elements));
                     }
@@ -89,7 +90,12 @@ public class SpendCondition {
                             DateUtils.fromString(cells.get(1).getText()),
                             Double.valueOf(cells.get(2).getText()),
                             CurrencyValues.valueOf(cells.get(3).getText()),
-                            cells.get(4).getText(),
+                            new CategoryJson(
+                                    null,
+                                    cells.get(4).getText(),
+                                    null,
+                                    false
+                            ),
                             cells.get(5).getText(),
                             null
                     );

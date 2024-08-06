@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,13 @@ public class SpendController {
         this.userDataClient = userDataClient;
     }
 
+    @GetMapping("/{id}")
+    public SpendJson getSpend(@PathVariable("id") String id,
+                              @AuthenticationPrincipal Jwt principal) {
+        String username = principal.getClaim("sub");
+        return restSpendClient.getSpend(id, username);
+    }
+
     @GetMapping("/all")
     public List<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal,
                                      @RequestParam(required = false) DataFilterValues filterPeriod,
@@ -49,10 +57,6 @@ public class SpendController {
     public SpendJson addSpend(@Valid @RequestBody SpendJson spend,
                               @AuthenticationPrincipal Jwt principal) {
         String username = principal.getClaim("sub");
-        CurrencyValues userCurrency = userDataClient.currentUser(username).currency();
-        if (userCurrency != spend.currency()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Spending currency should be same with user currency");
-        }
         return restSpendClient.addSpend(spend.addUsername(username));
     }
 

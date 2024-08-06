@@ -47,7 +47,6 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
     }
 
     @Step("Login to niffler using api")
-    @SuppressWarnings("unchecked")
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         ApiLogin apiLoginAnnotation = AnnotationSupport.findAnnotation(
@@ -73,12 +72,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
                 userToLogin = AbstractCreateUserExtension.createdUsers(context, NESTED).getFirst();
             } else {
                 userToLogin = new UserJson(apiLoginAnnotation.username(), new TestData(
-                        apiLoginAnnotation.password(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null)
+                        apiLoginAnnotation.password())
                 );
             }
             setCodeVerifier(context, OauthUtils.codeVerifier());

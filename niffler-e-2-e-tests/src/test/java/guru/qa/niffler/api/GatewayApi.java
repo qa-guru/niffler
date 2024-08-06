@@ -42,14 +42,6 @@ public interface GatewayApi {
     Call<Void> removeFriend(@Header("Authorization") String bearerToken,
                             @Query("username") @Nullable String targetUsername);
 
-    @GET("api/invitations/income")
-    Call<List<UserJson>> incomeInvitations(@Header("Authorization") String bearerToken,
-                                           @Query("searchQuery") @Nullable String searchQuery);
-
-    @GET("api/invitations/outcome")
-    Call<List<UserJson>> outcomeInvitations(@Header("Authorization") String bearerToken,
-                                            @Query("searchQuery") @Nullable String searchQuery);
-
     @POST("api/invitations/send")
     Call<UserJson> sendInvitation(@Header("Authorization") String bearerToken,
                                   @Body FriendJson friend);

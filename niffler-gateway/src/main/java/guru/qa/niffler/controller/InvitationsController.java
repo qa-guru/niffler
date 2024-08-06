@@ -10,14 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 
 @RestController
@@ -31,20 +27,6 @@ public class InvitationsController {
     @Autowired
     public InvitationsController(UserDataClient userDataClient) {
         this.userDataClient = userDataClient;
-    }
-
-    @GetMapping("/income")
-    public List<UserJson> incomeInvitations(@AuthenticationPrincipal Jwt principal,
-                                            @RequestParam(required = false) String searchQuery) {
-        String username = principal.getClaim("sub");
-        return userDataClient.incomeInvitations(username, searchQuery);
-    }
-
-    @GetMapping("/outcome")
-    public List<UserJson> outcomeInvitations(@AuthenticationPrincipal Jwt principal,
-                                             @RequestParam(required = false) String searchQuery) {
-        String username = principal.getClaim("sub");
-        return userDataClient.outcomeInvitations(username, searchQuery);
     }
 
     @PostMapping("/send")

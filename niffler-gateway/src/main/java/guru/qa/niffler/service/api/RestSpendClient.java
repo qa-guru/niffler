@@ -6,6 +6,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.StatisticJson;
+import guru.qa.niffler.model.StatisticV2Json;
 import guru.qa.niffler.model.page.RestPage;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -61,6 +61,30 @@ public class RestSpendClient {
     }
 
     public @Nonnull
+    CategoryJson updateCategory(@Nonnull CategoryJson category) {
+        return Optional.ofNullable(
+                restTemplate.postForObject(
+                        nifflerSpendApiUri + "/categories/update",
+                        category,
+                        CategoryJson.class
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST CategoryJson response is given [/categories/update/ Route]"));
+    }
+
+    public @Nonnull
+    SpendJson getSpend(@Nonnull String id,
+                       @Nonnull String username) {
+        return Optional.ofNullable(
+                restTemplate.getForObject(
+                        nifflerSpendApiUri + "/spends/{id}?username={username}",
+                        SpendJson.class,
+                        id,
+                        username
+                )
+        ).orElseThrow(() -> new NoRestResponseException("No REST SpendJson response is given [/spend/{id}/ Route]"));
+    }
+
+    public @Nonnull
     List<SpendJson> getSpends(@Nonnull String username,
                               @Nullable DataFilterValues filterPeriod,
                               @Nullable CurrencyValues filterCurrency) {
@@ -84,15 +108,13 @@ public class RestSpendClient {
                               @Nullable CurrencyValues filterCurrency) {
         return Optional.ofNullable(
                 restTemplate.getForObject(
-                        nifflerSpendApiUri + "/v2/spends/all?username={username}&from={from}&to={to}&filterCurrency={filterCurrency}" +
-                                "&page={page}&size={size}" + extractSort(pageable),
+                        nifflerSpendApiUri + "/v2/spends/all?username={username}&from={from}&to={to}&filterCurrency={filterCurrency}"
+                                + new HttpQueryPaginationAndSort(pageable),
                         RestPage.class,
                         username,
                         filterPeriod != null ? dateFormat(filterDate(filterPeriod)) : null,
                         filterPeriod != null ? dateFormat(new Date()) : null,
-                        filterCurrency != null ? filterCurrency.name() : null,
-                        pageable.getPageNumber(),
-                        pageable.getPageSize()
+                        filterCurrency != null ? filterCurrency.name() : null
                 )
         ).orElseThrow(() -> new NoRestResponseException("No REST Page<SpendJson> response is given [/v2/spends/all/ Route]"));
     }
@@ -134,7 +156,24 @@ public class RestSpendClient {
                         filterPeriod != null ? dateFormat(new Date()) : null,
                         filterCurrency != null ? filterCurrency.name() : null
                 )
-        ).orElseThrow(() -> new NoRestResponseException("No REST List<StatisticJson> response is given [/spends/stat/ Route]")));
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<StatisticJson> response is given [/v2/stat/total Route]")));
+    }
+
+    public @Nonnull
+    StatisticV2Json statisticV2(@Nonnull String username,
+                                @Nonnull CurrencyValues userCurrency,
+                                @Nullable CurrencyValues filterCurrency,
+                                @Nullable DataFilterValues filterPeriod) {
+        return Optional.ofNullable(
+                restTemplate.getForObject(
+                        nifflerSpendApiUri + "/v2/stat/total?username={username}&userCurrency={userCurrency}&from={from}&to={to}&filterCurrency={filterCurrency}",
+                        StatisticV2Json.class,
+                        username,
+                        userCurrency.name(),
+                        filterPeriod != null ? dateFormat(filterDate(filterPeriod)) : null,
+                        filterPeriod != null ? dateFormat(new Date()) : null,
+                        filterCurrency != null ? filterCurrency.name() : null
+                )).orElseThrow(() -> new NoRestResponseException("No REST StatisticV2Json response is given [/v2/stat/total Route]"));
     }
 
     public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
@@ -171,19 +210,5 @@ public class RestSpendClient {
         cal.setTime(date);
         cal.add(selector, days);
         return cal.getTime();
-    }
-
-    private @Nonnull String extractSort(@Nonnull Pageable pageable) {
-        if (!pageable.getSort().isEmpty()) {
-            StringBuilder sortQuery = new StringBuilder();
-            for (Sort.Order order : pageable.getSort()) {
-                sortQuery.append("&sort=");
-                sortQuery.append(order.getProperty());
-                sortQuery.append(",");
-                sortQuery.append(order.getDirection().name());
-            }
-            return sortQuery.toString();
-        }
-        return "";
     }
 }

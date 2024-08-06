@@ -19,7 +19,6 @@ import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -41,14 +40,7 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         authClient.register(username, password);
         ThreadLocalCookieStore.INSTANCE.removeAll();
         UserJson currentUser = waitWhileUserToBeConsumed(username, 10000L);
-        return currentUser.addTestData(new TestData(
-                password,
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>()
-        ));
+        return currentUser.addTestData(new TestData(password));
     }
 
     @Step("Create income invitations for test user (REST)")
@@ -101,7 +93,12 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
                         DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()),
                         spend.amount(),
                         spend.currency(),
-                        spend.spendCategory(),
+                        new CategoryJson(
+                                null,
+                                spend.spendCategory(),
+                                createdUser.username(),
+                                false
+                        ),
                         spend.spendName(),
                         createdUser.username()
                 );
@@ -115,7 +112,7 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
     protected void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, @Nonnull UserJson createdUser) throws Exception {
         if (categories != null) {
             for (GenerateCategory category : categories) {
-                CategoryJson cj = new CategoryJson(null, category.value(), createdUser.username());
+                CategoryJson cj = new CategoryJson(null, category.value(), createdUser.username(), category.archived());
                 createdUser.testData().categories().add(spendClient.createCategory(cj));
             }
         }
@@ -125,7 +122,7 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
         Stopwatch sw = Stopwatch.createStarted();
         while (sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
             UserJson userJson = userdataClient.getCurrentUser(username);
-            if (userJson != null) {
+            if (userJson != null && userJson.id() != null) {
                 return userJson;
             } else {
                 Thread.sleep(100);

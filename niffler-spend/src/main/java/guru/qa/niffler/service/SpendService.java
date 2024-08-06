@@ -2,9 +2,9 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.data.CategoryEntity;
 import guru.qa.niffler.data.SpendEntity;
-import guru.qa.niffler.data.repository.CategoryRepository;
+import guru.qa.niffler.data.projection.SumByCategoryInfo;
 import guru.qa.niffler.data.repository.SpendRepository;
-import guru.qa.niffler.ex.CategoryNotFoundException;
+import guru.qa.niffler.ex.InvalidIdException;
 import guru.qa.niffler.ex.SpendNotFoundException;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -24,19 +25,18 @@ import java.util.UUID;
 public class SpendService {
 
     private final SpendRepository spendRepository;
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     @Autowired
-    public SpendService(SpendRepository spendRepository, CategoryRepository categoryRepository) {
+    public SpendService(SpendRepository spendRepository, CategoryService categoryService) {
         this.spendRepository = spendRepository;
-        this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
     }
 
     @Transactional
     public @Nonnull
     SpendJson saveSpendForUser(@Nonnull SpendJson spend) {
         final String username = spend.username();
-        final String category = spend.category();
 
         SpendEntity spendEntity = new SpendEntity();
         spendEntity.setUsername(username);
@@ -44,11 +44,7 @@ public class SpendService {
         spendEntity.setCurrency(spend.currency());
         spendEntity.setDescription(spend.description());
         spendEntity.setAmount(spend.amount());
-
-        CategoryEntity categoryEntity = categoryRepository.findByUsernameAndCategory(username, category)
-                .orElseThrow(() -> new CategoryNotFoundException(
-                        "Can`t find category by given name: " + category
-                ));
+        CategoryEntity categoryEntity = categoryService.getOrSave(spend.category());
 
         spendEntity.setCategory(categoryEntity);
         return SpendJson.fromEntity(spendRepository.save(spendEntity));
@@ -57,14 +53,9 @@ public class SpendService {
     @Transactional
     public @Nonnull
     SpendJson editSpendForUser(@Nonnull SpendJson spend) {
-        return spendRepository.findById(spend.id()).map(
+        return spendRepository.findByIdAndUsername(spend.id(), spend.username()).map(
                 spendEntity -> {
-                    final String category = spend.category();
-                    CategoryEntity categoryEntity = categoryRepository.findByUsernameAndCategory(spend.username(), category)
-                            .orElseThrow(() -> new CategoryNotFoundException(
-                                    "Can`t find category by given name: " + category
-                            ));
-
+                    CategoryEntity categoryEntity = categoryService.getOrSave(spend.category());
                     spendEntity.setSpendDate(spend.spendDate());
                     spendEntity.setCategory(categoryEntity);
                     spendEntity.setAmount(spend.amount());
@@ -74,6 +65,17 @@ public class SpendService {
         ).orElseThrow(() -> new SpendNotFoundException(
                 "Can`t find spend by given id: " + spend.id()
         ));
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull
+    SpendJson getSpendForUser(@Nonnull String id,
+                              @Nonnull String username) {
+        return spendRepository.findByIdAndUsername(extractUuid(id), username)
+                .map(SpendJson::fromEntity)
+                .orElseThrow(() -> new SpendNotFoundException(
+                        "Can`t find spend by given id: " + id
+                ));
     }
 
     @Transactional(readOnly = true)
@@ -142,6 +144,24 @@ public class SpendService {
     }
 
     @Nonnull
+    List<SumByCategoryInfo> getSumByCategories(@Nonnull String username,
+                                               @Nullable Date dateFrom,
+                                               @Nullable Date dateTo) {
+        dateFrom = dateFrom == null
+                ? new Date(0)
+                : dateFrom;
+
+        dateTo = dateTo == null
+                ? new Date()
+                : dateTo;
+
+        List<SumByCategoryInfo> result = new ArrayList<>();
+        result.addAll(spendRepository.statisticByArchivedCategory(username, dateFrom, dateTo));
+        result.addAll(spendRepository.statisticByCategory(username, dateFrom, dateTo));
+        return result;
+    }
+
+    @Nonnull
     Page<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
                                              @Nullable CurrencyValues filterCurrency,
                                              @Nullable Date dateFrom,
@@ -174,5 +194,17 @@ public class SpendService {
                     );
         }
         return spends;
+    }
+
+    private @Nonnull UUID extractUuid(@Nonnull String id) {
+        UUID spendId;
+        try {
+            spendId = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidIdException(
+                    "Invalid id: " + id
+            );
+        }
+        return spendId;
     }
 }

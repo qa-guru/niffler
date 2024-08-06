@@ -8,13 +8,8 @@ import guru.qa.niffler.userdata.wsdl.AllUsersPageRequest;
 import guru.qa.niffler.userdata.wsdl.AllUsersRequest;
 import guru.qa.niffler.userdata.wsdl.CurrentUserRequest;
 import guru.qa.niffler.userdata.wsdl.DeclineInvitationRequest;
-import guru.qa.niffler.userdata.wsdl.Direction;
 import guru.qa.niffler.userdata.wsdl.FriendsPageRequest;
 import guru.qa.niffler.userdata.wsdl.FriendsRequest;
-import guru.qa.niffler.userdata.wsdl.IncomeInvitationsPageRequest;
-import guru.qa.niffler.userdata.wsdl.IncomeInvitationsRequest;
-import guru.qa.niffler.userdata.wsdl.OutcomeInvitationsPageRequest;
-import guru.qa.niffler.userdata.wsdl.OutcomeInvitationsRequest;
 import guru.qa.niffler.userdata.wsdl.RemoveFriendRequest;
 import guru.qa.niffler.userdata.wsdl.SendInvitationRequest;
 import guru.qa.niffler.userdata.wsdl.UpdateUserRequest;
@@ -27,11 +22,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,9 +72,9 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         AllUsersPageRequest request = new AllUsersPageRequest();
         request.setUsername(username);
         request.setSearchQuery(searchQuery);
-        request.setPage(pageable.getPageNumber());
-        request.setSize(pageable.getPageSize());
-        request.getSort().addAll(extractSort(pageable));
+        request.setPageInfo(
+                new SoapPageable(pageable).pageInfo()
+        );
 
         UsersResponse response = sendAndReceive(UsersResponse.class, request);
 
@@ -110,71 +103,9 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
         FriendsPageRequest request = new FriendsPageRequest();
         request.setUsername(username);
         request.setSearchQuery(searchQuery);
-        request.setPage(pageable.getPageNumber());
-        request.setSize(pageable.getPageSize());
-        request.getSort().addAll(extractSort(pageable));
-
-        UsersResponse response = sendAndReceive(UsersResponse.class, request);
-
-        return new PageImpl<>(
-                response.getUser().stream().map(UserJson::fromJaxb).toList(),
-                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
-                response.getTotalElements()
+        request.setPageInfo(
+                new SoapPageable(pageable).pageInfo()
         );
-    }
-
-    @Override
-    public @Nonnull
-    List<UserJson> incomeInvitations(@Nonnull String username, @Nullable String searchQuery) {
-        IncomeInvitationsRequest request = new IncomeInvitationsRequest();
-        request.setUsername(username);
-        request.setSearchQuery(searchQuery);
-
-        UsersResponse response = sendAndReceive(UsersResponse.class, request);
-
-        return response.getUser().stream().map(UserJson::fromJaxb).toList();
-    }
-
-    @Nonnull
-    @Override
-    public Page<UserJson> incomeInvitations(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
-        IncomeInvitationsPageRequest request = new IncomeInvitationsPageRequest();
-        request.setUsername(username);
-        request.setSearchQuery(searchQuery);
-        request.setPage(pageable.getPageNumber());
-        request.setSize(pageable.getPageSize());
-        request.getSort().addAll(extractSort(pageable));
-
-        UsersResponse response = sendAndReceive(UsersResponse.class, request);
-
-        return new PageImpl<>(
-                response.getUser().stream().map(UserJson::fromJaxb).toList(),
-                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
-                response.getTotalElements()
-        );
-    }
-
-    @Override
-    public @Nonnull
-    List<UserJson> outcomeInvitations(@Nonnull String username, @Nullable String searchQuery) {
-        OutcomeInvitationsRequest request = new OutcomeInvitationsRequest();
-        request.setUsername(username);
-        request.setSearchQuery(searchQuery);
-
-        UsersResponse response = sendAndReceive(UsersResponse.class, request);
-
-        return response.getUser().stream().map(UserJson::fromJaxb).toList();
-    }
-
-    @Nonnull
-    @Override
-    public Page<UserJson> outcomeInvitations(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
-        OutcomeInvitationsPageRequest request = new OutcomeInvitationsPageRequest();
-        request.setUsername(username);
-        request.setSearchQuery(searchQuery);
-        request.setPage(pageable.getPageNumber());
-        request.setSize(pageable.getPageSize());
-        request.getSort().addAll(extractSort(pageable));
 
         UsersResponse response = sendAndReceive(UsersResponse.class, request);
 
@@ -232,19 +163,6 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
                 getDefaultUri(),
                 request
         );
-    }
-
-    private @Nonnull List<guru.qa.niffler.userdata.wsdl.Sort> extractSort(@Nonnull Pageable pageable) {
-        List<guru.qa.niffler.userdata.wsdl.Sort> result = new ArrayList<>();
-        if (!pageable.getSort().isEmpty()) {
-            for (Sort.Order order : pageable.getSort()) {
-                guru.qa.niffler.userdata.wsdl.Sort sort = new guru.qa.niffler.userdata.wsdl.Sort();
-                sort.setProperty(order.getProperty());
-                sort.setDirection(Direction.valueOf(order.getDirection().name()));
-                result.add(sort);
-            }
-        }
-        return result;
     }
 
     private @Nonnull <T> T sendAndReceive(@Nonnull Class<T> responseType, @Nonnull Object request) {

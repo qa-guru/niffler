@@ -1,6 +1,8 @@
 {
   "spendDate": "2023-01-26",
-  "category": "Рестораны",
+  "category": {
+    "name": "Рестораны"
+  },
   "currency": "RUB",
   "amount": 300.0,
   "description": "Описание",

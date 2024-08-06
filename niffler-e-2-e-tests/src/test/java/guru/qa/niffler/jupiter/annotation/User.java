@@ -13,6 +13,6 @@ public @interface User {
     Selector selector() default Selector.NESTED;
 
     enum Selector {
-        METHOD, NESTED;
+        METHOD, NESTED
     }
 }

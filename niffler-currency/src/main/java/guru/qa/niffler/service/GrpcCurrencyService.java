@@ -2,14 +2,14 @@ package guru.qa.niffler.service;
 
 
 import com.google.protobuf.Empty;
-import guru.qa.grpc.niffler.grpc.CalculateRequest;
-import guru.qa.grpc.niffler.grpc.CalculateResponse;
-import guru.qa.grpc.niffler.grpc.Currency;
-import guru.qa.grpc.niffler.grpc.CurrencyResponse;
-import guru.qa.grpc.niffler.grpc.CurrencyValues;
-import guru.qa.grpc.niffler.grpc.NifflerCurrencyServiceGrpc;
 import guru.qa.niffler.data.CurrencyEntity;
 import guru.qa.niffler.data.repository.CurrencyRepository;
+import guru.qa.niffler.grpc.CalculateRequest;
+import guru.qa.niffler.grpc.CalculateResponse;
+import guru.qa.niffler.grpc.Currency;
+import guru.qa.niffler.grpc.CurrencyResponse;
+import guru.qa.niffler.grpc.CurrencyValues;
+import guru.qa.niffler.grpc.NifflerCurrencyServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.Nonnull;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @GrpcService
@@ -42,6 +43,7 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
                         .map(e -> Currency.newBuilder()
                                 .setCurrency(CurrencyValues.valueOf(e.getCurrency().name()))
                                 .setCurrencyRate(e.getCurrencyRate())
+                                .setSymbol(e.getSymbol() != null && e.getSymbol().length > 0 ? new String(e.getSymbol(), StandardCharsets.UTF_8) : null)
                                 .build()
                         ).toList()
                 ).build();

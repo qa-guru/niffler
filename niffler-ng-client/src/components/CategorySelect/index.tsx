@@ -1,0 +1,78 @@
+import * as React from 'react';
+import FormControl from '@mui/material/FormControl';
+import {Box, Chip, List, MenuItem, TextField} from '@mui/material';
+import {FC, useEffect, useState} from "react";
+import {apiClient} from "../../api/apiClient.ts";
+import {useSnackBar} from "../../context/SnackBarContext.tsx";
+
+interface CategorySelectInterface {
+    selectedCategory: string;
+    onSelectCategory: (category: string) => void;
+}
+
+export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory, onSelectCategory}) => {
+    const snackbar = useSnackBar();
+    const [allCategories, setAllCategories] = useState<string[]>([]);
+
+    useEffect(() => {
+        apiClient.getCategories({
+            onSuccess: (data) => {
+                const categories = data.map(v => v.category);
+                setAllCategories(categories);
+            },
+            onFailure: (e) => {
+                snackbar.showSnackBar("Failed to fetch categories", "error");
+                console.error(`Failed to fetch categories: ${e.message}`);
+            },
+        });
+    }, []);
+
+    const handlePressEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            const value = (event.target as HTMLInputElement).value
+            onSelectCategory(value);
+            pushToCategories(value);
+        }
+    };
+
+    const pushToCategories = (category: string) => {
+        if (allCategories.length < 8)  {
+            setAllCategories([...allCategories, category]);
+        }
+    }
+
+    const isCategorySelected = (category: string) => {
+        return selectedCategory === category;
+    }
+
+    return (
+        <Box sx={{
+            display: "flex",
+            alignItens: "center",
+        }}>
+            <FormControl sx={{ width: "100%" }}>
+                <TextField
+                    name="category"
+                    value={selectedCategory}
+                    onChange={(e) => onSelectCategory(e.target.value)}
+                    onKeyDown={handlePressEnter}
+                    disabled={allCategories.length >= 8}
+                    placeholder={"Add new category"}
+                />
+                <List sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        marginTop: 1,
+                    }}>
+                    {allCategories.map((name) => (
+                        <MenuItem key={name} sx={{margin: "4px", padding: 0, borderRadius: "20px"}}>
+                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }} >
+                                <Chip key={name} label={name} tabIndex={0} onClick={() => onSelectCategory(name)} color={isCategorySelected(name) ? "primary": "default"}/>
+                            </Box>
+                        </MenuItem>
+                    ))}
+                </List>
+            </FormControl>
+        </Box>
+    );
+}

@@ -84,12 +84,13 @@ public class SpendRepositoryJdbc implements SpendRepository {
     public CategoryEntity createCategory(CategoryEntity category) {
         try (Connection conn = spendDs.getConnection();
              PreparedStatement usersPs = conn.prepareStatement(
-                     "INSERT INTO \"category\" (category, username)" +
-                             " VALUES (?, ?)",
+                     "INSERT INTO \"category\" (name, username, archived)" +
+                             " VALUES (?, ?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
-            usersPs.setString(1, category.getCategory());
+            usersPs.setString(1, category.getName());
             usersPs.setString(2, category.getUsername());
+            usersPs.setBoolean(3, category.isArchived());
             usersPs.executeUpdate();
             UUID generatedUserId;
             try (ResultSet generatedKeys = usersPs.getGeneratedKeys()) {
@@ -119,7 +120,8 @@ public class SpendRepositoryJdbc implements SpendRepository {
             if (resultSet.next()) {
                 category.setId(resultSet.getObject("id", UUID.class));
                 category.setUsername(resultSet.getString("username"));
-                category.setCategory(resultSet.getString("category"));
+                category.setName(resultSet.getString("name"));
+                category.setArchived(resultSet.getBoolean("archived"));
             } else {
                 return Optional.empty();
             }
@@ -130,11 +132,11 @@ public class SpendRepositoryJdbc implements SpendRepository {
     }
 
     @Override
-    public Optional<CategoryEntity> findUserCategoryByName(String username, String category) {
+    public Optional<CategoryEntity> findUserCategoryByName(String username, String categoryName) {
         CategoryEntity result = new CategoryEntity();
         try (Connection conn = spendDs.getConnection();
-             PreparedStatement usersPs = conn.prepareStatement("SELECT * FROM \"category\" WHERE \"category\".category = ? and username = ?")) {
-            usersPs.setString(1, category);
+             PreparedStatement usersPs = conn.prepareStatement("SELECT * FROM \"category\" WHERE \"category\".name = ? and username = ?")) {
+            usersPs.setString(1, categoryName);
             usersPs.setString(2, username);
 
             usersPs.execute();
@@ -143,7 +145,8 @@ public class SpendRepositoryJdbc implements SpendRepository {
             if (resultSet.next()) {
                 result.setId(resultSet.getObject("id", UUID.class));
                 result.setUsername(resultSet.getString("username"));
-                result.setCategory(resultSet.getString("category"));
+                result.setName(resultSet.getString("name"));
+                result.setArchived(resultSet.getBoolean("archived"));
             } else {
                 return Optional.empty();
             }

@@ -44,6 +44,9 @@ export const Redirect = ({}) => {
                     }
                 }).catch((err) => {
                 console.log(err);
+                sessionStorage.clear();
+                setUser(null);
+                navigate("/")
             })
         }
     }, []);

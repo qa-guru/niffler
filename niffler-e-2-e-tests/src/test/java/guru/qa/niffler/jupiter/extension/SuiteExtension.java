@@ -5,10 +5,10 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 public interface SuiteExtension extends BeforeAllCallback {
 
-    default void beforeAllTests(ExtensionContext context) {
+    default void beforeSuite(ExtensionContext context) {
     }
 
-    default void afterAllTests() {
+    default void afterSuite() {
     }
 
     @Override
@@ -16,8 +16,8 @@ public interface SuiteExtension extends BeforeAllCallback {
         context.getRoot().getStore(ExtensionContext.Namespace.GLOBAL).
                 getOrComputeIfAbsent(this.getClass(),
                         k -> {
-                            beforeAllTests(context);
-                            return (ExtensionContext.Store.CloseableResource) this::afterAllTests;
+                            beforeSuite(context);
+                            return (ExtensionContext.Store.CloseableResource) this::afterSuite;
                         }
                 );
     }

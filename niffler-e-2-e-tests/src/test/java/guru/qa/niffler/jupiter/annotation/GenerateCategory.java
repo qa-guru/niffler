@@ -13,4 +13,6 @@ public @interface GenerateCategory {
     boolean handleAnnotation() default true;
 
     String value();
+
+    boolean archived() default false;
 }

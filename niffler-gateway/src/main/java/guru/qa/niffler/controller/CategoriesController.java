@@ -37,8 +37,21 @@ public class CategoriesController {
         String username = principal.getClaim("sub");
         return restSpendClient.addCategory(new CategoryJson(
                 category.id(),
-                category.category(),
-                username
+                category.name(),
+                username,
+                category.archived()
+        ));
+    }
+
+    @PostMapping("/update")
+    public CategoryJson updateCategory(@AuthenticationPrincipal Jwt principal,
+                                       @RequestBody CategoryJson category) {
+        String username = principal.getClaim("sub");
+        return restSpendClient.updateCategory(new CategoryJson(
+                category.id(),
+                category.name(),
+                username,
+                category.archived()
         ));
     }
 }

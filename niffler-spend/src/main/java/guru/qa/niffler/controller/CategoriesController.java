@@ -24,12 +24,18 @@ public class CategoriesController {
     }
 
     @GetMapping("/all")
-    public List<CategoryJson> getCategories(@RequestParam String username) {
-        return categoryService.getAllCategories(username);
+    public List<CategoryJson> getCategories(@RequestParam String username,
+                                            @RequestParam(required = false, defaultValue = "false") boolean excludeArchived) {
+        return categoryService.getAllCategories(username, excludeArchived);
     }
 
     @PostMapping("/add")
     public CategoryJson addCategory(@RequestBody CategoryJson category) {
         return categoryService.addCategory(category);
+    }
+
+    @PostMapping("/update")
+    public CategoryJson updateCategory(@RequestBody CategoryJson category) {
+        return categoryService.update(category);
     }
 }

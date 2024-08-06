@@ -5,7 +5,6 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -23,7 +22,6 @@ public interface AuthApi {
     @POST("oauth2/token")
     @FormUrlEncoded
     Call<JsonNode> token(
-            @Header("Authorization") String basic,
             @Field("client_id") String clientId,
             @Field(value = "redirect_uri", encoded = true) String redirectUri,
             @Field("grant_type") String grantType,

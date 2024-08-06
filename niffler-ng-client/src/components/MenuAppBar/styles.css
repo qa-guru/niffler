@@ -1,0 +1,12 @@
+.link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #000000;
+    font: inherit;
+}
+
+.nav-link {
+    width: 100%;
+}

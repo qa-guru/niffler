@@ -12,6 +12,8 @@ public record UserJson(
         UUID id,
         @JsonProperty("username")
         String username,
+        @JsonProperty("fullname")
+        String fullname,
         @JsonProperty("firstname")
         String firstname,
         @JsonProperty("surname")
@@ -32,10 +34,10 @@ public record UserJson(
     }
 
     public UserJson(String username, TestData testData) {
-        this(null, username, null, null, null, null, null, null, testData);
+        this(null, username, null, null, null, null, null, null, null, testData);
     }
 
     public UserJson addTestData(TestData testData) {
-        return new UserJson(id, username, firstname, surname, currency, photo, photoSmall, friendState, testData);
+        return new UserJson(id, username, fullname, firstname, surname, currency, photo, photoSmall, friendState, testData);
     }
 }

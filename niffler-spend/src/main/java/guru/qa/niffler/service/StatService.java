@@ -1,10 +1,15 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.data.SpendEntity;
+import guru.qa.niffler.data.projection.SumByCategoryAggregate;
+import guru.qa.niffler.data.projection.SumByCategoryInUserCurrency;
+import guru.qa.niffler.data.projection.SumByCategoryInfo;
+import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.StatisticByCategoryJson;
 import guru.qa.niffler.model.StatisticJson;
+import guru.qa.niffler.model.StatisticV2Json;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,6 +41,30 @@ public class StatService {
         this.spendService = spendService;
         this.categoryService = categoryService;
         this.grpcCurrencyClient = grpcCurrencyClient;
+    }
+
+    @Transactional(readOnly = true)
+    public @Nonnull
+    StatisticV2Json getV2Statistic(@Nonnull String username,
+                                   @Nonnull CurrencyValues userCurrency,
+                                   @Nullable CurrencyValues filterCurrency,
+                                   @Nullable Date dateFrom,
+                                   @Nullable Date dateTo) {
+        ;
+        List<SumByCategoryInfo> result = spendService.getSumByCategories(username, dateFrom, dateTo)
+                .stream().parallel()
+                .filter(sumByCategory -> filterCurrency == null || sumByCategory.currency() == filterCurrency)
+                .map(sumByCategory -> mapToUserCurrency(userCurrency, sumByCategory))
+                .collect(toCategoriesMap())
+                .values()
+                .stream()
+                .map(delegates -> (SumByCategoryInfo) new SumByCategoryAggregate(delegates))
+                .toList();
+
+        return new StatisticV2Json(
+                result.stream().map(SumByCategoryInfo::sum).reduce(0.0, Double::sum),
+                result
+        );
     }
 
     @Transactional(readOnly = true)
@@ -91,10 +122,10 @@ public class StatService {
             ));
         }
 
-        categoryService.getAllCategories(username).stream()
-                .filter(c -> !spendsByCategory.containsKey(c.category()))
+        categoryService.getAllCategories(username, true).stream()
+                .filter(c -> !spendsByCategory.containsKey(c.name()))
                 .map(c -> new StatisticByCategoryJson(
-                        c.category(),
+                        c.name(),
                         0.0,
                         0.0,
                         Collections.emptyList()
@@ -164,7 +195,12 @@ public class StatService {
     Map<String, List<SpendJson>> bindSpendsToCategories(@Nonnull List<SpendEntity> sortedSpends) {
         return sortedSpends.stream().map(SpendJson::fromEntity)
                 .collect(Collectors.groupingBy(
-                        SpendJson::category,
+                        (SpendJson sj) -> {
+                            CategoryJson ce = sj.category();
+                            return ce.archived()
+                                    ? CategoryService.ARCHIVED_CATEGORY_NAME
+                                    : ce.name();
+                        },
                         HashMap::new,
                         Collectors.toCollection(ArrayList::new)
                 ));
@@ -207,5 +243,32 @@ public class StatService {
         return filterCurrency != null
                 ? new CurrencyValues[]{filterCurrency}
                 : CurrencyValues.values();
+    }
+
+    @Nonnull
+    Collector<SumByCategoryInfo, ?, HashMap<String, List<SumByCategoryInfo>>> toCategoriesMap() {
+        return Collectors.groupingBy(
+                SumByCategoryInfo::categoryName,
+                HashMap::new,
+                Collectors.toCollection(ArrayList::new)
+        );
+    }
+
+    @Nonnull
+    SumByCategoryInfo mapToUserCurrency(@Nonnull CurrencyValues userCurrency,
+                                        @Nonnull SumByCategoryInfo sumByCategory) {
+        if (sumByCategory.currency() != userCurrency) {
+            return new SumByCategoryInUserCurrency(
+                    sumByCategory,
+                    userCurrency,
+                    grpcCurrencyClient.calculate(
+                            sumByCategory.sum(),
+                            sumByCategory.currency(),
+                            userCurrency
+                    ).setScale(2, RoundingMode.HALF_UP).doubleValue()
+            );
+        } else {
+            return sumByCategory;
+        }
     }
 }

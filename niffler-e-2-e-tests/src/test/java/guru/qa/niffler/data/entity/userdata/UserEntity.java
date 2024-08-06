@@ -43,6 +43,9 @@ public class UserEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private CurrencyValues currency;
 
+    @Column(name = "full_name")
+    private String fullname;
+
     @Column()
     private String firstname;
 

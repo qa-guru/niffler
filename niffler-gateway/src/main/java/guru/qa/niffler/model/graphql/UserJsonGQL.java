@@ -24,6 +24,9 @@ public record UserJsonGQL(
         @JsonProperty("surname")
         @Size(max = 50, message = "Surname can`t be longer than 50 characters")
         String surname,
+        @JsonProperty("fullname")
+        @Size(max = 100, message = "Fullname can`t be longer than 100 characters")
+        String fullname,
         @JsonProperty("currency")
         CurrencyValues currency,
         @JsonProperty("photo")
@@ -35,9 +38,7 @@ public record UserJsonGQL(
         @JsonProperty("friendState")
         FriendState friendState,
         @JsonProperty("friends")
-        List<UserJsonGQL> friends,
-        @JsonProperty("invitations")
-        List<UserJsonGQL> invitations) {
+        List<UserJsonGQL> friends) {
 
     public static @Nonnull UserJsonGQL fromUserJson(@Nonnull UserJson userJson) {
         return new UserJsonGQL(
@@ -45,11 +46,11 @@ public record UserJsonGQL(
                 userJson.username(),
                 userJson.firstname(),
                 userJson.surname(),
+                userJson.fullname(),
                 userJson.currency(),
                 userJson.photo(),
                 userJson.photoSmall(),
                 userJson.friendState(),
-                new ArrayList<>(),
                 new ArrayList<>()
         );
     }

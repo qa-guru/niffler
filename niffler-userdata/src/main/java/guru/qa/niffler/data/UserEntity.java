@@ -48,6 +48,9 @@ public class UserEntity implements Serializable {
     @Column()
     private String surname;
 
+    @Column(name = "full_name")
+    private String fullname;
+
     @Column(name = "photo", columnDefinition = "bytea")
     private byte[] photo;
 

@@ -3,6 +3,7 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.data.CurrencyValues;
 import guru.qa.niffler.data.FriendshipStatus;
 import guru.qa.niffler.data.UserEntity;
+import guru.qa.niffler.data.projection.UserWithStatus;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.ex.NotFoundException;
 import guru.qa.niffler.model.UserJson;
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.model.FriendState.FRIEND;
 import static guru.qa.niffler.model.FriendState.INVITE_SENT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,20 +34,20 @@ class UserDataServiceTest {
 
     private UserDataService testedObject;
 
-    private UUID mainTestUserUuid = UUID.randomUUID();
-    private String mainTestUserName = "dima";
+    private final UUID mainTestUserUuid = UUID.randomUUID();
+    private final String mainTestUserName = "dima";
     private UserEntity mainTestUser;
 
-    private UUID secondTestUserUuid = UUID.randomUUID();
-    private String secondTestUserName = "barsik";
+    private final UUID secondTestUserUuid = UUID.randomUUID();
+    private final String secondTestUserName = "barsik";
     private UserEntity secondTestUser;
 
-    private UUID thirdTestUserUuid = UUID.randomUUID();
-    private String thirdTestUserName = "emma";
+    private final UUID thirdTestUserUuid = UUID.randomUUID();
+    private final String thirdTestUserName = "emma";
     private UserEntity thirdTestUser;
 
 
-    private String notExistingUser = "not_existing_user";
+    private final String notExistingUser = "not_existing_user";
 
 
     @BeforeEach
@@ -101,13 +101,14 @@ class UserDataServiceTest {
 
         testedObject = new UserDataService(userRepository);
 
-        final String photoForTest = photo.equals("") ? null : photo;
+        final String photoForTest = photo.isEmpty() ? null : photo;
 
         final UserJson toBeUpdated = new UserJson(
                 null,
                 mainTestUserName,
                 "Test",
                 "TestSurname",
+                "Test TestSurname",
                 CurrencyValues.USD,
                 photoForTest,
                 null,
@@ -115,8 +116,7 @@ class UserDataServiceTest {
         );
         final UserJson result = testedObject.update(toBeUpdated);
         assertEquals(mainTestUserUuid, result.id());
-        assertEquals("Test", result.firstname());
-        assertEquals("TestSurname", result.surname());
+        assertEquals("Test TestSurname", result.fullname());
         assertEquals(CurrencyValues.USD, result.currency());
         assertEquals(photoForTest, result.photo());
 
@@ -153,22 +153,33 @@ class UserDataServiceTest {
                 .orElseThrow(() -> new AssertionError("Friend with state INVITE_SENT not found"));
 
         final UserJsonBulk friend = users.stream()
-                .filter(u -> u.friendState() == FRIEND)
+                .filter(u -> u.friendState() == null)
                 .findFirst()
-                .orElseThrow(() -> new AssertionError("Friend with state FRIEND not found"));
+                .orElseThrow(() -> new AssertionError("user without status not found"));
 
 
         assertEquals(secondTestUserName, invitation.username());
         assertEquals(thirdTestUserName, friend.username());
     }
 
-    private List<UserEntity> getMockUsersMappingFromDb() {
-        mainTestUser.addFriends(FriendshipStatus.PENDING, secondTestUser);
-        secondTestUser.addInvitations(mainTestUser);
-
-        mainTestUser.addFriends(FriendshipStatus.ACCEPTED, thirdTestUser);
-        thirdTestUser.addFriends(FriendshipStatus.ACCEPTED, mainTestUser);
-
-        return List.of(secondTestUser, thirdTestUser);
+    private List<UserWithStatus> getMockUsersMappingFromDb() {
+        return List.of(
+                new UserWithStatus(
+                        secondTestUser.getId(),
+                        secondTestUser.getUsername(),
+                        secondTestUser.getCurrency(),
+                        secondTestUser.getFullname(),
+                        secondTestUser.getPhotoSmall(),
+                        FriendshipStatus.PENDING
+                ),
+                new UserWithStatus(
+                        thirdTestUser.getId(),
+                        thirdTestUser.getUsername(),
+                        thirdTestUser.getCurrency(),
+                        thirdTestUser.getFullname(),
+                        thirdTestUser.getPhotoSmall(),
+                        FriendshipStatus.ACCEPTED
+                )
+        );
     }
 }

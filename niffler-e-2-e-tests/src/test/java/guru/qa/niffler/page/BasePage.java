@@ -7,7 +7,7 @@ import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Selenide.$;
 
-public abstract class BasePage<T extends BasePage> {
+public abstract class BasePage<T extends BasePage<?>> {
 
     protected static final Config CFG = Config.getConfig();
 

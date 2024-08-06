@@ -6,6 +6,7 @@ import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.MainPage;
@@ -48,7 +49,12 @@ public class SpendingTest extends BaseWebTest {
                 currentDate,
                 (double) amount,
                 user.currency(),
-                category,
+                new CategoryJson(
+                        null,
+                        category,
+                        null,
+                        false
+                ),
                 description,
                 null
         );
@@ -141,13 +147,18 @@ public class SpendingTest extends BaseWebTest {
     ))
     void shouldEditSpendingTest(@User UserJson user) {
         Date newSpendDate = DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_MONTH, -4);
-        SpendJson testSpend = user.testData().spends().get(0);
+        SpendJson testSpend = user.testData().spends().getFirst();
         SpendJson editedSpending = new SpendJson(
                 null,
                 testSpend.spendDate(),
                 1000.0,
                 testSpend.currency(),
-                "Friends",
+                new CategoryJson(
+                        null,
+                        "Friends",
+                        null,
+                        false
+                ),
                 generateRandomSentence(3),
                 null
         );
@@ -180,7 +191,7 @@ public class SpendingTest extends BaseWebTest {
         Selenide.open(MainPage.URL, MainPage.class)
                 .getSpendingTable()
                 .clickByButton("Last week")
-                .checkTableContains(user.testData().spends().get(0));
+                .checkTableContains(user.testData().spends().getFirst());
     }
 
     @Disabled("Not implemented")

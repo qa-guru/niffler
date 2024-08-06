@@ -26,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,7 +44,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
     @Override
     @Nonnull
     protected UserJson createUser(@Nonnull String username,
-                                  @Nonnull String password) throws Exception {
+                                  @Nonnull String password) {
         AuthUserEntity authUser = new AuthUserEntity();
         authUser.setUsername(username);
         authUser.setPassword(pe.encode(password));
@@ -70,20 +69,14 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
         return new UserJson(
                 userdataUser.getId(),
                 username,
+                userdataUser.getFullname(),
                 userdataUser.getFirstname(),
                 userdataUser.getSurname(),
                 CurrencyValues.valueOf(userdataUser.getCurrency().name()),
                 userdataUser.getPhoto() != null ? new String(userdataUser.getPhoto()) : null,
                 userdataUser.getPhotoSmall() != null ? new String(userdataUser.getPhotoSmall()) : null,
                 null,
-                new TestData(
-                        password,
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        new ArrayList<>()
-                )
+                new TestData(password)
         );
     }
 
@@ -150,7 +143,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
     }
 
     @Override
-    protected void createSpendsIfPresent(@Nullable GenerateSpend[] spends, @Nonnull UserJson createdUser) throws Exception {
+    protected void createSpendsIfPresent(@Nullable GenerateSpend[] spends, @Nonnull UserJson createdUser) {
         if (spends != null) {
             for (GenerateSpend spend : spends) {
                 SpendEntity se = new SpendEntity();
@@ -166,15 +159,22 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
                         ).orElseThrow()
                 );
                 se = spendRepository.createSpend(se);
+                final CategoryEntity categoryEntity = se.getCategory();
+                final String username = createdUser.username();
                 createdUser.testData().spends().add(
                         new SpendJson(
                                 se.getId(),
                                 se.getSpendDate(),
                                 se.getAmount(),
                                 CurrencyValues.valueOf(se.getCurrency().name()),
-                                se.getCategory().getCategory(),
+                                new CategoryJson(
+                                        categoryEntity.getId(),
+                                        categoryEntity.getName(),
+                                        username,
+                                        categoryEntity.isArchived()
+                                ),
                                 se.getDescription(),
-                                createdUser.username()
+                                username
                         )
                 );
             }
@@ -182,18 +182,19 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
     }
 
     @Override
-    protected void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, @Nonnull UserJson createdUser) throws Exception {
+    protected void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, @Nonnull UserJson createdUser) {
         if (categories != null) {
             for (GenerateCategory category : categories) {
                 CategoryEntity ce = new CategoryEntity();
                 ce.setUsername(createdUser.username());
-                ce.setCategory(category.value());
+                ce.setName(category.value());
                 ce = spendRepository.createCategory(ce);
                 createdUser.testData().categories().add(
                         new CategoryJson(
                                 ce.getId(),
-                                ce.getCategory(),
-                                ce.getUsername()
+                                ce.getName(),
+                                ce.getUsername(),
+                                ce.isArchived()
                         )
                 );
             }

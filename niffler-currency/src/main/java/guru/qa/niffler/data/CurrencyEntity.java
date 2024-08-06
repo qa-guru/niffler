@@ -33,6 +33,9 @@ public class CurrencyEntity implements Serializable {
     @Column(name = "currency_rate", nullable = false)
     private Double currencyRate;
 
+    @Column(name = "symbol", columnDefinition = "bytea")
+    private byte[] symbol;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

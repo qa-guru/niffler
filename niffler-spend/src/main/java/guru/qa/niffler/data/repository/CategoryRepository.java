@@ -11,10 +11,13 @@ import java.util.UUID;
 public interface CategoryRepository extends JpaRepository<CategoryEntity, UUID> {
 
     @Nonnull
-    Optional<CategoryEntity> findByUsernameAndCategory(@Nonnull String username, @Nonnull String category);
+    Optional<CategoryEntity> findByUsernameAndName(@Nonnull String username, @Nonnull String category);
 
     @Nonnull
-    List<CategoryEntity> findAllByUsernameOrderByCategory(@Nonnull String username);
+    Optional<CategoryEntity> findByUsernameAndId(@Nonnull String username, @Nonnull UUID id);
 
-    long countByUsername(@Nonnull String username);
+    @Nonnull
+    List<CategoryEntity> findAllByUsernameOrderByName(@Nonnull String username);
+
+    long countByUsernameAndArchived(@Nonnull String username, boolean archived);
 }

@@ -26,7 +26,7 @@ public class AllureDockerExtension implements SuiteExtension {
     private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
 
     @Override
-    public void afterAllTests() {
+    public void afterSuite() {
         if ("docker".equals(System.getProperty("test.env"))) {
             try (Stream<Path> paths = Files.walk(Path.of(allureResultsDirectory))) {
                 List<Path> allureResults = paths.filter(Files::isRegularFile).toList();

@@ -1,29 +1,18 @@
 package guru.qa.niffler.data.entity.userdata;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
+@Setter
 public class FriendShipId implements Serializable {
 
     private UUID requester;
     private UUID addressee;
-
-    public UUID getRequester() {
-        return requester;
-    }
-
-    public void setRequester(UUID requester) {
-        this.requester = requester;
-    }
-
-    public UUID getAddressee() {
-        return addressee;
-    }
-
-    public void setAddressee(UUID addressee) {
-        this.addressee = addressee;
-    }
 
     @Override
     public boolean equals(Object o) {

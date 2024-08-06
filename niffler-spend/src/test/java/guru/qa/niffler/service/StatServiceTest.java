@@ -47,13 +47,13 @@ class StatServiceTest {
                @Mock CategoryService categoryService,
                @Mock GrpcCurrencyClient grpcCurrencyClient) {
         firstCategory = new CategoryEntity();
-        firstCategory.setCategory("Бар");
+        firstCategory.setName("Бар");
         firstCategory.setUsername("dima");
         secondCategory = new CategoryEntity();
-        secondCategory.setCategory("Магазин");
+        secondCategory.setName("Магазин");
         secondCategory.setUsername("dima");
         thirdCategory = new CategoryEntity();
-        thirdCategory.setCategory("Рыбалка");
+        thirdCategory.setName("Рыбалка");
         thirdCategory.setUsername("dima");
 
         firstSpend = new SpendEntity();
@@ -87,7 +87,7 @@ class StatServiceTest {
                         secondSpend, thirdSpend
                 ));
 
-        lenient().when(categoryService.getAllCategories(eq("dima")))
+        lenient().when(categoryService.getAllCategories(eq("dima"), eq(false)))
                 .thenReturn(Stream.of(
                         firstCategory, secondCategory, thirdCategory
                 ).map(CategoryJson::fromEntity).toList());
@@ -207,10 +207,9 @@ class StatServiceTest {
 
     @Test
     void bindSpendsToCategoriesTest() {
-        Date dateTo = new Date();
         CurrencyValues statisticCurrency = CurrencyValues.RUB;
-        StatisticJson defaultStatisticJson = statService.createDefaultStatisticJson(statisticCurrency, userCurrency, dateTo);
-        List<SpendEntity> sortedSpends = List.of(secondSpend, firstSpend, thirdSpend).stream()
+
+        List<SpendEntity> sortedSpends = Stream.of(secondSpend, firstSpend, thirdSpend)
                 .filter(se -> se.getCurrency() == statisticCurrency)
                 .sorted(Comparator.comparing(SpendEntity::getSpendDate))
                 .toList();

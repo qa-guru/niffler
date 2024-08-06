@@ -1,8 +1,8 @@
 package guru.qa.niffler.service;
 
 
-import guru.qa.grpc.niffler.grpc.CalculateRequest;
-import guru.qa.grpc.niffler.grpc.NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub;
+import guru.qa.niffler.grpc.CalculateRequest;
+import guru.qa.niffler.grpc.NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub;
 import guru.qa.niffler.model.CurrencyValues;
 import jakarta.annotation.Nonnull;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-import static guru.qa.grpc.niffler.grpc.CurrencyValues.valueOf;
+import static guru.qa.niffler.grpc.CurrencyValues.valueOf;
 
 @Component
 public class GrpcCurrencyClient {

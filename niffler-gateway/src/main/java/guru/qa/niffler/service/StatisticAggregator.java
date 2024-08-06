@@ -3,6 +3,7 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.StatisticJson;
+import guru.qa.niffler.model.StatisticV2Json;
 import guru.qa.niffler.service.api.RestSpendClient;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -30,5 +31,13 @@ public class StatisticAggregator {
                                                @Nullable DataFilterValues filterPeriod) {
         CurrencyValues userDefaultCurrency = userDataClient.currentUser(username).currency();
         return restSpendClient.statistic(username, userDefaultCurrency, filterCurrency, filterPeriod);
+    }
+
+    public @Nonnull
+    StatisticV2Json enrichStatisticRequestV2(@Nonnull String username,
+                                             @Nullable CurrencyValues filterCurrency,
+                                             @Nullable DataFilterValues filterPeriod) {
+        CurrencyValues userDefaultCurrency = userDataClient.currentUser(username).currency();
+        return restSpendClient.statisticV2(username, userDefaultCurrency, filterCurrency, filterPeriod);
     }
 }

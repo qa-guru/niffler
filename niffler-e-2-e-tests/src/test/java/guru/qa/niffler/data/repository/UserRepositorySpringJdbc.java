@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -64,7 +65,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
             final UUID generatedUserId = (UUID) kh.getKeys().get("id");
             authJdbcTemplate.batchUpdate("INSERT INTO  \"authority\" (user_id, authority) VALUES (?, ?)", new BatchPreparedStatementSetter() {
                 @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                public void setValues(@Nonnull PreparedStatement ps, int i) throws SQLException {
                     ps.setObject(1, generatedUserId);
                     ps.setString(2, user.getAuthorities().get(i).getAuthority().name());
                 }
@@ -150,7 +151,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
                     "INSERT INTO authority (user_id, authority) VALUES (?, ?)",
                     new BatchPreparedStatementSetter() {
                         @Override
-                        public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        public void setValues(@Nonnull PreparedStatement ps, int i) throws SQLException {
                             ps.setObject(1, user.getId());
                             ps.setString(2, user.getAuthorities().get(i).getAuthority().name());
                         }
@@ -187,7 +188,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
                     "ON CONFLICT (requester_id, addressee_id) " +
                     "DO UPDATE SET status = ?", new BatchPreparedStatementSetter() {
                 @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                public void setValues(@Nonnull PreparedStatement ps, int i) throws SQLException {
                     ps.setObject(1, user.getId());
                     ps.setObject(2, user.getFriendshipRequests().get(i).getAddressee().getId());
                     ps.setString(3, user.getFriendshipRequests().get(i).getStatus().name());

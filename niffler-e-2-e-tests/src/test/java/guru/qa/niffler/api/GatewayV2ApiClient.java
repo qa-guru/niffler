@@ -5,6 +5,7 @@ import guru.qa.niffler.model.page.RestPage;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.DataFilterValues;
 import guru.qa.niffler.model.rest.SpendJson;
+import guru.qa.niffler.model.rest.StatisticV2Json;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
 
@@ -78,6 +79,16 @@ public class GatewayV2ApiClient extends RestClient {
                                                          @Nullable Integer size,
                                                          @Nullable List<String> sort) throws Exception {
         return gatewayV2Api.outcomeInvitationsPageable(bearerToken, searchQuery, page, size, sort)
+                .execute()
+                .body();
+    }
+
+    @Step("Send REST GET('/api/v2/stat/total') request to niffler-gateway")
+    @Nullable
+    public StatisticV2Json totalStat(String bearerToken,
+                                     @Nullable CurrencyValues filterCurrency,
+                                     @Nullable DataFilterValues filterPeriod) throws Exception {
+        return gatewayV2Api.totalStatV2(bearerToken, filterCurrency, filterPeriod)
                 .execute()
                 .body();
     }

@@ -72,11 +72,8 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
         step("Check that response contains updated currency (EUR)", () ->
                 assertEquals(CurrencyValues.EUR, userGql.getCurrency())
         );
-        step("Check that response contains updated firstname (Pizzly)", () ->
-                assertEquals("Pizzly", userGql.getFirstname())
-        );
-        step("Check that response contains updated surname (Pizzlyvich)", () ->
-                assertEquals("Pizzlyvich", userGql.getSurname())
+        step("Check that response contains updated fullname (Pizzly Pizzlyvich)", () ->
+                assertEquals("Pizzly Pizzlyvich", userGql.getFullname())
         );
     }
 

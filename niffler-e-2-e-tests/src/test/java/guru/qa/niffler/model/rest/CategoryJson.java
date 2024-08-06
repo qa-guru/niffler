@@ -7,9 +7,11 @@ import java.util.UUID;
 public record CategoryJson(
         @JsonProperty("id")
         UUID id,
-        @JsonProperty("category")
-        String category,
+        @JsonProperty("name")
+        String name,
         @JsonProperty("username")
-        String username) {
+        String username,
+        @JsonProperty("archived")
+        boolean archived) {
 
 }
