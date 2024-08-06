@@ -2,6 +2,7 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.data.CategoryEntity;
 import guru.qa.niffler.data.SpendEntity;
+import guru.qa.niffler.data.projection.SumByCategoryInfo;
 import guru.qa.niffler.data.repository.SpendRepository;
 import guru.qa.niffler.ex.InvalidIdException;
 import guru.qa.niffler.ex.SpendNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -139,6 +141,24 @@ public class SpendService {
                     );
         }
         return spends;
+    }
+
+    @Nonnull
+    List<SumByCategoryInfo> getSumByCategories(@Nonnull String username,
+                                               @Nullable Date dateFrom,
+                                               @Nullable Date dateTo) {
+        dateFrom = dateFrom == null
+                ? new Date(0)
+                : dateFrom;
+
+        dateTo = dateTo == null
+                ? new Date()
+                : dateTo;
+
+        List<SumByCategoryInfo> result = new ArrayList<>();
+        result.addAll(spendRepository.statisticByArchivedCategory(username, dateFrom, dateTo));
+        result.addAll(spendRepository.statisticByCategory(username, dateFrom, dateTo));
+        return result;
     }
 
     @Nonnull

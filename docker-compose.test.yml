@@ -116,10 +116,8 @@ services:
       dockerfile: ./Dockerfile
       tags:
         - ${PREFIX}/${FRONT}-docker:latest
-        - ${PREFIX}/${FRONT}-docker:${FRONT_VERSION}
       args:
         NPM_COMMAND: build:docker
-    image: ${PREFIX}/${FRONT}-docker:latest
     expose:
       - 80
     depends_on:
@@ -168,7 +166,6 @@ services:
     environment:
       - ALLURE_DOCKER_API=${ALLURE_DOCKER_API}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
-    image: ${PREFIX}/niffler-e-2-e-tests:latest
     depends_on:
       frontend.niffler.dc:
         condition: service_started

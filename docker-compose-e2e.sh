@@ -2,7 +2,6 @@
 source ./docker.properties
 export PROFILE=docker
 export PREFIX="${IMAGE_PREFIX}"
-export FRONT_VERSION="${FRONT_VERSION}"
 export ALLURE_DOCKER_API=http://allure:5050/
 export ARCH=$(uname -m)
 

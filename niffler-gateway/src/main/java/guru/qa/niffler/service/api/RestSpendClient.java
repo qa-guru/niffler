@@ -6,6 +6,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.StatisticJson;
+import guru.qa.niffler.model.StatisticV2Json;
 import guru.qa.niffler.model.page.RestPage;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -155,7 +156,24 @@ public class RestSpendClient {
                         filterPeriod != null ? dateFormat(new Date()) : null,
                         filterCurrency != null ? filterCurrency.name() : null
                 )
-        ).orElseThrow(() -> new NoRestResponseException("No REST List<StatisticJson> response is given [/spends/stat/ Route]")));
+        ).orElseThrow(() -> new NoRestResponseException("No REST List<StatisticJson> response is given [/v2/stat/total Route]")));
+    }
+
+    public @Nonnull
+    StatisticV2Json statisticV2(@Nonnull String username,
+                                @Nonnull CurrencyValues userCurrency,
+                                @Nullable CurrencyValues filterCurrency,
+                                @Nullable DataFilterValues filterPeriod) {
+        return Optional.ofNullable(
+                restTemplate.getForObject(
+                        nifflerSpendApiUri + "/v2/stat/total?username={username}&userCurrency={userCurrency}&from={from}&to={to}&filterCurrency={filterCurrency}",
+                        StatisticV2Json.class,
+                        username,
+                        userCurrency.name(),
+                        filterPeriod != null ? dateFormat(filterDate(filterPeriod)) : null,
+                        filterPeriod != null ? dateFormat(new Date()) : null,
+                        filterCurrency != null ? filterCurrency.name() : null
+                )).orElseThrow(() -> new NoRestResponseException("No REST StatisticV2Json response is given [/v2/stat/total Route]"));
     }
 
     public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {

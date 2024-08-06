@@ -41,7 +41,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                     description: data.description,
                     currency: data.currency,
                     spendDate: dayjs(data.spendDate),
-                    category: data.category.category,
+                    category: data.category.name,
                 }),
                 onFailure: e => {
                     setFormData(INITIAL_STATE);

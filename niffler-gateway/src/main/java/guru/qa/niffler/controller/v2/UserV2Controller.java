@@ -1,4 +1,4 @@
-package guru.qa.niffler.controller.pageable;
+package guru.qa.niffler.controller.v2;
 
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;

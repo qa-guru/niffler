@@ -4,6 +4,7 @@ import {User} from "../types/User.ts";
 import {RequestHandler} from "../types/RequestHandler.ts";
 import {Currency} from "../types/Currency.ts";
 import {Spending} from "../types/Spending.ts";
+import {Statistic} from "../types/Statistic.ts";
 
 const BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 const DEFAULT_ABORT_TIMEOUT = 5000;
@@ -63,6 +64,7 @@ export const apiClient = {
             onFailure(e)
         }
     },
+
     editCategory: async (name: string, {onSuccess, onFailure}: RequestHandler<Category>) => {
         try {
             const result = await makeRequest("/categories/edit", {
@@ -76,6 +78,7 @@ export const apiClient = {
             onFailure(e)
         }
     },
+
     getCurrencies: async({ onSuccess, onFailure }: RequestHandler<Currency[]>) => {
         try {
             const result = await makeRequest("/currencies/all");
@@ -85,17 +88,7 @@ export const apiClient = {
         }
     },
 
-    getStatistics: async({ onSuccess, onFailure }: RequestHandler<any>) => {
-        try {
-            const result = await makeRequest("/stat/total");
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
-    },
-
     getSpends: async({ onSuccess, onFailure }: RequestHandler<Spending[]>) => {
-
         try {
             const result = await makeRequest("/v2/spends/all");
             onSuccess(result);
@@ -105,7 +98,6 @@ export const apiClient = {
     },
 
     getSpend: async(id: string, { onSuccess, onFailure }: RequestHandler<Spending>) => {
-
         try {
             const result = await makeRequest(`/spends/${id}`);
             onSuccess(result);
@@ -137,8 +129,17 @@ export const apiClient = {
             onFailure(e)
         }
     },
-    getAllPeople: async(searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
 
+    getStat: async({ onSuccess, onFailure }: RequestHandler<Statistic>) => {
+        try {
+            const result = await makeRequest("/v2/stat/total");
+            onSuccess(result);
+        } catch(e: Error) {
+            onFailure(e)
+        }
+    },
+
+    getAllPeople: async(searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
         try {
             const result = await makeRequest(`/v2/users/all?page=${page}&searchQuery=${searchQuery}`);
             onSuccess(result);
@@ -146,8 +147,8 @@ export const apiClient = {
             onFailure(e)
         }
     },
-    getFriends: async(searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
 
+    getFriends: async(searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
         try {
             const result = await makeRequest(`/v2/friends/all?page=${page}&searchQuery=${searchQuery}`);
             onSuccess(result);
@@ -155,6 +156,7 @@ export const apiClient = {
             onFailure(e)
         }
     },
+
     sendInvitation: async(username: string, { onSuccess, onFailure }: RequestHandler<any> ) => {
         try {
             const result = await makeRequest("/invitations/send", {
@@ -168,6 +170,7 @@ export const apiClient = {
             onFailure(e)
         }
     },
+
     acceptInvitation: async(username: string, { onSuccess, onFailure }: RequestHandler<any> ) => {
         try {
             const result = await makeRequest("/invitations/accept", {
@@ -181,6 +184,7 @@ export const apiClient = {
             onFailure(e)
         }
     },
+
     declineInvitation: async(username: string, { onSuccess, onFailure }: RequestHandler<any> ) => {
         try {
             const result = await makeRequest("/invitations/decline", {
@@ -194,6 +198,7 @@ export const apiClient = {
             onFailure(e)
         }
     },
+
     deleteFriend: async(username: string, { onSuccess, onFailure }: RequestHandler<any> ) => {
         try {
             const result = await makeRequest(`/friends/remove?username=${username}`, {

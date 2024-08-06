@@ -26,7 +26,6 @@ jobs:
           PREFIX: qaguru
           ARCH: amd64
           FRONT: niffler-frontend
-          FRONT_VERSION: test
           ALLURE_DOCKER_API: ${{ secrets.ALLURE_DOCKER_API }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

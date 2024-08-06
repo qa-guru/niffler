@@ -51,7 +51,8 @@
 
 #### 0. Если у вас ОС Windows
 
-Во-первых, и в-главных, необходимо использовать bash terminal, а не powershell.
+Во-первых, и в-главных, необходимо использовать [bash terminal](https://www.geeksforgeeks.org/working-on-git-bash/), а не powershell.
+[Полезное и короткое видео о git bash](https://www.youtube.com/watch?v=zM9Mb-otqww)
 Во-вторых, для запуска фронтенда локально необходимо использовать команду
 `npm run build:windows`, если не работает стандартная команда `npm run build:dev`
 В-третьих, если у вас что-то не работает - пишите в TG чат группы - будем вместе дополнять README, т.к. изначально
@@ -131,7 +132,7 @@ docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata
 
 docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -p 2181:2181 -d confluentinc/cp-zookeeper:7.3.2
 
-docker run --name=kafka -e KAFKA_BROKER_ID=1 -e KAFKA_ZOOKEEPER_CONNECT=$(docker inspect zookeeper --format='{{ .NetworkSettings.IPAddress }}'):2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 -p 9092:9092 -d confluentinc/cp-kafka:7.3.2
+docker run --name=kafka -e KAFKA_BROKER_ID=1 -e KAFKA_ZOOKEEPER_CONNECT=$(docker inspect zookeeper --format="{{ .NetworkSettings.IPAddress }}"):2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 -p 9092:9092 -d confluentinc/cp-kafka:7.3.2
 ```
 
 https://github.com/confluentinc/cp-docker-images/issues/801#issuecomment-692085103
@@ -305,6 +306,9 @@ Build to Docker daemon failed, perhaps you should make sure your credentials for
         "currentContext": "desktop-linux"
 }
 ```
+
+Если вы не можете подключиться к БД в docker, указывая верные login и password, то возможно у вас поднята другая база на том же порту 5432 .
+Это известная проблема, что Postgres в docker может стартануть при зянятом порту 5432, надо убедиться что у вас не поднят никакой другой Postgres на этом порту.
 
 # Создание своего docker repository для форка Niffler и сборка своих докер контейнеров
 

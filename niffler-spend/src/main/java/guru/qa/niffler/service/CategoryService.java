@@ -3,6 +3,7 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.data.CategoryEntity;
 import guru.qa.niffler.data.repository.CategoryRepository;
 import guru.qa.niffler.ex.CategoryNotFoundException;
+import guru.qa.niffler.ex.InvalidCategoryNameException;
 import guru.qa.niffler.ex.NotUniqCategoryException;
 import guru.qa.niffler.ex.TooManyCategoriesException;
 import guru.qa.niffler.model.CategoryJson;
@@ -18,6 +19,8 @@ import java.util.List;
 
 @Component
 public class CategoryService {
+
+    public static final String ARCHIVED_CATEGORY_NAME = "Archived";
 
     private static final Logger LOG = LoggerFactory.getLogger(CategoryService.class);
     private static final int MAX_CATEGORIES_SIZE = 7;
@@ -44,7 +47,15 @@ public class CategoryService {
         CategoryEntity categoryEntity = categoryRepository.findByUsernameAndId(category.username(), category.id())
                 .orElseThrow(() -> new CategoryNotFoundException("Can`t find category by id: '" + category.id() + "'"));
 
-        categoryEntity.setName(category.name());
+        final String categoryName = category.name();
+
+        if (categoryName.trim().equalsIgnoreCase(ARCHIVED_CATEGORY_NAME)) {
+            LOG.error("### Can`t add category with name: {}", categoryName);
+            throw new InvalidCategoryNameException("Can`t add category with name: '" + categoryName + "'");
+        }
+
+        categoryEntity.setName(categoryName);
+
         if (!category.archived() && categoryEntity.isArchived()) {
             if (categoryRepository.countByUsernameAndArchived(category.username(), false) > MAX_CATEGORIES_SIZE) {
                 LOG.error("### Can`t unarchive category for user: {}", category.username());
@@ -79,6 +90,11 @@ public class CategoryService {
     CategoryEntity save(@Nonnull CategoryJson category) {
         final String username = category.username();
         final String categoryName = category.name();
+
+        if (categoryName.trim().equalsIgnoreCase(ARCHIVED_CATEGORY_NAME)) {
+            LOG.error("### Can`t add category with name: {}", categoryName);
+            throw new InvalidCategoryNameException("Can`t add category with name: '" + categoryName + "'");
+        }
 
         if (categoryRepository.countByUsernameAndArchived(username, false) > MAX_CATEGORIES_SIZE) {
             LOG.error("### Can`t add over than 8 categories for user: {}", username);

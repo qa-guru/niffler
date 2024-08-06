@@ -3,22 +3,39 @@ import {ArcElement, Chart, Legend } from 'chart.js';
 import {Doughnut} from "react-chartjs-2";
 import {htmlLegendPlugin, titlePlugin} from "../../utils/chart.ts";
 import {SpendingsTable} from "../../components/SpendingsTable";
+import {useEffect, useState} from "react";
+import {apiClient} from "../../api/apiClient.ts";
+import {Statistic} from "../../types/Statistic.ts";
+import {STAT_INITIAL_STATE} from "../../context/SessionContext.tsx";
 
 Chart.register(ArcElement, Legend);
 
 export const StatisticsPage = () => {
+    const [stat, setStatistic] = useState<Statistic>(STAT_INITIAL_STATE);
+
+    useEffect(() => {
+        apiClient.getStat({
+            onSuccess: (data) => {
+                console.log(data);
+                setStatistic(data);
+            },
+            onFailure: (e) => console.log(e),
+        });
+    }, []);
 
     const theme = useTheme();
     // const [page, setPage] = useState(0);
 
     const data = {
-        title: "123",
+        title: stat.total,
         legend: "100000р",
-        labels: ['Restaurants', 'Cat', 'Dog', "Fish", "Beer"],
+        labels: stat.statByCategories.map((s) => s.categoryName),
+        // labels: ["Foo", "Bar"],
         datasets: [
             {
                 label: "stats",
-                data: [10000, 20000, 4000, 30000, 7000],
+                data: stat.statByCategories.map((s) => s.sum),
+                // data: ["100", "200"],
                 backgroundColor: [
                     theme.palette.blue100.main,
                     theme.palette.red.main,
@@ -83,7 +100,8 @@ export const StatisticsPage = () => {
                         width: 220,
                         height: 220,
                     }}>
-                        <Doughnut data={data} options={options} plugins={[htmlLegendPlugin, titlePlugin("30 400")]}/>
+                        <Doughnut data={data} options={options} plugins={[htmlLegendPlugin, titlePlugin(data.title)]}/>
+                        {/*<Doughnut data={data} options={options} plugins={[htmlLegendPlugin, titlePlugin("300")]}/>*/}
                     </Box>
                     <Box id="legend-container" sx={{
                         display: "flex",

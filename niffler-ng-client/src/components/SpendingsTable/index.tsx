@@ -71,13 +71,6 @@ export const SpendingsTable = () => {
            onFailure: (e) => console.log(e),
         });
 
-        apiClient.getStatistics({
-            onSuccess: (data) => {
-               console.log(data);
-           },
-            onFailure: (e) => console.log(e),
-        });
-
         apiClient.getSpends({
             onSuccess: (data) => {
                 console.log(data);
@@ -218,7 +211,7 @@ export const SpendingsTable = () => {
                                     scope="row"
                                     padding="none"
                                 >
-                                    {row.category.category}
+                                    {row.category.name}
                                 </TableCell>
                                 <TableCell align="right">{row.amount}</TableCell>
                                 <TableCell align="right">{row.description}</TableCell>

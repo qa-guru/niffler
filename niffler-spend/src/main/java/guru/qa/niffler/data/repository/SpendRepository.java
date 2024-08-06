@@ -1,11 +1,13 @@
 package guru.qa.niffler.data.repository;
 
 import guru.qa.niffler.data.SpendEntity;
+import guru.qa.niffler.data.projection.SumByCategory;
 import guru.qa.niffler.model.CurrencyValues;
 import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;
@@ -16,6 +18,28 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
 
     @Nonnull
     Optional<SpendEntity> findByIdAndUsername(@Nonnull UUID id, @Nonnull String username);
+
+    @Query(
+            "SELECT new guru.qa.niffler.data.projection.SumByCategory('Archived', s.currency, ROUND(SUM(s.amount), 2), MIN(s.spendDate), MAX(s.spendDate))  FROM SpendEntity s join CategoryEntity c on s.category = c " +
+                    "where s.username = :username and s.category.archived = true and s.spendDate >= :dateFrom and s.spendDate <= :dateTo " +
+                    "group by s.currency"
+    )
+    List<SumByCategory> statisticByArchivedCategory(
+            @Nonnull String username,
+            @Nonnull Date dateFrom,
+            @Nonnull Date dateTo
+    );
+
+    @Query(
+            "SELECT new guru.qa.niffler.data.projection.SumByCategory(c.name, s.currency, ROUND(SUM(s.amount), 2), MIN(s.spendDate), MAX(s.spendDate))  from SpendEntity s join CategoryEntity c on s.category = c " +
+                    "where s.username = :username and s.category.archived = false and s.spendDate >= :dateFrom and s.spendDate <= :dateTo " +
+                    "group by c.name, s.currency"
+    )
+    List<SumByCategory> statisticByCategory(
+            @Nonnull String username,
+            @Nonnull Date dateFrom,
+            @Nonnull Date dateTo
+    );
 
     @Nonnull
     List<SpendEntity> findAllByUsername(@Nonnull String username);
