@@ -17,25 +17,25 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Profile({"staging", "prod"})
 public class SecurityConfigMain {
 
-    private final CorsCustomizer corsCustomizer;
+  private final CorsCustomizer corsCustomizer;
 
-    @Autowired
-    public SecurityConfigMain(CorsCustomizer corsCustomizer) {
-        this.corsCustomizer = corsCustomizer;
-    }
+  @Autowired
+  public SecurityConfigMain(CorsCustomizer corsCustomizer) {
+    this.corsCustomizer = corsCustomizer;
+  }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        corsCustomizer.corsCustomizer(http);
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    corsCustomizer.corsCustomizer(http);
 
-        http.authorizeHttpRequests(customizer ->
-                customizer.requestMatchers(
-                                antMatcher("/api/session/current"),
-                                antMatcher("/actuator/health"))
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
-        ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
-        return http.build();
-    }
+    http.authorizeHttpRequests(customizer ->
+        customizer.requestMatchers(
+                antMatcher("/api/session/current"),
+                antMatcher("/actuator/health"))
+            .permitAll()
+            .anyRequest()
+            .authenticated()
+    ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
+    return http.build();
+  }
 }

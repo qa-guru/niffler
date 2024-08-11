@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserDataGql extends GqlResponse<UserDataGql> {
-    private UserGql user;
+  private UserGql user;
 }

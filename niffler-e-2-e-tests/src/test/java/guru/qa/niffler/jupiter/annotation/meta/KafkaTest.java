@@ -14,10 +14,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ExtendWith({
-        KafkaExtension.class,
-        DatabaseCreateUserExtension.class,
-        ClearCookiesExtension.class,
-        AllureJunit5.class
+    KafkaExtension.class,
+    DatabaseCreateUserExtension.class,
+    ClearCookiesExtension.class,
+    AllureJunit5.class
 })
 public @interface KafkaTest {
 }

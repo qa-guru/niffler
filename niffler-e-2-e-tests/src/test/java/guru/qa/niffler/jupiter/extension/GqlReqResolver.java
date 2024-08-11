@@ -15,26 +15,26 @@ import java.io.InputStream;
 
 public class GqlReqResolver implements ParameterResolver {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    @Override
-    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        GqlReq annotation = AnnotationSupport.findAnnotation(parameterContext.getParameter(), GqlReq.class)
-                .orElse(null);
+  @Override
+  public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    GqlReq annotation = AnnotationSupport.findAnnotation(parameterContext.getParameter(), GqlReq.class)
+        .orElse(null);
 
-        return annotation != null && !"".equals(annotation.value()) &&
-                parameterContext.getParameter().getType().isAssignableFrom(GqlRequest.class);
+    return annotation != null && !"".equals(annotation.value()) &&
+        parameterContext.getParameter().getType().isAssignableFrom(GqlRequest.class);
+  }
+
+  @Override
+  public GqlRequest resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    String path = AnnotationSupport.findAnnotation(parameterContext.getParameter(), GqlReq.class)
+        .orElseThrow()
+        .value();
+    try (InputStream is = new ClassPathResource(path).getInputStream()) {
+      return OBJECT_MAPPER.readValue(is, GqlRequest.class);
+    } catch (IOException e) {
+      throw new ParameterResolutionException("Error while reading resource", e);
     }
-
-    @Override
-    public GqlRequest resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        String path = AnnotationSupport.findAnnotation(parameterContext.getParameter(), GqlReq.class)
-                .orElseThrow()
-                .value();
-        try (InputStream is = new ClassPathResource(path).getInputStream()) {
-            return OBJECT_MAPPER.readValue(is, GqlRequest.class);
-        } catch (IOException e) {
-            throw new ParameterResolutionException("Error while reading resource", e);
-        }
-    }
+  }
 }

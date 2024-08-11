@@ -7,8 +7,6 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import {TransitionProps} from "@mui/material/transitions";
 import Slide from "@mui/material/Slide";
-import {Box} from "@mui/material";
-import niffler from "../assets/images/niffler-with-a-coin2.png";
 import * as React from "react";
 
 const Transition = forwardRef(function Transition(
@@ -68,16 +66,16 @@ const DialogProvider: FC<DialogContextProps> = ({children}) => {
             >
                 <DialogTitle>{dialogData?.title}</DialogTitle>
                 <DialogContent sx={{display: "flex", alignItems: "center"}}>
-                    <Box
-                        component="img"
-                        sx={{
-                            height: 100,
-                            width: 80,
-                            marginRight: 4,
-                        }}
-                        alt="Lonely niffler"
-                        src={niffler}
-                    />
+                    {/*<Box*/}
+                    {/*    component="img"*/}
+                    {/*    sx={{*/}
+                    {/*        height: 60,*/}
+                    {/*        width: 60,*/}
+                    {/*        marginRight: 4,*/}
+                    {/*    }}*/}
+                    {/*    alt="Coin"*/}
+                    {/*    src={coin}*/}
+                    {/*/>*/}
                     <DialogContentText id="alert-dialog-slide-description">
                         {dialogData?.description}
                     </DialogContentText>

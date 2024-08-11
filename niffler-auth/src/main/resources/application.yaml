@@ -1,11 +1,9 @@
 server:
   port: 9000
-  # ONLY FOR TESTING
-  servlet:
-    session:
-      cookie:
-        http-only: false
-        secure: false
+  error:
+    whitelabel:
+      enabled: false
+    path: /error
 
 spring:
   application:

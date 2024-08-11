@@ -17,31 +17,31 @@ import java.util.List;
 
 public interface SpendApi {
 
-    @POST("internal/spends/add")
-    Call<SpendJson> addSpend(@Body SpendJson spend);
+  @POST("internal/spends/add")
+  Call<SpendJson> addSpend(@Body SpendJson spend);
 
-    @DELETE("internal/spends/remove")
-    Call<Void> removeSpends(@Query("username") String username, @Query("ids") List<String> ids);
+  @DELETE("internal/spends/remove")
+  Call<Void> removeSpends(@Query("username") String username, @Query("ids") List<String> ids);
 
-    @POST("internal/categories/add")
-    Call<CategoryJson> addCategory(@Body CategoryJson category);
+  @POST("internal/categories/add")
+  Call<CategoryJson> addCategory(@Body CategoryJson category);
 
-    @GET("internal/categories/all")
-    Call<List<CategoryJson>> allCategories(@Query("username") String username);
+  @GET("internal/categories/all")
+  Call<List<CategoryJson>> allCategories(@Query("username") String username);
 
-    @GET("internal/stat/total")
-    Call<List<StatisticJson>> stat(@Query("username") String username,
-                                   @Query("userCurrency") CurrencyValues userCurrency,
-                                   @Query("filterCurrency") @Nullable CurrencyValues filterCurrency,
-                                   @Query("from") @Nullable String from,
-                                   @Query("to") @Nullable String to);
+  @GET("internal/stat/total")
+  Call<List<StatisticJson>> stat(@Query("username") String username,
+                                 @Query("userCurrency") CurrencyValues userCurrency,
+                                 @Query("filterCurrency") @Nullable CurrencyValues filterCurrency,
+                                 @Query("from") @Nullable String from,
+                                 @Query("to") @Nullable String to);
 
-    @GET("internal/v2/spends/all")
-    Call<RestPage<SpendJson>> allSpendsPageable(@Query("username") String username,
-                                                @Query("filterCurrency") @Nullable CurrencyValues filterCurrency,
-                                                @Query("from") @Nullable String from,
-                                                @Query("to") @Nullable String to,
-                                                @Query("page") @Nullable Integer page,
-                                                @Query("size") @Nullable Integer size,
-                                                @Query("sort") @Nullable List<String> sort);
+  @GET("internal/v2/spends/all")
+  Call<RestPage<SpendJson>> allSpendsPageable(@Query("username") String username,
+                                              @Query("filterCurrency") @Nullable CurrencyValues filterCurrency,
+                                              @Query("from") @Nullable String from,
+                                              @Query("to") @Nullable String to,
+                                              @Query("page") @Nullable Integer page,
+                                              @Query("size") @Nullable Integer size,
+                                              @Query("sort") @Nullable List<String> sort);
 }

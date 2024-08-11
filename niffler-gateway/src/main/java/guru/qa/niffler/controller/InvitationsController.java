@@ -20,33 +20,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/invitations")
 public class InvitationsController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InvitationsController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(InvitationsController.class);
 
-    private final UserDataClient userDataClient;
+  private final UserDataClient userDataClient;
 
-    @Autowired
-    public InvitationsController(UserDataClient userDataClient) {
-        this.userDataClient = userDataClient;
-    }
+  @Autowired
+  public InvitationsController(UserDataClient userDataClient) {
+    this.userDataClient = userDataClient;
+  }
 
-    @PostMapping("/send")
-    public UserJson sendInvitation(@AuthenticationPrincipal Jwt principal,
-                                   @Valid @RequestBody FriendJson friend) {
-        String username = principal.getClaim("sub");
-        return userDataClient.sendInvitation(username, friend.username());
-    }
+  @PostMapping("/send")
+  public UserJson sendInvitation(@AuthenticationPrincipal Jwt principal,
+                                 @Valid @RequestBody FriendJson friend) {
+    String username = principal.getClaim("sub");
+    return userDataClient.sendInvitation(username, friend.username());
+  }
 
-    @PostMapping("/accept")
-    public UserJson acceptInvitation(@AuthenticationPrincipal Jwt principal,
-                                     @Valid @RequestBody FriendJson invitation) {
-        String username = principal.getClaim("sub");
-        return userDataClient.acceptInvitation(username, invitation.username());
-    }
+  @PostMapping("/accept")
+  public UserJson acceptInvitation(@AuthenticationPrincipal Jwt principal,
+                                   @Valid @RequestBody FriendJson invitation) {
+    String username = principal.getClaim("sub");
+    return userDataClient.acceptInvitation(username, invitation.username());
+  }
 
-    @PostMapping("/decline")
-    public UserJson declineInvitation(@AuthenticationPrincipal Jwt principal,
-                                      @Valid @RequestBody FriendJson invitation) {
-        String username = principal.getClaim("sub");
-        return userDataClient.declineInvitation(username, invitation.username());
-    }
+  @PostMapping("/decline")
+  public UserJson declineInvitation(@AuthenticationPrincipal Jwt principal,
+                                    @Valid @RequestBody FriendJson invitation) {
+    String username = principal.getClaim("sub");
+    return userDataClient.declineInvitation(username, invitation.username());
+  }
 }

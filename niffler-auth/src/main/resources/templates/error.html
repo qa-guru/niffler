@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Niffler auth error page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" th:href="@{images/favicon.ico}"/>
+    <link href="../static/styles/styles.css" th:href="@{styles/styles.css}" rel="stylesheet"
+          type="text/css"/>
+</head>
+<body>
+<main class="content">
+    <div class="content__wrapper">
+        <div class="main__hero"></div>
+        <section class="main__form">
+            <div class="logo-section">
+                <img class="logo-section__logo" src="./../static/images/coin.svg" width="36" th:src="@{images/coin.svg}"
+                     alt="Niffler logo"/>
+                <p class="logo-section__text">
+                    Oops, an error occurred :(
+                </p>
+            </div>
+            <div class="form-section">
+                <div class="form" id="error-form">
+                    <h1 class="header" th:text="'Code: ' + ${status}">
+                    </h1>
+                    <div th:if="${error}" class="form__error-container">
+                        <p class="form__error" th:text="${error}"></p>
+                    </div>
+                    <p class="header__additional">
+                        Let`s start from the <a class="form__link" th:href="@{|${frontUri}|}">Niffler main page</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>

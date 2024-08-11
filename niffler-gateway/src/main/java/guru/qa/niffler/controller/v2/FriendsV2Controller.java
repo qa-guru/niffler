@@ -21,20 +21,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v2/friends")
 public class FriendsV2Controller {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FriendsV2Controller.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FriendsV2Controller.class);
 
-    private final UserDataClient userDataClient;
+  private final UserDataClient userDataClient;
 
-    @Autowired
-    public FriendsV2Controller(UserDataClient userDataClient) {
-        this.userDataClient = userDataClient;
-    }
+  @Autowired
+  public FriendsV2Controller(UserDataClient userDataClient) {
+    this.userDataClient = userDataClient;
+  }
 
-    @GetMapping("/all")
-    public Page<UserJson> friends(@AuthenticationPrincipal Jwt principal,
-                                  @PageableDefault Pageable pageable,
-                                  @RequestParam(required = false) String searchQuery) {
-        String username = principal.getClaim("sub");
-        return userDataClient.friends(username, pageable, searchQuery);
-    }
+  @GetMapping("/all")
+  public Page<UserJson> friends(@AuthenticationPrincipal Jwt principal,
+                                @PageableDefault Pageable pageable,
+                                @RequestParam(required = false) String searchQuery) {
+    String username = principal.getClaim("sub");
+    return userDataClient.friends(username, pageable, searchQuery);
+  }
 }

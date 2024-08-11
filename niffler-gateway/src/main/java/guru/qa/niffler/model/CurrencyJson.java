@@ -5,19 +5,19 @@ import guru.qa.niffler.grpc.Currency;
 import jakarta.annotation.Nonnull;
 
 public record CurrencyJson(
-        @JsonProperty("currency")
-        CurrencyValues currency,
-        @JsonProperty("currencyRate")
-        Double currencyRate,
-        @JsonProperty("symbol")
-        String symbol) {
+    @JsonProperty("currency")
+    CurrencyValues currency,
+    @JsonProperty("currencyRate")
+    Double currencyRate,
+    @JsonProperty("symbol")
+    String symbol) {
 
 
-    public static @Nonnull CurrencyJson fromGrpcMessage(@Nonnull Currency currencyMessage) {
-        return new CurrencyJson(
-                CurrencyValues.valueOf(currencyMessage.getCurrency().name()),
-                currencyMessage.getCurrencyRate(),
-                currencyMessage.getSymbol()
-        );
-    }
+  public static @Nonnull CurrencyJson fromGrpcMessage(@Nonnull Currency currencyMessage) {
+    return new CurrencyJson(
+        CurrencyValues.valueOf(currencyMessage.getCurrency().name()),
+        currencyMessage.getCurrencyRate(),
+        currencyMessage.getSymbol()
+    );
+  }
 }

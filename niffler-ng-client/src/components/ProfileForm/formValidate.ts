@@ -1,81 +1,48 @@
 import { IStringIndex } from "../PhotoModal/formValidate";
+import {User} from "../../types/User.ts";
 
-export const MAX_FIRST_NAME_LENGTH = 50;
-export const MAX_FIRST_NAME_ERROR = `First name length has to be not longer that ${MAX_FIRST_NAME_LENGTH} symbols`;
-export const MAX_SURNAME_LENGTH = 100;
-export const MAX_SURNAME_ERROR = `Surname length has to be not longer that ${MAX_SURNAME_LENGTH} symbols`;
+export const MAX_FULLNAME_LENGTH = 50;
+export const MAX_FULLNAME_ERROR = `Fullname length has to be not longer that ${MAX_FULLNAME_LENGTH} symbols`;
 
-export const formInitialState: UserFormProps = {
-    firstname: {
-        value: "",
-        error: false,
-        errorMessage: "",
-    },
-    surname: {
-        value: "",
-        error: false,
-        errorMessage: "",
-    },
-    username: {
-        value: "",
-        error: false,
-        errorMessage: "",
-    },
-    location: {
-        value: "ru",
-        error: false,
-        errorMessage: "",
-    },
-    avatar: {
-        value: undefined,
-        error: false,
-        errorMessage: "",
-    }
-};
 
-export type UserFormProps = IStringIndex & {
-    firstname: {
-        value: string,
-        error: boolean,
-        errorMessage: string,
-    },
-    surname: {
-        value: string,
-        error: boolean,
-        errorMessage: string,
-    },
+export type UserFormData = IStringIndex & {
     username: {
         value: string,
         error: boolean,
         errorMessage: string,
     },
-    location: {
+    fullname: {
         value: string,
         error: boolean,
         errorMessage: string,
     },
-    avatar: {
+    photo: {
         value: string | undefined,
         error: boolean,
         errorMessage: string,
     }
 }
 
+export const convertUserToFormData = (user: User): UserFormData => {
+    return Object.keys(user).reduce((acc, key) => {
+        acc[key] = {
+            value: user[key as keyof User],
+            error: false,
+            errorMessage: "",
+        };
+        return acc;
+    }, {} as UserFormData);
+}
 
-export const formValidate = (formValues: UserFormProps): UserFormProps => {
+export const profileFormValidate = (formValues: UserFormData): UserFormData => {
     let newFormValues = {...formValues};
     
     newFormValues = {
         ...newFormValues,
-        firstname : {
-            ...newFormValues.firstname,
-            error: formValues.firstname.value?.length > MAX_FIRST_NAME_LENGTH ? true : false,
-            errorMessage: formValues.firstname.value?.length > MAX_FIRST_NAME_LENGTH  ? MAX_FIRST_NAME_ERROR : "",
-        },
-        surname: {
-            ...newFormValues.surname,
-            error: formValues.surname.value?.length > MAX_SURNAME_LENGTH ? true : false,
-            errorMessage: formValues.surname.value?.length > MAX_SURNAME_LENGTH ? MAX_SURNAME_ERROR : "",
+        fullname: {
+            ...newFormValues.fullname,
+            error: formValues.fullname.value?.length > MAX_FULLNAME_LENGTH ? true : false,
+            errorMessage: formValues.fullname.value?.length > MAX_FULLNAME_LENGTH  ? MAX_FULLNAME_ERROR : "",
         },
     }
 

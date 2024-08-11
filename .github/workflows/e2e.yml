@@ -69,12 +69,14 @@ jobs:
             })
   
   collect-versions:
+    if: false
     needs: e2e-tests
     uses: ./.github/workflows/versions.yml
     with:
       runner: niffler-stage-runner
   
   deploy-services:
+    if: false
     runs-on: niffler-stage-runner
     needs: collect-versions
     steps:

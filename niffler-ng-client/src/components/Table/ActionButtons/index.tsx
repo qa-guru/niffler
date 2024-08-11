@@ -1,6 +1,6 @@
-import {FC } from "react";
-import { useSnackBar } from "../../../context/SnackBarContext";
-import { Chip, useTheme} from "@mui/material";
+import {FC} from "react";
+import {useSnackBar} from "../../../context/SnackBarContext";
+import {Box, Chip, useTheme} from "@mui/material";
 import AddFriendIcon from "../../../assets/icons/ic_add_friend.svg?react";
 import {PrimaryButton, SecondaryButton} from "../../Button";
 import {Icon} from "../../Icon";
@@ -12,15 +12,18 @@ import {FriendState} from "../../../types/FriendState.ts";
 interface ActionButtonsInterface {
     username: string;
     friendState?: FriendState;
+    handleUpdateUserData: (username: string, newFriendState: "FRIEND" | "INVITE_SENT" | "INVITE_RECEIVED" | undefined) => void;
 }
-export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState}) => {
+
+export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState, handleUpdateUserData}) => {
     const snackbar = useSnackBar();
     const dialog = useDialog();
     const theme = useTheme();
 
     const handleAddUser = (username: string) => {
         apiClient.sendInvitation(username, {
-            onSuccess: _data => {
+            onSuccess: (data) => {
+                handleUpdateUserData(data.username, data.friendState);
                 snackbar.showSnackBar(`Invitation sent to ${username}`, "success");
             },
             onFailure: e => {
@@ -32,7 +35,8 @@ export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState
 
     const handleAcceptInvitation = (username: string) => {
         apiClient.acceptInvitation(username, {
-            onSuccess: _data => {
+            onSuccess: (data) => {
+                handleUpdateUserData(data.username, data.friendState);
                 snackbar.showSnackBar(`Invitation of ${username} accepted`, "success");
             },
             onFailure: e => {
@@ -48,7 +52,8 @@ export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState
             description: "Do you really want to decline friendship?",
             onSubmit: () => {
                 apiClient.declineInvitation(username, {
-                    onSuccess: () => {
+                    onSuccess: (data) => {
+                        handleUpdateUserData(data.username, data.friendState);
                         snackbar.showSnackBar(`Invitation of ${username} is declined`, "success");
                     },
                     onFailure: e => {
@@ -69,6 +74,7 @@ export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState
             onSubmit: () => {
                 apiClient.deleteFriend(username, {
                     onSuccess: () => {
+                        handleUpdateUserData(username, undefined);
                         snackbar.showSnackBar(`Friend ${username} is deleted`, "success");
                     },
                     onFailure: e => {
@@ -82,24 +88,30 @@ export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState
         });
     }
 
-    if(!friendState) {
+    if (!friendState) {
         return (
-            <SecondaryButton
-                startIcon={
-                <AddFriendIcon stroke={theme.palette.black.main}/>}
-                type="button"
-                variant="contained"
-                color="secondary"
-                size="small"
-                onClick={() => handleAddUser(username)}
-            >
-                Add friend
-            </SecondaryButton>
+            <Box sx={{
+                margin: 1
+            }}>
+                <SecondaryButton
+                    startIcon={
+                        <AddFriendIcon stroke={theme.palette.black.main}/>}
+                    type="button"
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    onClick={() => handleAddUser(username)}
+                >
+                    Add friend
+                </SecondaryButton>
+            </Box>
         )
     }
 
     return (
-        <>
+        <Box sx={{
+            margin: 1
+        }}>
             {
                 friendState === "FRIEND" && (
                     <SecondaryButton
@@ -126,7 +138,7 @@ export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState
                     <>
                         <PrimaryButton
                             startIcon={
-                            <Icon type={"checkIcon"}/>}
+                                <Icon type={"checkIcon"}/>}
                             type="button"
                             variant="contained"
                             size="small"
@@ -150,6 +162,6 @@ export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState
                     </>
                 )
             }
-        </>
+        </Box>
     )
 }

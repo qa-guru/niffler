@@ -9,12 +9,12 @@ import java.util.Map;
 @Getter
 @Setter
 public abstract class GqlResponse<T> {
-    protected T data;
-    protected List<Error> errors;
+  protected T data;
+  protected List<Error> errors;
 
-    public record Error(String message,
-                        List<Map<String, Integer>> locations,
-                        List<String> path,
-                        Map<String, String> extensions) {
-    }
+  public record Error(String message,
+                      List<Map<String, Integer>> locations,
+                      List<String> path,
+                      Map<String, String> extensions) {
+  }
 }

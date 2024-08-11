@@ -10,20 +10,20 @@ import io.grpc.ManagedChannelBuilder;
 @GrpcTest
 public abstract class BaseGrpcTest {
 
-    protected static final Config CFG = Config.getConfig();
+  protected static final Config CFG = Config.getConfig();
 
-    protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceStub stub;
-    protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub blockingStub;
-    protected static final Channel channel;
+  protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceStub stub;
+  protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub blockingStub;
+  protected static final Channel channel;
 
-    static {
-        channel = ManagedChannelBuilder
-                .forAddress(CFG.currencyGrpcHost(), CFG.currencyGrpcPort())
-                .intercept(new GrpcConsoleInterceptor())
-                .usePlaintext()
-                .build();
+  static {
+    channel = ManagedChannelBuilder
+        .forAddress(CFG.currencyGrpcHost(), CFG.currencyGrpcPort())
+        .intercept(new GrpcConsoleInterceptor())
+        .usePlaintext()
+        .build();
 
-        stub = NifflerCurrencyServiceGrpc.newStub(channel);
-        blockingStub = NifflerCurrencyServiceGrpc.newBlockingStub(channel);
-    }
+    stub = NifflerCurrencyServiceGrpc.newStub(channel);
+    blockingStub = NifflerCurrencyServiceGrpc.newBlockingStub(channel);
+  }
 }

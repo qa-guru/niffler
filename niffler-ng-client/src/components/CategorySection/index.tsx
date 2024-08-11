@@ -1,4 +1,4 @@
-import {Grid,  Typography} from "@mui/material";
+import {FormControlLabel, Grid, Switch, Typography} from "@mui/material";
 import {CategoryItem} from "../CategoryItem";
 import {useEffect, useState} from "react";
 import {apiClient} from "../../api/apiClient.ts";
@@ -8,7 +8,9 @@ import {Category} from "../../types/Category.ts";
 export const CategorySection = () => {
 
     const [categories, setCategories] = useState<Category[]>([]);
+    const [showArchived, setShowArchived] = useState<boolean>(false);
 
+    const isUnarchiveCategoriesEnabled = categories.filter(category => !category.archived).length < 8;
     const fetchCategories = () =>  apiClient.getCategories({
             onSuccess: (res) => setCategories(res),
             onFailure: (e) => {
@@ -30,20 +32,32 @@ export const CategorySection = () => {
                 margin: "5px auto"
             }}
         >
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+            }}>
                 <Typography
                     variant="h5"
                     component="h2"
                 >
                     Categories
                 </Typography>
+                <FormControlLabel control={<Switch  checked={showArchived} onChange={() => setShowArchived(!showArchived)}/>} label="Show archived" />
             </Grid>
             <NewCategoryFrom refetchCategories={fetchCategories}/>
-            {
+            {showArchived
+                ?
                 categories.map((category) => (
-                    <Grid item xs={12} key={category?.id}>
-                        <CategoryItem name={category?.category}/>
-                    </Grid>
+                    (<Grid item xs={12} key={category?.id}>
+                        <CategoryItem category={category} onUpdateCategory={fetchCategories} isUnarchiveEnabled={isUnarchiveCategoriesEnabled}/>
+                    </Grid>)
+                ))
+                :
+                categories.map((category) => ( !category.archived &&
+                    (<Grid item xs={12} key={category?.id}>
+                        <CategoryItem category={category} onUpdateCategory={fetchCategories} isUnarchiveEnabled={isUnarchiveCategoriesEnabled}/>
+                    </Grid>)
                 ))
             }
         </Grid>

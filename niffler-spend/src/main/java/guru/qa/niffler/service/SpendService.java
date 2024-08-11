@@ -24,187 +24,185 @@ import java.util.UUID;
 @Component
 public class SpendService {
 
-    private final SpendRepository spendRepository;
-    private final CategoryService categoryService;
+  private final SpendRepository spendRepository;
+  private final CategoryService categoryService;
 
-    @Autowired
-    public SpendService(SpendRepository spendRepository, CategoryService categoryService) {
-        this.spendRepository = spendRepository;
-        this.categoryService = categoryService;
-    }
+  @Autowired
+  public SpendService(SpendRepository spendRepository, CategoryService categoryService) {
+    this.spendRepository = spendRepository;
+    this.categoryService = categoryService;
+  }
 
-    @Transactional
-    public @Nonnull
-    SpendJson saveSpendForUser(@Nonnull SpendJson spend) {
-        final String username = spend.username();
+  @Transactional
+  public @Nonnull
+  SpendJson saveSpendForUser(@Nonnull SpendJson spend) {
+    final String username = spend.username();
 
-        SpendEntity spendEntity = new SpendEntity();
-        spendEntity.setUsername(username);
-        spendEntity.setSpendDate(spend.spendDate());
-        spendEntity.setCurrency(spend.currency());
-        spendEntity.setDescription(spend.description());
-        spendEntity.setAmount(spend.amount());
-        CategoryEntity categoryEntity = categoryService.getOrSave(spend.category());
+    SpendEntity spendEntity = new SpendEntity();
+    spendEntity.setUsername(username);
+    spendEntity.setSpendDate(spend.spendDate());
+    spendEntity.setCurrency(spend.currency());
+    spendEntity.setDescription(spend.description());
+    spendEntity.setAmount(spend.amount());
+    CategoryEntity categoryEntity = categoryService.getOrSave(spend.category());
 
-        spendEntity.setCategory(categoryEntity);
-        return SpendJson.fromEntity(spendRepository.save(spendEntity));
-    }
+    spendEntity.setCategory(categoryEntity);
+    return SpendJson.fromEntity(spendRepository.save(spendEntity));
+  }
 
-    @Transactional
-    public @Nonnull
-    SpendJson editSpendForUser(@Nonnull SpendJson spend) {
-        return spendRepository.findByIdAndUsername(spend.id(), spend.username()).map(
-                spendEntity -> {
-                    CategoryEntity categoryEntity = categoryService.getOrSave(spend.category());
-                    spendEntity.setSpendDate(spend.spendDate());
-                    spendEntity.setCategory(categoryEntity);
-                    spendEntity.setAmount(spend.amount());
-                    spendEntity.setDescription(spend.description());
-                    return SpendJson.fromEntity(spendRepository.save(spendEntity));
-                }
-        ).orElseThrow(() -> new SpendNotFoundException(
-                "Can`t find spend by given id: " + spend.id()
+  @Transactional
+  public @Nonnull
+  SpendJson editSpendForUser(@Nonnull SpendJson spend) {
+    return spendRepository.findByIdAndUsername(spend.id(), spend.username()).map(
+        spendEntity -> {
+          CategoryEntity categoryEntity = categoryService.getOrSave(spend.category());
+          spendEntity.setSpendDate(spend.spendDate());
+          spendEntity.setCategory(categoryEntity);
+          spendEntity.setAmount(spend.amount());
+          spendEntity.setDescription(spend.description());
+          return SpendJson.fromEntity(spendRepository.save(spendEntity));
+        }
+    ).orElseThrow(() -> new SpendNotFoundException(
+        "Can`t find spend by given id: " + spend.id()
+    ));
+  }
+
+  @Transactional(readOnly = true)
+  public @Nonnull
+  SpendJson getSpendForUser(@Nonnull String id,
+                            @Nonnull String username) {
+    return spendRepository.findByIdAndUsername(extractUuid(id), username)
+        .map(SpendJson::fromEntity)
+        .orElseThrow(() -> new SpendNotFoundException(
+            "Can`t find spend by given id: " + id
         ));
-    }
+  }
 
-    @Transactional(readOnly = true)
-    public @Nonnull
-    SpendJson getSpendForUser(@Nonnull String id,
-                              @Nonnull String username) {
-        return spendRepository.findByIdAndUsername(extractUuid(id), username)
-                .map(SpendJson::fromEntity)
-                .orElseThrow(() -> new SpendNotFoundException(
-                        "Can`t find spend by given id: " + id
-                ));
-    }
+  @Transactional(readOnly = true)
+  public @Nonnull
+  List<SpendJson> getSpendsForUser(@Nonnull String username,
+                                   @Nullable CurrencyValues filterCurrency,
+                                   @Nullable Date dateFrom,
+                                   @Nullable Date dateTo) {
+    return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo)
+        .stream()
+        .map(SpendJson::fromEntity)
+        .toList();
+  }
 
-    @Transactional(readOnly = true)
-    public @Nonnull
-    List<SpendJson> getSpendsForUser(@Nonnull String username,
-                                     @Nullable CurrencyValues filterCurrency,
-                                     @Nullable Date dateFrom,
-                                     @Nullable Date dateTo) {
-        return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo)
-                .stream()
-                .map(SpendJson::fromEntity)
-                .toList();
-    }
+  @Transactional(readOnly = true)
+  public @Nonnull
+  Page<SpendJson> getSpendsForUser(@Nonnull String username,
+                                   @Nonnull Pageable pageable,
+                                   @Nullable CurrencyValues filterCurrency,
+                                   @Nullable Date dateFrom,
+                                   @Nullable Date dateTo,
+                                   @Nullable String searchQuery) {
+    return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo, searchQuery, pageable)
+        .map(SpendJson::fromEntity);
+  }
 
-    @Transactional(readOnly = true)
-    public @Nonnull
-    Page<SpendJson> getSpendsForUser(@Nonnull String username,
-                                     @Nonnull Pageable pageable,
-                                     @Nullable CurrencyValues filterCurrency,
-                                     @Nullable Date dateFrom,
-                                     @Nullable Date dateTo) {
-        return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo, pageable)
-                .map(SpendJson::fromEntity);
-    }
+  @Transactional
+  public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
+    spendRepository.deleteByUsernameAndIdIn(
+        username,
+        ids.stream().map(UUID::fromString).toList()
+    );
+  }
 
-    @Transactional
-    public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
-        spendRepository.deleteByUsernameAndIdIn(
-                username,
-                ids.stream().map(UUID::fromString).toList()
-        );
-    }
+  @Nonnull
+  List<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
+                                           @Nullable CurrencyValues filterCurrency,
+                                           @Nullable Date dateFrom,
+                                           @Nullable Date dateTo) {
+    dateTo = dateTo == null
+        ? new Date()
+        : dateTo;
 
-    @Nonnull
-    List<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
-                                             @Nullable CurrencyValues filterCurrency,
+    List<SpendEntity> spends;
+    if (dateFrom == null) {
+      spends = filterCurrency != null
+          ?
+          spendRepository.findAllByUsernameAndCurrencyAndSpendDateLessThanEqualOrderBySpendDateDesc(
+              username, filterCurrency, dateTo
+          )
+          :
+          spendRepository.findAllByUsernameAndSpendDateLessThanEqualOrderBySpendDateDesc(
+              username, dateTo
+          );
+    } else {
+      spends = filterCurrency != null
+          ?
+          spendRepository.findAllByUsernameAndCurrencyAndSpendDateGreaterThanEqualAndSpendDateLessThanEqualOrderBySpendDateDesc(
+              username, filterCurrency, dateFrom, dateTo
+          )
+          :
+          spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqualOrderBySpendDateDesc(
+              username, dateFrom, dateTo
+          );
+    }
+    return spends;
+  }
+
+  @Nonnull
+  List<SumByCategoryInfo> getSumByCategories(@Nonnull String username,
                                              @Nullable Date dateFrom,
                                              @Nullable Date dateTo) {
-        dateTo = dateTo == null
-                ? new Date()
-                : dateTo;
+    dateFrom = dateFrom == null
+        ? new Date(0)
+        : dateFrom;
 
-        List<SpendEntity> spends;
-        if (dateFrom == null) {
-            spends = filterCurrency != null
-                    ?
-                    spendRepository.findAllByUsernameAndCurrencyAndSpendDateLessThanEqual(
-                            username, filterCurrency, dateTo
-                    )
-                    :
-                    spendRepository.findAllByUsernameAndSpendDateLessThanEqual(
-                            username, dateTo
-                    );
-        } else {
-            spends = filterCurrency != null
-                    ?
-                    spendRepository.findAllByUsernameAndCurrencyAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(
-                            username, filterCurrency, dateFrom, dateTo
-                    )
-                    :
-                    spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(
-                            username, dateFrom, dateTo
-                    );
-        }
-        return spends;
+    dateTo = dateTo == null
+        ? new Date()
+        : dateTo;
+
+    List<SumByCategoryInfo> result = new ArrayList<>();
+    result.addAll(spendRepository.statisticByArchivedCategory(username, dateFrom, dateTo));
+    result.addAll(spendRepository.statisticByCategory(username, dateFrom, dateTo));
+    return result;
+  }
+
+  @Nonnull
+  Page<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
+                                           @Nullable CurrencyValues filterCurrency,
+                                           @Nullable Date dateFrom,
+                                           @Nullable Date dateTo,
+                                           @Nullable String searchQuery,
+                                           @Nonnull Pageable pageable) {
+    dateTo = dateTo == null
+        ? new Date()
+        : dateTo;
+
+    dateFrom = dateFrom == null
+        ? new Date(0)
+        : dateFrom;
+
+    Page<SpendEntity> spends;
+    if (filterCurrency != null) {
+      if (searchQuery != null) {
+        spends = spendRepository.findAll(username, filterCurrency, dateFrom, dateTo, searchQuery, pageable);
+      } else {
+        spends = spendRepository.findAll(username, filterCurrency, dateFrom, dateTo, pageable);
+      }
+    } else {
+      if (searchQuery != null) {
+        spends = spendRepository.findAll(username, dateFrom, dateTo, searchQuery, pageable);
+      } else {
+        spends = spendRepository.findAll(username, dateFrom, dateTo, pageable);
+      }
     }
+    return spends;
+  }
 
-    @Nonnull
-    List<SumByCategoryInfo> getSumByCategories(@Nonnull String username,
-                                               @Nullable Date dateFrom,
-                                               @Nullable Date dateTo) {
-        dateFrom = dateFrom == null
-                ? new Date(0)
-                : dateFrom;
-
-        dateTo = dateTo == null
-                ? new Date()
-                : dateTo;
-
-        List<SumByCategoryInfo> result = new ArrayList<>();
-        result.addAll(spendRepository.statisticByArchivedCategory(username, dateFrom, dateTo));
-        result.addAll(spendRepository.statisticByCategory(username, dateFrom, dateTo));
-        return result;
+  private @Nonnull UUID extractUuid(@Nonnull String id) {
+    UUID spendId;
+    try {
+      spendId = UUID.fromString(id);
+    } catch (IllegalArgumentException e) {
+      throw new InvalidIdException(
+          "Invalid id: " + id
+      );
     }
-
-    @Nonnull
-    Page<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
-                                             @Nullable CurrencyValues filterCurrency,
-                                             @Nullable Date dateFrom,
-                                             @Nullable Date dateTo,
-                                             @Nonnull Pageable pageable) {
-        dateTo = dateTo == null
-                ? new Date()
-                : dateTo;
-
-        Page<SpendEntity> spends;
-        if (dateFrom == null) {
-            spends = filterCurrency != null
-                    ?
-                    spendRepository.findAllByUsernameAndCurrencyAndSpendDateLessThanEqual(
-                            username, filterCurrency, dateTo, pageable
-                    )
-                    :
-                    spendRepository.findAllByUsernameAndSpendDateLessThanEqual(
-                            username, dateTo, pageable
-                    );
-        } else {
-            spends = filterCurrency != null
-                    ?
-                    spendRepository.findAllByUsernameAndCurrencyAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(
-                            username, filterCurrency, dateFrom, dateTo, pageable
-                    )
-                    :
-                    spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqual(
-                            username, dateFrom, dateTo, pageable
-                    );
-        }
-        return spends;
-    }
-
-    private @Nonnull UUID extractUuid(@Nonnull String id) {
-        UUID spendId;
-        try {
-            spendId = UUID.fromString(id);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidIdException(
-                    "Invalid id: " + id
-            );
-        }
-        return spendId;
-    }
+    return spendId;
+  }
 }

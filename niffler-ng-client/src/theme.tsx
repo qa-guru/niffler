@@ -19,7 +19,7 @@ const theme = createTheme({
             main: "#d32f2f",
         },
         info: {
-            main: "#ced0cd" ,
+            main: "#A8ACC0" ,
         },
         blue100: palette.augmentColor({
             color: {
@@ -115,7 +115,6 @@ const theme = createTheme({
         MuiTextField: {
             styleOverrides: {
                 root: {
-                    backgroundColor: "#FAFAFD",
                     borderRadius: "8px",
                     }
             }
@@ -179,7 +178,7 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     border: "none",
-                    padding: "4px 0",
+                    padding: "10px",
                 },
             }
         },

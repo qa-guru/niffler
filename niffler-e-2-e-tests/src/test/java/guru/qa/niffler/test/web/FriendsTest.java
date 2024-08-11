@@ -25,84 +25,84 @@ import static guru.qa.niffler.jupiter.annotation.User.Selector.NESTED;
 @DisplayName("[WEB][niffler-frontend]: Друзья")
 public class FriendsTest extends BaseWebTest {
 
-    @Test
-    @AllureId("500018")
-    @DisplayName("WEB: Пользователь должен видеть список своих друзей")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(friends = @Friends(count = 2)))
-    void shouldViewExistingFriendsInTable(@User UserJson user) {
-        Selenide.open(MainPage.URL, MainPage.class)
-                .getHeader()
-                .toFriendsPage()
-                .checkExistingFriends(user.testData().friends());
-    }
+  @Test
+  @AllureId("500018")
+  @DisplayName("WEB: Пользователь должен видеть список своих друзей")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(friends = @Friends(count = 2)))
+  void shouldViewExistingFriendsInTable(@User UserJson user) {
+    Selenide.open(MainPage.URL, MainPage.class)
+        .getHeader()
+        .toFriendsPage()
+        .checkExistingFriends(user.testData().friends());
+  }
 
-    @Test
-    @AllureId("500019")
-    @DisplayName("WEB: Пользователь имеет возможность отправить запрос на добавление в друзья")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser)
-    @GenerateUser()
-    void shouldSendInvitation(@User(selector = NESTED) UserJson currentUser,
-                              @User(selector = METHOD) UserJson userToSendInvitation) {
-        PeoplePage peoplePage = Selenide.open(PeoplePage.URL, PeoplePage.class)
-                .waitForPageLoaded()
-                .sendFriendInvitationToUser(userToSendInvitation.username());
+  @Test
+  @AllureId("500019")
+  @DisplayName("WEB: Пользователь имеет возможность отправить запрос на добавление в друзья")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser)
+  @GenerateUser()
+  void shouldSendInvitation(@User(selector = NESTED) UserJson currentUser,
+                            @User(selector = METHOD) UserJson userToSendInvitation) {
+    PeoplePage peoplePage = Selenide.open(PeoplePage.URL, PeoplePage.class)
+        .waitForPageLoaded()
+        .sendFriendInvitationToUser(userToSendInvitation.username());
 
-        Selenide.refresh();
+    Selenide.refresh();
 
-        peoplePage.checkInvitationSentToUser(userToSendInvitation.username());
-    }
+    peoplePage.checkInvitationSentToUser(userToSendInvitation.username());
+  }
 
-    @Test
-    @AllureId("500020")
-    @DisplayName("WEB: Пользователь имеет возможность удалить пользователя из друзей")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(friends = @Friends(count = 2)))
-    void shouldRemoveFriend(@User(selector = NESTED) UserJson user) {
-        UserJson userToRemove = user.testData().friends().removeFirst();
-        FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
-                .waitForPageLoaded()
-                .removeFriend(userToRemove.username())
-                .checkToasterMessage(SuccessMessage.FRIEND_DELETED.content);
+  @Test
+  @AllureId("500020")
+  @DisplayName("WEB: Пользователь имеет возможность удалить пользователя из друзей")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(friends = @Friends(count = 2)))
+  void shouldRemoveFriend(@User(selector = NESTED) UserJson user) {
+    UserJson userToRemove = user.testData().friends().removeFirst();
+    FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
+        .waitForPageLoaded()
+        .removeFriend(userToRemove.username())
+        .checkToasterMessage(SuccessMessage.FRIEND_DELETED.content);
 
-        Selenide.refresh();
+    Selenide.refresh();
 
-        friendsPage.checkExistingFriends(user.testData().friends());
-    }
+    friendsPage.checkExistingFriends(user.testData().friends());
+  }
 
-    @Test
-    @AllureId("500021")
-    @DisplayName("WEB: Пользователь должен иметь возможность принять приглашение в друзья")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(incomeInvitations = @IncomeInvitations(count = 2)))
-    void shouldAcceptInvitation(@User UserJson user) {
-        UserJson userToAcceptInvitation = user.testData().incomeInvitations().removeFirst();
-        user.testData().friends().add(userToAcceptInvitation);
-        FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
-                .waitForPageLoaded()
-                .acceptFriendInvitationFromUser(userToAcceptInvitation.username())
-                .checkToasterMessage(SuccessMessage.INVITATION_ACCEPTED.content);
+  @Test
+  @AllureId("500021")
+  @DisplayName("WEB: Пользователь должен иметь возможность принять приглашение в друзья")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(incomeInvitations = @IncomeInvitations(count = 2)))
+  void shouldAcceptInvitation(@User UserJson user) {
+    UserJson userToAcceptInvitation = user.testData().incomeInvitations().removeFirst();
+    user.testData().friends().add(userToAcceptInvitation);
+    FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
+        .waitForPageLoaded()
+        .acceptFriendInvitationFromUser(userToAcceptInvitation.username())
+        .checkToasterMessage(SuccessMessage.INVITATION_ACCEPTED.content);
 
-        Selenide.refresh();
+    Selenide.refresh();
 
-        friendsPage.checkExistingFriends(user.testData().friends());
-    }
+    friendsPage.checkExistingFriends(user.testData().friends());
+  }
 
-    @Test
-    @AllureId("500022")
-    @DisplayName("WEB: Пользователь должен иметь возможность отклонить приглашение в друзья")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(incomeInvitations = @IncomeInvitations(count = 2)))
-    void shouldDeclineInvitation(@User UserJson user) {
-        UserJson userToDeclineInvitation = user.testData().incomeInvitations().getFirst();
-        FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
-                .waitForPageLoaded()
-                .removeFriend(userToDeclineInvitation.username())
-                .checkToasterMessage(SuccessMessage.INVITATION_DECLINED.content);
+  @Test
+  @AllureId("500022")
+  @DisplayName("WEB: Пользователь должен иметь возможность отклонить приглашение в друзья")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(incomeInvitations = @IncomeInvitations(count = 2)))
+  void shouldDeclineInvitation(@User UserJson user) {
+    UserJson userToDeclineInvitation = user.testData().incomeInvitations().getFirst();
+    FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
+        .waitForPageLoaded()
+        .removeFriend(userToDeclineInvitation.username())
+        .checkToasterMessage(SuccessMessage.INVITATION_DECLINED.content);
 
-        Selenide.refresh();
+    Selenide.refresh();
 
-        friendsPage.checkExistingFriends(user.testData().friends());
-    }
+    friendsPage.checkExistingFriends(user.testData().friends());
+  }
 }

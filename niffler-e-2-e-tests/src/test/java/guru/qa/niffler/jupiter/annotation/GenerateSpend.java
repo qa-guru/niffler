@@ -12,15 +12,15 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 public @interface GenerateSpend {
 
-    boolean handleAnnotation() default true;
+  boolean handleAnnotation() default true;
 
-    String spendName();
+  String spendName();
 
-    String spendCategory();
+  String spendCategory();
 
-    int addDaysToSpendDate() default 0;
+  int addDaysToSpendDate() default 0;
 
-    double amount();
+  double amount();
 
-    CurrencyValues currency() default CurrencyValues.USD;
+  CurrencyValues currency() default CurrencyValues.USD;
 }

@@ -14,6 +14,7 @@ interface ImageUploadInterface {
     helperText?: string;
     isAvatar?: boolean
 }
+
 export const ImageUpload: FC<ImageUploadInterface> = ({onFileUpload, buttonText, file, error = false, helperText, isAvatar = false}) => {
 
     const theme = useTheme();

@@ -42,9 +42,9 @@ export const apiClient = {
         }
     },
 
-    getCategories: async({ onSuccess, onFailure }: RequestHandler<Category[]>) => {
+    getCategories: async({ onSuccess, onFailure }: RequestHandler<Category[]>, excludeArchived: boolean = false) => {
         try {
-            const result = await makeRequest("/categories/all");
+            const result = await makeRequest(`/categories/all?excludeArchived=${excludeArchived}`);
             onSuccess(result);
         } catch(e: Error) {
             onFailure(e)
@@ -65,13 +65,13 @@ export const apiClient = {
         }
     },
 
-    editCategory: async (name: string, {onSuccess, onFailure}: RequestHandler<Category>) => {
+    editCategory: async (category: Category, {onSuccess, onFailure}: RequestHandler<Category>) => {
         try {
-            const result = await makeRequest("/categories/edit", {
+            const result = await makeRequest("/categories/update", {
                 method: "PATCH",
-                body: JSON.stringify({
-                    name: name,
-                }),
+                body: JSON.stringify(
+                    category
+                ),
             });
             onSuccess(result);
         } catch(e: Error) {
@@ -88,9 +88,9 @@ export const apiClient = {
         }
     },
 
-    getSpends: async({ onSuccess, onFailure }: RequestHandler<Spending[]>) => {
+    getSpends: async(searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<Spending>>, filterPeriod: string, filterCurrency: string) => {
         try {
-            const result = await makeRequest("/v2/spends/all");
+            const result = await makeRequest(`/v2/spends/all?page=${page}&searchQuery=${searchQuery}&filterCurrency=${filterCurrency}&filterPeriod=${filterPeriod}`);
             onSuccess(result);
         } catch(e: Error) {
             onFailure(e)
@@ -130,9 +130,20 @@ export const apiClient = {
         }
     },
 
-    getStat: async({ onSuccess, onFailure }: RequestHandler<Statistic>) => {
+    deleteSpends: async(spendIds: string[], { onSuccess, onFailure }: RequestHandler<Spending> ) => {
         try {
-            const result = await makeRequest("/v2/stat/total");
+            const result = await makeRequest(`/spends/remove?ids=${spendIds.join(",")}`, {
+                method: "DELETE",
+            });
+            onSuccess(result);
+        } catch(e: Error) {
+            onFailure(e)
+        }
+    },
+
+    getStat: async({ onSuccess, onFailure }: RequestHandler<Statistic>, filterPeriod: string, currency: string) => {
+        try {
+            const result = await makeRequest(`/v2/stat/total?filterCurrency=${currency}&statCurrency=${currency}&filterPeriod=${filterPeriod}`);
             onSuccess(result);
         } catch(e: Error) {
             onFailure(e)
@@ -141,7 +152,7 @@ export const apiClient = {
 
     getAllPeople: async(searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
         try {
-            const result = await makeRequest(`/v2/users/all?page=${page}&searchQuery=${searchQuery}`);
+            const result = await makeRequest(`/v2/users/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`);
             onSuccess(result);
         } catch(e: Error) {
             onFailure(e)
@@ -150,7 +161,7 @@ export const apiClient = {
 
     getFriends: async(searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
         try {
-            const result = await makeRequest(`/v2/friends/all?page=${page}&searchQuery=${searchQuery}`);
+            const result = await makeRequest(`/v2/friends/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`);
             onSuccess(result);
         } catch(e: Error) {
             onFailure(e)
@@ -257,10 +268,12 @@ const makeRequest = async( path: string, options?: RequestOptions) => {
             return data;
         }
     } catch (error) {
+        console.log(error);
         if(error.name === "AbortError") {
             console.error("Request aborted");
             throw error;
         } else {
+           // error.detail;
             console.error("API request error");
             throw error;
         }

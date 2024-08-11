@@ -16,18 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v2/stat")
 public class StatV2Controller {
 
-    private final StatisticAggregator statisticAggregator;
+  private final StatisticAggregator statisticAggregator;
 
-    @Autowired
-    public StatV2Controller(StatisticAggregator statisticAggregator) {
-        this.statisticAggregator = statisticAggregator;
-    }
+  @Autowired
+  public StatV2Controller(StatisticAggregator statisticAggregator) {
+    this.statisticAggregator = statisticAggregator;
+  }
 
-    @GetMapping("/total")
-    public StatisticV2Json getTotalStatistic(@AuthenticationPrincipal Jwt principal,
-                                             @RequestParam(required = false) CurrencyValues filterCurrency,
-                                             @RequestParam(required = false) DataFilterValues filterPeriod) {
-        String username = principal.getClaim("sub");
-        return statisticAggregator.enrichStatisticRequestV2(username, filterCurrency, filterPeriod);
-    }
+  @GetMapping("/total")
+  public StatisticV2Json getTotalStatistic(@AuthenticationPrincipal Jwt principal,
+                                           @RequestParam(required = false) CurrencyValues statCurrency,
+                                           @RequestParam(required = false) CurrencyValues filterCurrency,
+                                           @RequestParam(required = false) DataFilterValues filterPeriod) {
+    String username = principal.getClaim("sub");
+    return statisticAggregator.enrichStatisticRequestV2(username, statCurrency, filterCurrency, filterPeriod);
+  }
 }

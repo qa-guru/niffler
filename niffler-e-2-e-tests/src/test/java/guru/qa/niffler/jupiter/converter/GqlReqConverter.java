@@ -12,18 +12,18 @@ import java.io.InputStream;
 
 public class GqlReqConverter implements ArgumentConverter {
 
-    private static final ObjectMapper om = new ObjectMapper();
+  private static final ObjectMapper om = new ObjectMapper();
 
-    @Override
-    public Object convert(Object o, ParameterContext parameterContext) throws ArgumentConversionException {
-        if (parameterContext.getParameter().getType().isAssignableFrom(GqlRequest.class)
-                && o instanceof String path) {
-            try (InputStream is = new ClassPathResource(path).getInputStream()) {
-                return om.readValue(is, GqlRequest.class);
-            } catch (IOException e) {
-                throw new IllegalStateException("Error while reading resource", e);
-            }
-        }
-        return o;
+  @Override
+  public Object convert(Object o, ParameterContext parameterContext) throws ArgumentConversionException {
+    if (parameterContext.getParameter().getType().isAssignableFrom(GqlRequest.class)
+        && o instanceof String path) {
+      try (InputStream is = new ClassPathResource(path).getInputStream()) {
+        return om.readValue(is, GqlRequest.class);
+      } catch (IOException e) {
+        throw new IllegalStateException("Error while reading resource", e);
+      }
     }
+    return o;
+  }
 }

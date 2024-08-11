@@ -10,16 +10,16 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class Header extends BaseComponent<Header> {
 
-    public Header() {
-        super($(".header"));
-    }
+  public Header() {
+    super($(".header"));
+  }
 
-    private final SelenideElement friendsButton = self.$("a[href*='/friends']");
+  private final SelenideElement friendsButton = self.$("a[href*='/friends']");
 
-    @Step("Open Friends page")
-    @Nonnull
-    public FriendsPage toFriendsPage() {
-        friendsButton.click();
-        return new FriendsPage();
-    }
+  @Step("Open Friends page")
+  @Nonnull
+  public FriendsPage toFriendsPage() {
+    friendsButton.click();
+    return new FriendsPage();
+  }
 }

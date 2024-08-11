@@ -17,27 +17,27 @@ import static guru.qa.niffler.grpc.CurrencyValues.valueOf;
 @Component
 public class GrpcCurrencyClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GrpcCurrencyClient.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GrpcCurrencyClient.class);
 
-    private NifflerCurrencyServiceBlockingStub nifflerCurrencyServiceStub;
+  private NifflerCurrencyServiceBlockingStub nifflerCurrencyServiceStub;
 
-    @GrpcClient("grpcCurrencyClient")
-    public void setNifflerCurrencyServiceStub(NifflerCurrencyServiceBlockingStub nifflerCurrencyServiceStub) {
-        this.nifflerCurrencyServiceStub = nifflerCurrencyServiceStub;
-    }
+  @GrpcClient("grpcCurrencyClient")
+  public void setNifflerCurrencyServiceStub(NifflerCurrencyServiceBlockingStub nifflerCurrencyServiceStub) {
+    this.nifflerCurrencyServiceStub = nifflerCurrencyServiceStub;
+  }
 
-    public @Nonnull
-    BigDecimal calculate(double amount,
-                         @Nonnull CurrencyValues spendCurrency,
-                         @Nonnull CurrencyValues desiredCurrency) {
-        return BigDecimal.valueOf(
-                nifflerCurrencyServiceStub.calculateRate(
-                        CalculateRequest.newBuilder()
-                                .setAmount(amount)
-                                .setSpendCurrency(valueOf(spendCurrency.name()))
-                                .setDesiredCurrency(valueOf(desiredCurrency.name()))
-                                .build()
-                ).getCalculatedAmount()
-        );
-    }
+  public @Nonnull
+  BigDecimal calculate(double amount,
+                       @Nonnull CurrencyValues spendCurrency,
+                       @Nonnull CurrencyValues desiredCurrency) {
+    return BigDecimal.valueOf(
+        nifflerCurrencyServiceStub.calculateRate(
+            CalculateRequest.newBuilder()
+                .setAmount(amount)
+                .setSpendCurrency(valueOf(spendCurrency.name()))
+                .setDesiredCurrency(valueOf(desiredCurrency.name()))
+                .build()
+        ).getCalculatedAmount()
+    );
+  }
 }

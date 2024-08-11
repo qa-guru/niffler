@@ -19,19 +19,20 @@ import java.util.Date;
 @RequestMapping("/internal/v2/spends")
 public class SpendV2Controller {
 
-    private final SpendService spendService;
+  private final SpendService spendService;
 
-    @Autowired
-    public SpendV2Controller(SpendService spendService) {
-        this.spendService = spendService;
-    }
+  @Autowired
+  public SpendV2Controller(SpendService spendService) {
+    this.spendService = spendService;
+  }
 
-    @GetMapping("/all")
-    public Page<SpendJson> getSpends(@RequestParam String username,
-                                     @PageableDefault Pageable pageable,
-                                     @RequestParam(required = false) CurrencyValues filterCurrency,
-                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) {
-        return spendService.getSpendsForUser(username, pageable, filterCurrency, from, to);
-    }
+  @GetMapping("/all")
+  public Page<SpendJson> getSpends(@RequestParam String username,
+                                   @PageableDefault Pageable pageable,
+                                   @RequestParam(required = false) CurrencyValues filterCurrency,
+                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date to,
+                                   @RequestParam(required = false) String searchQuery) {
+    return spendService.getSpendsForUser(username, pageable, filterCurrency, from, to, searchQuery);
+  }
 }

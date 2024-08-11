@@ -14,10 +14,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ExtendWith({
-        DatabaseCreateUserExtension.class,
-        GqlReqResolver.class,
-        ClearCookiesExtension.class,
-        AllureJunit5.class})
+    DatabaseCreateUserExtension.class,
+    GqlReqResolver.class,
+    ClearCookiesExtension.class,
+    AllureJunit5.class})
 public @interface GqlTest {
 
 }

@@ -31,119 +31,119 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("[SOAP][niffler-userdata]: Друзья")
 public class UserDataFriendsSoapTest extends BaseSoapTest {
 
-    @Test
-    @DisplayName("SOAP: Для пользователя должен возвращаться список друзей и входящих предложений дружить, " +
-            "с сортировкой по статусу (первые - приглашения)")
-    @AllureId("100004")
-    @Tag("SOAP")
-    @GenerateUser(
-            friends = @Friends(count = 1),
-            incomeInvitations = @IncomeInvitations(count = 1)
-    )
-    void getAllFriendsListTest(@User(selector = METHOD) UserJson user) throws Exception {
-        UserJson testFriend = user.testData().friends().getFirst();
-        UserJson testInvitation = user.testData().incomeInvitations().getFirst();
+  @Test
+  @DisplayName("SOAP: Для пользователя должен возвращаться список друзей и входящих предложений дружить, " +
+      "с сортировкой по статусу (первые - приглашения)")
+  @AllureId("100004")
+  @Tag("SOAP")
+  @GenerateUser(
+      friends = @Friends(count = 1),
+      incomeInvitations = @IncomeInvitations(count = 1)
+  )
+  void getAllFriendsListTest(@User(selector = METHOD) UserJson user) throws Exception {
+    UserJson testFriend = user.testData().friends().getFirst();
+    UserJson testInvitation = user.testData().incomeInvitations().getFirst();
 
-        FriendsRequest fr = friendsRequest(user.username(), null);
-        final UsersResponse usersResponse = wsClient.friendsRequest(fr);
+    FriendsRequest fr = friendsRequest(user.username(), null);
+    final UsersResponse usersResponse = wsClient.friendsRequest(fr);
 
-        step("Check that response not null", () ->
-                assertNotNull(usersResponse)
-        );
-        step("Check response list size", () ->
-                assertEquals(2, usersResponse.getUser().size())
-        );
+    step("Check that response not null", () ->
+        assertNotNull(usersResponse)
+    );
+    step("Check response list size", () ->
+        assertEquals(2, usersResponse.getUser().size())
+    );
 
-        final var foundedInvitation = usersResponse.getUser().getFirst();
-        final var foundedFriend = usersResponse.getUser().getLast();
+    final var foundedInvitation = usersResponse.getUser().getFirst();
+    final var foundedFriend = usersResponse.getUser().getLast();
 
-        step("Check income invitation in response", () -> {
-            assertSame(FriendState.INVITE_RECEIVED, foundedInvitation.getFriendState());
-            assertEquals(testInvitation.id(), UUID.fromString(foundedInvitation.getId()));
-            assertEquals(testInvitation.username(), foundedInvitation.getUsername());
-        });
+    step("Check income invitation in response", () -> {
+      assertSame(FriendState.INVITE_RECEIVED, foundedInvitation.getFriendState());
+      assertEquals(testInvitation.id(), UUID.fromString(foundedInvitation.getId()));
+      assertEquals(testInvitation.username(), foundedInvitation.getUsername());
+    });
 
-        step("Check friend in response", () -> {
-            assertSame(FriendState.FRIEND, foundedFriend.getFriendState());
-            assertEquals(testFriend.id(), UUID.fromString(foundedFriend.getId()));
-            assertEquals(testFriend.username(), foundedFriend.getUsername());
-        });
-    }
+    step("Check friend in response", () -> {
+      assertSame(FriendState.FRIEND, foundedFriend.getFriendState());
+      assertEquals(testFriend.id(), UUID.fromString(foundedFriend.getId()));
+      assertEquals(testFriend.username(), foundedFriend.getUsername());
+    });
+  }
 
-    @Test
-    @DisplayName("SOAP: Для пользователя должен возвращаться список друзей из niffler-userdata " +
-            "с фильтраций по username, если передан searchQuery")
-    @AllureId("100005")
-    @Tag("SOAP")
-    @GenerateUser(
-            friends = @Friends(count = 2),
-            incomeInvitations = @IncomeInvitations(count = 1)
-    )
-    void getFiltersFriendsListTest(@User(selector = METHOD) UserJson user) throws Exception {
-        UserJson testFriend = user.testData().friends().getFirst();
-        FriendsRequest fr = friendsRequest(user.username(), testFriend.username());
-        final UsersResponse usersResponse = wsClient.friendsRequest(fr);
+  @Test
+  @DisplayName("SOAP: Для пользователя должен возвращаться список друзей из niffler-userdata " +
+      "с фильтраций по username, если передан searchQuery")
+  @AllureId("100005")
+  @Tag("SOAP")
+  @GenerateUser(
+      friends = @Friends(count = 2),
+      incomeInvitations = @IncomeInvitations(count = 1)
+  )
+  void getFiltersFriendsListTest(@User(selector = METHOD) UserJson user) throws Exception {
+    UserJson testFriend = user.testData().friends().getFirst();
+    FriendsRequest fr = friendsRequest(user.username(), testFriend.username());
+    final UsersResponse usersResponse = wsClient.friendsRequest(fr);
 
-        step("Check that response not null", () ->
-                assertNotNull(usersResponse)
-        );
-        step("Check response list size", () ->
-                assertEquals(1, usersResponse.getUser().size())
-        );
+    step("Check that response not null", () ->
+        assertNotNull(usersResponse)
+    );
+    step("Check response list size", () ->
+        assertEquals(1, usersResponse.getUser().size())
+    );
 
-        final var foundedFriend = usersResponse.getUser().getFirst();
+    final var foundedFriend = usersResponse.getUser().getFirst();
 
-        step("Check friend in response", () -> {
-            assertSame(FriendState.FRIEND, foundedFriend.getFriendState());
-            assertEquals(testFriend.id(), UUID.fromString(foundedFriend.getId()));
-            assertEquals(testFriend.username(), foundedFriend.getUsername());
-        });
-    }
+    step("Check friend in response", () -> {
+      assertSame(FriendState.FRIEND, foundedFriend.getFriendState());
+      assertEquals(testFriend.id(), UUID.fromString(foundedFriend.getId()));
+      assertEquals(testFriend.username(), foundedFriend.getUsername());
+    });
+  }
 
-    @Test
-    @DisplayName("SOAP: Удаление друга")
-    @AllureId("10006")
-    @Tag("SOAP")
-    @GenerateUser(
-            friends = @Friends(count = 1)
-    )
-    void removeFriendTest(@User(selector = METHOD) UserJson user) throws Exception {
-        final String currentUsername = user.username();
-        final String friendUsername = user.testData().friends().getFirst().username();
+  @Test
+  @DisplayName("SOAP: Удаление друга")
+  @AllureId("10006")
+  @Tag("SOAP")
+  @GenerateUser(
+      friends = @Friends(count = 1)
+  )
+  void removeFriendTest(@User(selector = METHOD) UserJson user) throws Exception {
+    final String currentUsername = user.username();
+    final String friendUsername = user.testData().friends().getFirst().username();
 
-        RemoveFriendRequest rfr = removeFriendRequest(currentUsername, friendUsername);
+    RemoveFriendRequest rfr = removeFriendRequest(currentUsername, friendUsername);
 
-        wsClient.removeFriendRequest(rfr);
+    wsClient.removeFriendRequest(rfr);
 
-        step("Check that no friends present in GET /friends request for both users", () ->
-                Assertions.assertAll(
-                        () -> assertTrue(
-                                wsClient.friendsRequest(friendsRequest(currentUsername, null))
-                                        .getUser()
-                                        .isEmpty(),
-                                "Current user should not have friend after removing"
-                        ),
-                        () -> assertTrue(
-                                wsClient.friendsRequest(friendsRequest(friendUsername, null))
-                                        .getUser()
-                                        .isEmpty(),
-                                "Target friend should not have friend after removing"
-                        )
-                )
-        );
-    }
+    step("Check that no friends present in GET /friends request for both users", () ->
+        Assertions.assertAll(
+            () -> assertTrue(
+                wsClient.friendsRequest(friendsRequest(currentUsername, null))
+                    .getUser()
+                    .isEmpty(),
+                "Current user should not have friend after removing"
+            ),
+            () -> assertTrue(
+                wsClient.friendsRequest(friendsRequest(friendUsername, null))
+                    .getUser()
+                    .isEmpty(),
+                "Target friend should not have friend after removing"
+            )
+        )
+    );
+  }
 
-    private @Nonnull FriendsRequest friendsRequest(@Nonnull String username, @Nullable String searchQuery) {
-        FriendsRequest fr = new FriendsRequest();
-        fr.setUsername(username);
-        fr.setSearchQuery(searchQuery);
-        return fr;
-    }
+  private @Nonnull FriendsRequest friendsRequest(@Nonnull String username, @Nullable String searchQuery) {
+    FriendsRequest fr = new FriendsRequest();
+    fr.setUsername(username);
+    fr.setSearchQuery(searchQuery);
+    return fr;
+  }
 
-    private @Nonnull RemoveFriendRequest removeFriendRequest(@Nonnull String username, @Nonnull String friendUsername) {
-        RemoveFriendRequest rfr = new RemoveFriendRequest();
-        rfr.setUsername(username);
-        rfr.setFriendToBeRemoved(friendUsername);
-        return rfr;
-    }
+  private @Nonnull RemoveFriendRequest removeFriendRequest(@Nonnull String username, @Nonnull String friendUsername) {
+    RemoveFriendRequest rfr = new RemoveFriendRequest();
+    rfr.setUsername(username);
+    rfr.setFriendToBeRemoved(friendUsername);
+    return rfr;
+  }
 }

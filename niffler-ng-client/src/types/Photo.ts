@@ -7,5 +7,4 @@ export type Photo = {
     country: Country;
     description: string;
     likes: Likes;
-
 }

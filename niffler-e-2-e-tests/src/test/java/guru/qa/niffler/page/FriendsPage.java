@@ -15,47 +15,47 @@ import static guru.qa.niffler.condition.users.UsersCondition.users;
 
 public class FriendsPage extends BasePage<FriendsPage> {
 
-    public static final String URL = CFG.frontUrl() + "friends";
+  public static final String URL = CFG.frontUrl() + "friends";
 
-    private final SelenideElement tableContainer = $(".people-content");
-    private final PeopleTable table = new PeopleTable($(".table"));
+  private final SelenideElement tableContainer = $(".people-content");
+  private final PeopleTable table = new PeopleTable($(".table"));
 
-    @Step("Check that the page is loaded")
-    @Override
-    public FriendsPage waitForPageLoaded() {
-        tableContainer.shouldBe(Condition.visible);
-        return this;
-    }
+  @Step("Check that the page is loaded")
+  @Override
+  public FriendsPage waitForPageLoaded() {
+    tableContainer.shouldBe(Condition.visible);
+    return this;
+  }
 
-    @Step("Check that friends count is equal to {expectedCount}")
-    public FriendsPage checkExistingFriendsCount(int expectedCount) {
-        table.getAllRows().shouldHave(size(expectedCount));
-        return this;
-    }
+  @Step("Check that friends count is equal to {expectedCount}")
+  public FriendsPage checkExistingFriendsCount(int expectedCount) {
+    table.getAllRows().shouldHave(size(expectedCount));
+    return this;
+  }
 
-    @Step("Check that friends list contains data {0}")
-    public FriendsPage checkExistingFriends(List<UserJson> expectedFriends) {
-        table.getAllRows().filter(text("You are friends")).shouldHave(
-                users(expectedFriends.toArray(UserJson[]::new))
-        );
-        return this;
-    }
+  @Step("Check that friends list contains data {0}")
+  public FriendsPage checkExistingFriends(List<UserJson> expectedFriends) {
+    table.getAllRows().filter(text("You are friends")).shouldHave(
+        users(expectedFriends.toArray(UserJson[]::new))
+    );
+    return this;
+  }
 
-    @Step("Delete user from friends: {username}")
-    public FriendsPage removeFriend(String username) {
-        SelenideElement friendRow = table.getRowByUsername(username);
-        SelenideElement actionsCell = table.getActionsCell(friendRow);
-        actionsCell.$(".button-icon_type_close")
-                .click();
-        return this;
-    }
+  @Step("Delete user from friends: {username}")
+  public FriendsPage removeFriend(String username) {
+    SelenideElement friendRow = table.getRowByUsername(username);
+    SelenideElement actionsCell = table.getActionsCell(friendRow);
+    actionsCell.$(".button-icon_type_close")
+        .click();
+    return this;
+  }
 
-    @Step("Accept invitation from user: {username}")
-    public FriendsPage acceptFriendInvitationFromUser(String username) {
-        SelenideElement friendRow = table.getRowByUsername(username);
-        SelenideElement actionsCell = table.getActionsCell(friendRow);
-        actionsCell.$(".button-icon_type_submit")
-                .click();
-        return this;
-    }
+  @Step("Accept invitation from user: {username}")
+  public FriendsPage acceptFriendInvitationFromUser(String username) {
+    SelenideElement friendRow = table.getRowByUsername(username);
+    SelenideElement actionsCell = table.getActionsCell(friendRow);
+    actionsCell.$(".button-icon_type_submit")
+        .click();
+    return this;
+  }
 }

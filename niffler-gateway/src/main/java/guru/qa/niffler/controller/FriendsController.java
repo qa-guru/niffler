@@ -21,26 +21,26 @@ import java.util.List;
 @RequestMapping("/api/friends")
 public class FriendsController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FriendsController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FriendsController.class);
 
-    private final UserDataClient userDataClient;
+  private final UserDataClient userDataClient;
 
-    @Autowired
-    public FriendsController(UserDataClient userDataClient) {
-        this.userDataClient = userDataClient;
-    }
+  @Autowired
+  public FriendsController(UserDataClient userDataClient) {
+    this.userDataClient = userDataClient;
+  }
 
-    @GetMapping("/all")
-    public List<UserJson> friends(@AuthenticationPrincipal Jwt principal,
-                                  @RequestParam(required = false) String searchQuery) {
-        String username = principal.getClaim("sub");
-        return userDataClient.friends(username, searchQuery);
-    }
+  @GetMapping("/all")
+  public List<UserJson> friends(@AuthenticationPrincipal Jwt principal,
+                                @RequestParam(required = false) String searchQuery) {
+    String username = principal.getClaim("sub");
+    return userDataClient.friends(username, searchQuery);
+  }
 
-    @DeleteMapping("/remove")
-    public void removeFriend(@AuthenticationPrincipal Jwt principal,
-                             @RequestParam("username") String targetUsername) {
-        String username = principal.getClaim("sub");
-        userDataClient.removeFriend(username, targetUsername);
-    }
+  @DeleteMapping("/remove")
+  public void removeFriend(@AuthenticationPrincipal Jwt principal,
+                           @RequestParam("username") String targetUsername) {
+    String username = principal.getClaim("sub");
+    userDataClient.removeFriend(username, targetUsername);
+  }
 }

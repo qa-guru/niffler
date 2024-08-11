@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @ConvertWith(GqlReqConverter.class)
 public @interface GqlReq {
-    String value() default ""; // for parametrized tests
+  String value() default ""; // for parametrized tests
 }

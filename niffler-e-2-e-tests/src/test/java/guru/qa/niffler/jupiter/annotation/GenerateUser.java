@@ -10,19 +10,19 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface GenerateUser {
 
-    boolean handleAnnotation() default true;
+  boolean handleAnnotation() default true;
 
-    String username() default "";
+  String username() default "";
 
-    String password() default "";
+  String password() default "";
 
-    GenerateCategory[] categories() default {};
+  GenerateCategory[] categories() default {};
 
-    GenerateSpend[] spends() default {};
+  GenerateSpend[] spends() default {};
 
-    Friends friends() default @Friends(handleAnnotation = false);
+  Friends friends() default @Friends(handleAnnotation = false);
 
-    IncomeInvitations incomeInvitations() default @IncomeInvitations(handleAnnotation = false);
+  IncomeInvitations incomeInvitations() default @IncomeInvitations(handleAnnotation = false);
 
-    OutcomeInvitations outcomeInvitations() default @OutcomeInvitations(handleAnnotation = false);
+  OutcomeInvitations outcomeInvitations() default @OutcomeInvitations(handleAnnotation = false);
 }

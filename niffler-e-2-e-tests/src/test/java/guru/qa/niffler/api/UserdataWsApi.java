@@ -19,73 +19,73 @@ import retrofit2.http.POST;
 
 public interface UserdataWsApi {
 
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UserResponse> currentUserRequest(@Body CurrentUserRequest currentUserRequest);
+  @Headers({
+      "Content-Type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<UserResponse> currentUserRequest(@Body CurrentUserRequest currentUserRequest);
 
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UserResponse> updateUserRequest(@Body UpdateUserRequest updateUserRequest);
+  @Headers({
+      "Content-Type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<UserResponse> updateUserRequest(@Body UpdateUserRequest updateUserRequest);
 
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UsersResponse> allUsersRequest(@Body AllUsersRequest allUsersRequest);
+  @Headers({
+      "Content-Type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<UsersResponse> allUsersRequest(@Body AllUsersRequest allUsersRequest);
 
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UsersResponse> allUsersPageRequest(@Body AllUsersPageRequest allUsersPageRequest);
+  @Headers({
+      "Content-Type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<UsersResponse> allUsersPageRequest(@Body AllUsersPageRequest allUsersPageRequest);
 
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UsersResponse> friendsRequest(@Body FriendsRequest friendsRequest);
+  @Headers({
+      "Content-Type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<UsersResponse> friendsRequest(@Body FriendsRequest friendsRequest);
 
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UsersResponse> friendsPageRequest(@Body FriendsPageRequest friendsPageRequest);
+  @Headers({
+      "Content-Type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<UsersResponse> friendsPageRequest(@Body FriendsPageRequest friendsPageRequest);
 
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<Void> removeFriendRequest(@Body RemoveFriendRequest removeFriendRequest);
+  @Headers({
+      "Content-Type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<Void> removeFriendRequest(@Body RemoveFriendRequest removeFriendRequest);
 
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UserResponse> acceptInvitationRequest(@Body AcceptInvitationRequest acceptInvitationRequest);
+  @Headers({
+      "Content-Type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<UserResponse> acceptInvitationRequest(@Body AcceptInvitationRequest acceptInvitationRequest);
 
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UserResponse> declineInvitationRequest(@Body DeclineInvitationRequest declineInvitationRequest);
+  @Headers({
+      "Content-Type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<UserResponse> declineInvitationRequest(@Body DeclineInvitationRequest declineInvitationRequest);
 
-    @Headers({
-            "Content-Type: text/xml",
-            "Accept-Charset: utf-8"
-    })
-    @POST("ws")
-    Call<UserResponse> sendInvitationRequest(@Body SendInvitationRequest sendInvitationRequest);
+  @Headers({
+      "Content-Type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<UserResponse> sendInvitationRequest(@Body SendInvitationRequest sendInvitationRequest);
 }

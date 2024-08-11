@@ -32,184 +32,184 @@ import static guru.qa.niffler.utils.SuccessMessage.SPENDING_ADDED;
 @DisplayName("[WEB][niffler-frontend]: Траты")
 public class SpendingTest extends BaseWebTest {
 
-    @Test
-    @AllureId("500011")
-    @DisplayName("WEB: Пользователь имеет возможность добавить трату")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(
-            categories = @GenerateCategory("Friends")
-    ))
-    void shouldAddNewSpending(@User UserJson user) {
-        String category = "Friends";
-        int amount = 100;
-        Date currentDate = new Date();
-        String description = generateRandomSentence(3);
-        SpendJson spendingToCheck = new SpendJson(
-                null,
-                currentDate,
-                (double) amount,
-                user.currency(),
-                new CategoryJson(
-                        null,
-                        category,
-                        null,
-                        false
-                ),
-                description,
-                null
-        );
+  @Test
+  @AllureId("500011")
+  @DisplayName("WEB: Пользователь имеет возможность добавить трату")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      categories = @GenerateCategory("Friends")
+  ))
+  void shouldAddNewSpending(@User UserJson user) {
+    String category = "Friends";
+    int amount = 100;
+    Date currentDate = new Date();
+    String description = generateRandomSentence(3);
+    SpendJson spendingToCheck = new SpendJson(
+        null,
+        currentDate,
+        (double) amount,
+        user.currency(),
+        new CategoryJson(
+            null,
+            category,
+            null,
+            false
+        ),
+        description,
+        null
+    );
 
-        Selenide.open(MainPage.URL, MainPage.class)
-                .waitForPageLoaded()
-                .setNewSpendingCategory(category)
-                .setNewSpendingAmount(amount)
-                .setNewSpendingDate(currentDate)
-                .setNewSpendingDescription(description)
-                .submitNewSpending()
-                .checkToasterMessage(SPENDING_ADDED.content)
-                .getSpendingTable()
-                .checkTableContains(spendingToCheck);
-    }
+    Selenide.open(MainPage.URL, MainPage.class)
+        .waitForPageLoaded()
+        .setNewSpendingCategory(category)
+        .setNewSpendingAmount(amount)
+        .setNewSpendingDate(currentDate)
+        .setNewSpendingDescription(description)
+        .submitNewSpending()
+        .checkToasterMessage(SPENDING_ADDED.content)
+        .getSpendingTable()
+        .checkTableContains(spendingToCheck);
+  }
 
-    @Test
-    @AllureId("500012")
-    @DisplayName("WEB: Нельзя добавить трату с будущей датой")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(
-            categories = @GenerateCategory("Friends")
-    ))
-    void shouldNotAddSpendingWithFutureDate() {
-        String category = "Friends";
-        int amount = 100;
-        Date spendDate = DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_MONTH, 2);
-        String description = generateRandomSentence(3);
+  @Test
+  @AllureId("500012")
+  @DisplayName("WEB: Нельзя добавить трату с будущей датой")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      categories = @GenerateCategory("Friends")
+  ))
+  void shouldNotAddSpendingWithFutureDate() {
+    String category = "Friends";
+    int amount = 100;
+    Date spendDate = DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_MONTH, 2);
+    String description = generateRandomSentence(3);
 
-        Selenide.open(MainPage.URL, MainPage.class)
-                .waitForPageLoaded()
-                .setNewSpendingCategory(category)
-                .setNewSpendingAmount(amount)
-                .setNewSpendingDate(spendDate)
-                .setNewSpendingDescription(description)
-                .submitNewSpending()
-                .checkError(CAN_NOT_PICK_FUTURE_DATE_FOR_SPENDING.content);
-    }
+    Selenide.open(MainPage.URL, MainPage.class)
+        .waitForPageLoaded()
+        .setNewSpendingCategory(category)
+        .setNewSpendingAmount(amount)
+        .setNewSpendingDate(spendDate)
+        .setNewSpendingDescription(description)
+        .submitNewSpending()
+        .checkError(CAN_NOT_PICK_FUTURE_DATE_FOR_SPENDING.content);
+  }
 
-    @Test
-    @AllureId("500013")
-    @DisplayName("WEB: Нельзя добавить трату пустой категорией")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(
-            categories = @GenerateCategory("Friends")
-    ))
-    void shouldNotAddSpendingWithEmptyCategory() {
-        int amount = 100;
+  @Test
+  @AllureId("500013")
+  @DisplayName("WEB: Нельзя добавить трату пустой категорией")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      categories = @GenerateCategory("Friends")
+  ))
+  void shouldNotAddSpendingWithEmptyCategory() {
+    int amount = 100;
 
-        Selenide.open(MainPage.URL, MainPage.class)
-                .waitForPageLoaded()
-                .setNewSpendingAmount(amount)
-                .setNewSpendingDate(new Date())
-                .submitNewSpending()
-                .checkError(CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY.content);
-    }
+    Selenide.open(MainPage.URL, MainPage.class)
+        .waitForPageLoaded()
+        .setNewSpendingAmount(amount)
+        .setNewSpendingDate(new Date())
+        .submitNewSpending()
+        .checkError(CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY.content);
+  }
 
-    @Test
-    @AllureId("500014")
-    @DisplayName("WEB: Нельзя добавить трату с пустым значением суммы")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(
-            categories = @GenerateCategory("Friends")
-    ))
-    void shouldNotAddSpendingWithEmptyAmount() {
-        String category = "Friends";
+  @Test
+  @AllureId("500014")
+  @DisplayName("WEB: Нельзя добавить трату с пустым значением суммы")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      categories = @GenerateCategory("Friends")
+  ))
+  void shouldNotAddSpendingWithEmptyAmount() {
+    String category = "Friends";
 
-        Selenide.open(MainPage.URL, MainPage.class)
-                .waitForPageLoaded()
-                .setNewSpendingCategory(category)
-                .setNewSpendingDate(new Date())
-                .submitNewSpending()
-                .checkError(CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT.content);
-    }
+    Selenide.open(MainPage.URL, MainPage.class)
+        .waitForPageLoaded()
+        .setNewSpendingCategory(category)
+        .setNewSpendingDate(new Date())
+        .submitNewSpending()
+        .checkError(CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT.content);
+  }
 
-    @Test
-    @AllureId("500015")
-    @DisplayName("WEB: Пользователь имеет возможность отредактировать трату")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(
-            categories = {
-                    @GenerateCategory("Food"),
-                    @GenerateCategory("Friends")
-            },
-            spends = @GenerateSpend(
-                    spendName = "Fish",
-                    spendCategory = "Food",
-                    amount = 1050.0
-            )
-    ))
-    void shouldEditSpendingTest(@User UserJson user) {
-        Date newSpendDate = DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_MONTH, -4);
-        SpendJson testSpend = user.testData().spends().getFirst();
-        SpendJson editedSpending = new SpendJson(
-                null,
-                testSpend.spendDate(),
-                1000.0,
-                testSpend.currency(),
-                new CategoryJson(
-                        null,
-                        "Friends",
-                        null,
-                        false
-                ),
-                generateRandomSentence(3),
-                null
-        );
+  @Test
+  @AllureId("500015")
+  @DisplayName("WEB: Пользователь имеет возможность отредактировать трату")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      categories = {
+          @GenerateCategory("Food"),
+          @GenerateCategory("Friends")
+      },
+      spends = @GenerateSpend(
+          spendName = "Fish",
+          spendCategory = "Food",
+          amount = 1050.0
+      )
+  ))
+  void shouldEditSpendingTest(@User UserJson user) {
+    Date newSpendDate = DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_MONTH, -4);
+    SpendJson testSpend = user.testData().spends().getFirst();
+    SpendJson editedSpending = new SpendJson(
+        null,
+        testSpend.spendDate(),
+        1000.0,
+        testSpend.currency(),
+        new CategoryJson(
+            null,
+            "Friends",
+            null,
+            false
+        ),
+        generateRandomSentence(3),
+        null
+    );
 
-        SpendingTable spendingTable = Selenide.open(MainPage.URL, MainPage.class)
-                .waitForPageLoaded()
-                .getSpendingTable()
-                .checkTableContains(testSpend)
-                .editSpending(0, editedSpending);
+    SpendingTable spendingTable = Selenide.open(MainPage.URL, MainPage.class)
+        .waitForPageLoaded()
+        .getSpendingTable()
+        .checkTableContains(testSpend)
+        .editSpending(0, editedSpending);
 
-        Selenide.refresh();
+    Selenide.refresh();
 
-        spendingTable.checkTableContains(editedSpending);
-    }
+    spendingTable.checkTableContains(editedSpending);
+  }
 
-    @Test
-    @AllureId("500016")
-    @DisplayName("WEB: Траты за последнюю неделю должны отображаться при применении фильтра 'Last week'")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(
-            categories = @GenerateCategory("Бар"),
-            spends = @GenerateSpend(
-                    spendName = "Коктейль",
-                    spendCategory = "Бар",
-                    addDaysToSpendDate = -5,
-                    amount = 650.0
-            )
-    ))
-    void checkLastWeekSpendingTest(@User UserJson user) {
-        Selenide.open(MainPage.URL, MainPage.class)
-                .getSpendingTable()
-                .clickByButton("Last week")
-                .checkTableContains(user.testData().spends().getFirst());
-    }
+  @Test
+  @AllureId("500016")
+  @DisplayName("WEB: Траты за последнюю неделю должны отображаться при применении фильтра 'Last week'")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      categories = @GenerateCategory("Бар"),
+      spends = @GenerateSpend(
+          spendName = "Коктейль",
+          spendCategory = "Бар",
+          addDaysToSpendDate = -5,
+          amount = 650.0
+      )
+  ))
+  void checkLastWeekSpendingTest(@User UserJson user) {
+    Selenide.open(MainPage.URL, MainPage.class)
+        .getSpendingTable()
+        .clickByButton("Last week")
+        .checkTableContains(user.testData().spends().getFirst());
+  }
 
-    @Disabled("Not implemented")
-    @Test
-    @AllureId("500017")
-    @DisplayName("WEB: Пользователь имеет возможность удалить трату")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser(
-            categories = @GenerateCategory("Бар"),
-            spends = @GenerateSpend(
-                    spendName = "Коктейль",
-                    spendCategory = "Бар",
-                    amount = 650.0
-            )
-    ))
-    void deleteSpendingTest() {
-        Selenide.open(MainPage.URL, MainPage.class)
-                .getSpendingTable()
-                .deleteSpending();
-    }
+  @Disabled("Not implemented")
+  @Test
+  @AllureId("500017")
+  @DisplayName("WEB: Пользователь имеет возможность удалить трату")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      categories = @GenerateCategory("Бар"),
+      spends = @GenerateSpend(
+          spendName = "Коктейль",
+          spendCategory = "Бар",
+          amount = 650.0
+      )
+  ))
+  void deleteSpendingTest() {
+    Selenide.open(MainPage.URL, MainPage.class)
+        .getSpendingTable()
+        .deleteSpending();
+  }
 }

@@ -21,62 +21,62 @@ import static guru.qa.niffler.utils.ErrorMessage.PASSWORDS_SHOULD_BE_EQUAL;
 @DisplayName("[WEB][niffler-frontend]: Регистрация")
 public class RegistrationTest extends BaseWebTest {
 
-    @Test
-    @AllureId("500008")
-    @DisplayName("WEB: Пользователь может успешно зарегистрироваться в сиситеме")
-    @Tag("WEB")
-    void shouldRegisterNewUser() {
-        String newUsername = generateRandomUsername();
-        String password = generateRandomPassword();
-        Selenide.open(WelcomePage.URL, WelcomePage.class)
-                .waitForPageLoaded()
-                .doRegister()
-                .waitForPageLoaded()
-                .setUsername(newUsername)
-                .setPassword(password)
-                .setPasswordSubmit(password)
-                .successSubmit()
-                .fillLoginPage(newUsername, password)
-                .submit(new MainPage())
-                .waitForPageLoaded();
-    }
+  @Test
+  @AllureId("500008")
+  @DisplayName("WEB: Пользователь может успешно зарегистрироваться в сиситеме")
+  @Tag("WEB")
+  void shouldRegisterNewUser() {
+    String newUsername = generateRandomUsername();
+    String password = generateRandomPassword();
+    Selenide.open(WelcomePage.URL, WelcomePage.class)
+        .waitForPageLoaded()
+        .doRegister()
+        .waitForPageLoaded()
+        .setUsername(newUsername)
+        .setPassword(password)
+        .setPasswordSubmit(password)
+        .successSubmit()
+        .fillLoginPage(newUsername, password)
+        .submit(new MainPage())
+        .waitForPageLoaded();
+  }
 
-    @Test
-    @AllureId("500009")
-    @DisplayName("WEB: При регистрации возникает ошибка, если пользлватель с таким юзернеймом уже существует")
-    @Tag("WEB")
-    @GenerateUser()
-    void shouldNotRegisterUserWithExistingUsername(@User(selector = METHOD) UserJson existingUser) {
-        String username = existingUser.username();
-        String password = generateRandomPassword();
-        Selenide.open(WelcomePage.URL, WelcomePage.class)
-                .waitForPageLoaded()
-                .doRegister()
-                .waitForPageLoaded()
-                .setUsername(username)
-                .setPassword(password)
-                .setPasswordSubmit(password)
-                .errorSubmit()
-                .checkErrorMessage("Username `" + username + "` already exists");
-    }
+  @Test
+  @AllureId("500009")
+  @DisplayName("WEB: При регистрации возникает ошибка, если пользлватель с таким юзернеймом уже существует")
+  @Tag("WEB")
+  @GenerateUser()
+  void shouldNotRegisterUserWithExistingUsername(@User(selector = METHOD) UserJson existingUser) {
+    String username = existingUser.username();
+    String password = generateRandomPassword();
+    Selenide.open(WelcomePage.URL, WelcomePage.class)
+        .waitForPageLoaded()
+        .doRegister()
+        .waitForPageLoaded()
+        .setUsername(username)
+        .setPassword(password)
+        .setPasswordSubmit(password)
+        .errorSubmit()
+        .checkErrorMessage("Username `" + username + "` already exists");
+  }
 
-    @Test
-    @AllureId("500010")
-    @DisplayName("WEB: При регистрации возникает ошибка, если введены разные пароль и подтверждение пароля")
-    @Tag("WEB")
-    void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
-        String username = generateRandomUsername();
-        String password = generateRandomPassword();
-        String submitPassword = generateRandomPassword();
+  @Test
+  @AllureId("500010")
+  @DisplayName("WEB: При регистрации возникает ошибка, если введены разные пароль и подтверждение пароля")
+  @Tag("WEB")
+  void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
+    String username = generateRandomUsername();
+    String password = generateRandomPassword();
+    String submitPassword = generateRandomPassword();
 
-        Selenide.open(WelcomePage.URL, WelcomePage.class)
-                .waitForPageLoaded()
-                .doRegister()
-                .waitForPageLoaded()
-                .setUsername(username)
-                .setPassword(password)
-                .setPasswordSubmit(submitPassword)
-                .errorSubmit()
-                .checkErrorMessage(PASSWORDS_SHOULD_BE_EQUAL.content);
-    }
+    Selenide.open(WelcomePage.URL, WelcomePage.class)
+        .waitForPageLoaded()
+        .doRegister()
+        .waitForPageLoaded()
+        .setUsername(username)
+        .setPassword(password)
+        .setPasswordSubmit(submitPassword)
+        .errorSubmit()
+        .checkErrorMessage(PASSWORDS_SHOULD_BE_EQUAL.content);
+  }
 }

@@ -9,23 +9,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum DataSourceContext {
-    INSTANCE;
+  INSTANCE;
 
-    private final Map<DataBase, DataSource> dsContext = new HashMap<>();
+  private final Map<DataBase, DataSource> dsContext = new HashMap<>();
 
-    private synchronized DataSource getDataSource(DataBase dataBase) {
-        if (dsContext.get(dataBase) == null) {
-            PGSimpleDataSource ds = new PGSimpleDataSource();
-            ds.setUser("postgres");
-            ds.setPassword("secret");
-            ds.setURL(dataBase.getUrl());
-            P6DataSource p6DataSource = new P6DataSource(ds);
-            this.dsContext.put(dataBase, p6DataSource);
-        }
-        return dsContext.get(dataBase);
+  private synchronized DataSource getDataSource(DataBase dataBase) {
+    if (dsContext.get(dataBase) == null) {
+      PGSimpleDataSource ds = new PGSimpleDataSource();
+      ds.setUser("postgres");
+      ds.setPassword("secret");
+      ds.setURL(dataBase.getUrl());
+      P6DataSource p6DataSource = new P6DataSource(ds);
+      this.dsContext.put(dataBase, p6DataSource);
     }
+    return dsContext.get(dataBase);
+  }
 
-    public static DataSource dataSource(DataBase dataBase) {
-        return INSTANCE.getDataSource(dataBase);
-    }
+  public static DataSource dataSource(DataBase dataBase) {
+    return INSTANCE.getDataSource(dataBase);
+  }
 }

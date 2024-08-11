@@ -5,6 +5,7 @@ interface ToggleInterface {
     withMyFriends: boolean,
     setWithMyFriends: (withMyFriends: boolean) => void;
 }
+
 export const Toggle: FC<ToggleInterface> = ({withMyFriends, setWithMyFriends}) => {
 
     const handleChange = (

@@ -11,19 +11,19 @@ import java.util.UUID;
 @Setter
 public class FriendShipId implements Serializable {
 
-    private UUID requester;
-    private UUID addressee;
+  private UUID requester;
+  private UUID addressee;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FriendShipId friendsId = (FriendShipId) o;
-        return Objects.equals(requester, friendsId.requester) && Objects.equals(addressee, friendsId.addressee);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    FriendShipId friendsId = (FriendShipId) o;
+    return Objects.equals(requester, friendsId.requester) && Objects.equals(addressee, friendsId.addressee);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(requester, addressee);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(requester, addressee);
+  }
 }

@@ -19,19 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v2/spends")
 public class SpendV2Controller {
 
-    private final RestSpendClient restSpendClient;
+  private final RestSpendClient restSpendClient;
 
-    @Autowired
-    public SpendV2Controller(RestSpendClient restSpendClient) {
-        this.restSpendClient = restSpendClient;
-    }
+  @Autowired
+  public SpendV2Controller(RestSpendClient restSpendClient) {
+    this.restSpendClient = restSpendClient;
+  }
 
-    @GetMapping("/all")
-    public Page<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal,
-                                     @PageableDefault Pageable pageable,
-                                     @RequestParam(required = false) DataFilterValues filterPeriod,
-                                     @RequestParam(required = false) CurrencyValues filterCurrency) {
-        String username = principal.getClaim("sub");
-        return restSpendClient.getSpends(username, pageable, filterPeriod, filterCurrency);
-    }
+  @GetMapping("/all")
+  public Page<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal,
+                                   @PageableDefault Pageable pageable,
+                                   @RequestParam(required = false) DataFilterValues filterPeriod,
+                                   @RequestParam(required = false) CurrencyValues filterCurrency,
+                                   @RequestParam(required = false) String searchQuery) {
+    String username = principal.getClaim("sub");
+    return restSpendClient.getSpends(username, pageable, filterPeriod, filterCurrency, searchQuery);
+  }
 }

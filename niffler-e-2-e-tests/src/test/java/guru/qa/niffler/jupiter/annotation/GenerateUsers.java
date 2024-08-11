@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface GenerateUsers {
 
-    GenerateUser[] value();
+  GenerateUser[] value();
 }

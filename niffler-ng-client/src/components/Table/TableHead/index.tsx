@@ -2,14 +2,12 @@ import {TableHead as MuiTableHead, TableCell, TableRow, useTheme, Checkbox} from
 import { HeadCell } from "../HeadCell";
 import {ChangeEvent, FC} from "react";
 
-
 interface TableHeadProps {
     headCells: readonly HeadCell[];
     onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
     numSelected: number;
     rowCount: number;
 }
-
 
 export const TableHead: FC<TableHeadProps> = ({headCells, onSelectAllClick, numSelected, rowCount}) => {
     const theme = useTheme();
@@ -23,7 +21,7 @@ export const TableHead: FC<TableHeadProps> = ({headCells, onSelectAllClick, numS
                     <Checkbox
                         color="primary"
                         indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={false}
+                        checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
                         inputProps={{
                             "aria-label": "select all rows",

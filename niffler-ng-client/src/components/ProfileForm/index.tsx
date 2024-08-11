@@ -1,34 +1,44 @@
 import {Button, Grid, InputLabel, TextField, Typography, useMediaQuery, useTheme} from "@mui/material"
 import {FC, FormEvent, useContext, useEffect, useState,} from "react";
 import {ImageUpload} from "../ImageUpload";
-import {User} from "../../types/User.ts";
 import {apiClient} from "../../api/apiClient.ts";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
 import {SessionContext} from "../../context/SessionContext.tsx";
+import {convertUserToFormData, profileFormValidate, UserFormData} from "./formValidate.ts";
+import {formHasErrors} from "../../utils/form.ts";
 
 
 export const ProfileForm: FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const {user, updateUser} = useContext(SessionContext);
-    const [formData, setFormData] = useState<User>(user);
+    const [formData, setFormData] = useState<UserFormData>(convertUserToFormData(user));
     const snackbar = useSnackBar();
 
     useEffect(() => {
-        setFormData(user);
+        setFormData(convertUserToFormData(user));
     }, [user]);
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        apiClient.updateProfile(formData, {
-           onSuccess: (data) => {
-               updateUser(data);
-               snackbar.showSnackBar("Profile successfully updated", "success");
-           },
-           onFailure: (e) => {
-               snackbar.showSnackBar(`Error while updating profile: ${e.message}`, "error")
-           },
-        });
+        const validatedData = profileFormValidate(formData);
+        setFormData(validatedData);
+        if (!formHasErrors(validatedData)) {
+            apiClient.updateProfile({
+                id: user.id,
+                username: user.username,
+                fullname: formData.fullname.value,
+                photo: formData.photo.value,
+            }, {
+                onSuccess: (data) => {
+                    updateUser(data);
+                    snackbar.showSnackBar("Profile successfully updated", "success");
+                },
+                onFailure: (e) => {
+                    snackbar.showSnackBar(`Error while updating profile: ${e.message}`, "error")
+                },
+            });
+        }
     };
 
     return (
@@ -53,18 +63,20 @@ export const ProfileForm: FC = () => {
             <Grid item xs={8}>
                 <ImageUpload
                     buttonText="Upload new picture"
-                    file={formData.photo}
-                    error={false}
-                    helperText={""}
+                    file={formData.photo.value}
+                    error={formData.photo.error}
+                    helperText={formData.photo.errorMessage}
                     isAvatar
-                    onFileUpload={(file) => setFormData({...formData, photo: file ?? ""})}/>
+                    onFileUpload={(file) => setFormData({...formData, photo: {
+                            ...formData.photo, value: file ?? "",
+                        }})}/>
             </Grid>
             <Grid item xs={12}>
                 <Grid
                     container
                     spacing={3}
                     sx={{
-                        alignItems: {xs: "center", sm: "flex-end"},
+                        alignItems: {xs: "center", sm: "flex-start"},
                         flexDirection: {xs: "column", sm: "row"}
                     }}
                 >
@@ -84,7 +96,7 @@ export const ProfileForm: FC = () => {
                             id="username"
                             name="username"
                             type="text"
-                            value={formData.username}
+                            value={user.username}
                             error={false}
                             disabled
                             fullWidth
@@ -103,10 +115,12 @@ export const ProfileForm: FC = () => {
                             id="name"
                             name="name"
                             type="text"
-                            value={formData.fullname}
-                            error={false}
-                            helperText={""}
-                            onChange={(event) => setFormData({...formData, fullname: event.target.value})}
+                            value={formData.fullname.value}
+                            error={formData.fullname.error}
+                            helperText={formData.fullname.errorMessage}
+                            onChange={(event) => setFormData({...formData, fullname: {
+                                ...formData.fullname, value: event.target.value, error: false, errorMessage: "",
+                                }})}
                             fullWidth
                         />
                     </Grid>
@@ -120,6 +134,7 @@ export const ProfileForm: FC = () => {
                             size={"large"}
                             sx={{
                                 width: "100%",
+                                marginTop: 2.75,
                             }}
                         >Save changes</Button>
                     </Grid>

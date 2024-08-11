@@ -27,4 +27,3 @@ const defaultState = {
 };
 
 export const SessionContext = createContext<SessionContextInterface>(defaultState);
-

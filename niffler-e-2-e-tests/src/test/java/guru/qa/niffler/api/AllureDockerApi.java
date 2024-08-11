@@ -12,13 +12,13 @@ import retrofit2.http.Query;
 
 public interface AllureDockerApi {
 
-    @POST("allure-docker-service/send-results")
-    Call<JsonNode> uploadResults(@Query("project_id") String projectId,
-                                 @Body AllureResults results);
+  @POST("allure-docker-service/send-results")
+  Call<JsonNode> uploadResults(@Query("project_id") String projectId,
+                               @Body AllureResults results);
 
-    @GET("allure-docker-service/projects/{project_id}")
-    Call<JsonNode> project(@Path("project_id") String projectId);
+  @GET("allure-docker-service/projects/{project_id}")
+  Call<JsonNode> project(@Path("project_id") String projectId);
 
-    @POST("allure-docker-service/projects")
-    Call<JsonNode> createProject(@Body AllureProject project);
+  @POST("allure-docker-service/projects")
+  Call<JsonNode> createProject(@Body AllureProject project);
 }

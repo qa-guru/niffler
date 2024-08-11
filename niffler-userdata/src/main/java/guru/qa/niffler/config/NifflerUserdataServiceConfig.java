@@ -16,32 +16,32 @@ import org.springframework.xml.xsd.XsdSchema;
 @Configuration
 public class NifflerUserdataServiceConfig {
 
-    private final String nifflerUserdataBaseUri;
+  private final String nifflerUserdataBaseUri;
 
-    public NifflerUserdataServiceConfig(@Value("${niffler-userdata.base-uri}") String nifflerUserdataBaseUri) {
-        this.nifflerUserdataBaseUri = nifflerUserdataBaseUri;
-    }
+  public NifflerUserdataServiceConfig(@Value("${niffler-userdata.base-uri}") String nifflerUserdataBaseUri) {
+    this.nifflerUserdataBaseUri = nifflerUserdataBaseUri;
+  }
 
-    @Bean
-    public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext applicationContext) {
-        MessageDispatcherServlet servlet = new MessageDispatcherServlet();
-        servlet.setApplicationContext(applicationContext);
-        servlet.setTransformWsdlLocations(true);
-        return new ServletRegistrationBean<>(servlet, "/ws/*");
-    }
+  @Bean
+  public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext applicationContext) {
+    MessageDispatcherServlet servlet = new MessageDispatcherServlet();
+    servlet.setApplicationContext(applicationContext);
+    servlet.setTransformWsdlLocations(true);
+    return new ServletRegistrationBean<>(servlet, "/ws/*");
+  }
 
-    @Bean(name = "userdata")
-    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema userdataSchema) {
-        DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
-        wsdl11Definition.setPortTypeName("NifflerUserdataPort");
-        wsdl11Definition.setLocationUri(nifflerUserdataBaseUri + "/ws");
-        wsdl11Definition.setTargetNamespace("niffler-userdata");
-        wsdl11Definition.setSchema(userdataSchema);
-        return wsdl11Definition;
-    }
+  @Bean(name = "userdata")
+  public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema userdataSchema) {
+    DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
+    wsdl11Definition.setPortTypeName("NifflerUserdataPort");
+    wsdl11Definition.setLocationUri(nifflerUserdataBaseUri + "/ws");
+    wsdl11Definition.setTargetNamespace("niffler-userdata");
+    wsdl11Definition.setSchema(userdataSchema);
+    return wsdl11Definition;
+  }
 
-    @Bean
-    public XsdSchema userdataSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("userdata.xsd"));
-    }
+  @Bean
+  public XsdSchema userdataSchema() {
+    return new SimpleXsdSchema(new ClassPathResource("userdata.xsd"));
+  }
 }

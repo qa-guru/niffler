@@ -11,6 +11,7 @@ import {User} from "../../types/User.ts";
 
 export const PrivateRoute = () => {
     const [user, setUser] = useState<User>(USER_INITIAL_STATE);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         apiClient.getSession().then(res => {
@@ -18,13 +19,18 @@ export const PrivateRoute = () => {
                 initLocalStorageAndRedirectToAuth();
             } else {
                 apiClient.getProfile({
-                    onSuccess: (data) => setUser(data),
-                    onFailure: (e) => console.log(e),
+                    onSuccess: (data) => {
+                        setUser(data);
+                        setLoading(false);
+                    },
+                    onFailure: (e) => {
+                        setLoading(false);
+                        console.log(e)
+                    },
                 })
             }
         });
     }, []);
-    const loading = false;
 
     return (
         loading ?

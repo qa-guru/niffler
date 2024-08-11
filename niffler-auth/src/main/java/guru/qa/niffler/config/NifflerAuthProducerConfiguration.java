@@ -24,39 +24,39 @@ import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_
 @Configuration
 public class NifflerAuthProducerConfiguration {
 
-    private final KafkaProperties kafkaProperties;
+  private final KafkaProperties kafkaProperties;
 
-    @Autowired
-    public NifflerAuthProducerConfiguration(KafkaProperties kafkaProperties) {
-        this.kafkaProperties = kafkaProperties;
-    }
+  @Autowired
+  public NifflerAuthProducerConfiguration(KafkaProperties kafkaProperties) {
+    this.kafkaProperties = kafkaProperties;
+  }
 
-    @Bean
-    public Map<String, Object> producerConfiguration() {
-        Map<String, Object> properties = new HashMap<>(kafkaProperties.buildProducerProperties(
-                new DefaultSslBundleRegistry()
-        ));
-        properties.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        properties.put(VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return properties;
-    }
+  @Bean
+  public Map<String, Object> producerConfiguration() {
+    Map<String, Object> properties = new HashMap<>(kafkaProperties.buildProducerProperties(
+        new DefaultSslBundleRegistry()
+    ));
+    properties.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    properties.put(VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+    return properties;
+  }
 
-    @Bean
-    public ProducerFactory<String, UserJson> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfiguration());
-    }
+  @Bean
+  public ProducerFactory<String, UserJson> producerFactory() {
+    return new DefaultKafkaProducerFactory<>(producerConfiguration());
+  }
 
-    @Bean
-    public KafkaTemplate<String, UserJson> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
-    }
+  @Bean
+  public KafkaTemplate<String, UserJson> kafkaTemplate() {
+    return new KafkaTemplate<>(producerFactory());
+  }
 
-    @Bean
-    @Primary
-    public NewTopic topic() {
-        return TopicBuilder.name("users")
-                .partitions(10)
-                .replicas(1)
-                .build();
-    }
+  @Bean
+  @Primary
+  public NewTopic topic() {
+    return TopicBuilder.name("users")
+        .partitions(10)
+        .replicas(1)
+        .build();
+  }
 }

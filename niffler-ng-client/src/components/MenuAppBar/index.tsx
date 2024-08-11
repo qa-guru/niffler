@@ -59,7 +59,7 @@ export const MenuAppBar: FC = () => {
                     marginRight: 4,
                 }}>
                     <Link to={"/main"} className="link">
-                        <img src={logo} alt="Niffler logo" width={26} height={26}/>
+                        <img src={logo} alt="Niffler logo" width={30} height={30}/>
                         <Typography variant="h5" component="h1" sx={{flexGrow: 1, marginLeft: 1}}>
                             Niffler
                         </Typography>
@@ -96,9 +96,7 @@ export const MenuAppBar: FC = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem sx={{
-                    width: "212px",
-                }}>
+                <MenuItem sx={{width: "212px"}} onClick={handleClose}>
                     <Link to={"/profile"} className={"link nav-link"}>
                         <ListItemIcon>
                             <Icon type="userIcon"/>
@@ -107,7 +105,7 @@ export const MenuAppBar: FC = () => {
                     </Link>
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={() => {}}>
+                <MenuItem onClick={handleClose}>
                     <Link to={"/people/friends"} className={"link nav-link"}>
                         <ListItemIcon>
                             <Icon type="friendsIcon"/>
@@ -115,7 +113,7 @@ export const MenuAppBar: FC = () => {
                         Friends
                     </Link>
                 </MenuItem>
-                <MenuItem onClick={() => {}}>
+                <MenuItem onClick={handleClose}>
                     <Link to={"/people/all"} className={"link nav-link"}>
                         <ListItemIcon>
                             <Icon type="allIcon"/>

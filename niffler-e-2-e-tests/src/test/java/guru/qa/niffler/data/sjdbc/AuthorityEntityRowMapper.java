@@ -10,13 +10,13 @@ import java.util.UUID;
 
 public class AuthorityEntityRowMapper implements RowMapper<AuthorityEntity> {
 
-    public static final AuthorityEntityRowMapper instance = new AuthorityEntityRowMapper();
+  public static final AuthorityEntityRowMapper instance = new AuthorityEntityRowMapper();
 
-    @Override
-    public AuthorityEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-        AuthorityEntity user = new AuthorityEntity();
-        user.setId(rs.getObject("id", UUID.class));
-        user.setAuthority(Authority.valueOf(rs.getString("authority")));
-        return user;
-    }
+  @Override
+  public AuthorityEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+    AuthorityEntity user = new AuthorityEntity();
+    user.setId(rs.getObject("id", UUID.class));
+    user.setAuthority(Authority.valueOf(rs.getString("authority")));
+    return user;
+  }
 }

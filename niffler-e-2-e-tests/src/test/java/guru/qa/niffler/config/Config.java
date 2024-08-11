@@ -6,43 +6,43 @@ import java.util.List;
 
 public interface Config {
 
-    String PROJECT_NAME = "niffler";
+  String PROJECT_NAME = "niffler";
 
-    static Config getConfig() {
-        if ("docker".equals(System.getProperty("test.env"))) {
-            return DockerConfig.INSTANCE;
-        } else if ("local".equals(System.getProperty("test.env"))) {
-            return LocalConfig.INSTANCE;
-        } else {
-            throw new IllegalStateException();
-        }
+  static Config getConfig() {
+    if ("docker".equals(System.getProperty("test.env"))) {
+      return DockerConfig.INSTANCE;
+    } else if ("local".equals(System.getProperty("test.env"))) {
+      return LocalConfig.INSTANCE;
+    } else {
+      throw new IllegalStateException();
     }
+  }
 
-    String authUrl();
+  String authUrl();
 
-    String frontUrl();
+  String frontUrl();
 
-    String gatewayUrl();
+  String gatewayUrl();
 
-    String userdataUrl();
+  String userdataUrl();
 
-    String currencyGrpcHost();
+  String currencyGrpcHost();
 
-    default int currencyGrpcPort() {
-        return 8092;
-    }
+  default int currencyGrpcPort() {
+    return 8092;
+  }
 
-    String spendUrl();
+  String spendUrl();
 
-    String databaseAddress();
+  String databaseAddress();
 
-    String kafkaAddress();
+  String kafkaAddress();
 
-    String allureDockerUrl();
+  String allureDockerUrl();
 
-    default List<String> kafkaTopics() {
-        return List.of("users");
-    }
+  default List<String> kafkaTopics() {
+    return List.of("users");
+  }
 
-    HttpLoggingInterceptor.Level restLoggingLevel();
+  HttpLoggingInterceptor.Level restLoggingLevel();
 }

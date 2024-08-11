@@ -23,25 +23,25 @@ import static guru.qa.niffler.jupiter.annotation.User.Selector.NESTED;
 @DisplayName("[WEB][niffler-frontend]: Профиль, DB preconditions")
 public class ProfileDBTest extends BaseWebTest {
 
-    @Repository
-    private UserRepository userRepository;
+  @Repository
+  private UserRepository userRepository;
 
-    private final CurrencyValues testedCurrency = CurrencyValues.KZT;
+  private final CurrencyValues testedCurrency = CurrencyValues.KZT;
 
-    @BeforeEach
-    void changeCurrencyBeforeTest(@User(selector = NESTED) UserJson user) {
-        UserEntity testUserFromUserdata = userRepository.findByIdInUserdata(user.id()).orElseThrow();
-        testUserFromUserdata.setCurrency(guru.qa.niffler.data.entity.CurrencyValues.valueOf(testedCurrency.name()));
-        userRepository.updateInUserdata(testUserFromUserdata);
-    }
+  @BeforeEach
+  void changeCurrencyBeforeTest(@User(selector = NESTED) UserJson user) {
+    UserEntity testUserFromUserdata = userRepository.findByIdInUserdata(user.id()).orElseThrow();
+    testUserFromUserdata.setCurrency(guru.qa.niffler.data.entity.CurrencyValues.valueOf(testedCurrency.name()));
+    userRepository.updateInUserdata(testUserFromUserdata);
+  }
 
-    @Test
-    @AllureId("500003")
-    @DisplayName("WEB: В профиле должна отображаться валюта, сохраненная в niffler-userdata")
-    @Tag("WEB")
-    @ApiLogin(user = @GenerateUser)
-    void checkCurrencyTest() {
-        Selenide.open(ProfilePage.URL, ProfilePage.class)
-                .checkCurrency(testedCurrency);
-    }
+  @Test
+  @AllureId("500003")
+  @DisplayName("WEB: В профиле должна отображаться валюта, сохраненная в niffler-userdata")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser)
+  void checkCurrencyTest() {
+    Selenide.open(ProfilePage.URL, ProfilePage.class)
+        .checkCurrency(testedCurrency);
+  }
 }

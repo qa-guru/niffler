@@ -13,9 +13,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ExtendWith({
-        DatabaseCreateUserExtension.class,
-        ClearCookiesExtension.class,
-        AllureJunit5.class
+    DatabaseCreateUserExtension.class,
+    ClearCookiesExtension.class,
+    AllureJunit5.class
 })
 public @interface SoapTest {
 

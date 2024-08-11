@@ -20,45 +20,43 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 @Disabled
 public class LoginMockTest extends BaseWebTest {
 
-    private final WireMockServer wireMockServer = new WireMockServer(8089);
+  private final WireMockServer wireMockServer = new WireMockServer(8089);
 
-    @BeforeEach
-    void configure() {
-        wireMockServer.start();
+  @BeforeEach
+  void configure() {
+    wireMockServer.start();
 
-        wireMockServer.stubFor(WireMock.get(urlPathEqualTo("/currentUser"))
-                .withQueryParam("username", matching(".*"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-type", "application/json")
-                        .withBody(
-                                """
-                                            {
-                                                "id": "229fc371-2821-4795-81a5-0b26d3cd417e",
-                                                "username": "{{request.query.username}}",
-                                                "firstname": null,
-                                                "surname": null,
-                                                "currency": "RUB",
-                                                "photo": null
-                                            }
-                                        """)
-                ));
-    }
+    wireMockServer.stubFor(WireMock.get(urlPathEqualTo("/currentUser"))
+        .withQueryParam("username", matching(".*"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-type", "application/json")
+            .withBody("""
+                    {
+                        "id": "229fc371-2821-4795-81a5-0b26d3cd417e",
+                        "username": "{{request.query.username}}",
+                        "firstname": null,
+                        "surname": null,
+                        "currency": "RUB",
+                        "photo": null
+                    }
+                """)));
+  }
 
-    @AfterEach
-    void stop() {
-        wireMockServer.stop();
-    }
+  @AfterEach
+  void stop() {
+    wireMockServer.stop();
+  }
 
-    @Test
-    @AllureId("800001")
-    @DisplayName("WEB: Главная страница должна отображаться после логина новым юзером")
-    @Tag("WEB")
-    void mainPageShouldBeDisplayedAfterSuccessLogin() throws Exception {
-        Selenide.open(WelcomePage.URL, WelcomePage.class)
-                .doLogin()
-                .fillLoginPage("barsik", "12345")
-                .submit(new MainPage())
-                .waitForPageLoaded();
-    }
+  @Test
+  @AllureId("800001")
+  @DisplayName("WEB: Главная страница должна отображаться после логина новым юзером")
+  @Tag("WEB")
+  void mainPageShouldBeDisplayedAfterSuccessLogin() throws Exception {
+    Selenide.open(WelcomePage.URL, WelcomePage.class)
+        .doLogin()
+        .fillLoginPage("barsik", "12345")
+        .submit(new MainPage())
+        .waitForPageLoaded();
+  }
 }

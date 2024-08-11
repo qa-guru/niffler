@@ -1,7 +1,12 @@
 import {Box, Typography} from "@mui/material";
 import niffler from "../../assets/images/niffler-with-a-coin.png";
+import {FC} from "react";
 
-export const EmptyUsersState = () => {
+interface EmptyTableStateInterface {
+    title: string;
+}
+
+export const EmptyTableState: FC<EmptyTableStateInterface> = ({title}) => {
     return (
         <Box sx={{
             textAlign: "center",
@@ -9,7 +14,7 @@ export const EmptyUsersState = () => {
             paddingTop: 15,
             paddingBottom: 10,
         }}>
-            <Typography variant="h6" component="p" sx={{fontWeight: 700}}>There are no users yet</Typography>
+            <Typography variant="h6" component="p" sx={{fontWeight: 700}}>{title}</Typography>
             <Box
                 component="img"
                 sx={{

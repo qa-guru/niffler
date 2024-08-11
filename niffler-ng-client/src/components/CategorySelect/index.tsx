@@ -4,6 +4,7 @@ import {Box, Chip, List, MenuItem, TextField} from '@mui/material';
 import {FC, useEffect, useState} from "react";
 import {apiClient} from "../../api/apiClient.ts";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
+import {MAX_CATEGORIES_COUNT} from "../../const/constants.ts";
 
 interface CategorySelectInterface {
     selectedCategory: string;
@@ -17,26 +18,30 @@ export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory, o
     useEffect(() => {
         apiClient.getCategories({
             onSuccess: (data) => {
-                const categories = data.map(v => v.category);
+                const categories = data.map(v => v.name);
                 setAllCategories(categories);
             },
             onFailure: (e) => {
                 snackbar.showSnackBar("Failed to fetch categories", "error");
                 console.error(`Failed to fetch categories: ${e.message}`);
             },
-        });
+        }, true);
     }, []);
 
     const handlePressEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
+            event.stopPropagation();
+            event.preventDefault();
             const value = (event.target as HTMLInputElement).value
             onSelectCategory(value);
-            pushToCategories(value);
+            if(!allCategories.includes(value)) {
+                pushToCategories(value);
+            }
         }
     };
 
     const pushToCategories = (category: string) => {
-        if (allCategories.length < 8)  {
+        if (allCategories.length < MAX_CATEGORIES_COUNT)  {
             setAllCategories([...allCategories, category]);
         }
     }
@@ -56,7 +61,7 @@ export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory, o
                     value={selectedCategory}
                     onChange={(e) => onSelectCategory(e.target.value)}
                     onKeyDown={handlePressEnter}
-                    disabled={allCategories.length >= 8}
+                    disabled={allCategories.length >= MAX_CATEGORIES_COUNT}
                     placeholder={"Add new category"}
                 />
                 <List sx={{

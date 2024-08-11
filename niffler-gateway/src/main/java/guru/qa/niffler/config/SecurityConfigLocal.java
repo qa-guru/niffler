@@ -18,29 +18,29 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Profile({"local", "docker"})
 public class SecurityConfigLocal {
 
-    private final CorsCustomizer corsCustomizer;
+  private final CorsCustomizer corsCustomizer;
 
-    @Autowired
-    public SecurityConfigLocal(CorsCustomizer corsCustomizer) {
-        this.corsCustomizer = corsCustomizer;
-    }
+  @Autowired
+  public SecurityConfigLocal(CorsCustomizer corsCustomizer) {
+    this.corsCustomizer = corsCustomizer;
+  }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        corsCustomizer.corsCustomizer(http);
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    corsCustomizer.corsCustomizer(http);
 
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(customizer ->
-                        customizer.requestMatchers(
-                                        antMatcher("/api/session/current"),
-                                        antMatcher("/swagger-ui/**"),
-                                        antMatcher("/v3/api-docs/**"),
-                                        antMatcher("/actuator/health"),
-                                        antMatcher("/graphiql/**")
-                                ).permitAll()
-                                .anyRequest()
-                                .authenticated()
-                ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
-        return http.build();
-    }
+    http.csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(customizer ->
+            customizer.requestMatchers(
+                    antMatcher("/api/session/current"),
+                    antMatcher("/swagger-ui/**"),
+                    antMatcher("/v3/api-docs/**"),
+                    antMatcher("/actuator/health"),
+                    antMatcher("/graphiql/**")
+                ).permitAll()
+                .anyRequest()
+                .authenticated()
+        ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
+    return http.build();
+  }
 }

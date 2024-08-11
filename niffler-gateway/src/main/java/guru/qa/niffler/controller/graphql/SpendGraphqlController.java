@@ -25,56 +25,56 @@ import java.util.List;
 @Controller
 public class SpendGraphqlController {
 
-    private final RestSpendClient restSpendClient;
-    private final UserDataClient userDataClient;
-    private final StatisticAggregator statisticAggregator;
+  private final RestSpendClient restSpendClient;
+  private final UserDataClient userDataClient;
+  private final StatisticAggregator statisticAggregator;
 
-    @Autowired
-    public SpendGraphqlController(RestSpendClient restSpendClient,
-                                  UserDataClient userDataClient,
-                                  StatisticAggregator statisticAggregator) {
-        this.restSpendClient = restSpendClient;
-        this.userDataClient = userDataClient;
-        this.statisticAggregator = statisticAggregator;
-    }
+  @Autowired
+  public SpendGraphqlController(RestSpendClient restSpendClient,
+                                UserDataClient userDataClient,
+                                StatisticAggregator statisticAggregator) {
+    this.restSpendClient = restSpendClient;
+    this.userDataClient = userDataClient;
+    this.statisticAggregator = statisticAggregator;
+  }
 
-    @QueryMapping
-    public List<SpendJson> spends(@AuthenticationPrincipal Jwt principal,
-                                  @Argument DataFilterValues filterPeriod,
-                                  @Argument CurrencyValues filterCurrency) {
-        String username = principal.getClaim("sub");
-        return restSpendClient.getSpends(username, filterPeriod, filterCurrency);
-    }
+  @QueryMapping
+  public List<SpendJson> spends(@AuthenticationPrincipal Jwt principal,
+                                @Argument DataFilterValues filterPeriod,
+                                @Argument CurrencyValues filterCurrency) {
+    String username = principal.getClaim("sub");
+    return restSpendClient.getSpends(username, filterPeriod, filterCurrency);
+  }
 
-    @MutationMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public SpendJson addSpend(@Valid @Argument SpendInput spend,
-                              @AuthenticationPrincipal Jwt principal) {
-        String username = principal.getClaim("sub");
-        CurrencyValues userCurrency = userDataClient.currentUser(username).currency();
-        if (userCurrency != spend.currency()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Spending currency should be same with user currency");
-        }
-        SpendJson spendJson = SpendJson.fromSpendInput(spend, username);
-        return restSpendClient.addSpend(spendJson);
+  @MutationMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public SpendJson addSpend(@Valid @Argument SpendInput spend,
+                            @AuthenticationPrincipal Jwt principal) {
+    String username = principal.getClaim("sub");
+    CurrencyValues userCurrency = userDataClient.currentUser(username).currency();
+    if (userCurrency != spend.currency()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Spending currency should be same with user currency");
     }
+    SpendJson spendJson = SpendJson.fromSpendInput(spend, username);
+    return restSpendClient.addSpend(spendJson);
+  }
 
-    @MutationMapping
-    public SpendJson updateSpend(@Valid @Argument UpdateSpendInput spend,
-                                 @AuthenticationPrincipal Jwt principal) {
-        if (spend.id() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id should be present");
-        }
-        String username = principal.getClaim("sub");
-        SpendJson spendJson = SpendJson.fromUpdateSpendInput(spend, username);
-        return restSpendClient.editSpend(spendJson);
+  @MutationMapping
+  public SpendJson updateSpend(@Valid @Argument UpdateSpendInput spend,
+                               @AuthenticationPrincipal Jwt principal) {
+    if (spend.id() == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id should be present");
     }
+    String username = principal.getClaim("sub");
+    SpendJson spendJson = SpendJson.fromUpdateSpendInput(spend, username);
+    return restSpendClient.editSpend(spendJson);
+  }
 
-    @MutationMapping
-    public List<String> deleteSpends(@AuthenticationPrincipal Jwt principal,
-                                     @Argument List<String> ids) {
-        String username = principal.getClaim("sub");
-        restSpendClient.deleteSpends(username, ids);
-        return ids;
-    }
+  @MutationMapping
+  public List<String> deleteSpends(@AuthenticationPrincipal Jwt principal,
+                                   @Argument List<String> ids) {
+    String username = principal.getClaim("sub");
+    restSpendClient.deleteSpends(username, ids);
+    return ids;
+  }
 }

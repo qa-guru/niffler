@@ -18,22 +18,22 @@ import java.util.List;
 @Component
 public class GrpcCurrencyClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GrpcCurrencyClient.class);
-    private static final Empty EMPTY = Empty.getDefaultInstance();
+  private static final Logger LOG = LoggerFactory.getLogger(GrpcCurrencyClient.class);
+  private static final Empty EMPTY = Empty.getDefaultInstance();
 
-    @GrpcClient("grpcCurrencyClient")
-    private NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub nifflerCurrencyServiceStub;
+  @GrpcClient("grpcCurrencyClient")
+  private NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub nifflerCurrencyServiceStub;
 
-    public @Nonnull
-    List<CurrencyJson> getAllCurrencies() {
-        try {
-            return nifflerCurrencyServiceStub.getAllCurrencies(EMPTY).getAllCurrenciesList()
-                    .stream()
-                    .map(CurrencyJson::fromGrpcMessage)
-                    .toList();
-        } catch (StatusRuntimeException e) {
-            LOG.error("### Error while calling gRPC server ", e);
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
-        }
+  public @Nonnull
+  List<CurrencyJson> getAllCurrencies() {
+    try {
+      return nifflerCurrencyServiceStub.getAllCurrencies(EMPTY).getAllCurrenciesList()
+          .stream()
+          .map(CurrencyJson::fromGrpcMessage)
+          .toList();
+    } catch (StatusRuntimeException e) {
+      LOG.error("### Error while calling gRPC server ", e);
+      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The gRPC operation was cancelled", e);
     }
+  }
 }

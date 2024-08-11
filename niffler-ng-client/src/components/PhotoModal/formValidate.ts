@@ -41,7 +41,6 @@ export const formInitialState: PhotoFormProps = {
     }
 };
 
-
 export const formValidate = (formValues: PhotoFormProps): PhotoFormProps => {
     let newFormValues = {...formValues};
     
@@ -65,9 +64,4 @@ export const formValidate = (formValues: PhotoFormProps): PhotoFormProps => {
     }
 
     return newFormValues;
-};
-
-export const formHasErrors = (formValues: Record<string, any>) => {
-    const keys = Object.keys(formValues);
-    return keys.some((key) => formValues[key].error === true);
 };

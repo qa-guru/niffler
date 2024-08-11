@@ -6,18 +6,18 @@ import guru.qa.niffler.model.CurrencyValues;
 import java.util.Date;
 
 public interface SumByCategoryInfo {
-    @JsonProperty("categoryName")
-    String categoryName();
+  @JsonProperty("categoryName")
+  String categoryName();
 
-    @JsonProperty("currency")
-    CurrencyValues currency();
+  @JsonProperty("currency")
+  CurrencyValues currency();
 
-    @JsonProperty("sum")
-    double sum();
+  @JsonProperty("sum")
+  double sum();
 
-    @JsonProperty("firstSpendDate")
-    Date firstSpendDate();
+  @JsonProperty("firstSpendDate")
+  Date firstSpendDate();
 
-    @JsonProperty("lastSpendDate")
-    Date lastSpendDate();
+  @JsonProperty("lastSpendDate")
+  Date lastSpendDate();
 }

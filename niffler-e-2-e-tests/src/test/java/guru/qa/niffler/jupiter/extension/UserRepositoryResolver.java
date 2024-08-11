@@ -12,16 +12,16 @@ import java.util.List;
 
 public class UserRepositoryResolver implements TestInstancePostProcessor {
 
-    @Override
-    public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
-        List<Field> fields = Arrays.stream(testInstance.getClass().getDeclaredFields())
-                .filter(field -> AnnotationSupport.isAnnotated(field, Repository.class)
-                        && field.getType().isAssignableFrom(UserRepository.class))
-                .peek(field -> field.setAccessible(true))
-                .toList();
+  @Override
+  public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
+    List<Field> fields = Arrays.stream(testInstance.getClass().getDeclaredFields())
+        .filter(field -> AnnotationSupport.isAnnotated(field, Repository.class)
+            && field.getType().isAssignableFrom(UserRepository.class))
+        .peek(field -> field.setAccessible(true))
+        .toList();
 
-        for (Field field : fields) {
-            field.set(testInstance, UserRepository.getInstance());
-        }
+    for (Field field : fields) {
+      field.set(testInstance, UserRepository.getInstance());
     }
+  }
 }

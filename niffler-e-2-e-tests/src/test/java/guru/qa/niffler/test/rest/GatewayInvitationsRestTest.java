@@ -28,143 +28,143 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("[REST][niffler-gateway]: Приглашения")
 public class GatewayInvitationsRestTest extends BaseRestTest {
 
-    private static final UserdataApiClient userdataApiClient = new UserdataApiClient();
+  private static final UserdataApiClient userdataApiClient = new UserdataApiClient();
 
-    @Test
-    @DisplayName("REST: Прием заявки в друзья")
-    @AllureId("200019")
-    @Tag("REST")
-    @ApiLogin(
-            user = @GenerateUser(
-                    incomeInvitations = @IncomeInvitations(count = 1)
-            )
-    )
-    void acceptInvitationTest(@User UserJson user,
-                              @Token String bearerToken) throws Exception {
-        final String incomeInvitation = user.testData().incomeInvitations().getFirst().username();
-
-        final UserJson friend = gatewayApiClient.acceptInvitation(bearerToken, new FriendJson(
-                incomeInvitation
-        ));
-        step("Check that response not null", () ->
-                assertNotNull(friend)
-        );
-
-        step("Check friend in response", () -> {
-            assertEquals(user.testData().incomeInvitations().getFirst().username(), friend.username());
-            assertEquals(FriendState.FRIEND, friend.friendState());
-        });
-
-        step("Check that friends present in GET /friends request for both users", () ->
-                Assertions.assertAll(
-                        () -> assertEquals(
-                                1,
-                                gatewayApiClient.allFriends(bearerToken, null).size(),
-                                "Current user should have friend after accepting"
-                        ),
-                        () -> assertEquals(
-                                1,
-                                userdataApiClient.friends(incomeInvitation, null).size(),
-                                "Target friend should have friend after accepting"
-                        )
-                )
-        );
-    }
-
-    @Test
-    @DisplayName("REST: Отклонение заявки в друзья")
-    @AllureId("200020")
-    @Tag("REST")
-    @ApiLogin(
-            user = @GenerateUser(
-                    incomeInvitations = @IncomeInvitations(count = 1)
-            )
-    )
-    void declineInvitationTest(@User UserJson user,
-                               @Token String bearerToken) throws Exception {
-        final String incomeInvitation = user.testData().incomeInvitations().getFirst().username();
-
-        final UserJson declinedFriend = gatewayApiClient.declineInvitation(bearerToken, new FriendJson(
-                incomeInvitation
-        ));
-        step("Check that response not null", () ->
-                assertNotNull(declinedFriend)
-        );
-
-        step("Check declined friend in response", () -> {
-            assertEquals(user.testData().incomeInvitations().getFirst().username(), declinedFriend.username());
-            assertNull(declinedFriend.friendState());
-        });
-
-        step("Check that outcome & income invitations removed for both users", () ->
-                Assertions.assertAll(
-                        () -> assertTrue(
-                                gatewayApiClient.allFriends(bearerToken, null).isEmpty(),
-                                "Current user should not have income invitations after declining"),
-                        () -> assertNull(
-                                userdataApiClient.allUsers(incomeInvitation, null).getFirst().friendState(),
-                                "Inviter should not have outcome invitations after declining")
-                )
-        );
-        step("Check that friends request & income invitation removed for both users", () ->
-                Assertions.assertAll(
-                        () -> assertTrue(
-                                gatewayApiClient.allFriends(bearerToken, null)
-                                        .isEmpty(),
-                                "Current user should not have income invitations after declining"),
-                        () -> assertNull(userdataApiClient.allUsers(incomeInvitation, null)
-                                        .getFirst()
-                                        .friendState(),
-                                "Inviter should not have outcome invitations after declining"),
-                        () -> assertTrue(
-                                userdataApiClient.friends(incomeInvitation, null)
-                                        .isEmpty(),
-                                "Inviter should not have friends after declining"
-                        )
-                )
-        );
-    }
-
-    @Test
-    @DisplayName("REST: Отправка приглашения дружить")
-    @AllureId("200021")
-    @Tag("REST")
-    @GenerateUsers({
-            @GenerateUser
-    })
-    @ApiLogin(user = @GenerateUser)
-    void sendInvitationTest(@User(selector = METHOD) UserJson friend,
+  @Test
+  @DisplayName("REST: Прием заявки в друзья")
+  @AllureId("200019")
+  @Tag("REST")
+  @ApiLogin(
+      user = @GenerateUser(
+          incomeInvitations = @IncomeInvitations(count = 1)
+      )
+  )
+  void acceptInvitationTest(@User UserJson user,
                             @Token String bearerToken) throws Exception {
-        final String friendWillBeAdded = friend.username();
+    final String incomeInvitation = user.testData().incomeInvitations().getFirst().username();
 
-        final UserJson outcomeInvitation = gatewayApiClient.sendInvitation(bearerToken, new FriendJson(
-                friendWillBeAdded
-        ));
-        step("Check that response not null", () ->
-                assertNotNull(outcomeInvitation)
-        );
+    final UserJson friend = gatewayApiClient.acceptInvitation(bearerToken, new FriendJson(
+        incomeInvitation
+    ));
+    step("Check that response not null", () ->
+        assertNotNull(friend)
+    );
 
-        step("Check invitation in response", () -> {
-            assertEquals(friendWillBeAdded, outcomeInvitation.username());
-            assertEquals(FriendState.INVITE_SENT, outcomeInvitation.friendState());
-        });
+    step("Check friend in response", () -> {
+      assertEquals(user.testData().incomeInvitations().getFirst().username(), friend.username());
+      assertEquals(FriendState.FRIEND, friend.friendState());
+    });
 
-        step("Check that friends request & income invitation present for both users", () ->
-                Assertions.assertAll(
-                        () -> assertEquals(
-                                FriendState.INVITE_SENT,
-                                gatewayApiClient.allUsers(bearerToken, null)
-                                        .getFirst()
-                                        .friendState(),
-                                "Current user should have outcome invitation after adding"),
-                        () -> assertEquals(
-                                FriendState.INVITE_RECEIVED,
-                                userdataApiClient.friends(friendWillBeAdded, null)
-                                        .getFirst()
-                                        .friendState(),
-                                "Target friend should have 1 income invitation"
-                        )
-                )
-        );
-    }
+    step("Check that friends present in GET /friends request for both users", () ->
+        Assertions.assertAll(
+            () -> assertEquals(
+                1,
+                gatewayApiClient.allFriends(bearerToken, null).size(),
+                "Current user should have friend after accepting"
+            ),
+            () -> assertEquals(
+                1,
+                userdataApiClient.friends(incomeInvitation, null).size(),
+                "Target friend should have friend after accepting"
+            )
+        )
+    );
+  }
+
+  @Test
+  @DisplayName("REST: Отклонение заявки в друзья")
+  @AllureId("200020")
+  @Tag("REST")
+  @ApiLogin(
+      user = @GenerateUser(
+          incomeInvitations = @IncomeInvitations(count = 1)
+      )
+  )
+  void declineInvitationTest(@User UserJson user,
+                             @Token String bearerToken) throws Exception {
+    final String incomeInvitation = user.testData().incomeInvitations().getFirst().username();
+
+    final UserJson declinedFriend = gatewayApiClient.declineInvitation(bearerToken, new FriendJson(
+        incomeInvitation
+    ));
+    step("Check that response not null", () ->
+        assertNotNull(declinedFriend)
+    );
+
+    step("Check declined friend in response", () -> {
+      assertEquals(user.testData().incomeInvitations().getFirst().username(), declinedFriend.username());
+      assertNull(declinedFriend.friendState());
+    });
+
+    step("Check that outcome & income invitations removed for both users", () ->
+        Assertions.assertAll(
+            () -> assertTrue(
+                gatewayApiClient.allFriends(bearerToken, null).isEmpty(),
+                "Current user should not have income invitations after declining"),
+            () -> assertNull(
+                userdataApiClient.allUsers(incomeInvitation, null).getFirst().friendState(),
+                "Inviter should not have outcome invitations after declining")
+        )
+    );
+    step("Check that friends request & income invitation removed for both users", () ->
+        Assertions.assertAll(
+            () -> assertTrue(
+                gatewayApiClient.allFriends(bearerToken, null)
+                    .isEmpty(),
+                "Current user should not have income invitations after declining"),
+            () -> assertNull(userdataApiClient.allUsers(incomeInvitation, null)
+                    .getFirst()
+                    .friendState(),
+                "Inviter should not have outcome invitations after declining"),
+            () -> assertTrue(
+                userdataApiClient.friends(incomeInvitation, null)
+                    .isEmpty(),
+                "Inviter should not have friends after declining"
+            )
+        )
+    );
+  }
+
+  @Test
+  @DisplayName("REST: Отправка приглашения дружить")
+  @AllureId("200021")
+  @Tag("REST")
+  @GenerateUsers({
+      @GenerateUser
+  })
+  @ApiLogin(user = @GenerateUser)
+  void sendInvitationTest(@User(selector = METHOD) UserJson friend,
+                          @Token String bearerToken) throws Exception {
+    final String friendWillBeAdded = friend.username();
+
+    final UserJson outcomeInvitation = gatewayApiClient.sendInvitation(bearerToken, new FriendJson(
+        friendWillBeAdded
+    ));
+    step("Check that response not null", () ->
+        assertNotNull(outcomeInvitation)
+    );
+
+    step("Check invitation in response", () -> {
+      assertEquals(friendWillBeAdded, outcomeInvitation.username());
+      assertEquals(FriendState.INVITE_SENT, outcomeInvitation.friendState());
+    });
+
+    step("Check that friends request & income invitation present for both users", () ->
+        Assertions.assertAll(
+            () -> assertEquals(
+                FriendState.INVITE_SENT,
+                gatewayApiClient.allUsers(bearerToken, null)
+                    .getFirst()
+                    .friendState(),
+                "Current user should have outcome invitation after adding"),
+            () -> assertEquals(
+                FriendState.INVITE_RECEIVED,
+                userdataApiClient.friends(friendWillBeAdded, null)
+                    .getFirst()
+                    .friendState(),
+                "Target friend should have 1 income invitation"
+            )
+        )
+    );
+  }
 }

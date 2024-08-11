@@ -8,5 +8,5 @@ import java.util.List;
 @Getter
 @Setter
 public class UsersDataGql extends GqlResponse<UsersDataGql> {
-    private List<UserGql> users;
+  private List<UserGql> users;
 }

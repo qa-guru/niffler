@@ -16,66 +16,66 @@ import static guru.qa.niffler.condition.spend.SpendCondition.spends;
 
 public class SpendingTable extends BaseComponent<SpendingTable> {
 
-    private final ElementsCollection spendingButtons = self.$$(".spendings__buttons button");
+  private final ElementsCollection spendingButtons = self.$$(".spendings__buttons button");
 
-    public SpendingTable() {
-        super($(".main-content__section-history"));
-    }
+  public SpendingTable() {
+    super($(".main-content__section-history"));
+  }
 
-    @Step("Click by button {0}")
-    @Nonnull
-    public SpendingTable clickByButton(@Nonnull String buttonText) {
-        spendingButtons.find(Condition.text(buttonText))
-                .scrollIntoView(false)
-                .click();
-        return this;
-    }
+  @Step("Click by button {0}")
+  @Nonnull
+  public SpendingTable clickByButton(@Nonnull String buttonText) {
+    spendingButtons.find(Condition.text(buttonText))
+        .scrollIntoView(false)
+        .click();
+    return this;
+  }
 
-    @Step("Check that table contains data {0}")
-    @Nonnull
-    public SpendingTable checkTableContains(@Nonnull SpendJson... expectedSpends) {
-        self.$$("tbody tr").should(spends(expectedSpends));
-        return this;
-    }
+  @Step("Check that table contains data {0}")
+  @Nonnull
+  public SpendingTable checkTableContains(@Nonnull SpendJson... expectedSpends) {
+    self.$$("tbody tr").should(spends(expectedSpends));
+    return this;
+  }
 
-    public SpendingTable editSpending(int row, SpendJson editedSpending) {
-        SelenideElement rowElement = self.$$("tbody tr").get(row);
-        rowElement.$(".button-icon_type_edit").click();
-        setSpendingAmount(rowElement, editedSpending.amount());
-        setSpendingDescription(rowElement, editedSpending.description());
-        setSpendingCategory(rowElement, editedSpending.category().name());
+  public SpendingTable editSpending(int row, SpendJson editedSpending) {
+    SelenideElement rowElement = self.$$("tbody tr").get(row);
+    rowElement.$(".button-icon_type_edit").click();
+    setSpendingAmount(rowElement, editedSpending.amount());
+    setSpendingDescription(rowElement, editedSpending.description());
+    setSpendingCategory(rowElement, editedSpending.category().name());
 //        setSpendingDate(rowElement, editedSpending.getSpendDate());
-        submitEditSpending(rowElement);
-        return this;
-    }
+    submitEditSpending(rowElement);
+    return this;
+  }
 
-    public SpendingTable deleteSpending() {
-        return this;
-    }
+  public SpendingTable deleteSpending() {
+    return this;
+  }
 
-    private void setSpendingAmount(SelenideElement row, Double amount) {
-        row.$("input[name=amount]").setValue(String.valueOf(amount));
-    }
+  private void setSpendingAmount(SelenideElement row, Double amount) {
+    row.$("input[name=amount]").setValue(String.valueOf(amount));
+  }
 
-    private void setSpendingDescription(SelenideElement row, String description) {
-        row.$("input[name=description]").setValue(String.valueOf(description));
-    }
+  private void setSpendingDescription(SelenideElement row, String description) {
+    row.$("input[name=description]").setValue(String.valueOf(description));
+  }
 
-    private void setSpendingDate(SelenideElement row, Date date) {
-        SelenideElement input = row.$(".react-datepicker-wrapper #editable__input");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        input.clear();
-        input.setValue(dateFormat.format(date));
-        self.click();
-        self.scrollIntoView(false);
-    }
+  private void setSpendingDate(SelenideElement row, Date date) {
+    SelenideElement input = row.$(".react-datepicker-wrapper #editable__input");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    input.clear();
+    input.setValue(dateFormat.format(date));
+    self.click();
+    self.scrollIntoView(false);
+  }
 
-    private void setSpendingCategory(SelenideElement row, String category) {
-        row.$("input[id^='react-select']").scrollIntoView(false).setValue(category);
-        row.$$("div[id^='react-select']").find(exactText(category)).click();
-    }
+  private void setSpendingCategory(SelenideElement row, String category) {
+    row.$("input[id^='react-select']").scrollIntoView(false).setValue(category);
+    row.$$("div[id^='react-select']").find(exactText(category)).click();
+  }
 
-    private void submitEditSpending(SelenideElement row) {
-        row.$(".button-icon_type_submit").click();
-    }
+  private void submitEditSpending(SelenideElement row) {
+    row.$(".button-icon_type_submit").click();
+  }
 }

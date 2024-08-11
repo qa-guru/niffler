@@ -7,6 +7,7 @@ interface TablePaginationInterface {
     onPreviousClick: () => void;
     onNextClick: () => void;
 }
+
 export const TablePagination: FC<TablePaginationInterface> = ({hasNextValues, hasPreviousValues, onPreviousClick, onNextClick}) => {
     return (
         <Box sx={{

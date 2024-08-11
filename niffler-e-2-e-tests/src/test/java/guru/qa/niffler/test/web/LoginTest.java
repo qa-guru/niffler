@@ -20,30 +20,30 @@ import static guru.qa.niffler.utils.ErrorMessage.BAD_CREDENTIALS;
 @DisplayName("[WEB][niffler-frontend]: Авторизация")
 public class LoginTest extends BaseWebTest {
 
-    @Test
-    @AllureId("500001")
-    @DisplayName("WEB: Главная страница должна отображаться после логина новым юзером")
-    @Tag("WEB")
-    @GenerateUser()
-    void mainPageShouldBeDisplayedAfterSuccessLogin(@User(selector = METHOD) UserJson user) {
-        Selenide.open(WelcomePage.URL, WelcomePage.class)
-                .doLogin()
-                .fillLoginPage(user.username(), user.testData().password())
-                .submit(new MainPage())
-                .waitForPageLoaded();
-    }
+  @Test
+  @AllureId("500001")
+  @DisplayName("WEB: Главная страница должна отображаться после логина новым юзером")
+  @Tag("WEB")
+  @GenerateUser()
+  void mainPageShouldBeDisplayedAfterSuccessLogin(@User(selector = METHOD) UserJson user) {
+    Selenide.open(WelcomePage.URL, WelcomePage.class)
+        .doLogin()
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .waitForPageLoaded();
+  }
 
-    @Test
-    @AllureId("500002")
-    @DisplayName("WEB: При неверно введенных логине/пароле пользователь остается неавторизованным")
-    @Tag("WEB")
-    @GenerateUser()
-    void userShouldStayOnLoginPageAfterLoginWithBadCredentials(@User(selector = METHOD) UserJson user) {
-        LoginPage loginPage = Selenide.open(WelcomePage.URL, WelcomePage.class)
-                .doLogin()
-                .fillLoginPage(user.username(), user.testData().password() + "BAD");
+  @Test
+  @AllureId("500002")
+  @DisplayName("WEB: При неверно введенных логине/пароле пользователь остается неавторизованным")
+  @Tag("WEB")
+  @GenerateUser()
+  void userShouldStayOnLoginPageAfterLoginWithBadCredentials(@User(selector = METHOD) UserJson user) {
+    LoginPage loginPage = Selenide.open(WelcomePage.URL, WelcomePage.class)
+        .doLogin()
+        .fillLoginPage(user.username(), user.testData().password() + "BAD");
 
-        loginPage.submit(loginPage)
-                .checkError(BAD_CREDENTIALS.content);
-    }
+    loginPage.submit(loginPage)
+        .checkError(BAD_CREDENTIALS.content);
+  }
 }

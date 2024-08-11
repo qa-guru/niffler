@@ -1,4 +1,4 @@
-import {Avatar, Box, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme} from "@mui/material";
+import {Avatar, Box, Table, TableBody, TableCell, TableRow, Typography, useTheme} from "@mui/material";
 import {User} from "../../types/User";
 import {FC} from "react";
 import {ActionButtons} from "../Table/ActionButtons";
@@ -12,14 +12,31 @@ interface PeopleTableInterface {
 export const PeopleTable: FC<PeopleTableInterface> = ({
                                                           data,
                                                           setData,
-
                                                       }) => {
 
     const theme = useTheme();
 
-    const handleUpdateUserData = (username: string, newFriendState: string) => {
+    const handleUpdateUserData = (username: string, newFriendState: "FRIEND" | "INVITE_SENT" | "INVITE_RECEIVED" | undefined) => {
+        const index = data.findIndex(user => user.username === username);
+        if (index === -1) return data;
 
-    }
+        if(!newFriendState) {
+            if(data.length === 1) {
+                setData([]);
+            } else {
+                setData([
+                    ...data.slice(0, index),
+                    ...data.slice(index + 1)
+                ]);
+            }
+        } else {
+            setData([
+                ...data.slice(0, index),
+                { ...data[index], friendState: newFriendState},
+                ...data.slice(index + 1)
+            ]);
+        }
+    };
 
     return (
         <>
@@ -41,6 +58,7 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
                                     <TableCell sx={{
                                         display: "flex",
                                         alignItems: "center",
+                                        padding: "4px 0",
                                     }}>
                                         <Avatar
                                             sx={{
@@ -56,8 +74,9 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
                                             <Typography variant="body2" component="p" sx={{color: theme.palette.gray_600.main}}>{row.fullname}</Typography>
                                         </Box>
                                     </TableCell>
-                                    <TableCell align="right">
-                                        <ActionButtons username={row.username} friendState={row.friendState}/>
+                                    <TableCell align="right" sx={{padding: "4px 0"}}
+                                    >
+                                        <ActionButtons username={row.username} friendState={row.friendState} handleUpdateUserData={handleUpdateUserData}/>
                                     </TableCell>
                                 </TableRow>
                             );

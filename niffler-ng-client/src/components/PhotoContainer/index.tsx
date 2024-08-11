@@ -8,6 +8,7 @@ interface PhotoContainerInterface {
     data: Photo[];
     onSelectImage: (photo: Photo) => void;
 }
+
 export const PhotoContainer: FC<PhotoContainerInterface> = ({onSelectImage, data}) => {
 
     return (

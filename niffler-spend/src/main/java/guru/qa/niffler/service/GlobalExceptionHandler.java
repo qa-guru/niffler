@@ -18,51 +18,51 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Value("${spring.application.name}")
-    private String appName;
+  @Value("${spring.application.name}")
+  private String appName;
 
-    @ExceptionHandler(TooManyCategoriesException.class)
-    public ResponseEntity<ErrorJson> handleNotAcceptableException(@Nonnull RuntimeException ex,
+  @ExceptionHandler(TooManyCategoriesException.class)
+  public ResponseEntity<ErrorJson> handleNotAcceptableException(@Nonnull RuntimeException ex,
+                                                                @Nonnull HttpServletRequest request) {
+    return withStatus("Bad request", HttpStatus.NOT_ACCEPTABLE, ex, request);
+  }
+
+  @ExceptionHandler(NotUniqCategoryException.class)
+  public ResponseEntity<ErrorJson> handleNotUniqCategoryException(@Nonnull RuntimeException ex,
                                                                   @Nonnull HttpServletRequest request) {
-        return withStatus("Bad request", HttpStatus.NOT_ACCEPTABLE, ex, request);
-    }
+    return withStatus("Bad request", HttpStatus.CONFLICT, ex, request);
+  }
 
-    @ExceptionHandler(NotUniqCategoryException.class)
-    public ResponseEntity<ErrorJson> handleNotUniqCategoryException(@Nonnull RuntimeException ex,
-                                                                    @Nonnull HttpServletRequest request) {
-        return withStatus("Bad request", HttpStatus.CONFLICT, ex, request);
-    }
+  @ExceptionHandler({CategoryNotFoundException.class, SpendNotFoundException.class})
+  public ResponseEntity<ErrorJson> handleNotFoundException(@Nonnull RuntimeException ex,
+                                                           @Nonnull HttpServletRequest request) {
+    return withStatus("Bad request", HttpStatus.NOT_FOUND, ex, request);
+  }
 
-    @ExceptionHandler({CategoryNotFoundException.class, SpendNotFoundException.class})
-    public ResponseEntity<ErrorJson> handleNotFoundException(@Nonnull RuntimeException ex,
-                                                             @Nonnull HttpServletRequest request) {
-        return withStatus("Bad request", HttpStatus.NOT_FOUND, ex, request);
-    }
+  @ExceptionHandler(InvalidIdException.class)
+  public ResponseEntity<ErrorJson> handleInvalidIdException(@Nonnull RuntimeException ex,
+                                                            @Nonnull HttpServletRequest request) {
+    return withStatus("Bad request", HttpStatus.BAD_REQUEST, ex, request);
+  }
 
-    @ExceptionHandler(InvalidIdException.class)
-    public ResponseEntity<ErrorJson> handleInvalidIdException(@Nonnull RuntimeException ex,
-                                                              @Nonnull HttpServletRequest request) {
-        return withStatus("Bad request", HttpStatus.BAD_REQUEST, ex, request);
-    }
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ErrorJson> handleException(@Nonnull Exception ex,
+                                                   @Nonnull HttpServletRequest request) {
+    return withStatus("Internal error", HttpStatus.INTERNAL_SERVER_ERROR, ex, request);
+  }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorJson> handleException(@Nonnull Exception ex,
-                                                     @Nonnull HttpServletRequest request) {
-        return withStatus("Internal error", HttpStatus.INTERNAL_SERVER_ERROR, ex, request);
-    }
-
-    private @Nonnull ResponseEntity<ErrorJson> withStatus(@Nonnull String type,
-                                                          @Nonnull HttpStatus status,
-                                                          @Nonnull Exception ex,
-                                                          @Nonnull HttpServletRequest request) {
-        return ResponseEntity
-                .status(status)
-                .body(new ErrorJson(
-                        appName + ": " + type,
-                        status.getReasonPhrase(),
-                        status.value(),
-                        ex.getMessage(),
-                        request.getRequestURI()
-                ));
-    }
+  private @Nonnull ResponseEntity<ErrorJson> withStatus(@Nonnull String type,
+                                                        @Nonnull HttpStatus status,
+                                                        @Nonnull Exception ex,
+                                                        @Nonnull HttpServletRequest request) {
+    return ResponseEntity
+        .status(status)
+        .body(new ErrorJson(
+            appName + ": " + type,
+            status.getReasonPhrase(),
+            status.value(),
+            ex.getMessage(),
+            request.getRequestURI()
+        ));
+  }
 }

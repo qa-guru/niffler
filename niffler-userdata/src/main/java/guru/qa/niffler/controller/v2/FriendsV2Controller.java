@@ -17,19 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/v2/friends")
 public class FriendsV2Controller {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FriendsV2Controller.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FriendsV2Controller.class);
 
-    private final UserDataService userService;
+  private final UserDataService userService;
 
-    @Autowired
-    public FriendsV2Controller(UserDataService userService) {
-        this.userService = userService;
-    }
+  @Autowired
+  public FriendsV2Controller(UserDataService userService) {
+    this.userService = userService;
+  }
 
-    @GetMapping("/all")
-    public Page<? extends IUserJson> friends(@RequestParam String username,
-                                             @PageableDefault Pageable pageable,
-                                             @RequestParam(required = false) String searchQuery) {
-        return userService.friends(username, pageable, searchQuery);
-    }
+  @GetMapping("/all")
+  public Page<? extends IUserJson> friends(@RequestParam String username,
+                                           @PageableDefault Pageable pageable,
+                                           @RequestParam(required = false) String searchQuery) {
+    return userService.friends(username, pageable, searchQuery);
+  }
 }

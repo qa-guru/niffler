@@ -47,13 +47,13 @@ export const PeoplePage: FC<PeoplePageInterface> = ({activeTab}) => {
                 <Tabs value={activeTab} onChange={handleChangeTab} aria-label="People tabs" role="navigation" textColor="inherit">
                     <Tab
                         component={Link}
-                        label={<Typography variant="h4" component="h2">Friends</Typography>}
+                        label={<Typography variant="h5" component="h2">Friends</Typography>}
                         value="friends"
                         sx={{fontSize: 36, textTransform: "initial", fontWeight: 700}}
                         to={"/people/friends"} />
                     <Tab
                         component={Link}
-                        label={<Typography variant="h4" component="h2">All people</Typography>}
+                        label={<Typography variant="h5" component="h2">All people</Typography>}
                         value="all"
                         sx={{fontSize: 36, textTransform: "initial", fontWeight: 700}}
                         to={"/people/all"}/>

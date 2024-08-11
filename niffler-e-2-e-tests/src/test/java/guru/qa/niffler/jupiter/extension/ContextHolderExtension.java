@@ -9,36 +9,36 @@ import javax.annotation.Nullable;
 
 public class ContextHolderExtension implements BeforeEachCallback, AfterEachCallback {
 
-    @Override
-    public void beforeEach(ExtensionContext context) {
-        Holder.INSTANCE.set(context);
+  @Override
+  public void beforeEach(ExtensionContext context) {
+    Holder.INSTANCE.set(context);
+  }
+
+  @Override
+  public void afterEach(ExtensionContext context) {
+    Holder.INSTANCE.remove();
+  }
+
+  private enum Holder {
+    INSTANCE;
+
+    private final ThreadLocal<ExtensionContext> holder = new ThreadLocal<>();
+
+    public void set(@Nonnull ExtensionContext context) {
+      holder.set(context);
     }
 
-    @Override
-    public void afterEach(ExtensionContext context) {
-        Holder.INSTANCE.remove();
+    @Nullable
+    public ExtensionContext get() {
+      return holder.get();
     }
 
-    private enum Holder {
-        INSTANCE;
-
-        private final ThreadLocal<ExtensionContext> holder = new ThreadLocal<>();
-
-        public void set(@Nonnull ExtensionContext context) {
-            holder.set(context);
-        }
-
-        @Nullable
-        public ExtensionContext get() {
-            return holder.get();
-        }
-
-        public void remove() {
-            holder.remove();
-        }
+    public void remove() {
+      holder.remove();
     }
+  }
 
-    public static ExtensionContext context() {
-        return Holder.INSTANCE.get();
-    }
+  public static ExtensionContext context() {
+    return Holder.INSTANCE.get();
+  }
 }

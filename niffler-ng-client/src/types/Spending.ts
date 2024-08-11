@@ -8,3 +8,7 @@ export interface Spending {
     description: string,
     spendDate: string,
 }
+
+export type TableSpending = Omit<Spending, "currency" | "amount"> & {
+    amount: string,
+};

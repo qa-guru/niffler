@@ -12,6 +12,7 @@ interface PhotoCardInterface {
     photo: Photo;
     onEditClick: (photo: Photo) => void;
 }
+
 export const PhotoCard: FC<PhotoCardInterface> = ({photo, onEditClick}) => {
     const {user} = useContext(SessionContext);
     const snackbar = useSnackBar();

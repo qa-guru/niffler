@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ExtendWith({
-        AllureJunit5.class
+    AllureJunit5.class
 })
 public @interface GrpcTest {
 
