@@ -50,23 +50,21 @@ public class StatService {
                                  @Nullable CurrencyValues filterCurrency,
                                  @Nullable Date dateFrom,
                                  @Nullable Date dateTo) {
-    List<SumByCategoryInfo> result = spendService.getSumByCategories(username, dateFrom, dateTo)
+    List<SumByCategoryInfo> result = new ArrayList<>();
+    for (List<SumByCategoryInfo> delegates : spendService.getSumByCategories(username, dateFrom, dateTo)
         .stream().parallel()
         .filter(sumByCategory -> filterCurrency == null || sumByCategory.currency() == filterCurrency)
         .map(sumByCategory -> mapToUserCurrency(statCurrency, sumByCategory))
         .collect(toCategoriesMap())
-        .values()
-        .stream()
-        .map(delegates -> (SumByCategoryInfo) new SumByCategoryAggregate(delegates))
-        .toList();
+        .values()) {
+      SumByCategoryInfo sumByCategoryInfo = new SumByCategoryAggregate(delegates);
+      result.add(sumByCategoryInfo);
+    }
+    result.sort(Comparator.comparing((SumByCategoryInfo p) -> !p.categoryName().equals("Archived"))
+        .thenComparing(SumByCategoryInfo::sum).reversed());
 
     return new StatisticV2Json(
-        result.stream()
-            .map(SumByCategoryInfo::sum)
-            .map(BigDecimal::valueOf)
-            .reduce(BigDecimal.ZERO, BigDecimal::add)
-            .setScale(2, RoundingMode.HALF_UP)
-            .doubleValue(),
+        getTotalSumm(result),
         statCurrency,
         result
     );
@@ -275,5 +273,14 @@ public class StatService {
     } else {
       return sumByCategory;
     }
+  }
+
+  double getTotalSumm(@Nonnull List<SumByCategoryInfo> result) {
+    return result.stream()
+        .map(SumByCategoryInfo::sum)
+        .map(BigDecimal::valueOf)
+        .reduce(BigDecimal.ZERO, BigDecimal::add)
+        .setScale(2, RoundingMode.HALF_UP)
+        .doubleValue();
   }
 }

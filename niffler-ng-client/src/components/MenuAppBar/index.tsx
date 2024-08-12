@@ -33,7 +33,7 @@ export const MenuAppBar: FC = () => {
         handleClose();
         dialog.showDialog({
             title: "Want to logout?",
-            description: "If you are sure, submit your action",
+            description: "If you are sure, submit your action.",
             onSubmit: () => {
                 authClient.logout({
                     onSuccess: () => {
@@ -44,9 +44,8 @@ export const MenuAppBar: FC = () => {
                     onFailure: () => {},
                 });
             },
-            submitTitle: "Log out"
+            submitTitle: "Log out",
         });
-
     }
 
     return (
@@ -96,34 +95,34 @@ export const MenuAppBar: FC = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem sx={{width: "212px"}} onClick={handleClose}>
+                <MenuItem sx={{width: "212px", padding: 0}} onClick={handleClose}>
                     <Link to={"/profile"} className={"link nav-link"}>
-                        <ListItemIcon>
+                        <ListItemIcon sx={{padding: "8px 12px"}}>
                             <Icon type="userIcon"/>
                         </ListItemIcon>
                         Profile
                     </Link>
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handleClose} sx={{padding: 0}}>
                     <Link to={"/people/friends"} className={"link nav-link"}>
-                        <ListItemIcon>
+                        <ListItemIcon sx={{padding: "8px 12px"}}>
                             <Icon type="friendsIcon"/>
                         </ListItemIcon>
                         Friends
                     </Link>
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handleClose} sx={{padding: 0}}>
                     <Link to={"/people/all"} className={"link nav-link"}>
-                        <ListItemIcon>
+                        <ListItemIcon sx={{padding: "8px 12px"}}>
                             <Icon type="allIcon"/>
                         </ListItemIcon>
                         All People
                     </Link>
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleLogout}>
-                    <ListItemIcon>
+                <MenuItem onClick={handleLogout} sx={{padding: 0}}>
+                    <ListItemIcon sx={{padding: "8px 12px"}}>
                         <Icon type="signOutIcon"/>
                     </ListItemIcon>
                     Sign out

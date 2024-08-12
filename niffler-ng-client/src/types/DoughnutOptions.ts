@@ -19,5 +19,5 @@ export interface DoughnutOptions{
     tooltips: {
         enabled: boolean,
     },
-
+    events: [],
 }

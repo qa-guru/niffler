@@ -2,7 +2,7 @@ import {
     Box,
     Checkbox,
     IconButton,
-    MenuItem,
+    MenuItem, Stack,
     Table,
     TableBody,
     TableCell,
@@ -16,7 +16,7 @@ import {TablePagination} from "../Table/Pagination";
 import {ChangeEvent, FC, useEffect, useState} from "react";
 import {SecondaryButton} from "../Button";
 import {apiClient} from "../../api/apiClient.ts";
-import {convertCurrencyToData, Currency} from "../../types/Currency.ts";
+import {convertCurrencyToData, Currency, CurrencyValue, getCurrencyIcon} from "../../types/Currency.ts";
 import {Icon} from "../Icon";
 import {TableHead} from "../Table/TableHead";
 import {HeadCell} from "../Table/HeadCell";
@@ -30,33 +30,35 @@ import {filterPeriod, FilterPeriodValue} from "../../types/FilterPeriod.ts";
 import {convertFilterPeriod} from "../../utils/dataConverter.ts";
 import {SearchInput} from "../SearchInput";
 import {Loader} from "../Loader";
+import {useDialog} from "../../context/DialogContext.tsx";
+import {usePrevious} from "../../hooks/usePrevious.ts";
 
 
 const headCells: readonly HeadCell[] = [
     {
-        id: 'category',
-        numeric: true,
-        label: 'Category',
+        id: "category",
+        position: "left" ,
+        label: "Category",
     },
     {
-        id: 'amount',
-        numeric: false,
-        label: 'Amount',
+        id: "amount",
+        position: "center" ,
+        label: "Amount",
     },
     {
-        id: 'description',
-        numeric: true,
-        label: 'Description',
+        id: "description",
+        position: "center" ,
+        label: "Description",
     },
     {
-        id: 'date',
-        numeric: false,
-        label: 'Date',
+        id: "date",
+        position: "center" ,
+        label: "Date",
     },
     {
-        id: 'actions',
-        numeric: false,
-        label: '',
+        id: "actions",
+        position: "center" ,
+        label: "",
     }
 ];
 
@@ -76,6 +78,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                                 onDeleteCallback
                                                             }) => {
     const [page, setPage] = useState(0);
+    const prevPage = usePrevious(page);
     const [hasPreviousPage, setHasPreviousPage] = useState(false);
     const [hasLastPage, setHasLastPage] = useState(false);
     const [currencies, setCurrencies] = useState<Currency[]>([]);
@@ -83,19 +86,21 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
     const [selected, setSelected] = useState<string[]>([]);
     const [data, setData] = useState<readonly TableSpending[]>([]);
     const [loading, setLoading] = useState(false);
+    const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
     const theme = useTheme();
     const navigate = useNavigate();
     const snackbar = useSnackBar();
+    const dialog = useDialog();
 
     const loadSpends = (search: string, page: number, period: FilterPeriodValue, filterCurrency: Currency) => {
-        setLoading(true);
+        ((!prevPage && page === 0) || page === prevPage) ? setLoading(true) : setIsButtonLoading(true);
         apiClient.getSpends(
             search, page, {
                 onSuccess: (data) => {
                     const converted = data.content.map(item => ({
                         id: item.id,
                         description: item.description,
-                        amount: `${item.amount} ${item.currency}`,
+                        amount: `${item.amount} ${getCurrencyIcon(item.currency as CurrencyValue)}`,
                         category: item.category,
                         spendDate: convertDate(item.spendDate),
                     }));
@@ -103,10 +108,12 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                     setHasPreviousPage(!data.first);
                     setHasLastPage(!data.last);
                     setLoading(false);
+                    setIsButtonLoading(false);
                 },
                 onFailure: (e) => {
                     setLoading(false);
                     console.error(e.message);
+                    setIsButtonLoading(false);
                 },
             },
             convertFilterPeriod(period),
@@ -161,19 +168,26 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
 
     const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
-
     const onDeleteButtonClick = () => {
-        apiClient.deleteSpends(selected, {
-            onSuccess: () => {
-                snackbar.showSnackBar("Spendings succesfully deleted", "info");
-                onDeleteCallback();
-                loadSpends(search, page, period, selectedCurrency);
-                setSelected([]);
+        dialog.showDialog({
+            title: "Delete spendings?",
+            description: "If you are sure, submit your action.",
+            onSubmit: () => {
+                apiClient.deleteSpends(selected, {
+                    onSuccess: () => {
+                        snackbar.showSnackBar("Spendings succesfully deleted", "info");
+                        onDeleteCallback();
+                        loadSpends(search, page, period, selectedCurrency);
+                        setSelected([]);
+                    },
+                    onFailure: (e) => {
+                        snackbar.showSnackBar("Can not delete spendings", "error");
+                        console.error(e.message);
+                    }
+                });
             },
-            onFailure: (e) => {
-                snackbar.showSnackBar("Can not delete spendings", "error");
-                console.error(e.message);
-            }
+            submitTitle: "Delete",
+            closeTitle: "Cancel"
         });
     }
 
@@ -216,9 +230,10 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                     {currencies?.length > 0 && (
                         <TextField
                             sx={{
-                                margin: "0 8px",
+                                margin: 0,
+                                marginRight: "8px",
                                 padding: 0,
-                                maxWidth: "100px"
+                                maxWidth: "120px"
                             }}
                             id="currency"
                             name="currency"
@@ -231,13 +246,22 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                         >
                             {currencies.map((option) => (
                                 <MenuItem key={option.currency} value={option.currency}>
-                                    {option.currency}
+                                    <Stack sx={{fontSize: 18, display: "inline"}} component="span">
+                                        {getCurrencyIcon(option.currency as CurrencyValue)}
+                                    </Stack>
+                                    &nbsp;&nbsp;
+                                    <Stack sx={{color: theme.palette.gray_600.main, display: "inline"}} component="span">
+                                        {option.currency}
+                                    </Stack>
                                 </MenuItem>
                             ))}
                         </TextField>
                     )}
                 </Box>
                 <SecondaryButton
+                    sx={{
+                        fontWeight: 400
+                    }}
                     type={"button"}
                     startIcon={<Icon type="deleteIcon"/>}
                     onClick={onDeleteButtonClick}
@@ -296,12 +320,13 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                     id={labelId}
                                                     scope="row"
                                                     padding="none"
+                                                    align="left"
                                                 >
                                                     {row.category.name}
                                                 </TableCell>
-                                                <TableCell align="right" padding={"normal"}>{row.amount}</TableCell>
-                                                <TableCell align="left" padding={"normal"}>{row.description}</TableCell>
-                                                <TableCell align="right" padding={"normal"} sx={{minWidth: 110}}>{row.spendDate}</TableCell>
+                                                <TableCell align="center" padding={"normal"}>{row.amount}</TableCell>
+                                                <TableCell align="center" padding={"normal"}>{row.description}</TableCell>
+                                                <TableCell align="center" padding={"normal"} sx={{minWidth: 110}}>{row.spendDate}</TableCell>
                                                 <TableCell align="right" padding={"normal"}>
                                                     <IconButton color="primary" aria-label="Edit spending" onClick={(e) => {
                                                         e.stopPropagation();
@@ -316,6 +341,8 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                 </TableBody>
                             </Table>
                             <TablePagination
+                                isNextButtonLoading={isButtonLoading}
+                                isPreviousButtonLoading={isButtonLoading}
                                 onPreviousClick={() => setPage(page - 1)}
                                 onNextClick={() => setPage(page + 1)}
                                 hasPreviousValues={hasPreviousPage}
@@ -323,7 +350,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                             />
                         </>
                     ) : (
-                        <EmptyTableState title={"There are no spendings yet"}/>
+                        <EmptyTableState title={"There are no spendings"}/>
                     )
             }
 

@@ -1,5 +1,6 @@
 import {Box, IconButton, InputBase, useTheme} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import CrossIcon from "../../assets/icons/ic_cross.svg?react";
 import {FC, FormEvent, useState} from "react";
 
 interface SearchInputInterface {
@@ -34,9 +35,21 @@ export const SearchInput: FC<SearchInputInterface> = ({onSearchSubmit}) => {
                 onChange={(e) => setSearch(e.target.value)}
                 inputProps={{'aria-label': 'search'}}
             />
-            <IconButton type="submit" sx={{p: '10px'}} aria-label="search" color={"primary"}>
-                <SearchIcon/>
-            </IconButton>
+            {
+                search?.length > 0
+                    ?   <IconButton
+                            type="button"
+                            sx={{p: '10px'}}
+                            aria-label="search"
+                            color={"primary"}
+                            onClick={() => setSearch("")}
+                    >
+                                <CrossIcon/>
+                        </IconButton>
+                    :   <IconButton type="submit" sx={{p: '10px'}} aria-label="search" color={"primary"}>
+                            <SearchIcon/>
+                        </IconButton>
+            }
         </Box>
     )
 }

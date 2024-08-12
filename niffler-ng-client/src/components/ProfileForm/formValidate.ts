@@ -1,5 +1,5 @@
-import { IStringIndex } from "../PhotoModal/formValidate";
 import {User} from "../../types/User.ts";
+import {IStringIndex} from "../../types/IStringIndex.ts";
 
 export const MAX_FULLNAME_LENGTH = 50;
 export const MAX_FULLNAME_ERROR = `Fullname length has to be not longer that ${MAX_FULLNAME_LENGTH} symbols`;
@@ -41,8 +41,8 @@ export const profileFormValidate = (formValues: UserFormData): UserFormData => {
         ...newFormValues,
         fullname: {
             ...newFormValues.fullname,
-            error: formValues.fullname.value?.length > MAX_FULLNAME_LENGTH ? true : false,
-            errorMessage: formValues.fullname.value?.length > MAX_FULLNAME_LENGTH  ? MAX_FULLNAME_ERROR : "",
+            error: formValues.fullname?.value?.length > MAX_FULLNAME_LENGTH,
+            errorMessage: formValues.fullname?.value?.length > MAX_FULLNAME_LENGTH  ? MAX_FULLNAME_ERROR : "",
         },
     }
 

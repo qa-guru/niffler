@@ -4,13 +4,14 @@ import {useEffect, useState} from "react";
 import {apiClient} from "../../api/apiClient.ts";
 import {NewCategoryFrom} from "../NewCategoryFrom";
 import {Category} from "../../types/Category.ts";
+import {MAX_CATEGORIES_COUNT} from "../../const/constants.ts";
 
 export const CategorySection = () => {
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [showArchived, setShowArchived] = useState<boolean>(false);
 
-    const isUnarchiveCategoriesEnabled = categories.filter(category => !category.archived).length < 8;
+    const isUnarchiveCategoriesEnabled = categories.filter(category => !category.archived).length < MAX_CATEGORIES_COUNT;
     const fetchCategories = () =>  apiClient.getCategories({
             onSuccess: (res) => setCategories(res),
             onFailure: (e) => {
@@ -45,7 +46,9 @@ export const CategorySection = () => {
                 </Typography>
                 <FormControlLabel control={<Switch  checked={showArchived} onChange={() => setShowArchived(!showArchived)}/>} label="Show archived" />
             </Grid>
-            <NewCategoryFrom refetchCategories={fetchCategories}/>
+            <NewCategoryFrom refetchCategories={fetchCategories} isDisabled={
+                !isUnarchiveCategoriesEnabled}
+            />
             {showArchived
                 ?
                 categories.map((category) => (

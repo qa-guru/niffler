@@ -57,7 +57,12 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         setFormData({
             ...formData,
-            [event.target.name]: {...formData[event.target.name], value: event.target.value},
+            [event.target.name]: {
+                ...formData[event.target.name],
+                value: event.target.value,
+                error: false,
+                errorMessage: "",
+            },
         });
     };
 
@@ -136,7 +141,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                         container
                         spacing={3}
                     >
-                        <Grid item xs={8} sx={{width: "100%"}}>
+                        <Grid item xs={7} sx={{width: "100%"}}>
                             <InputLabel
                                 htmlFor={"amount"}
                                 sx={{
@@ -159,7 +164,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item xs={4} sx={{width: "100%"}}>
+                        <Grid item xs={5} sx={{width: "100%"}}>
                             <InputLabel
                                 htmlFor={"currency"}
                                 sx={{
@@ -183,6 +188,8 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                         Category
                     </InputLabel>
                     <CategorySelect
+                        error={formData.category.error}
+                        helperText={formData.category.errorMessage}
                         selectedCategory={formData.category.value.name}
                         onSelectCategory={(category) => {
                             setFormData(
@@ -193,8 +200,10 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                                         value: {
                                             ...formData.category.value,
                                             name: category
-                                        }
-                                    }
+                                        },
+                                        error: false,
+                                        errorMessage: "",
+                                    },
                                 }
                             );
                         }

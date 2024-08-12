@@ -22,7 +22,8 @@ interface DialogDataInterface {
     title: string,
     description: string,
     onSubmit: () => void,
-    submitTitle: string,
+    submitTitle?: string,
+    closeTitle?: string,
     submitButtonIcon?: ReactElement,
 }
 
@@ -81,7 +82,9 @@ const DialogProvider: FC<DialogContextProps> = ({children}) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions sx={{margin: 2}}>
-                    <Button onClick={handleClose}>Close</Button>
+                    <Button
+                        onClick={handleClose}>{dialogData?.closeTitle ?? "Close"}
+                    </Button>
                     <Button
                         onClick={handleSubmit}
                         color={"primary"}

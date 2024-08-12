@@ -1,7 +1,7 @@
 package guru.qa.niffler.controller.v2;
 
 import guru.qa.niffler.model.IUserJson;
-import guru.qa.niffler.service.UserDataService;
+import guru.qa.niffler.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,10 @@ public class UserV2Controller {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserV2Controller.class);
 
-  private final UserDataService userService;
+  private final UserService userService;
 
   @Autowired
-  public UserV2Controller(UserDataService userService) {
+  public UserV2Controller(UserService userService) {
     this.userService = userService;
   }
 

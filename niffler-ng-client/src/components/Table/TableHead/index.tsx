@@ -31,7 +31,7 @@ export const TableHead: FC<TableHeadProps> = ({headCells, onSelectAllClick, numS
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
-                        align={!headCell.numeric ? 'right' : 'left'}
+                        align={headCell.position}
                         padding={'normal'}
                     >
                             {headCell.label}

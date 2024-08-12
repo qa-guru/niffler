@@ -7,18 +7,21 @@ import {TablePagination} from "../../Table/Pagination";
 import {apiClient} from "../../../api/apiClient.ts";
 import {EmptyTableState} from "../../EmptyUsersState";
 import {Loader} from "../../Loader";
+import {usePrevious} from "../../../hooks/usePrevious.ts";
 
 export const FriendsTable = () => {
     const [page, setPage] = useState(0);
+    const prevPage = usePrevious(page);
     const [hasPreviousPage, setHasPreviousPage] = useState(false);
     const [hasLastPage, setHasLastPage] = useState(false);
     const [search, setSearch] = useState("");
     const [friends, setFriends] = useState<User[]>([]);
     const [invitations, setInvitations] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        setIsLoading(true);
+        ((!prevPage && page === 0) || page === prevPage) ? setIsLoading(true) : setIsButtonLoading(true);
         apiClient.getFriends(search, page, {
             onSuccess: data => {
                 setFriends(data.content.filter(user => user.friendState === "FRIEND"));
@@ -26,10 +29,12 @@ export const FriendsTable = () => {
                 setHasPreviousPage(!data.first);
                 setHasLastPage(!data.last);
                 setIsLoading(false);
+                setIsButtonLoading(false);
             },
             onFailure: (e) => {
                 console.error(e.message);
                 setIsLoading(false);
+                setIsButtonLoading(false);
             },
         })
     }, [search, page]);
@@ -37,6 +42,11 @@ export const FriendsTable = () => {
     const handleInputSearch = (value: string) => {
         setSearch(value);
         setPage(0);
+    }
+
+    const handleUpdateInvitations = (data: User[]) => {
+        setFriends([...friends, ...data.filter(user => user.friendState === "FRIEND")]);
+        setInvitations(data.filter(user => user.friendState === "INVITE_RECEIVED"));
     }
 
     return (
@@ -61,8 +71,7 @@ export const FriendsTable = () => {
                                         requests</Typography>
                                     <PeopleTable
                                         data={invitations}
-                                        setData={setInvitations}
-
+                                        setData={handleUpdateInvitations}
                                     />
                                 </>
                             }
@@ -82,6 +91,8 @@ export const FriendsTable = () => {
                                 onNextClick={() => setPage(page + 1)}
                                 hasPreviousValues={hasPreviousPage}
                                 hasNextValues={hasLastPage}
+                                isNextButtonLoading={isButtonLoading}
+                                isPreviousButtonLoading={isButtonLoading}
                             />
                         </>
                     )

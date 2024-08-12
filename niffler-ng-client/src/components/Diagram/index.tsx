@@ -45,6 +45,7 @@ export const Diagram: FC<DiagramInterface> = ({stat}) => {
     const options: DoughnutOptions = {
         cutout: "75%",
         responsive: true,
+        events: [],
         maintainAspectRatio: false,
         layout: {
             padding: 0

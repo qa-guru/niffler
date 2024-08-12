@@ -60,6 +60,7 @@ public class SpendService {
           spendEntity.setCategory(categoryEntity);
           spendEntity.setAmount(spend.amount());
           spendEntity.setDescription(spend.description());
+          spendEntity.setCurrency(spend.currency());
           return SpendJson.fromEntity(spendRepository.save(spendEntity));
         }
     ).orElseThrow(() -> new SpendNotFoundException(
@@ -110,51 +111,33 @@ public class SpendService {
     );
   }
 
+  @Transactional(readOnly = true)
   @Nonnull
   List<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
                                            @Nullable CurrencyValues filterCurrency,
                                            @Nullable Date dateFrom,
                                            @Nullable Date dateTo) {
-    dateTo = dateTo == null
-        ? new Date()
-        : dateTo;
+    dateFrom = dateFrom == null ? new Date(0) : dateFrom;
+    dateTo = dateTo == null ? new Date() : dateTo;
 
-    List<SpendEntity> spends;
-    if (dateFrom == null) {
-      spends = filterCurrency != null
-          ?
-          spendRepository.findAllByUsernameAndCurrencyAndSpendDateLessThanEqualOrderBySpendDateDesc(
-              username, filterCurrency, dateTo
-          )
-          :
-          spendRepository.findAllByUsernameAndSpendDateLessThanEqualOrderBySpendDateDesc(
-              username, dateTo
-          );
+    if (filterCurrency != null) {
+      return spendRepository.findAllByUsernameAndCurrencyAndSpendDateGreaterThanEqualAndSpendDateLessThanEqualOrderBySpendDateDesc(
+          username, filterCurrency, dateFrom, dateTo
+      );
     } else {
-      spends = filterCurrency != null
-          ?
-          spendRepository.findAllByUsernameAndCurrencyAndSpendDateGreaterThanEqualAndSpendDateLessThanEqualOrderBySpendDateDesc(
-              username, filterCurrency, dateFrom, dateTo
-          )
-          :
-          spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqualOrderBySpendDateDesc(
-              username, dateFrom, dateTo
-          );
+      return spendRepository.findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqualOrderBySpendDateDesc(
+          username, dateFrom, dateTo
+      );
     }
-    return spends;
   }
 
+  @Transactional(readOnly = true)
   @Nonnull
   List<SumByCategoryInfo> getSumByCategories(@Nonnull String username,
                                              @Nullable Date dateFrom,
                                              @Nullable Date dateTo) {
-    dateFrom = dateFrom == null
-        ? new Date(0)
-        : dateFrom;
-
-    dateTo = dateTo == null
-        ? new Date()
-        : dateTo;
+    dateFrom = dateFrom == null ? new Date(0) : dateFrom;
+    dateTo = dateTo == null ? new Date() : dateTo;
 
     List<SumByCategoryInfo> result = new ArrayList<>();
     result.addAll(spendRepository.statisticByArchivedCategory(username, dateFrom, dateTo));
@@ -162,6 +145,7 @@ public class SpendService {
     return result;
   }
 
+  @Transactional(readOnly = true)
   @Nonnull
   Page<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
                                            @Nullable CurrencyValues filterCurrency,

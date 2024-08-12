@@ -26,20 +26,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static guru.qa.niffler.model.FriendState.FRIEND;
 import static guru.qa.niffler.model.FriendState.INVITE_SENT;
 
 @Component
-public class UserDataService {
+public class UserService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UserDataService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
   public static final CurrencyValues DEFAULT_USER_CURRENCY = CurrencyValues.RUB;
   private final UserRepository userRepository;
 
   @Autowired
-  public UserDataService(UserRepository userRepository) {
+  public UserService(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
@@ -88,10 +89,18 @@ public class UserDataService {
   @Transactional(readOnly = true)
   public @Nonnull
   UserJson getCurrentUser(@Nonnull String username) {
-    return UserJson.fromEntity(
-        userRepository.findByUsername(username)
-            .orElse(new UserEntity())
-    );
+    return userRepository.findByUsername(username).map(UserJson::fromEntity)
+        .orElseGet(() -> new UserJson(
+            null,
+            username,
+            null,
+            null,
+            null,
+            DEFAULT_USER_CURRENCY,
+            null,
+            null,
+            null
+        ));
   }
 
   @Transactional(readOnly = true)
@@ -167,7 +176,7 @@ public class UserDataService {
 
     FriendshipEntity invite = currentUser.getFriendshipAddressees()
         .stream()
-        .filter(fe -> fe.getRequester().getUsername().equals(targetUser.getUsername()))
+        .filter(fe -> fe.getRequester().equals(targetUser))
         .findFirst()
         .orElseThrow(() -> new NotFoundException("Can`t find invitation from username: '" + targetUsername + "'"));
 

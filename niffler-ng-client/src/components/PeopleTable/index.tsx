@@ -40,8 +40,7 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
 
     return (
         <>
-            <Table aria-labelledby="tableTitle"
-            >
+            <Table aria-labelledby="tableTitle">
                 {data?.length > 0 && (
                     <TableBody>
                         {data.map((row: User) => {

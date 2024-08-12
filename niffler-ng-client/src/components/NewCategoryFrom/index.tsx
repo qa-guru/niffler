@@ -1,13 +1,14 @@
-import {Grid, TextField} from "@mui/material";
+import {Grid, TextField, Tooltip} from "@mui/material";
 import {FC, FormEvent, useState} from "react";
 import {apiClient} from "../../api/apiClient.ts";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
 
 interface NewCategoryFromProps {
     refetchCategories: () => Promise<void>,
+    isDisabled: boolean
 }
 
-export const NewCategoryFrom: FC<NewCategoryFromProps> = ({refetchCategories}) => {
+export const NewCategoryFrom: FC<NewCategoryFromProps> = ({refetchCategories, isDisabled}) => {
 
     const [newCategory, setNewCategory] = useState<string>("");
     const snackbar = useSnackBar();
@@ -31,17 +32,20 @@ export const NewCategoryFrom: FC<NewCategoryFromProps> = ({refetchCategories}) =
               component="form"
               onSubmit={onSubmit}
         >
-            <TextField
-                id="category"
-                name="category"
-                type="text"
-                value={newCategory}
-                onChange={e => setNewCategory(e.target.value)}
-                error={false}
-                helperText={""}
-                fullWidth
-                placeholder={"Add new category"}
-            />
+            <Tooltip title={isDisabled ? "You've reached maximum available count of active categories" : ""}>
+                <TextField
+                    id="category"
+                    name="category"
+                    type="text"
+                    value={newCategory}
+                    onChange={e => setNewCategory(e.target.value)}
+                    error={false}
+                    helperText={""}
+                    disabled={isDisabled}
+                    fullWidth
+                    placeholder={"Add new category"}
+                />
+            </Tooltip>
         </Grid>
     );
 }

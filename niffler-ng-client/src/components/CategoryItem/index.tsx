@@ -28,7 +28,7 @@ export const CategoryItem: FC<CategoryItemInterface> = ({category, onUpdateCateg
             description: `Do you really want to archive ${category.name}? After this change it won't be available while creating spends`,
             onSubmit: () => {
                 apiClient.editCategory({
-                        ...editValue,
+                        ...category,
                         archived: true,
                     }, {
                         onSuccess: () => {
@@ -52,7 +52,7 @@ export const CategoryItem: FC<CategoryItemInterface> = ({category, onUpdateCateg
             description: `Do you really want to unarchive category ${category.name}?`,
             onSubmit: () => {
                 apiClient.editCategory({
-                        ...editValue,
+                        ...category,
                         archived: false,
                     }, {
                         onSuccess: () => {
@@ -71,7 +71,9 @@ export const CategoryItem: FC<CategoryItemInterface> = ({category, onUpdateCateg
     };
 
     const handleChangeCategoryName = (e: FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
+        console.log(editValue);
+        console.log(category);
         apiClient.editCategory(editValue, {
                 onSuccess: () => {
                     onUpdateCategory();
@@ -108,7 +110,7 @@ export const CategoryItem: FC<CategoryItemInterface> = ({category, onUpdateCateg
                             name="category"
                             type="text"
                             value={editValue.name}
-                            onChange={e => setEditValue({...editValue, name: e.target.value})}
+                            onChange={e => setEditValue({...category, name: e.target.value})}
                             error={false}
                             helperText={""}
                             fullWidth
@@ -116,7 +118,10 @@ export const CategoryItem: FC<CategoryItemInterface> = ({category, onUpdateCateg
                         />
                         <IconButton
                             aria-label="close"
-                            onClick={() => setEdit(false)}
+                            onClick={() => {
+                                setEdit(false);
+                                setEditValue(category);
+                            }}
                             sx={{
                                 position: "absolute",
                                 zIndex: 1000,
@@ -132,9 +137,22 @@ export const CategoryItem: FC<CategoryItemInterface> = ({category, onUpdateCateg
                 : (
 
                     <>
-                        <Chip label={category.name} color={category.archived ? "default" : "primary"}/>
+                        <Chip
+                            label={category.name}
+                            color={category.archived ? "default" : "primary"}
+                            onClick={() => {
+                                if (!category.archived) {
+                                    setEdit(true);
+                                }
+                            }}
+                            tabIndex={category.archived ? -1 : 0}
+                            sx={{
+                                cursor: `${category.archived ? "default" : "pointer"}`
+                            }}
+                        />
                         {category.archived ? (
-                            <Tooltip title={isUnarchiveEnabled ? "Unarchive category" : "You've riched limit of active categories amount. Archive other category to enable this one"}>
+                            <Tooltip
+                                title={isUnarchiveEnabled ? "Unarchive category" : "You've riched limit of active categories amount. Archive other category to enable this one"}>
                                   <span>
                                     <IconButton
                                         color="primary"

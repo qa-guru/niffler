@@ -29,20 +29,20 @@
                     <p class="header__additional">
                         Already have an account? <a class="form__link" th:href="@{|${frontUri}|}">Log in!</a>
                     </p>
-                    <label class="form__label">Username:
+                    <label class="form__label">Username
                         <input class="form__input" type="text" id="username" th:field="*{username}" name="username"
                                placeholder="Type your username" required/>
                         <span class="form__error" th:if="${#fields.hasErrors('username')}"
                               th:errors="*{username}"></span>
                     </label>
-                    <label class="form__label">Password:
+                    <label class="form__label">Password
                         <input class="form__input" type="password" id="password" name="password"
                                th:field="*{password}" placeholder="Type your password" required/>
                         <button type="button" class="form__password-button" id="passwordBtn"></button>
                         <span class="form__error" th:if="${#fields.hasErrors('password')}"
                               th:errors="*{password}"></span>
                     </label>
-                    <label class="form__label">Submit Password:
+                    <label class="form__label">Submit password
                         <input class="form__input" type="password" id="passwordSubmit" name="passwordSubmit"
                                th:field="*{passwordSubmit}" placeholder="Submit your password" required/>
                         <button type="button" class="form__password-button" id="passwordSubmitBtn"></button>

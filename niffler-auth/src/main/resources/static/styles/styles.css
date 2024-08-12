@@ -2,6 +2,15 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: "YoungSerif";
+  src: url("../fonts/YoungSerif-Regular.woff2") format("woff2"),
+  url("../fonts/YoungSerif-Regular.woff") format("woff"),
+  url("../fonts/YoungSerif-Regular.ttf") format("ttf");
+  font-weight: 700;
+  font-style: normal;
+}
+
 body {
   --color-primary: #2941CC;
   --color-secondary: #768c7d;
@@ -41,6 +50,7 @@ body {
 .header {
   margin: 8px 0;
   align-self: flex-start;
+  font-family: "YoungSerif", "serif";
   font-style: normal;
   font-weight: 400;
   font-size: 36px;
@@ -59,6 +69,10 @@ body {
   font-size: 24px;
   font-weight: 700;
   margin-left: 18px;
+}
+
+.logo-section__text {
+  font-family: "YoungSerif", "serif";
 }
 
 .logo-section__logo {

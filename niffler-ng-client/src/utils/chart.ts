@@ -36,7 +36,6 @@ export const htmlLegendPlugin: Plugin = {
         const currency = (chart.config.options as DoughnutOptions).title.currency;
         if(generateLabels) {
              const items = generateLabels(chart);
-
              items.forEach((item: any, index: number) => {
                  const datasetPoint = dataset.data[index];
                  const li = document.createElement('li')
@@ -46,7 +45,7 @@ export const htmlLegendPlugin: Plugin = {
 
                  // Text
                  li.style.color = '#fff'
-                 li.style.margin = '2px'
+                 li.style.margin = '4px 2px'
                  li.style.padding = '4px 12px'
                  li.style.display = 'block'
                  li.style.backgroundColor = item.fillStyle;

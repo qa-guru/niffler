@@ -28,6 +28,8 @@ export const getCurrencyIcon = (currency: CurrencyValue) => {
             return "€";
         case "USD":
             return "$";
+        case "ALL":
+            return "⚖";
         default:
             return "";
     }

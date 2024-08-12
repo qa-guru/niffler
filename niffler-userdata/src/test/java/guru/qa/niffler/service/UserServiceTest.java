@@ -30,9 +30,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserDataServiceTest {
+class UserServiceTest {
 
-  private UserDataService testedObject;
+  private UserService testedObject;
 
   private final UUID mainTestUserUuid = UUID.randomUUID();
   private final String mainTestUserName = "dima";
@@ -99,7 +99,7 @@ class UserDataServiceTest {
     when(userRepository.save(any(UserEntity.class)))
         .thenAnswer(answer -> answer.getArguments()[0]);
 
-    testedObject = new UserDataService(userRepository);
+    testedObject = new UserService(userRepository);
 
     final String photoForTest = photo.isEmpty() ? null : photo;
 
@@ -128,7 +128,7 @@ class UserDataServiceTest {
     when(userRepository.findByUsername(eq(notExistingUser)))
         .thenReturn(Optional.empty());
 
-    testedObject = new UserDataService(userRepository);
+    testedObject = new UserService(userRepository);
 
     final NotFoundException exception = assertThrows(NotFoundException.class,
         () -> testedObject.getRequiredUser(notExistingUser));
@@ -143,7 +143,7 @@ class UserDataServiceTest {
     when(userRepository.findByUsernameNot(eq(mainTestUserName)))
         .thenReturn(getMockUsersMappingFromDb());
 
-    testedObject = new UserDataService(userRepository);
+    testedObject = new UserService(userRepository);
 
     final List<UserJsonBulk> users = testedObject.allUsers(mainTestUserName, null);
     assertEquals(2, users.size());

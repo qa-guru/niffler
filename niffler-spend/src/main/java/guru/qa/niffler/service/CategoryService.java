@@ -4,14 +4,12 @@ import guru.qa.niffler.data.CategoryEntity;
 import guru.qa.niffler.data.repository.CategoryRepository;
 import guru.qa.niffler.ex.CategoryNotFoundException;
 import guru.qa.niffler.ex.InvalidCategoryNameException;
-import guru.qa.niffler.ex.NotUniqCategoryException;
 import guru.qa.niffler.ex.TooManyCategoriesException;
 import guru.qa.niffler.model.CategoryJson;
 import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,11 +103,6 @@ public class CategoryService {
     ce.setName(categoryName);
     ce.setUsername(username);
     ce.setArchived(false);
-    try {
-      return categoryRepository.save(ce);
-    } catch (DataIntegrityViolationException e) {
-      LOG.error("### Error while creating category", e);
-      throw new NotUniqCategoryException("Category with name '" + categoryName + "' already exists");
-    }
+    return categoryRepository.save(ce);
   }
 }

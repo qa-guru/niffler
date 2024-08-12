@@ -1,7 +1,7 @@
 package guru.qa.niffler.soap;
 
 import guru.qa.niffler.model.UserJsonBulk;
-import guru.qa.niffler.service.UserDataService;
+import guru.qa.niffler.service.UserService;
 import niffler_userdata.FriendsPageRequest;
 import niffler_userdata.FriendsRequest;
 import niffler_userdata.RemoveFriendRequest;
@@ -18,10 +18,10 @@ import java.util.List;
 @Endpoint
 public class FriendsEndpoint extends BaseEndpoint {
 
-  private final UserDataService userService;
+  private final UserService userService;
 
   @Autowired
-  public FriendsEndpoint(UserDataService userService) {
+  public FriendsEndpoint(UserService userService) {
     this.userService = userService;
   }
 

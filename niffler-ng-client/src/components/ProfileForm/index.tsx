@@ -27,8 +27,8 @@ export const ProfileForm: FC = () => {
             apiClient.updateProfile({
                 id: user.id,
                 username: user.username,
-                fullname: formData.fullname.value,
-                photo: formData.photo.value,
+                fullname: formData.fullname?.value ?? "",
+                photo: formData.photo?.value ?? "",
             }, {
                 onSuccess: (data) => {
                     updateUser(data);
@@ -63,9 +63,9 @@ export const ProfileForm: FC = () => {
             <Grid item xs={8}>
                 <ImageUpload
                     buttonText="Upload new picture"
-                    file={formData.photo.value}
-                    error={formData.photo.error}
-                    helperText={formData.photo.errorMessage}
+                    file={formData.photo?.value ?? ""}
+                    error={formData.photo?.error ?? false}
+                    helperText={formData.photo?.errorMessage ?? ""}
                     isAvatar
                     onFileUpload={(file) => setFormData({...formData, photo: {
                             ...formData.photo, value: file ?? "",
@@ -115,9 +115,9 @@ export const ProfileForm: FC = () => {
                             id="name"
                             name="name"
                             type="text"
-                            value={formData.fullname.value}
-                            error={formData.fullname.error}
-                            helperText={formData.fullname.errorMessage}
+                            value={formData.fullname?.value ?? ""}
+                            error={formData.fullname?.error ?? false}
+                            helperText={formData.fullname?.errorMessage ?? ""}
                             onChange={(event) => setFormData({...formData, fullname: {
                                 ...formData.fullname, value: event.target.value, error: false, errorMessage: "",
                                 }})}

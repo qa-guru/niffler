@@ -9,9 +9,11 @@ import {MAX_CATEGORIES_COUNT} from "../../const/constants.ts";
 interface CategorySelectInterface {
     selectedCategory: string;
     onSelectCategory: (category: string) => void;
+    error: boolean;
+    helperText: string;
 }
 
-export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory, onSelectCategory}) => {
+export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory, onSelectCategory, error, helperText}) => {
     const snackbar = useSnackBar();
     const [allCategories, setAllCategories] = useState<string[]>([]);
 
@@ -61,6 +63,8 @@ export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory, o
                     value={selectedCategory}
                     onChange={(e) => onSelectCategory(e.target.value)}
                     onKeyDown={handlePressEnter}
+                    error={error}
+                    helperText={helperText}
                     disabled={allCategories.length >= MAX_CATEGORIES_COUNT}
                     placeholder={"Add new category"}
                 />

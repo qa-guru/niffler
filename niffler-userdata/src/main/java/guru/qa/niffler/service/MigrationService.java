@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static guru.qa.niffler.service.UserDataService.DEFAULT_USER_CURRENCY;
+import static guru.qa.niffler.service.UserService.DEFAULT_USER_CURRENCY;
 
 @Component
 public class MigrationService {

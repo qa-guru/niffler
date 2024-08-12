@@ -1,6 +1,6 @@
 package guru.qa.niffler.soap;
 
-import guru.qa.niffler.service.UserDataService;
+import guru.qa.niffler.service.UserService;
 import niffler_userdata.AcceptInvitationRequest;
 import niffler_userdata.DeclineInvitationRequest;
 import niffler_userdata.SendInvitationRequest;
@@ -14,10 +14,10 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 @Endpoint
 public class InvitationsEndpoint extends BaseEndpoint {
 
-  private final UserDataService userService;
+  private final UserService userService;
 
   @Autowired
-  public InvitationsEndpoint(UserDataService userService) {
+  public InvitationsEndpoint(UserService userService) {
     this.userService = userService;
   }
 

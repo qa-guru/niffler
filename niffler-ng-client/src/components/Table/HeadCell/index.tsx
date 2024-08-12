@@ -1,5 +1,5 @@
 export interface HeadCell {
     id: string;
     label: string;
-    numeric: boolean;
+    position: "right" | "left" | "center";
 }

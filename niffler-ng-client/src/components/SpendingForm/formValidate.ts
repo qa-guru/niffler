@@ -1,8 +1,8 @@
-import { IStringIndex } from "../PhotoModal/formValidate";
 import dayjs, {Dayjs} from "dayjs";
 import {CurrencyValue} from "../../types/Currency.ts";
 import {Category} from "../../types/Category.ts";
 import {Spending} from "../../types/Spending.ts";
+import {IStringIndex} from "../../types/IStringIndex.ts";
 
 const MIN_AMOUNT_ERROR = `Amount has to be not less then 0.01`;
 const MAX_DESCRIPTION_LENGTH = 100;

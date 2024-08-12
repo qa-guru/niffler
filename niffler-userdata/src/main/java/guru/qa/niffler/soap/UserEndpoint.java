@@ -2,7 +2,7 @@ package guru.qa.niffler.soap;
 
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.model.UserJsonBulk;
-import guru.qa.niffler.service.UserDataService;
+import guru.qa.niffler.service.UserService;
 import niffler_userdata.AllUsersPageRequest;
 import niffler_userdata.AllUsersRequest;
 import niffler_userdata.CurrentUserRequest;
@@ -21,10 +21,10 @@ import java.util.List;
 @Endpoint
 public class UserEndpoint extends BaseEndpoint {
 
-  private final UserDataService userService;
+  private final UserService userService;
 
   @Autowired
-  public UserEndpoint(UserDataService userService) {
+  public UserEndpoint(UserService userService) {
     this.userService = userService;
   }
 

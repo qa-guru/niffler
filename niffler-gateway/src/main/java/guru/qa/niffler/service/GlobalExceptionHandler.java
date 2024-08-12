@@ -5,6 +5,8 @@ import guru.qa.niffler.ex.NoSoapResponseException;
 import guru.qa.niffler.model.ErrorJson;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+  private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @Value("${spring.application.name}")
   private String appName;
@@ -60,30 +64,34 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   })
   public ResponseEntity<ErrorJson> handleRestTemplateExceptions(@Nonnull HttpClientErrorException ex,
                                                                 @Nonnull HttpServletRequest request) {
+    LOG.warn("### Resolve Exception in @RestControllerAdvice ", ex);
     return handleForwardedException(ex, request);
   }
 
   @ExceptionHandler({NoSoapResponseException.class, NoRestResponseException.class})
   public ResponseEntity<ErrorJson> handleApiNoResponseException(@Nonnull RuntimeException ex,
                                                                 @Nonnull HttpServletRequest request) {
-    return withStatus("Failed to collect data", HttpStatus.SERVICE_UNAVAILABLE, ex, request);
+    LOG.warn("### Resolve Exception in @RestControllerAdvice ", ex);
+    return withStatus("Failed to collect data", HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), request);
   }
 
   @ExceptionHandler(WebServiceIOException.class)
   public ResponseEntity<ErrorJson> handleConnectException(@Nonnull RuntimeException ex,
                                                           @Nonnull HttpServletRequest request) {
-    return withStatus("SOAP connection refused", HttpStatus.SERVICE_UNAVAILABLE, ex, request);
+    LOG.warn("### Resolve Exception in @RestControllerAdvice ", ex);
+    return withStatus("SOAP connection refused", HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), request);
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorJson> handleException(@Nonnull Exception ex,
                                                    @Nonnull HttpServletRequest request) {
-    return withStatus("Internal error", HttpStatus.INTERNAL_SERVER_ERROR, ex, request);
+    LOG.warn("### Resolve Exception in @RestControllerAdvice ", ex);
+    return withStatus("Internal error", HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
   }
 
   private @Nonnull ResponseEntity<ErrorJson> withStatus(@Nonnull String type,
                                                         @Nonnull HttpStatus status,
-                                                        @Nonnull Exception ex,
+                                                        @Nonnull String message,
                                                         @Nonnull HttpServletRequest request) {
     return ResponseEntity
         .status(status)
@@ -91,7 +99,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             appName + ": " + type,
             status.getReasonPhrase(),
             status.value(),
-            ex.getMessage(),
+            message,
             request.getRequestURI()
         ));
   }
