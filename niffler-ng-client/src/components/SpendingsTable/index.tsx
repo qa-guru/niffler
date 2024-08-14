@@ -6,7 +6,7 @@ import {
     TableBody,
     TableCell,
     TableContainer,
-    TableRow,
+    TableRow, Typography,
     useMediaQuery,
     useTheme
 } from "@mui/material";
@@ -26,6 +26,7 @@ import {convertFilterPeriod} from "../../utils/dataConverter.ts";
 import {Loader} from "../Loader";
 import {usePrevious} from "../../hooks/usePrevious.ts";
 import {Toolbar} from "./Toolbar";
+import {useSnackBar} from "../../context/SnackBarContext.tsx";
 
 const headCells: readonly HeadCell[] = [
     {
@@ -83,6 +84,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
+    const snackBar = useSnackBar();
 
     const loadSpends = (search: string, page: number, period: FilterPeriodValue, filterCurrency: Currency) => {
         ((!prevPage && page === 0) || page === prevPage) ? setLoading(true) : setIsButtonLoading(true);
@@ -106,6 +108,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                     setLoading(false);
                     console.error(e.message);
                     setIsButtonLoading(false);
+                    snackBar.showSnackBar(e.message, "error");
                 },
             },
             convertFilterPeriod(period),
@@ -123,7 +126,10 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                     ...data
                 ]);
             },
-            onFailure: (e) => console.error(e.message),
+            onFailure: (e) => {
+                console.error(e.message);
+                snackBar.showSnackBar(e.message, "error");
+            },
         });
     }, []);
 
@@ -247,12 +253,16 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                                 padding="none"
                                                                 align="left"
                                                             >
-                                                                <Stack>{row.category.name}</Stack>
-                                                                <Stack sx={{color: theme.palette.gray_600.main}}>{row.description}</Stack>
+                                                                <Typography component="p" variant={"body1"}>
+                                                                    <Stack>{row.category.name}</Stack>
+                                                                    <Stack sx={{color: theme.palette.gray_600.main}}>{row.description}</Stack>
+                                                                </Typography>
                                                             </TableCell>
                                                             <TableCell align="right" padding={"normal"} sx={{minWidth: 110}}>
-                                                                <Stack>{row.amount}</Stack>
-                                                                <Stack sx={{color: theme.palette.gray_600.main}}>{row.spendDate}</Stack>
+                                                                <Typography component="p" variant={"body1"}>
+                                                                    <Stack>{row.amount}</Stack>
+                                                                    <Stack sx={{color: theme.palette.gray_600.main}}>{row.spendDate}</Stack>
+                                                                </Typography>
                                                             </TableCell>
                                                         </>
                                                         :
@@ -264,18 +274,24 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                                 padding="none"
                                                                 align="left"
                                                             >
-                                                                {row.category.name}
+                                                                <Typography component="p" variant={"body1"}>{row.category.name}</Typography>
                                                             </TableCell>
-                                                            <TableCell align="center"
-                                                                       padding={"normal"}>{row.amount}</TableCell>
+                                                            <TableCell align="center" padding={"normal"}>
+                                                                <Typography component="p" variant={"body1"}> {row.amount}</Typography>
+                                                            </TableCell>
                                                             <TableCell align="center"
                                                                        padding={"normal"}
                                                                        sx={{
                                                                            color: theme.palette.gray_600.main,
                                                                        }}
-                                                            >{row.description}</TableCell>
-                                                            <TableCell align="center" padding={"normal"}
-                                                                       sx={{minWidth: 110, color: theme.palette.gray_600.main}}>{row.spendDate}</TableCell>
+                                                            >
+                                                                <Typography component="p" variant={"body1"}>{row.description}</Typography>
+                                                            </TableCell>
+                                                            <TableCell align="center"
+                                                                       padding={"normal"}
+                                                                       sx={{minWidth: 110, color: theme.palette.gray_600.main}}>
+                                                                <Typography component="p" variant={"body1"}>{row.spendDate}</Typography>
+                                                            </TableCell>
                                                         </>
                                                 }
 

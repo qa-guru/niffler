@@ -4,7 +4,6 @@ import guru.qa.niffler.data.CategoryEntity;
 import guru.qa.niffler.data.SpendEntity;
 import guru.qa.niffler.data.projection.SumByCategoryInfo;
 import guru.qa.niffler.data.repository.SpendRepository;
-import guru.qa.niffler.ex.InvalidIdException;
 import guru.qa.niffler.ex.SpendNotFoundException;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -183,8 +182,8 @@ public class SpendService {
     try {
       spendId = UUID.fromString(id);
     } catch (IllegalArgumentException e) {
-      throw new InvalidIdException(
-          "Invalid id: " + id
+      throw new SpendNotFoundException(
+          "Can`t find spend by given id: " + id
       );
     }
     return spendId;

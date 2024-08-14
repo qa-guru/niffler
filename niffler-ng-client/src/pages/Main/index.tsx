@@ -1,4 +1,4 @@
-import {Box, Container, Grid, Typography, useMediaQuery, useTheme} from "@mui/material";
+import {Box, Grid, Typography, useMediaQuery, useTheme} from "@mui/material";
 import {SpendingsTable} from "../../components/SpendingsTable";
 import {ChangeEvent, useEffect, useState} from "react";
 import {apiClient} from "../../api/apiClient.ts";
@@ -8,6 +8,7 @@ import {convertValueToFilterPeriodValue, FilterPeriodValue} from "../../types/Fi
 import {convertFilterPeriod} from "../../utils/dataConverter.ts";
 import {convertCurrencyToData, Currency} from "../../types/Currency.ts";
 import {Diagram} from "../../components/Diagram";
+import {useSnackBar} from "../../context/SnackBarContext.tsx";
 
 export const MainPage = () => {
     const [period, setPeriod] = useState<FilterPeriodValue>({label: "All time", value: "ALL"});
@@ -17,6 +18,7 @@ export const MainPage = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const shouldRecise = useMediaQuery(theme.breakpoints.down('md'));
+    const snackbar = useSnackBar();
 
     const loadStats = () => {
         const currency = convertCurrencyToData(selectedCurrency);
@@ -24,7 +26,10 @@ export const MainPage = () => {
                 onSuccess: (data) => {
                     setStatistic(data);
                 },
-                onFailure: (e) => console.error(e.message),
+                onFailure: (e) => {
+                    console.error(e.message);
+                    snackbar.showSnackBar(e.message, "error");
+                },
             },
             convertFilterPeriod(period),
             currency,
@@ -44,7 +49,7 @@ export const MainPage = () => {
     }
 
     return (
-        <Container sx={{padding: isMobile ? 0 : "0 16px"}}>
+        <Box sx={{padding: isMobile ? 0 : "0 16px", maxWidth: "1200px", margin: "0 auto"}}>
             <Grid container
                   spacing={isMobile ? 0 : 3}
                   sx={{
@@ -113,6 +118,6 @@ export const MainPage = () => {
                     />
                 </Grid>
             </Grid>
-        </Container>
+        </Box>
     )
 }

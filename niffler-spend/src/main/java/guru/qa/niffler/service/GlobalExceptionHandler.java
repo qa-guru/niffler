@@ -1,7 +1,6 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.ex.CategoryNotFoundException;
-import guru.qa.niffler.ex.InvalidIdException;
 import guru.qa.niffler.ex.SpendNotFoundException;
 import guru.qa.niffler.ex.TooManyCategoriesException;
 import guru.qa.niffler.model.ErrorJson;
@@ -37,13 +36,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                            @Nonnull HttpServletRequest request) {
     LOG.warn("### Resolve Exception in @RestControllerAdvice ", ex);
     return withStatus("Bad request", HttpStatus.NOT_FOUND, ex.getMessage(), request);
-  }
-
-  @ExceptionHandler(InvalidIdException.class)
-  public ResponseEntity<ErrorJson> handleInvalidIdException(@Nonnull RuntimeException ex,
-                                                            @Nonnull HttpServletRequest request) {
-    LOG.warn("### Resolve Exception in @RestControllerAdvice ", ex);
-    return withStatus("Bad request", HttpStatus.BAD_REQUEST, ex.getMessage(), request);
   }
 
   @ExceptionHandler(DataIntegrityViolationException.class)

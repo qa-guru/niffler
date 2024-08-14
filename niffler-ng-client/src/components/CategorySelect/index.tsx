@@ -13,7 +13,7 @@ interface CategorySelectInterface {
     helperText: string;
 }
 
-export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory, onSelectCategory, error, helperText}) => {
+export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory = "", onSelectCategory, error, helperText}) => {
     const snackbar = useSnackBar();
     const [allCategories, setAllCategories] = useState<string[]>([]);
 

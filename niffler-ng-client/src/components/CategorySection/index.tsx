@@ -5,17 +5,20 @@ import {apiClient} from "../../api/apiClient.ts";
 import {NewCategoryFrom} from "../NewCategoryFrom";
 import {Category} from "../../types/Category.ts";
 import {MAX_CATEGORIES_COUNT} from "../../const/constants.ts";
+import {useSnackBar} from "../../context/SnackBarContext.tsx";
 
 export const CategorySection = () => {
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [showArchived, setShowArchived] = useState<boolean>(false);
+    const snackbar = useSnackBar();
 
     const isUnarchiveCategoriesEnabled = categories.filter(category => !category.archived).length < MAX_CATEGORIES_COUNT;
     const fetchCategories = () =>  apiClient.getCategories({
             onSuccess: (res) => setCategories(res),
             onFailure: (e) => {
                 console.error(e.message);
+                snackbar.showSnackBar(e.message, "error");
             },
         }
     );

@@ -8,6 +8,7 @@ import {apiClient} from "../../../api/apiClient.ts";
 import {EmptyTableState} from "../../EmptyUsersState";
 import {Loader} from "../../Loader";
 import {usePrevious} from "../../../hooks/usePrevious.ts";
+import {useSnackBar} from "../../../context/SnackBarContext.tsx";
 
 export const FriendsTable = () => {
     const [page, setPage] = useState(0);
@@ -19,6 +20,7 @@ export const FriendsTable = () => {
     const [invitations, setInvitations] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
+    const snackbar = useSnackBar();
 
     useEffect(() => {
         ((!prevPage && page === 0) || page === prevPage) ? setIsLoading(true) : setIsButtonLoading(true);
@@ -33,6 +35,7 @@ export const FriendsTable = () => {
             },
             onFailure: (e) => {
                 console.error(e.message);
+                snackbar.showSnackBar(e.message, "error");
                 setIsLoading(false);
                 setIsButtonLoading(false);
             },

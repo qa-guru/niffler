@@ -7,29 +7,37 @@ import {Loader} from "../Loader";
 import {apiClient} from "../../api/apiClient.ts";
 import {initLocalStorageAndRedirectToAuth} from "../../api/authUtils.ts";
 import {User} from "../../types/User.ts";
+import {useSnackBar} from "../../context/SnackBarContext.tsx";
 
 
 export const PrivateRoute = () => {
     const [user, setUser] = useState<User>(USER_INITIAL_STATE);
     const [loading, setLoading] = useState<boolean>(true);
+    const snackbar = useSnackBar();
 
     useEffect(() => {
-        apiClient.getSession().then(res => {
-            if (!res.username) {
-                initLocalStorageAndRedirectToAuth();
-            } else {
-                apiClient.getProfile({
-                    onSuccess: (data) => {
-                        setUser(data);
-                        setLoading(false);
-                    },
-                    onFailure: (e) => {
-                        setLoading(false);
-                        console.log(e)
-                    },
-                })
-            }
-        });
+        apiClient.getSession({
+            onSuccess: (res) => {
+                if (!res.username) {
+                    initLocalStorageAndRedirectToAuth();
+                } else {
+                    apiClient.getProfile({
+                        onSuccess: (data) => {
+                            setUser(data);
+                            setLoading(false);
+                        },
+                        onFailure: (e) => {
+                            setLoading(false);
+                            snackbar.showSnackBar(e.message, "error");
+                            console.error(e.message)
+                        },
+                    })
+                }
+        },
+        onFailure: (err) => {
+            console.error(err.message);
+            snackbar.showSnackBar(err.message, "error");
+        }});
     }, []);
 
     return (

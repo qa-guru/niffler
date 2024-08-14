@@ -1,4 +1,4 @@
-import {TableHead as MuiTableHead, TableCell, TableRow, useTheme, Checkbox} from "@mui/material";
+import {TableHead as MuiTableHead, TableCell, TableRow, useTheme, Checkbox, Typography} from "@mui/material";
 import { HeadCell } from "../HeadCell";
 import {ChangeEvent, FC} from "react";
 
@@ -34,7 +34,9 @@ export const TableHead: FC<TableHeadProps> = ({headCells, onSelectAllClick, numS
                         align={headCell.position}
                         padding={'normal'}
                     >
+                        <Typography component="p" variant={"body1"}>
                             {headCell.label}
+                        </Typography>
                     </TableCell>
                 ))}
             </TableRow>

@@ -13,6 +13,7 @@ import {useSnackBar} from "../../context/SnackBarContext.tsx";
 import {convertSpendingToFormData, SPENDING_INITIAL_STATE, spendingFormValidate} from "./formValidate.ts";
 import {formHasErrors} from "../../utils/form.ts";
 import {Loader} from "../Loader";
+import {isApiError} from "../../types/Error.ts";
 
 
 interface SpendingFormInterface {
@@ -43,10 +44,15 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                     }));
                     setIsDataLoading(false);
                 },
-                onFailure: e => {
-                    setFormData(convertSpendingToFormData(SPENDING_INITIAL_STATE));
+                onFailure: (e) => {
+                    snackbar.showSnackBar(e.message, "error");
                     console.error(e.message);
-                    setIsDataLoading(false);
+                    if(isApiError(e) && (e.status === 404)){
+                        navigate("/not-found");
+                    } else {
+                        setFormData(convertSpendingToFormData(SPENDING_INITIAL_STATE));
+                        setIsDataLoading(false);
+                    }
                 },
             });
         } else {
@@ -92,23 +98,27 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
 
     const onEdit = (e: FormEvent) => {
         e.preventDefault();
-        const data = {
-            id,
-            amount: formData.amount.value,
-            description: formData.description.value,
-            currency: formData.currency.value,
-            spendDate: formData.spendDate.value.toISOString(),
-            category: {
-                name: formData.category.value.name,
-            }
-        };
-        apiClient.editSpend(data, {
-            onSuccess: (_data) => {
-                snackbar.showSnackBar(`Spending is edited successfully`, "success");
-                navigate("/main");
-            },
-            onFailure: e => console.log(e),
-        });
+        const validatedData = spendingFormValidate(formData);
+        setFormData(validatedData);
+        if (!formHasErrors(validatedData)) {
+            const data = {
+                id,
+                amount: formData.amount.value,
+                description: formData.description.value,
+                currency: formData.currency.value,
+                spendDate: formData.spendDate.value.toISOString(),
+                category: {
+                    name: formData.category.value.name,
+                }
+            };
+            apiClient.editSpend(data, {
+                onSuccess: (_data) => {
+                    snackbar.showSnackBar(`Spending is edited successfully`, "success");
+                    navigate("/main");
+                },
+                onFailure: e => console.log(e),
+            });
+        }
     };
 
     const onCancel = () => {

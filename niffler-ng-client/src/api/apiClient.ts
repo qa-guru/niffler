@@ -5,6 +5,8 @@ import {RequestHandler} from "../types/RequestHandler.ts";
 import {Currency} from "../types/Currency.ts";
 import {Spending} from "../types/Spending.ts";
 import {Statistic} from "../types/Statistic.ts";
+import {isCommonError, isApiError, ApiError} from "../types/Error.ts";
+import {Session} from "../types/Session.ts";
 
 const BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 const DEFAULT_ABORT_TIMEOUT = 5000;
@@ -16,213 +18,211 @@ interface RequestOptions {
     timeout?: number,
 }
 
+
 export const apiClient = {
-    getSession: async() => {
-        return await makeRequest("/session/current");
+    getSession: async ({onSuccess, onFailure}: RequestHandler<Session>) => {
+        await makeRequest("/session/current", {
+            onSuccess,
+            onFailure,
+        },);
     },
 
-    getProfile: async({onSuccess, onFailure}: RequestHandler<User>) => {
-        try {
-            const result = await makeRequest("/users/current");
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
+    getProfile: async ({onSuccess, onFailure}: RequestHandler<User>) => {
+        await makeRequest("/users/current", {
+            onSuccess,
+            onFailure,
+        });
     },
 
-    updateProfile: async(user: User, {onSuccess, onFailure}: RequestHandler<User>) => {
-        try {
-            const result = await makeRequest("/users/update", {
+    updateProfile: async (user: User, {onSuccess, onFailure}: RequestHandler<User>) => {
+        await makeRequest("/users/update",
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
                 method: "POST",
                 body: JSON.stringify(user),
             });
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
     },
 
-    getCategories: async({ onSuccess, onFailure }: RequestHandler<Category[]>, excludeArchived: boolean = false) => {
-        try {
-            const result = await makeRequest(`/categories/all?excludeArchived=${excludeArchived}`);
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
+    getCategories: async ({onSuccess, onFailure}: RequestHandler<Category[]>, excludeArchived: boolean = false) => {
+        await makeRequest(`/categories/all?excludeArchived=${excludeArchived}`, {
+            onSuccess,
+            onFailure,
+        });
     },
 
     addCategory: async (name: string, {onSuccess, onFailure}: RequestHandler<Category>) => {
-        try {
-            const result = await makeRequest("/categories/add", {
+        await makeRequest("/categories/add",
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
                 method: "POST",
                 body: JSON.stringify({
                     name: name,
                 }),
             });
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
     },
 
     editCategory: async (category: Category, {onSuccess, onFailure}: RequestHandler<Category>) => {
-        try {
-            const result = await makeRequest("/categories/update", {
+        await makeRequest("/categories/update",
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
                 method: "PATCH",
                 body: JSON.stringify(
                     category
                 ),
             });
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
     },
 
-    getCurrencies: async({ onSuccess, onFailure }: RequestHandler<Currency[]>) => {
-        try {
-            const result = await makeRequest("/currencies/all");
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
+    getCurrencies: async ({onSuccess, onFailure}: RequestHandler<Currency[]>) => {
+        await makeRequest("/currencies/all", {
+            onSuccess,
+            onFailure,
+        });
     },
 
-    getSpends: async(searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<Spending>>, filterPeriod: string, filterCurrency: string) => {
-        try {
-            const result = await makeRequest(`/v2/spends/all?page=${page}&searchQuery=${searchQuery}&filterCurrency=${filterCurrency}&filterPeriod=${filterPeriod}`);
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
+    getSpends: async (searchQuery: string, page: number, {
+        onSuccess,
+        onFailure
+    }: RequestHandler<Pageable<Spending>>, filterPeriod: string, filterCurrency: string) => {
+        await makeRequest(
+            `/v2/spends/all?page=${page}&searchQuery=${searchQuery}&filterCurrency=${filterCurrency}&filterPeriod=${filterPeriod}`,
+            {
+                onSuccess,
+                onFailure,
+            },
+        );
     },
 
-    getSpend: async(id: string, { onSuccess, onFailure }: RequestHandler<Spending>) => {
-        try {
-            const result = await makeRequest(`/spends/${id}`);
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
+    getSpend: async (id: string, {onSuccess, onFailure}: RequestHandler<Spending>) => {
+        await makeRequest(`/spends/${id}`, {
+            onSuccess,
+            onFailure,
+        });
     },
 
-    addSpend: async(spending: any, { onSuccess, onFailure }: RequestHandler<Spending> ) => {
-        try {
-            const result = await makeRequest("/spends/add", {
+    addSpend: async (spending: any, {onSuccess, onFailure}: RequestHandler<Spending>) => {
+        await makeRequest("/spends/add",
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
                 method: "POST",
                 body: JSON.stringify(spending),
             });
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
     },
 
-    editSpend: async(spending: any, { onSuccess, onFailure }: RequestHandler<Spending> ) => {
-        try {
-            const result = await makeRequest("/spends/edit", {
+    editSpend: async (spending: any, {onSuccess, onFailure}: RequestHandler<Spending>) => {
+        await makeRequest("/spends/edit",
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
                 method: "PATCH",
                 body: JSON.stringify(spending),
             });
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
     },
 
-    deleteSpends: async(spendIds: string[], { onSuccess, onFailure }: RequestHandler<Spending> ) => {
-        try {
-            const result = await makeRequest(`/spends/remove?ids=${spendIds.join(",")}`, {
+    deleteSpends: async (spendIds: string[], {onSuccess, onFailure}: RequestHandler<Spending>) => {
+        await makeRequest(`/spends/remove?ids=${spendIds.join(",")}`,
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
                 method: "DELETE",
             });
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
     },
 
-    getStat: async({ onSuccess, onFailure }: RequestHandler<Statistic>, filterPeriod: string, currency: string) => {
-        try {
-            const result = await makeRequest(`/v2/stat/total?filterCurrency=${currency}&statCurrency=${currency}&filterPeriod=${filterPeriod}`);
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
+    getStat: async ({onSuccess, onFailure}: RequestHandler<Statistic>, filterPeriod: string, currency: string) => {
+        await makeRequest(`/v2/stat/total?filterCurrency=${currency}&statCurrency=${currency}&filterPeriod=${filterPeriod}`,
+            {
+                onSuccess,
+                onFailure,
+            },);
     },
 
-    getAllPeople: async(searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
-        try {
-            const result = await makeRequest(`/v2/users/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`);
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
+    getAllPeople: async (searchQuery: string, page: number, {onSuccess, onFailure}: RequestHandler<Pageable<User>>) => {
+        await makeRequest(`/v2/users/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`, {
+            onSuccess,
+            onFailure,
+        });
     },
 
-    getFriends: async(searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
-        try {
-            const result = await makeRequest(`/v2/friends/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`);
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
+    getFriends: async (searchQuery: string, page: number, {onSuccess, onFailure}: RequestHandler<Pageable<User>>) => {
+        await makeRequest(`/v2/friends/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`,
+            {
+                onSuccess,
+                onFailure,
+            });
+
     },
 
-    sendInvitation: async(username: string, { onSuccess, onFailure }: RequestHandler<any> ) => {
-        try {
-            const result = await makeRequest("/invitations/send", {
+    sendInvitation: async (username: string, {onSuccess, onFailure}: RequestHandler<User>) => {
+        await makeRequest("/invitations/send",
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
                 method: "POST",
                 body: JSON.stringify({
                     username,
                 }),
             });
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
     },
 
-    acceptInvitation: async(username: string, { onSuccess, onFailure }: RequestHandler<any> ) => {
-        try {
-            const result = await makeRequest("/invitations/accept", {
+    acceptInvitation: async (username: string, {onSuccess, onFailure}: RequestHandler<User>) => {
+        await makeRequest("/invitations/accept",
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
                 method: "POST",
                 body: JSON.stringify({
                     username,
                 }),
             });
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
     },
 
-    declineInvitation: async(username: string, { onSuccess, onFailure }: RequestHandler<any> ) => {
-        try {
-            const result = await makeRequest("/invitations/decline", {
+    declineInvitation: async (username: string, {onSuccess, onFailure}: RequestHandler<User>) => {
+        await makeRequest("/invitations/decline",
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
                 method: "POST",
                 body: JSON.stringify({
                     username,
                 }),
             });
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
     },
 
-    deleteFriend: async(username: string, { onSuccess, onFailure }: RequestHandler<any> ) => {
-        try {
-            const result = await makeRequest(`/friends/remove?username=${username}`, {
+    deleteFriend: async (username: string, {onSuccess, onFailure}: RequestHandler<unknown>) => {
+        await makeRequest(
+            `/friends/remove?username=${username}`,
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
                 method: "DELETE",
             });
-            onSuccess(result);
-        } catch(e: Error) {
-            onFailure(e)
-        }
     },
 }
 
-const makeRequest = async( path: string, options?: RequestOptions) => {
+async function makeRequest<T>(path: string, {onSuccess, onFailure}: RequestHandler<T>, options?: RequestOptions) {
     const url = `${BASE_URL}${path}`;
     const controller = new AbortController();
     const {signal} = controller;
@@ -232,7 +232,7 @@ const makeRequest = async( path: string, options?: RequestOptions) => {
         "Accept": "application/json",
     };
 
-    const config: RequestInit  = {
+    const config: RequestInit = {
         ...options,
         headers: {
             ...baseHeaders,
@@ -242,8 +242,8 @@ const makeRequest = async( path: string, options?: RequestOptions) => {
         signal,
     };
 
-    const token= localStorage.getItem("id_token");
-    if(token) {
+    const token = localStorage.getItem("id_token");
+    if (token) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         config.headers["Authorization"] = `Bearer ${token}`;
@@ -260,23 +260,21 @@ const makeRequest = async( path: string, options?: RequestOptions) => {
             initLocalStorageAndRedirectToAuth();
         }
 
-        if(response.status !== 204 && options?.method !== "DELETE") {
+        if (response.status !== 204 && options?.method !== "DELETE") {
             const data = await response.json();
-            if(!response.ok) {
-                throw new Error(`${data?.detail}`);
+            if (!response.ok) {
+                throw new ApiError(data.detail, data.status);
             }
-            return data;
+            onSuccess(data);
         }
     } catch (error) {
-        console.log(error);
-        if(error.name === "AbortError") {
-            console.error("Request aborted");
-            throw error;
+        if (isCommonError(error)) {
+            onFailure(error);
+        }
+        else if (isApiError(error)) {
+            onFailure(error);
         } else {
-           // error.detail;
-            console.error("API request error");
-            throw error;
+            onFailure(new Error("An unknown error occurred"));
         }
     }
-
 }

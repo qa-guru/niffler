@@ -8,6 +8,7 @@ import {User} from "../../../types/User.ts";
 import {EmptyTableState} from "../../EmptyUsersState";
 import {Loader} from "../../Loader";
 import {usePrevious} from "../../../hooks/usePrevious.ts";
+import {useSnackBar} from "../../../context/SnackBarContext.tsx";
 
 export const AllTable = () => {
     const [page, setPage] = useState(0);
@@ -18,7 +19,7 @@ export const AllTable = () => {
     const [people, setPeople] = useState<User[]>([]);
     const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
+    const snackbar = useSnackBar();
 
     useEffect(() => {
         ((!prevPage && page === 0) || page === prevPage) ? setIsLoading(true) : setIsButtonLoading(true);
@@ -32,6 +33,7 @@ export const AllTable = () => {
             },
             onFailure: e => {
                 console.error(e.message);
+                snackbar.showSnackBar(e.message, "error");
                 setIsLoading(false);
                 setIsButtonLoading(false);
             },

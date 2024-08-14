@@ -11,6 +11,14 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   --color-primary: #2941CC;
   --color-secondary: #768c7d;
@@ -26,7 +34,7 @@ body {
 
   margin: 0;
   padding: 0;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;

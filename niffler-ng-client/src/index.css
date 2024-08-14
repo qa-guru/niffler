@@ -8,8 +8,16 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
-  font-family:  serif;
+  font-family:  Inter, sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -21,6 +29,7 @@ h1, h2, h3, h4, h5, h6 {
 
 body {
   height: 100vh;
+  font-family:  Inter, sans-serif;
 }
 
 #root {
