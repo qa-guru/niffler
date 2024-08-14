@@ -35,16 +35,20 @@ export const CategorySection = () => {
         >
             <Grid item xs={12} sx={{
                 display: "flex",
+                width: "100%",
                 alignItems: "center",
                 justifyContent: "space-between",
             }}>
                 <Typography
                     variant="h5"
                     component="h2"
+                    sx={{
+                        marginRight: 2,
+                    }}
                 >
                     Categories
                 </Typography>
-                <FormControlLabel control={<Switch  checked={showArchived} onChange={() => setShowArchived(!showArchived)}/>} label="Show archived" />
+                <FormControlLabel control={<Switch  checked={showArchived} onChange={() => setShowArchived(!showArchived)}/>} label="Show archived" sx={{textAlign: "end"}} />
             </Grid>
             <NewCategoryFrom refetchCategories={fetchCategories} isDisabled={
                 !isUnarchiveCategoriesEnabled}

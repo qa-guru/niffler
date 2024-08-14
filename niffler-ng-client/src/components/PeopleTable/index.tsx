@@ -1,7 +1,7 @@
 import {Avatar, Box, Table, TableBody, TableCell, TableRow, Typography, useTheme} from "@mui/material";
 import {User} from "../../types/User";
 import {FC} from "react";
-import {ActionButtons} from "../Table/ActionButtons";
+import {ActionButtons} from "./ActionButtons";
 
 
 interface PeopleTableInterface {

@@ -1,4 +1,4 @@
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {PrivateRoute} from "../PrivateRoute";
 import {AuthorizedPage} from "../../pages/Authorized";
 import {MainPage} from "../../pages/Main";
@@ -6,6 +6,7 @@ import {ProfilePage} from "../../pages/ProfilePage";
 import {PeoplePage} from "../../pages/PeoplePage";
 import {FC} from "react";
 import {SpendingPage} from "../../pages/SpendingPage";
+import {NotFoundPage} from "../../pages/NotFoundPage";
 
 export const AppContent: FC = () => {
     return (
@@ -21,7 +22,7 @@ export const AppContent: FC = () => {
                         <Route path="/people/all" element={<PeoplePage activeTab={"all"}/>}/>
                         <Route path="/people/friends" element={<PeoplePage activeTab={"friends"}/>}/>
                     </Route>
-                   <Route path="*" element={<Navigate to="/main"/>}/>
+                   <Route path="*" element={<NotFoundPage/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -34,7 +34,6 @@ export const ImageUpload: FC<ImageUploadInterface> = ({onFileUpload, buttonText,
 
     return (
         <Box
-            className="stylize"
             sx={{
             width: "100%",
             display: "flex",
@@ -50,14 +49,16 @@ export const ImageUpload: FC<ImageUploadInterface> = ({onFileUpload, buttonText,
                 onChange={handleUpload}
             />
             {isAvatar ? (
-                <Box sx={{marginRight: 3}}>
+                <Box sx={{marginRight: 3, alignSelf: "flex-start", marginBottom: 2}}>
                     <Avatar src={file} sx={{width: 128, height: 128}}/>
                 </Box>
             ) : (
                 <Box sx={{
                     marginRight: 3,
+                    alignSelf: "flex-start",
                     width: "128px",
-                    height: "128px"
+                    height: "128px",
+                    marginBottom: 2,
                 }}>
                     {
                         file ? (
@@ -81,13 +82,13 @@ export const ImageUpload: FC<ImageUploadInterface> = ({onFileUpload, buttonText,
                     }
                 </Box>
             )}
-            <label htmlFor="image__input">
+            <label htmlFor="image__input" className="image__input-label">
                 <SecondaryButton
                     variant="contained"
                     color="secondary"
                     component="span"
                     startIcon={<UploadIcon/>}
-                    sx={{marginTop: 1}}>
+                    sx={{marginTop: 1, width: "100%"}}>
                     {buttonText}
                 </SecondaryButton>
             </label>

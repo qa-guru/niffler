@@ -60,7 +60,7 @@ export const ProfileForm: FC = () => {
                     Profile
                 </Typography>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={isMobile ? 10 : 8}>
                 <ImageUpload
                     buttonText="Upload new picture"
                     file={formData.photo?.value ?? ""}
@@ -80,7 +80,7 @@ export const ProfileForm: FC = () => {
                         flexDirection: {xs: "column", sm: "row"}
                     }}
                 >
-                    <Grid item xs={ isMobile ? true : 4} sx={{width: "100%"}}>
+                    <Grid item xs={ isMobile ? true : 4} sx={{width: "100%"}} spacing={0}>
                         <InputLabel
                             htmlFor={"username"}
                             sx={{

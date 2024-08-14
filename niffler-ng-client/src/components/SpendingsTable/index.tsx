@@ -1,23 +1,19 @@
 import {
     Box,
     Checkbox,
-    IconButton,
-    MenuItem, Stack,
+    IconButton, Stack,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableRow,
-    TextField,
-    Toolbar,
+    useMediaQuery,
     useTheme
 } from "@mui/material";
 import {TablePagination} from "../Table/Pagination";
 import {ChangeEvent, FC, useEffect, useState} from "react";
-import {SecondaryButton} from "../Button";
 import {apiClient} from "../../api/apiClient.ts";
 import {convertCurrencyToData, Currency, CurrencyValue, getCurrencyIcon} from "../../types/Currency.ts";
-import {Icon} from "../Icon";
 import {TableHead} from "../Table/TableHead";
 import {HeadCell} from "../Table/HeadCell";
 import {TableSpending} from "../../types/Spending.ts";
@@ -25,39 +21,36 @@ import {convertDate} from "../../utils/date.ts";
 import EditIcon from "../../assets/icons/ic_edit.svg?react";
 import {useNavigate} from "react-router-dom";
 import {EmptyTableState} from "../EmptyUsersState";
-import {useSnackBar} from "../../context/SnackBarContext.tsx";
-import {filterPeriod, FilterPeriodValue} from "../../types/FilterPeriod.ts";
+import {FilterPeriodValue} from "../../types/FilterPeriod.ts";
 import {convertFilterPeriod} from "../../utils/dataConverter.ts";
-import {SearchInput} from "../SearchInput";
 import {Loader} from "../Loader";
-import {useDialog} from "../../context/DialogContext.tsx";
 import {usePrevious} from "../../hooks/usePrevious.ts";
-
+import {Toolbar} from "./Toolbar";
 
 const headCells: readonly HeadCell[] = [
     {
         id: "category",
-        position: "left" ,
+        position: "left",
         label: "Category",
     },
     {
         id: "amount",
-        position: "center" ,
+        position: "center",
         label: "Amount",
     },
     {
         id: "description",
-        position: "center" ,
+        position: "center",
         label: "Description",
     },
     {
         id: "date",
-        position: "center" ,
+        position: "center",
         label: "Date",
     },
     {
         id: "actions",
-        position: "center" ,
+        position: "center",
         label: "",
     }
 ];
@@ -88,9 +81,8 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
     const [loading, setLoading] = useState(false);
     const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const navigate = useNavigate();
-    const snackbar = useSnackBar();
-    const dialog = useDialog();
 
     const loadSpends = (search: string, page: number, period: FilterPeriodValue, filterCurrency: Currency) => {
         ((!prevPage && page === 0) || page === prevPage) ? setLoading(true) : setIsButtonLoading(true);
@@ -168,108 +160,34 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
 
     const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
-    const onDeleteButtonClick = () => {
-        dialog.showDialog({
-            title: "Delete spendings?",
-            description: "If you are sure, submit your action.",
-            onSubmit: () => {
-                apiClient.deleteSpends(selected, {
-                    onSuccess: () => {
-                        snackbar.showSnackBar("Spendings succesfully deleted", "info");
-                        onDeleteCallback();
-                        loadSpends(search, page, period, selectedCurrency);
-                        setSelected([]);
-                    },
-                    onFailure: (e) => {
-                        snackbar.showSnackBar("Can not delete spendings", "error");
-                        console.error(e.message);
-                    }
-                });
-            },
-            submitTitle: "Delete",
-            closeTitle: "Cancel"
-        });
-    }
-
     const handleInputSearch = (value: string) => {
         setSearch(value);
         setPage(0);
     }
 
+    const onDelete = () => {
+        onDeleteCallback();
+        loadSpends(search, page, period, selectedCurrency);
+        setSelected([]);
+    }
 
     return (
         <TableContainer sx={{
             maxWidth: 900,
             margin: "0 auto",
         }}>
-            <Toolbar>
-                <Box sx={{display: "flex", width: "100%"}}>
-                    <SearchInput onSearchSubmit={handleInputSearch}/>
-                    <TextField
-                        sx={{
-                            margin: "0 8px",
-                            padding: 0,
-                            maxWidth: "140px",
-                            border: "none",
-                        }}
-                        id="period"
-                        name="period"
-                        type="text"
-                        select
-                        value={period.value}
-                        onChange={e => handleChangePeriod(e)}
-                        error={false}
-                        fullWidth
-                    >
-                        {filterPeriod.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                    {currencies?.length > 0 && (
-                        <TextField
-                            sx={{
-                                margin: 0,
-                                marginRight: "8px",
-                                padding: 0,
-                                maxWidth: "120px"
-                            }}
-                            id="currency"
-                            name="currency"
-                            type="text"
-                            select
-                            error={false}
-                            value={selectedCurrency.currency}
-                            onChange={handleChangeCurrency}
-                            fullWidth
-                        >
-                            {currencies.map((option) => (
-                                <MenuItem key={option.currency} value={option.currency}>
-                                    <Stack sx={{fontSize: 18, display: "inline"}} component="span">
-                                        {getCurrencyIcon(option.currency as CurrencyValue)}
-                                    </Stack>
-                                    &nbsp;&nbsp;
-                                    <Stack sx={{color: theme.palette.gray_600.main, display: "inline"}} component="span">
-                                        {option.currency}
-                                    </Stack>
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    )}
-                </Box>
-                <SecondaryButton
-                    sx={{
-                        fontWeight: 400
-                    }}
-                    type={"button"}
-                    startIcon={<Icon type="deleteIcon"/>}
-                    onClick={onDeleteButtonClick}
-                    disabled={selected.length === 0}
-                >
-                    Delete
-                </SecondaryButton>
-            </Toolbar>
+
+            <Toolbar
+                handleInputSearch={handleInputSearch}
+                period={period}
+                selectedCurrency={selectedCurrency}
+                handleChangeCurrency={handleChangeCurrency}
+                handleChangePeriod={handleChangePeriod}
+                selectedSpendIds={selected}
+                currencies={currencies}
+                onDeleteCallback={onDelete}
+            />
+
             {
                 loading ?
                     (
@@ -285,13 +203,16 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                             <Table
                                 aria-labelledby="tableTitle"
                             >
-                                <TableHead
-                                    headCells={headCells}
-                                    onSelectAllClick={handleSelectAllClick}
-                                    numSelected={selected.length}
-                                    rowCount={data.length}/>
+                                {!isMobile &&
+                                    <TableHead
+                                        headCells={headCells}
+                                        onSelectAllClick={handleSelectAllClick}
+                                        numSelected={selected.length}
+                                        rowCount={data.length}/>
+                                }
                                 <TableBody>
-                                    {data.map((row) => {
+                                    {
+                                        data.map((row) => {
                                         const isItemSelected = isSelected(row.id);
                                         const labelId = `enhanced-table-checkbox-${row.id}`;
 
@@ -315,18 +236,50 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                         }}
                                                     />
                                                 </TableCell>
-                                                <TableCell
-                                                    component="th"
-                                                    id={labelId}
-                                                    scope="row"
-                                                    padding="none"
-                                                    align="left"
-                                                >
-                                                    {row.category.name}
-                                                </TableCell>
-                                                <TableCell align="center" padding={"normal"}>{row.amount}</TableCell>
-                                                <TableCell align="center" padding={"normal"}>{row.description}</TableCell>
-                                                <TableCell align="center" padding={"normal"} sx={{minWidth: 110}}>{row.spendDate}</TableCell>
+                                                {
+                                                    isMobile
+                                                        ?
+                                                        <>
+                                                            <TableCell
+                                                                component="th"
+                                                                id={labelId}
+                                                                scope="row"
+                                                                padding="none"
+                                                                align="left"
+                                                            >
+                                                                <Stack>{row.category.name}</Stack>
+                                                                <Stack sx={{color: theme.palette.gray_600.main}}>{row.description}</Stack>
+                                                            </TableCell>
+                                                            <TableCell align="right" padding={"normal"} sx={{minWidth: 110}}>
+                                                                <Stack>{row.amount}</Stack>
+                                                                <Stack sx={{color: theme.palette.gray_600.main}}>{row.spendDate}</Stack>
+                                                            </TableCell>
+                                                        </>
+                                                        :
+                                                        <>
+                                                            <TableCell
+                                                                component="th"
+                                                                id={labelId}
+                                                                scope="row"
+                                                                padding="none"
+                                                                align="left"
+                                                            >
+                                                                {row.category.name}
+                                                            </TableCell>
+                                                            <TableCell align="center"
+                                                                       padding={"normal"}>{row.amount}</TableCell>
+                                                            <TableCell align="center"
+                                                                       padding={"normal"}
+                                                                       sx={{
+                                                                           color: theme.palette.gray_600.main,
+                                                                       }}
+                                                            >{row.description}</TableCell>
+                                                            <TableCell align="center" padding={"normal"}
+                                                                       sx={{minWidth: 110, color: theme.palette.gray_600.main}}>{row.spendDate}</TableCell>
+                                                        </>
+                                                }
+
+
                                                 <TableCell align="right" padding={"normal"}>
                                                     <IconButton color="primary" aria-label="Edit spending" onClick={(e) => {
                                                         e.stopPropagation();
@@ -353,8 +306,6 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                         <EmptyTableState title={"There are no spendings"}/>
                     )
             }
-
-
         </TableContainer>
     )
 }

@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {PeopleTable} from ".."
 import {TableToolbar} from "../../Table/TableToolbar";
-import {TableContainer} from "@mui/material";
+import {Box, TableContainer} from "@mui/material";
 import {TablePagination} from "../../Table/Pagination";
 import {apiClient} from "../../../api/apiClient.ts";
 import {User} from "../../../types/User.ts";
@@ -46,12 +46,14 @@ export const AllTable = () => {
 
     return (
         <TableContainer sx={{
-            width: 700,
+            maxWidth: 700,
             margin: "0 auto",
             position: "relative",
             minHeight: 200,
         }}>
-            <TableToolbar onSearchSubmit={handleInputSearch}/>
+            <Box sx={{marginBottom: 2, marginTop: 1}}>
+                <TableToolbar onSearchSubmit={handleInputSearch}/>
+            </Box>
             {isLoading
                 ? <Loader/>
                 : people.length > 0 ?

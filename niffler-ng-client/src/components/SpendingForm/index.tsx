@@ -133,7 +133,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                         variant="h5"
                         component="h2"
                     >
-                        Add new spending
+                        {isEdit ? "Edit spending" : "Add new spending"}
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>

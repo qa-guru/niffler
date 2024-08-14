@@ -1,4 +1,4 @@
-## **Технологии, использованные в Niffler**
+## **Технологии, использованные в Niffler 2.0**
 
 - [Spring Authorization Server](https://spring.io/projects/spring-authorization-server)
 - [Spring OAuth 2.0 Resource Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html)
@@ -25,7 +25,7 @@
 - [Java 21](https://adoptium.net/en-GB/temurin/releases/)
 - [Gradle 8.6](https://docs.gradle.org/8.6/release-notes.html)
 - [GHA](https://docs.github.com/en/actions)
-- And much more:)
+- И многие другие
 
 Рекомендуемые материалы к просмотру (прочтению):
 
@@ -43,7 +43,7 @@
 - [(Hopefully) the final article about equals and hashCode for JPA entities with DB-generated IDs](https://jpa-buddy.com/blog/hopefully-the-final-article-about-equals-and-hashcode-for-jpa-entities-with-db-generated-ids/)
 -
 
-**Схема проекта Niffler**
+**Схема проекта Niffler 2.0**
 
 <img src="niffler-diagram.png" width="600">
 
@@ -310,6 +310,18 @@ Build to Docker daemon failed, perhaps you should make sure your credentials for
 Если вы не можете подключиться к БД в docker, указывая верные login и password, то возможно у вас поднята другая база на том же порту 5432 .
 Это известная проблема, что Postgres в docker может стартануть при зянятом порту 5432, надо убедиться что у вас не поднят никакой другой Postgres на этом порту.
 
+Если вы используете Windows и контейнер с БД не стартует с ошибкой в логе:
+```
+server started
+/usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/init-database.sh
+/usr/local/bin/docker-entrypoint.sh: /docker-entrypoint-initdb.d/init-database.sh: /bin/bash^M: bad interpreter: No such file or directory
+```
+То необходимо выполнить следующие команды в каталоге /postgres :
+
+```
+sed -i -e 's/\r$//' init-database.sh
+chmod +x init-database.sh
+```
 # Создание своего docker repository для форка Niffler и сборка своих докер контейнеров
 
 #### 1. Войти в свою УЗ на https://hub.docker.com/ и последовательно создать публичные репозитории

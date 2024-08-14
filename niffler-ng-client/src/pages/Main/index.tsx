@@ -1,4 +1,4 @@
-import {Box, Container, Grid, Typography} from "@mui/material";
+import {Box, Container, Grid, Typography, useMediaQuery, useTheme} from "@mui/material";
 import {SpendingsTable} from "../../components/SpendingsTable";
 import {ChangeEvent, useEffect, useState} from "react";
 import {apiClient} from "../../api/apiClient.ts";
@@ -14,6 +14,9 @@ export const MainPage = () => {
     const [stat, setStatistic] = useState<Statistic>(STAT_INITIAL_STATE);
     const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
         {currency: "ALL"});
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const shouldRecise = useMediaQuery(theme.breakpoints.down('md'));
 
     const loadStats = () => {
         const currency = convertCurrencyToData(selectedCurrency);
@@ -41,14 +44,22 @@ export const MainPage = () => {
     }
 
     return (
-        <Container>
+        <Container sx={{padding: isMobile ? 0 : "0 16px"}}>
             <Grid container
-                  spacing={2}
+                  spacing={isMobile ? 0 : 3}
                   sx={{
-                      margin: "40px auto",
+                      margin: isMobile ? "22px auto" : "40px auto",
                       width: "100%",
+                      padding: isMobile ? 0 : "0 16px",
+
                   }}>
-                <Grid item xs={3}>
+                <Grid
+                    item
+                    xs={isMobile ? 12 : shouldRecise ? 5 : 3}
+                    sx={{
+                        padding: isMobile ? 0 : "0 16px",
+                    }}
+                >
                     <Typography
                         variant="h5"
                         component="h2"
@@ -59,20 +70,31 @@ export const MainPage = () => {
                         Statistics
                     </Typography>
                     <Box sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        width: 220,
-                        height: 220,
+                        display: isMobile ? "flex": "block",
                     }}>
-                        <Diagram stat={stat}/>
+                        <Box sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            width: isMobile ? 150 : 220,
+                            height: isMobile ? 150 : 220,
+                        }}>
+                            <Diagram stat={stat}/>
+                        </Box>
+                        <Box id="legend-container" sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}>
+                        </Box>
                     </Box>
-                    <Box id="legend-container" sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }}></Box>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid
+                    item
+                    xs={isMobile ? 12 : shouldRecise ? 7 : 9}
+                    sx={{
+                          padding: isMobile ? 0 : "0 16px",
+                      }}
+                >
                     <Typography
                         variant="h5"
                         component="h2"
