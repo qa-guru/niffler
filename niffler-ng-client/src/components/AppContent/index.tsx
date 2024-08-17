@@ -14,6 +14,7 @@ export const AppContent: FC = () => {
             <Routes>
                 <Route path="/authorized" element={<AuthorizedPage/>}/>
                 <Route element={<PrivateRoute/>}>
+                    <Route path="/" element={<MainPage/>}/>
                     <Route path="/main" element={<MainPage/>}/>
                     <Route path="/profile" element={<ProfilePage/>}/>
                     <Route path="/spending" element={<SpendingPage/>}/>

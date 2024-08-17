@@ -84,12 +84,15 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
           Selenide.open(CFG.frontUrl());
           Selenide.localStorage().setItem("id_token", getToken(context));
           WebDriverRunner.getWebDriver().manage().addCookie(getJsessionIdCookie());
+          Selenide.refresh();
           Selenide.open(MainPage.URL, MainPage.class)
               .waitForPageLoaded();
         }
-      } catch (Exception e) {
+      } catch (Throwable e) {
         BrowserExtension.doScreen();
-        throw e;
+        Selenide.refresh();
+        Selenide.open(MainPage.URL, MainPage.class) // TODO just try to retry
+            .waitForPageLoaded();
       } finally {
         ThreadLocalCookieStore.INSTANCE.removeAll();
       }
