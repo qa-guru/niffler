@@ -29,8 +29,8 @@ public class MainPage extends BasePage<MainPage> {
   @Override
   public MainPage waitForPageLoaded() {
     header.getSelf().should(visible).shouldHave(text("Niffler"));
-    spendingTable.getSelf().should(visible).shouldHave(text("History of Spendings"));
     statComponent.getSelf().should(visible).shouldHave(text("Statistics"));
+    spendingTable.getSelf().should(visible).shouldHave(text("History of Spendings"));
     return this;
   }
 }

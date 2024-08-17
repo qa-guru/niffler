@@ -32,6 +32,6 @@ fi
 
 bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
 
-docker pull selenoid/vnc_chrome:125.0
+docker pull selenoid/vnc_chrome:127.0
 docker compose -f docker-compose.test.yml up -d
 docker ps -a

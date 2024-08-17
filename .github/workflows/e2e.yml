@@ -32,7 +32,7 @@ jobs:
           : # build backends with profile `docker`, only for testing
           bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test || exit 1
           : # pull browser (see browsers.json)        
-          docker pull selenoid/vnc_chrome:125.0
+          docker pull selenoid/vnc_chrome:127.0
           : # run e2e tests
           docker compose -f docker-compose.test.yml up -d
           docker ps -a

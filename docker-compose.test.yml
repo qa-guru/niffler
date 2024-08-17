@@ -128,7 +128,7 @@ services:
 
   selenoid:
     container_name: selenoid
-    image: aerokube/selenoid:1.11.2
+    image: aerokube/selenoid:1.11.3
     platform: linux/${ARCH}
     volumes:
       - ./selenoid:/etc/selenoid
@@ -174,7 +174,7 @@ services:
 
   allure:
     container_name: allure
-    image: frankescobar/allure-docker-service:2.21.0
+    image: frankescobar/allure-docker-service:2.27.0
     depends_on:
       - niffler-e-2-e
     environment:

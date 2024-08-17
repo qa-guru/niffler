@@ -14,6 +14,7 @@ public class LocalConfig implements Config {
   static {
     Configuration.browserSize = "1980x1024";
     Configuration.browser = "chrome";
+    Configuration.pageLoadStrategy = "eager";
     Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
   }
 
