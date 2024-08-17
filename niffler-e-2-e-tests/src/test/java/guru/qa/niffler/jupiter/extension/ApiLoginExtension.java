@@ -78,13 +78,20 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
       }
       setCodeVerifier(context, OauthUtils.codeVerifier());
       setCodeChallenge(context, OauthUtils.codeChallenge(getCodeVerifier(context)));
-      authClient.login(context, userToLogin.username(), userToLogin.testData().password());
-
-      if (setUpBrowser) {
-        Selenide.open(CFG.frontUrl());
-        Selenide.localStorage().setItem("id_token", getToken(context));
-        WebDriverRunner.getWebDriver().manage().addCookie(getJsessionIdCookie());
-        Selenide.open(CFG.frontUrl(), MainPage.class).waitForPageLoaded();
+      try {
+        authClient.login(context, userToLogin.username(), userToLogin.testData().password());
+        if (setUpBrowser) {
+          Selenide.open(CFG.frontUrl());
+          Selenide.localStorage().setItem("id_token", getToken(context));
+          WebDriverRunner.getWebDriver().manage().addCookie(getJsessionIdCookie());
+          Selenide.open(MainPage.URL, MainPage.class)
+              .waitForPageLoaded();
+        }
+      } catch (Exception e) {
+        BrowserExtension.doScreen();
+        throw e;
+      } finally {
+        ThreadLocalCookieStore.INSTANCE.removeAll();
       }
     }
   }

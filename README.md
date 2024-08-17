@@ -387,7 +387,7 @@ User-MacBook-Pro  niffler % bash docker-compose-e2e.sh gql
 
 #### 3. Selenoid UI доступен по адресу: http://localhost:9090/
 
-#### 4. Allure доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler/reports/latest/index.html
+#### 4. Allure доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
 
 #### 5. OpenAPI (Swagger) доступен по адресу: http://localhost:8090/swagger-ui/index.html
 

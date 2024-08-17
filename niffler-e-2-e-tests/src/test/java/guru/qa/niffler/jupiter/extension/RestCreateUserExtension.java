@@ -37,8 +37,11 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
   @Nonnull
   protected UserJson createUser(@Nonnull String username,
                                 @Nonnull String password) throws Exception {
-    authClient.register(username, password);
-    ThreadLocalCookieStore.INSTANCE.removeAll();
+    try {
+      authClient.register(username, password);
+    } finally {
+      ThreadLocalCookieStore.INSTANCE.removeAll();
+    }
     UserJson currentUser = waitWhileUserToBeConsumed(username, 10000L);
     return currentUser.addTestData(new TestData(password));
   }

@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.kafka;
 
 import guru.qa.niffler.api.AuthApiClient;
+import guru.qa.niffler.api.service.ThreadLocalCookieStore;
 import guru.qa.niffler.kafka.KafkaConsumer;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.utils.DataUtils;
@@ -28,7 +29,12 @@ public class AuthRegistrationKafkaTest extends BaseKafkaTest {
     final String username = DataUtils.generateRandomUsername();
     final String password = DataUtils.generateRandomPassword();
 
-    authClient.register(username, password);
+    try {
+      authClient.register(username, password);
+    } finally {
+      ThreadLocalCookieStore.INSTANCE.removeAll();
+    }
+
     final UserJson messageFromKafka = KafkaConsumer.getMessage(username, 10000L);
 
     step("Check that message from kafka exist", () ->

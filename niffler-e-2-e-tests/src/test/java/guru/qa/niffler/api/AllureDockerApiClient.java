@@ -20,6 +20,17 @@ public class AllureDockerApiClient extends RestClient {
     this.allureDockerApi = retrofit.create(AllureDockerApi.class);
   }
 
+  public void clean(String projectId) throws IOException {
+    allureDockerApi.cleanResults(projectId).execute();
+  }
+
+  public void generateReport(String projectId,
+                             String executionName,
+                             String executionFrom,
+                             String executionType) throws IOException {
+    allureDockerApi.generateReport(projectId, executionName, executionFrom, executionType).execute();
+  }
+
   public void sendResultsToAllure(String projectId, AllureResults allureResults) throws IOException {
     int code = allureDockerApi.uploadResults(
         projectId,

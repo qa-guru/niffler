@@ -28,6 +28,9 @@ jobs:
           FRONT: niffler-ng-client
           ALLURE_DOCKER_API: ${{ secrets.ALLURE_DOCKER_API }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          HEAD_COMMIT_MESSAGE: ${{ github.event.pull_request.head.sha || github.sha }}
+          EXECUTION_TYPE: github
         run: |
           : # build backends with profile `docker`, only for testing
           bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test || exit 1

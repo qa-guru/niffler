@@ -3,6 +3,8 @@ package guru.qa.niffler.jupiter.extension;
 import guru.qa.niffler.api.AllureDockerApiClient;
 import guru.qa.niffler.model.allure.AllureResults;
 import guru.qa.niffler.model.allure.DecodedAllureFile;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,15 @@ public class AllureDockerExtension implements SuiteExtension {
   private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
 
   @Override
+  @SneakyThrows
+  public void beforeSuite(ExtensionContext context) {
+    if ("docker".equals(System.getProperty("test.env"))) {
+      allureDockerApiClient.createProjectIfNotExist(projectId);
+      allureDockerApiClient.clean(projectId);
+    }
+  }
+
+  @Override
   public void afterSuite() {
     if ("docker".equals(System.getProperty("test.env"))) {
       try (Stream<Path> paths = Files.walk(Path.of(allureResultsDirectory))) {
@@ -47,6 +58,12 @@ public class AllureDockerExtension implements SuiteExtension {
             new AllureResults(
                 filesToSend
             )
+        );
+        allureDockerApiClient.generateReport(
+            projectId,
+            System.getenv("HEAD_COMMIT_MESSAGE"),
+            System.getenv("BUILD_URL"),
+            System.getenv("EXECUTION_TYPE")
         );
       } catch (IOException e) {
         throw new RuntimeException(e);

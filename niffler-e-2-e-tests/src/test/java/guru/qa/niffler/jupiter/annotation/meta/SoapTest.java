@@ -1,6 +1,5 @@
 package guru.qa.niffler.jupiter.annotation.meta;
 
-import guru.qa.niffler.jupiter.extension.ClearCookiesExtension;
 import guru.qa.niffler.jupiter.extension.DatabaseCreateUserExtension;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +13,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @ExtendWith({
     DatabaseCreateUserExtension.class,
-    ClearCookiesExtension.class,
     AllureJunit5.class
 })
 public @interface SoapTest {

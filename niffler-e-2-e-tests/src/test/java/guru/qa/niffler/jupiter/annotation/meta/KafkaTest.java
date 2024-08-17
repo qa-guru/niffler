@@ -1,6 +1,5 @@
 package guru.qa.niffler.jupiter.annotation.meta;
 
-import guru.qa.niffler.jupiter.extension.ClearCookiesExtension;
 import guru.qa.niffler.jupiter.extension.DatabaseCreateUserExtension;
 import guru.qa.niffler.jupiter.extension.KafkaExtension;
 import io.qameta.allure.junit5.AllureJunit5;
@@ -16,7 +15,6 @@ import java.lang.annotation.Target;
 @ExtendWith({
     KafkaExtension.class,
     DatabaseCreateUserExtension.class,
-    ClearCookiesExtension.class,
     AllureJunit5.class
 })
 public @interface KafkaTest {

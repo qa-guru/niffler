@@ -19,25 +19,19 @@ public class BrowserExtension implements
 
   @Override
   public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
-    if (WebDriverRunner.hasWebDriverStarted()) {
-      doScreen();
-    }
+    doScreen();
     throw throwable;
   }
 
   @Override
   public void handleBeforeEachMethodExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
-    if (WebDriverRunner.hasWebDriverStarted()) {
-      doScreen();
-    }
+    doScreen();
     throw throwable;
   }
 
   @Override
   public void handleAfterEachMethodExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
-    if (WebDriverRunner.hasWebDriverStarted()) {
-      doScreen();
-    }
+    doScreen();
     throw throwable;
   }
 
@@ -48,9 +42,11 @@ public class BrowserExtension implements
     }
   }
 
-  private void doScreen() {
-    Allure.addAttachment("Screenshot on fail",
-        new ByteArrayInputStream(((TakesScreenshot) WebDriverRunner.getWebDriver())
-            .getScreenshotAs(OutputType.BYTES)));
+  static void doScreen() {
+    if (WebDriverRunner.hasWebDriverStarted()) {
+      Allure.addAttachment("Screenshot on fail",
+          new ByteArrayInputStream(((TakesScreenshot) WebDriverRunner.getWebDriver())
+              .getScreenshotAs(OutputType.BYTES)));
+    }
   }
 }
