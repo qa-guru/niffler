@@ -1,5 +1,6 @@
 package guru.qa.niffler.page.component;
 
+import com.codeborne.selenide.ClickOptions;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.model.rest.DataFilterValues;
@@ -9,6 +10,7 @@ import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 
+import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
@@ -59,7 +61,7 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
     SelenideElement row = tableRows.find(text(description));
     row.$$("td").get(0).click();
     deleteBtn.click();
-    popup.$(byText("Delete")).click();
+    popup.$(byText("Delete")).click(usingJavaScript());
     return this;
   }
 

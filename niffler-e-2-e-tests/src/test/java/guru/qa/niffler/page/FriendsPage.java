@@ -1,10 +1,12 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.ClickOptions;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.SearchField;
 import io.qameta.allure.Step;
 
+import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
 import static com.codeborne.selenide.Condition.text;
@@ -56,7 +58,7 @@ public class FriendsPage extends BasePage<FriendsPage> {
   public FriendsPage removeFriend(String username) {
     SelenideElement friendRow = friendsTable.$$("tr").find(text(username));
     friendRow.$("button[type='button']").click();
-    popup.$(byText("Delete")).click();
+    popup.$(byText("Delete")).click(usingJavaScript());
     return this;
   }
 
@@ -71,7 +73,7 @@ public class FriendsPage extends BasePage<FriendsPage> {
   public FriendsPage declineFriendInvitationFromUser(String username) {
     SelenideElement friendRow = requestsTable.$$("tr").find(text(username));
     friendRow.$(byText("Decline")).click();
-    popup.$(byText("Decline")).click();
+    popup.$(byText("Decline")).click(usingJavaScript());
     return this;
   }
 }
