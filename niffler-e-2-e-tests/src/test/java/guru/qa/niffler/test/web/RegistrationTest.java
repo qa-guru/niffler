@@ -17,8 +17,8 @@ import static guru.qa.niffler.utils.DataUtils.generateRandomPassword;
 import static guru.qa.niffler.utils.DataUtils.generateRandomUsername;
 import static guru.qa.niffler.utils.ErrorMessage.PASSWORDS_SHOULD_BE_EQUAL;
 
-@Epic("[WEB][niffler-frontend]: Регистрация")
-@DisplayName("[WEB][niffler-frontend]: Регистрация")
+@Epic(" [WEB][niffler-ng-client]: Регистрация")
+@DisplayName(" [WEB][niffler-ng-client]: Регистрация")
 public class RegistrationTest extends BaseWebTest {
 
   @Test

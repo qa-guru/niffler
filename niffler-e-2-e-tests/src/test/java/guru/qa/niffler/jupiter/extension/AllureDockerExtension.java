@@ -21,7 +21,7 @@ public class AllureDockerExtension implements SuiteExtension {
 
   private static final Base64.Encoder encoder = Base64.getEncoder();
   private static final String allureResultsDirectory = "./niffler-e-2-e-tests/build/allure-results";
-  private static final String projectId = "niffler";
+  private static final String projectId = "niffler-ng";
 
   private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
 

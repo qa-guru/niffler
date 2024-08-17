@@ -27,8 +27,8 @@ import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITHOUT
 import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY;
 import static guru.qa.niffler.utils.SuccessMessage.SPENDING_ADDED;
 
-@Epic("[WEB][niffler-frontend]: Траты")
-@DisplayName("[WEB][niffler-frontend]: Траты")
+@Epic(" [WEB][niffler-ng-client]: Траты")
+@DisplayName(" [WEB][niffler-ng-client]: Траты")
 public class SpendingTest extends BaseWebTest {
 
   @Test

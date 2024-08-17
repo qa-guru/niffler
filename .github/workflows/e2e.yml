@@ -65,7 +65,7 @@ jobs:
               issue_number: pr,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 There is the last [Allure report](https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler/reports/latest/index.html)\n🕓 All reports [history](https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler)'
+              body: '👋 There is the last [Allure report](https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler-ng/reports/latest/index.html)\n🕓 All reports [history](https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler-ng)'
             })
   
   collect-versions:

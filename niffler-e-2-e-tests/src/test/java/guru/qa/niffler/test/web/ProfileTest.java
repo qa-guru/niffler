@@ -16,8 +16,8 @@ import static guru.qa.niffler.utils.DataUtils.generateNewCategory;
 import static guru.qa.niffler.utils.DataUtils.generateRandomName;
 import static guru.qa.niffler.utils.SuccessMessage.PROFILE_UPDATED;
 
-@Epic("[WEB][niffler-frontend]: Профиль")
-@DisplayName("[WEB][niffler-frontend]: Профиль")
+@Epic(" [WEB][niffler-ng-client]: Профиль")
+@DisplayName(" [WEB][niffler-ng-client]: Профиль")
 public class ProfileTest extends BaseWebTest {
 
   @Test

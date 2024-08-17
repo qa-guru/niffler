@@ -19,8 +19,8 @@ import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static guru.qa.niffler.jupiter.annotation.User.Selector.NESTED;
 
 
-@Epic("[WEB][niffler-frontend]: Друзья")
-@DisplayName("[WEB][niffler-frontend]: Друзья")
+@Epic(" [WEB][niffler-ng-client]: Друзья")
+@DisplayName(" [WEB][niffler-ng-client]: Друзья")
 public class FriendsTest extends BaseWebTest {
 
   @Test

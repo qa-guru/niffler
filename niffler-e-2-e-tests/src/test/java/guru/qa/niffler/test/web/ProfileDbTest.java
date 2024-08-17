@@ -18,8 +18,8 @@ import org.junit.jupiter.api.Test;
 
 import static guru.qa.niffler.jupiter.annotation.User.Selector.NESTED;
 
-@Epic("[WEB][niffler-frontend]: Профиль, DB preconditions")
-@DisplayName("[WEB][niffler-frontend]: Профиль, DB preconditions")
+@Epic(" [WEB][niffler-ng-client]: Профиль, DB preconditions")
+@DisplayName(" [WEB][niffler-ng-client]: Профиль, DB preconditions")
 public class ProfileDbTest extends BaseWebTest {
 
   @Repository
