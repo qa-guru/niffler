@@ -26,7 +26,6 @@ buildscript {
 }
 
 plugins {
-    id 'java'
     id 'io.qameta.allure' version '2.11.2'
     id 'io.qameta.allure-adapter' version '2.11.2'
     id 'com.github.edeandrea.xjc-generation' version "1.6"

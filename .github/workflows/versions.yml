@@ -68,4 +68,4 @@ jobs:
           echo "### niffler-gateway version will be used: ${{ steps.gateway_version.outputs.gateway }}"
           echo "### niffler-spend version will be used: ${{ steps.spend_version.outputs.spend }}"
           echo "### niffler-userdata version will be used: ${{ steps.userdata_version.outputs.userdata }}"
-          echo "### niffler-front version will be used: ${{ steps.front_version.outputs.front }}"
+          echo "### niffler-client version will be used: ${{ steps.front_version.outputs.front }}"

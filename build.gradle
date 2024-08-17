@@ -3,7 +3,16 @@ plugins {
 }
 
 group = 'guru.qa'
-sourceCompatibility = '21'
+
+allprojects {
+    apply plugin: 'java'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+}
 
 subprojects {
     repositories {
@@ -31,8 +40,4 @@ subprojects {
                 ? "arm64"
                 : "amd64"
     }
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }
