@@ -65,7 +65,7 @@ export const convertSpendingToFormData = (spending: SpendingOptionalId): Spendin
 
 export const spendingFormValidate = (formValues: SpendingFormData): SpendingFormData => {
     let newFormValues = {...formValues};
-    
+
     newFormValues = {
         ...newFormValues,
         amount: {

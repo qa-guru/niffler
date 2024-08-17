@@ -34,7 +34,10 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
       ps.setString(3, spend.getCurrency().name());
       ps.setDouble(4, spend.getAmount());
       ps.setString(5, spend.getDescription());
-      ps.setObject(6, spend.getCategory().getId());
+      final UUID categoryId = spend.getCategory().getId() == null
+          ? createCategory(spend.getCategory()).getId()
+          : spend.getCategory().getId();
+      ps.setObject(6, categoryId);
       return ps;
     }, kh);
     final UUID generatedUserId = (UUID) kh.getKeys().get("id");

@@ -5,8 +5,9 @@ import {RequestHandler} from "../types/RequestHandler.ts";
 import {Currency} from "../types/Currency.ts";
 import {Spending} from "../types/Spending.ts";
 import {Statistic} from "../types/Statistic.ts";
-import {isCommonError, isApiError, ApiError} from "../types/Error.ts";
+import {ApiError, isApiError, isCommonError} from "../types/Error.ts";
 import {Session} from "../types/Session.ts";
+import {Void} from "../types/Void.ts";
 
 const BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 const DEFAULT_ABORT_TIMEOUT = 5000;
@@ -209,7 +210,7 @@ export const apiClient = {
             });
     },
 
-    deleteFriend: async (username: string, {onSuccess, onFailure}: RequestHandler<unknown>) => {
+    deleteFriend: async (username: string, {onSuccess, onFailure}: RequestHandler<Void>) => {
         await makeRequest(
             `/friends/remove?username=${username}`,
             {
@@ -267,11 +268,17 @@ async function makeRequest<T>(path: string, {onSuccess, onFailure}: RequestHandl
             }
             onSuccess(data);
         }
+
+        if (options?.method === "DELETE") {
+            if (!response.ok) {
+                throw new Error("Failed DELETE request");
+            }
+            onSuccess(<Void>{} as T);
+        }
     } catch (error) {
         if (isCommonError(error)) {
             onFailure(error);
-        }
-        else if (isApiError(error)) {
+        } else if (isApiError(error)) {
             onFailure(error);
         } else {
             onFailure(new Error("An unknown error occurred"));

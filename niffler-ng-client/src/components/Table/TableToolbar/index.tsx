@@ -6,10 +6,10 @@ interface TableToolbarProps {
     onSearchSubmit: (value: string) => void;
 }
 
-export const TableToolbar: FC<TableToolbarProps> = ({ onSearchSubmit}) => {
+export const TableToolbar: FC<TableToolbarProps> = ({onSearchSubmit}) => {
     return (
         <Toolbar>
-           <SearchInput onSearchSubmit={onSearchSubmit}/>
+            <SearchInput onSearchSubmit={onSearchSubmit}/>
         </Toolbar>
     );
 }

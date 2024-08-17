@@ -77,6 +77,7 @@ export const FriendsTable = () => {
                                     <PeopleTable
                                         data={invitations}
                                         setData={handleUpdateInvitations}
+                                        label="requests"
                                     />
                                 </>
                             }
@@ -88,6 +89,7 @@ export const FriendsTable = () => {
                                     <PeopleTable
                                         data={friends}
                                         setData={setFriends}
+                                        label="friends"
                                     />
                                 </>
                             }

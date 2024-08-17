@@ -6,7 +6,6 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.page.WelcomePage;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
@@ -24,10 +23,9 @@ public class LoginTest extends BaseWebTest {
   @AllureId("500001")
   @DisplayName("WEB: Главная страница должна отображаться после логина новым юзером")
   @Tag("WEB")
-  @GenerateUser()
+  @GenerateUser
   void mainPageShouldBeDisplayedAfterSuccessLogin(@User(selector = METHOD) UserJson user) {
-    Selenide.open(WelcomePage.URL, WelcomePage.class)
-        .doLogin()
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
         .fillLoginPage(user.username(), user.testData().password())
         .submit(new MainPage())
         .waitForPageLoaded();
@@ -37,10 +35,9 @@ public class LoginTest extends BaseWebTest {
   @AllureId("500002")
   @DisplayName("WEB: При неверно введенных логине/пароле пользователь остается неавторизованным")
   @Tag("WEB")
-  @GenerateUser()
+  @GenerateUser
   void userShouldStayOnLoginPageAfterLoginWithBadCredentials(@User(selector = METHOD) UserJson user) {
-    LoginPage loginPage = Selenide.open(WelcomePage.URL, WelcomePage.class)
-        .doLogin()
+    LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
         .fillLoginPage(user.username(), user.testData().password() + "BAD");
 
     loginPage.submit(loginPage)

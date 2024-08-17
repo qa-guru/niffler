@@ -1,6 +1,6 @@
 import {Box} from "@mui/material"
 import LoadingButton from '@mui/lab/LoadingButton';
-import { FC } from "react"
+import {FC} from "react"
 
 interface TablePaginationInterface {
     hasNextValues: boolean;
@@ -11,7 +11,14 @@ interface TablePaginationInterface {
     isPreviousButtonLoading: boolean;
 }
 
-export const TablePagination: FC<TablePaginationInterface> = ({hasNextValues, hasPreviousValues, onPreviousClick, onNextClick, isPreviousButtonLoading, isNextButtonLoading}) => {
+export const TablePagination: FC<TablePaginationInterface> = ({
+                                                                  hasNextValues,
+                                                                  hasPreviousValues,
+                                                                  onPreviousClick,
+                                                                  onNextClick,
+                                                                  isPreviousButtonLoading,
+                                                                  isNextButtonLoading
+                                                              }) => {
     return (
         <Box sx={{
             display: "flex",
@@ -21,6 +28,7 @@ export const TablePagination: FC<TablePaginationInterface> = ({hasNextValues, ha
         }}>
             <LoadingButton
                 type="button"
+                id="page-prev"
                 sx={{
                     margin: "4px",
                     width: 100,
@@ -34,19 +42,20 @@ export const TablePagination: FC<TablePaginationInterface> = ({hasNextValues, ha
                 Previous
             </LoadingButton>
             <LoadingButton
+                type="button"
+                id="page-next"
                 sx={{
                     margin: "4px",
                     width: 100,
                     minHeight: "50px",
                 }}
-                type="button"
                 disabled={!hasNextValues}
                 loading={isNextButtonLoading}
                 variant="outlined"
                 onClick={onNextClick}
 
             >
-               Next
+                Next
             </LoadingButton>
         </Box>
     )

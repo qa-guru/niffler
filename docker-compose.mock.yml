@@ -121,7 +121,7 @@ services:
         - ${PREFIX}/${FRONT}-docker:latest
         - ${PREFIX}/${FRONT}-docker:${FRONT_VERSION}
       args:
-        NPM_COMMAND: build:docker
+        NPM_COMMAND: docker:build
     image: ${PREFIX}/${FRONT}-docker:latest
     ports:
       - 80:80

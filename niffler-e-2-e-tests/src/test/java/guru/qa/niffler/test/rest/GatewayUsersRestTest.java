@@ -34,7 +34,7 @@ public class GatewayUsersRestTest extends BaseRestTest {
   @AllureId("200022")
   @Tag("REST")
   @ApiLogin(
-      user = @GenerateUser()
+      user = @GenerateUser
   )
   void currentUserTest(@User UserJson user,
                        @Token String bearerToken) throws Exception {
@@ -56,7 +56,7 @@ public class GatewayUsersRestTest extends BaseRestTest {
   @AllureId("200023")
   @Tag("REST")
   @ApiLogin(
-      user = @GenerateUser()
+      user = @GenerateUser
   )
   void updateUserTest(@User UserJson user,
                       @Token String bearerToken) throws Exception {

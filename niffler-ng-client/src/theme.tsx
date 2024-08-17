@@ -1,6 +1,6 @@
-import { createTheme } from '@mui/material/styles';
+import {createTheme} from '@mui/material/styles';
 
-const { palette} = createTheme({});
+const {palette} = createTheme({});
 const theme = createTheme({
     palette: {
         primary: {
@@ -19,7 +19,7 @@ const theme = createTheme({
             main: "#d32f2f",
         },
         info: {
-            main: "#A8ACC0" ,
+            main: "#A8ACC0",
         },
         blue100: palette.augmentColor({
             color: {
@@ -62,9 +62,9 @@ const theme = createTheme({
             },
         }),
         orange: palette.augmentColor({
-           color: {
-               main: "#FB8500",
-           },
+            color: {
+                main: "#FB8500",
+            },
         }),
         red: palette.augmentColor({
             color: {
@@ -117,7 +117,7 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     borderRadius: "8px",
-                    }
+                }
             }
         },
         MuiOutlinedInput: {
@@ -191,11 +191,11 @@ const theme = createTheme({
             }
         },
         MuiTabs: {
-          styleOverrides: {
-              indicator: {
-                  backgroundColor: "#242527",
-              }
-          }
+            styleOverrides: {
+                indicator: {
+                    backgroundColor: "#242527",
+                }
+            }
         },
         MuiTab: {
             styleOverrides: {

@@ -4,8 +4,8 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.UserJson;
+import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.page.WelcomePage;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
@@ -28,13 +28,9 @@ public class RegistrationTest extends BaseWebTest {
   void shouldRegisterNewUser() {
     String newUsername = generateRandomUsername();
     String password = generateRandomPassword();
-    Selenide.open(WelcomePage.URL, WelcomePage.class)
-        .waitForPageLoaded()
+    Selenide.open(LoginPage.URL, LoginPage.class)
         .doRegister()
-        .waitForPageLoaded()
-        .setUsername(newUsername)
-        .setPassword(password)
-        .setPasswordSubmit(password)
+        .fillRegisterPage(newUsername, password, password)
         .successSubmit()
         .fillLoginPage(newUsername, password)
         .submit(new MainPage())
@@ -45,19 +41,15 @@ public class RegistrationTest extends BaseWebTest {
   @AllureId("500009")
   @DisplayName("WEB: При регистрации возникает ошибка, если пользлватель с таким юзернеймом уже существует")
   @Tag("WEB")
-  @GenerateUser()
+  @GenerateUser
   void shouldNotRegisterUserWithExistingUsername(@User(selector = METHOD) UserJson existingUser) {
     String username = existingUser.username();
     String password = generateRandomPassword();
-    Selenide.open(WelcomePage.URL, WelcomePage.class)
-        .waitForPageLoaded()
+    Selenide.open(LoginPage.URL, LoginPage.class)
         .doRegister()
-        .waitForPageLoaded()
-        .setUsername(username)
-        .setPassword(password)
-        .setPasswordSubmit(password)
+        .fillRegisterPage(username, password, password)
         .errorSubmit()
-        .checkErrorMessage("Username `" + username + "` already exists");
+        .checkAlertMessage("Username `" + username + "` already exists");
   }
 
   @Test
@@ -69,14 +61,10 @@ public class RegistrationTest extends BaseWebTest {
     String password = generateRandomPassword();
     String submitPassword = generateRandomPassword();
 
-    Selenide.open(WelcomePage.URL, WelcomePage.class)
-        .waitForPageLoaded()
+    Selenide.open(LoginPage.URL, LoginPage.class)
         .doRegister()
-        .waitForPageLoaded()
-        .setUsername(username)
-        .setPassword(password)
-        .setPasswordSubmit(submitPassword)
+        .fillRegisterPage(username, password, submitPassword)
         .errorSubmit()
-        .checkErrorMessage(PASSWORDS_SHOULD_BE_EQUAL.content);
+        .checkAlertMessage(PASSWORDS_SHOULD_BE_EQUAL.content);
   }
 }

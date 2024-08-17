@@ -9,9 +9,9 @@ echo '### Java version ###'
 java --version
 
 if [[ "$1" = "gql" ]]; then
-  export FRONT="niffler-frontend-gql"
+  export FRONT="niffler-ng-client-gql"
 else
-  export FRONT="niffler-frontend"
+  export FRONT="niffler-ng-client"
 fi
 
 docker compose -f docker-compose.test.yml down
@@ -30,7 +30,7 @@ if [ ! -z "$docker_images" ]; then
   docker rmi $docker_images
 fi
 
-bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test
+bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
 
 docker pull selenoid/vnc_chrome:125.0
 docker compose -f docker-compose.test.yml up -d

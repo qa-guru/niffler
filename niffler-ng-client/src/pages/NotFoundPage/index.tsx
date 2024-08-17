@@ -12,9 +12,9 @@ export const NotFoundPage = () => {
                 type="button"
                 onClick={() => navigate("/main")}
                 sx={{
-                display: "block",
-                margin: "0 auto",
-            }}
+                    display: "block",
+                    margin: "0 auto",
+                }}
             >
                 Go to homepage
             </PrimaryButton>

@@ -1,6 +1,4 @@
-
-
-export class ApiError extends Error{
+export class ApiError extends Error {
     public readonly detail: string;
     public readonly status: number;
     public readonly name = "ApiError";

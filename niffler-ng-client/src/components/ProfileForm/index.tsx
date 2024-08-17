@@ -67,9 +67,11 @@ export const ProfileForm: FC = () => {
                     error={formData.photo?.error ?? false}
                     helperText={formData.photo?.errorMessage ?? ""}
                     isAvatar
-                    onFileUpload={(file) => setFormData({...formData, photo: {
+                    onFileUpload={(file) => setFormData({
+                        ...formData, photo: {
                             ...formData.photo, value: file ?? "",
-                        }})}/>
+                        }
+                    })}/>
             </Grid>
             <Grid item xs={12}>
                 <Grid
@@ -80,7 +82,7 @@ export const ProfileForm: FC = () => {
                         flexDirection: {xs: "column", sm: "row"}
                     }}
                 >
-                    <Grid item xs={ isMobile ? true : 4} sx={{width: "100%"}} spacing={0}>
+                    <Grid item xs={isMobile ? true : 4} sx={{width: "100%"}} spacing={0}>
                         <InputLabel
                             htmlFor={"username"}
                             sx={{
@@ -102,7 +104,7 @@ export const ProfileForm: FC = () => {
                             fullWidth
                         />
                     </Grid>
-                    <Grid item xs={ isMobile ? true : 4} sx={{width: "100%"}}>
+                    <Grid item xs={isMobile ? true : 4} sx={{width: "100%"}}>
                         <InputLabel htmlFor={"name"}
                                     sx={{color: theme.palette.black.main}}>
                             Name
@@ -118,13 +120,15 @@ export const ProfileForm: FC = () => {
                             value={formData.fullname?.value ?? ""}
                             error={formData.fullname?.error ?? false}
                             helperText={formData.fullname?.errorMessage ?? ""}
-                            onChange={(event) => setFormData({...formData, fullname: {
-                                ...formData.fullname, value: event.target.value, error: false, errorMessage: "",
-                                }})}
+                            onChange={(event) => setFormData({
+                                ...formData, fullname: {
+                                    ...formData.fullname, value: event.target.value, error: false, errorMessage: "",
+                                }
+                            })}
                             fullWidth
                         />
                     </Grid>
-                    <Grid item xs={ isMobile ? true : 4} sx={{
+                    <Grid item xs={isMobile ? true : 4} sx={{
                         margin: "0 auto",
                         width: "100%",
                     }}>

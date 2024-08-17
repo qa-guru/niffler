@@ -1,12 +1,14 @@
 import {
     Box,
     Checkbox,
-    IconButton, Stack,
+    IconButton,
+    Stack,
     Table,
     TableBody,
     TableCell,
     TableContainer,
-    TableRow, Typography,
+    TableRow,
+    Typography,
     useMediaQuery,
     useTheme
 } from "@mui/material";
@@ -219,94 +221,105 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                 <TableBody>
                                     {
                                         data.map((row) => {
-                                        const isItemSelected = isSelected(row.id);
-                                        const labelId = `enhanced-table-checkbox-${row.id}`;
+                                            const isItemSelected = isSelected(row.id);
+                                            const labelId = `enhanced-table-checkbox-${row.id}`;
 
-                                        return (
-                                            <TableRow
-                                                hover
-                                                onClick={(event) => handleRowClick(event, row.id)}
-                                                role="checkbox"
-                                                aria-checked={isItemSelected}
-                                                tabIndex={-1}
-                                                key={row.id}
-                                                selected={isItemSelected}
-                                                sx={{cursor: 'pointer'}}
-                                            >
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox
-                                                        color="primary"
-                                                        checked={isItemSelected}
-                                                        inputProps={{
-                                                            'aria-labelledby': labelId,
-                                                        }}
-                                                    />
-                                                </TableCell>
-                                                {
-                                                    isMobile
-                                                        ?
-                                                        <>
-                                                            <TableCell
-                                                                component="th"
-                                                                id={labelId}
-                                                                scope="row"
-                                                                padding="none"
-                                                                align="left"
-                                                            >
-                                                                <Typography component="p" variant={"body1"}>
-                                                                    <Stack>{row.category.name}</Stack>
-                                                                    <Stack sx={{color: theme.palette.gray_600.main}}>{row.description}</Stack>
-                                                                </Typography>
-                                                            </TableCell>
-                                                            <TableCell align="right" padding={"normal"} sx={{minWidth: 110}}>
-                                                                <Typography component="p" variant={"body1"}>
-                                                                    <Stack>{row.amount}</Stack>
-                                                                    <Stack sx={{color: theme.palette.gray_600.main}}>{row.spendDate}</Stack>
-                                                                </Typography>
-                                                            </TableCell>
-                                                        </>
-                                                        :
-                                                        <>
-                                                            <TableCell
-                                                                component="th"
-                                                                id={labelId}
-                                                                scope="row"
-                                                                padding="none"
-                                                                align="left"
-                                                            >
-                                                                <Typography component="p" variant={"body1"}>{row.category.name}</Typography>
-                                                            </TableCell>
-                                                            <TableCell align="center" padding={"normal"}>
-                                                                <Typography component="p" variant={"body1"}> {row.amount}</Typography>
-                                                            </TableCell>
-                                                            <TableCell align="center"
-                                                                       padding={"normal"}
-                                                                       sx={{
-                                                                           color: theme.palette.gray_600.main,
-                                                                       }}
-                                                            >
-                                                                <Typography component="p" variant={"body1"}>{row.description}</Typography>
-                                                            </TableCell>
-                                                            <TableCell align="center"
-                                                                       padding={"normal"}
-                                                                       sx={{minWidth: 110, color: theme.palette.gray_600.main}}>
-                                                                <Typography component="p" variant={"body1"}>{row.spendDate}</Typography>
-                                                            </TableCell>
-                                                        </>
-                                                }
+                                            return (
+                                                <TableRow
+                                                    hover
+                                                    onClick={(event) => handleRowClick(event, row.id)}
+                                                    role="checkbox"
+                                                    aria-checked={isItemSelected}
+                                                    tabIndex={-1}
+                                                    key={row.id}
+                                                    selected={isItemSelected}
+                                                    sx={{cursor: 'pointer'}}
+                                                >
+                                                    <TableCell padding="checkbox">
+                                                        <Checkbox
+                                                            color="primary"
+                                                            checked={isItemSelected}
+                                                            inputProps={{
+                                                                'aria-labelledby': labelId,
+                                                            }}
+                                                        />
+                                                    </TableCell>
+                                                    {
+                                                        isMobile
+                                                            ?
+                                                            <>
+                                                                <TableCell
+                                                                    component="td"
+                                                                    id={labelId}
+                                                                    scope="row"
+                                                                    padding="none"
+                                                                    align="left"
+                                                                >
+                                                                    <Typography component="p" variant={"body1"}>
+                                                                        <Stack>{row.category.name}</Stack>
+                                                                        <Stack
+                                                                            sx={{color: theme.palette.gray_600.main}}>{row.description}</Stack>
+                                                                    </Typography>
+                                                                </TableCell>
+                                                                <TableCell align="right" padding={"normal"}
+                                                                           sx={{minWidth: 110}}>
+                                                                    <Typography component="p" variant={"body1"}>
+                                                                        <Stack>{row.amount}</Stack>
+                                                                        <Stack
+                                                                            sx={{color: theme.palette.gray_600.main}}>{row.spendDate}</Stack>
+                                                                    </Typography>
+                                                                </TableCell>
+                                                            </>
+                                                            :
+                                                            <>
+                                                                <TableCell
+                                                                    component="td"
+                                                                    id={labelId}
+                                                                    scope="row"
+                                                                    padding="none"
+                                                                    align="left"
+                                                                >
+                                                                    <Typography component="p"
+                                                                                variant={"body1"}>{row.category.name}</Typography>
+                                                                </TableCell>
+                                                                <TableCell align="center" padding={"normal"}>
+                                                                    <Typography component="p"
+                                                                                variant={"body1"}> {row.amount}</Typography>
+                                                                </TableCell>
+                                                                <TableCell align="center"
+                                                                           padding={"normal"}
+                                                                           sx={{
+                                                                               color: theme.palette.gray_600.main,
+                                                                           }}
+                                                                >
+                                                                    <Typography component="p"
+                                                                                variant={"body1"}>{row.description}</Typography>
+                                                                </TableCell>
+                                                                <TableCell align="center"
+                                                                           padding={"normal"}
+                                                                           sx={{
+                                                                               minWidth: 110,
+                                                                               color: theme.palette.gray_600.main
+                                                                           }}>
+                                                                    <Typography component="p"
+                                                                                variant={"body1"}>{row.spendDate}</Typography>
+                                                                </TableCell>
+                                                            </>
+                                                    }
 
 
-                                                <TableCell align="right" padding={"normal"}>
-                                                    <IconButton color="primary" aria-label="Edit spending" onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleSpendingClick(row.id);
-                                                    }}>
-                                                        <EditIcon color={theme.palette.gray_600.main}/>
-                                                    </IconButton>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
+                                                    <TableCell align="right" padding={"normal"}>
+                                                        <IconButton color="primary" aria-label="Edit spending"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleSpendingClick(row.id);
+                                                                    }}>
+                                                            <EditIcon color={theme.palette.gray_600.main}/>
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            );
+                                        })}
                                 </TableBody>
                             </Table>
                             <TablePagination

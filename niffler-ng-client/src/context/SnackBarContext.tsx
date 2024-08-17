@@ -1,5 +1,5 @@
 import {Alert, Snackbar, Typography} from '@mui/material';
-import {FC, ReactNode, createContext, useContext, useState } from 'react';
+import {createContext, FC, ReactNode, useContext, useState} from 'react';
 
 type SnackBarContextActions = {
     showSnackBar: (text: string, typeColor: "error" | "success" | "info") => void;
@@ -14,7 +14,7 @@ interface SnackBarContextProviderProps {
 const SnackBarProvider: FC<SnackBarContextProviderProps> = ({children}) => {
     const [open, setOpen] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
-    const [typeColor, setTypeColor] = useState<"error"| "success" | "info">("success");
+    const [typeColor, setTypeColor] = useState<"error" | "success" | "info">("success");
 
     const showSnackBar = (text: string, color: "error" | "success" | "info") => {
         setMessage(text);
@@ -27,11 +27,11 @@ const SnackBarProvider: FC<SnackBarContextProviderProps> = ({children}) => {
     };
 
     return (
-        <SnackBarContext.Provider value={{ showSnackBar }}>
+        <SnackBarContext.Provider value={{showSnackBar}}>
             <Snackbar
                 open={open}
                 autoHideDuration={3000}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                 onClose={handleClose}>
                 <Alert onClose={handleClose} severity={typeColor}>
                     <Typography variant="body1" component="div">{message}</Typography>
@@ -52,4 +52,4 @@ const useSnackBar = (): SnackBarContextActions => {
     return context;
 };
 
-export { SnackBarProvider, useSnackBar };
+export {SnackBarProvider, useSnackBar};

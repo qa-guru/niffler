@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static guru.qa.niffler.model.FriendState.FRIEND;
 import static guru.qa.niffler.model.FriendState.INVITE_SENT;
@@ -80,8 +79,10 @@ public class UserService {
 
     userEntity.setFullname(user.fullname());
     userEntity.setCurrency(user.currency() == null ? DEFAULT_USER_CURRENCY : user.currency());
-    userEntity.setPhoto(user.photo() != null ? user.photo().getBytes(StandardCharsets.UTF_8) : null);
-    userEntity.setPhotoSmall(new SmallPhoto(100, 100, user.photo()).bytes());
+    if (isPhotoString(user.photo())) {
+      userEntity.setPhoto(user.photo().getBytes(StandardCharsets.UTF_8));
+      userEntity.setPhotoSmall(new SmallPhoto(100, 100, user.photo()).bytes());
+    }
     UserEntity saved = userRepository.save(userEntity);
     return UserJson.fromEntity(saved);
   }
@@ -218,6 +219,10 @@ public class UserService {
 
     userRepository.save(currentUser);
     userRepository.save(targetUser);
+  }
+
+  public static boolean isPhotoString(String photo) {
+    return photo != null && photo.startsWith("data:image");
   }
 
   @Nonnull

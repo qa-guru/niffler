@@ -9,7 +9,6 @@ import javax.annotation.Nonnull;
 import java.time.Month;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Objects;
 
 import static com.codeborne.selenide.Selenide.$;
 import static java.util.Calendar.DAY_OF_MONTH;
@@ -22,32 +21,38 @@ public class Calendar extends BaseComponent<Calendar> {
     super(self);
   }
 
-  private final SelenideElement input = $(".react-datepicker__input-container input");
-  private final SelenideElement prevButton = self.$(".react-datepicker__navigation--previous");
-  private final SelenideElement nextButton = self.$(".react-datepicker__navigation--next");
-  private final SelenideElement currentMonthAndYear = self.$(".react-datepicker__current-month");
+  public Calendar() {
+    super($(".MuiPickersLayout-root"));
+  }
+
+  private final SelenideElement input = $("input[name='date']");
+  private final SelenideElement calendarButton = $("button[aria-label*='Choose date']");
+  private final SelenideElement prevMonthButton = self.$("button[title='Previous month']");
+  private final SelenideElement nextMonthButton = self.$("button[title='Next month']");
+  private final SelenideElement currentMonthAndYear = self.$(".MuiPickersCalendarHeader-label");
+  private final ElementsCollection dateRows = self.$$(".MuiDayCalendar-weekContainer");
 
   @Step("Select date in calendar: {date}")
   public void selectDateInCalendar(@Nonnull Date date) {
     java.util.Calendar cal = new GregorianCalendar();
     cal.setTime(date);
-    input.click();
+    calendarButton.click();
     final int desiredMonthIndex = cal.get(MONTH);
     selectYear(cal.get(YEAR));
     selectMonth(desiredMonthIndex);
-    selectDay(desiredMonthIndex, cal.get(DAY_OF_MONTH));
+    selectDay(cal.get(DAY_OF_MONTH));
   }
 
   private void selectYear(int expectedYear) {
     int actualYear = getActualYear();
 
     while (actualYear > expectedYear) {
-      prevButton.click();
+      prevMonthButton.click();
       Selenide.sleep(200);
       actualYear = getActualYear();
     }
     while (actualYear < expectedYear) {
-      nextButton.click();
+      nextMonthButton.click();
       Selenide.sleep(200);
       actualYear = getActualYear();
     }
@@ -57,26 +62,24 @@ public class Calendar extends BaseComponent<Calendar> {
     int actualMonth = getActualMonthIndex();
 
     while (actualMonth > desiredMonthIndex) {
-      prevButton.click();
+      prevMonthButton.click();
       Selenide.sleep(200);
       actualMonth = getActualMonthIndex();
     }
     while (actualMonth < desiredMonthIndex) {
-      nextButton.click();
+      nextMonthButton.click();
       Selenide.sleep(200);
       actualMonth = getActualMonthIndex();
     }
   }
 
-  private void selectDay(int desiredMonthIndex, int desiredDay) {
-    ElementsCollection rows = self.findAll(".react-datepicker__week").snapshot();
+  private void selectDay(int desiredDay) {
+    ElementsCollection rows = dateRows.snapshot();
 
     for (SelenideElement row : rows) {
-      ElementsCollection days = row.$$(".react-datepicker__day").snapshot();
+      ElementsCollection days = row.$$("button").snapshot();
       for (SelenideElement day : days) {
-        if (Objects.requireNonNull(day.getAttribute("aria-label"))
-            .toUpperCase()
-            .contains(getMonthNameByIndex(desiredMonthIndex)) && Integer.parseInt(day.getText()) == desiredDay) {
+        if (day.getText().equals(String.valueOf(desiredDay))) {
           day.click();
           return;
         }

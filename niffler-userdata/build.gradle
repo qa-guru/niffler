@@ -3,27 +3,17 @@ plugins {
     id 'org.springframework.boot' version '3.3.2'
     id 'io.spring.dependency-management' version '1.1.6'
     id 'com.google.cloud.tools.jib' version '3.4.1'
+    id 'com.github.edeandrea.xjc-generation' version "1.6"
 }
 
 group = 'guru.qa'
 version = '2.0.0'
 
-configurations {
-    jaxb
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main/java'
-            srcDir 'build/generated-sources/jaxb'
-        }
-    }
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation('org.springframework.boot:spring-boot-starter-web-services') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "org.springframework.kafka:spring-kafka:${project.ext.springKafkaVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
@@ -34,10 +24,32 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
     runtimeOnly "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
-    jaxb("org.glassfish.jaxb:jaxb-xjc:${project.ext.glassfishJaxbVersion}")
+
+    xjc "org.glassfish.jaxb:jaxb-xjc:${project.ext.jakartaJaxbVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2:2.2.224'
+}
+
+xjcGeneration {
+    defaultAdditionalXjcOptions = ['encoding': 'UTF-8']
+    schemas {
+        wsdlSchema {
+            schemaRootDir = "$projectDir/src/main/resources"
+            schemaFile = 'userdata.xsd'
+            javaPackageName = 'jaxb.userdata'
+            sourceSet = 'main'
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir('src/main/java')
+            srcDir("$buildDir/generated-sources/main/xjc")
+        }
+    }
 }
 
 jib {
@@ -62,28 +74,8 @@ jib {
     }
 }
 
-tasks.register('genJaxb') {
-    ext.sourcesDir = layout.buildDirectory.dir("generated-sources/jaxb").get()
-    ext.schema = "src/main/resources/userdata.xsd"
-
-    outputs.dir sourcesDir
-
-    doLast() {
-        project.ant {
-            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask", classpath: configurations.jaxb.asPath
-            mkdir(dir: sourcesDir)
-
-            xjc(destdir: sourcesDir, schema: schema) {
-                arg(value: "-wsdl")
-                produces(dir: sourcesDir, includes: "**/*.java")
-            }
-        }
-    }
-}
-
 tasks.jib.dependsOn test
 tasks.jibDockerBuild.dependsOn test
-tasks.compileJava.dependsOn genJaxb
 
 tasks.named('bootJar') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE

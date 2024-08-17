@@ -29,7 +29,7 @@ export const MenuButton: FC<MenuButtonInterface> = ({onMenuClick, isMenuOpened, 
         >
             {isMobile
                 ? <MenuIcon/>
-                : <Avatar sx={{ width: 48, height: 48 }} src={photo}/>
+                : <Avatar sx={{width: 48, height: 48}} src={photo}/>
             }
         </IconButton>
     )

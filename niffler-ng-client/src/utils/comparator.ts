@@ -1,4 +1,4 @@
-import { Order } from "../types/Order";
+import {Order} from "../types/Order";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {

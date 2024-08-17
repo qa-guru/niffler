@@ -14,7 +14,7 @@ export const CategorySection = () => {
     const snackbar = useSnackBar();
 
     const isUnarchiveCategoriesEnabled = categories.filter(category => !category.archived).length < MAX_CATEGORIES_COUNT;
-    const fetchCategories = () =>  apiClient.getCategories({
+    const fetchCategories = () => apiClient.getCategories({
             onSuccess: (res) => setCategories(res),
             onFailure: (e) => {
                 console.error(e.message);
@@ -23,7 +23,7 @@ export const CategorySection = () => {
         }
     );
 
-    useEffect(() =>{
+    useEffect(() => {
         fetchCategories();
     }, []);
 
@@ -51,7 +51,9 @@ export const CategorySection = () => {
                 >
                     Categories
                 </Typography>
-                <FormControlLabel control={<Switch  checked={showArchived} onChange={() => setShowArchived(!showArchived)}/>} label="Show archived" sx={{textAlign: "end"}} />
+                <FormControlLabel
+                    control={<Switch checked={showArchived} onChange={() => setShowArchived(!showArchived)}/>}
+                    label="Show archived" sx={{textAlign: "end"}}/>
             </Grid>
             <NewCategoryFrom refetchCategories={fetchCategories} isDisabled={
                 !isUnarchiveCategoriesEnabled}
@@ -60,13 +62,15 @@ export const CategorySection = () => {
                 ?
                 categories.map((category) => (
                     (<Grid item xs={12} key={category?.id}>
-                        <CategoryItem category={category} onUpdateCategory={fetchCategories} isUnarchiveEnabled={isUnarchiveCategoriesEnabled}/>
+                        <CategoryItem category={category} onUpdateCategory={fetchCategories}
+                                      isUnarchiveEnabled={isUnarchiveCategoriesEnabled}/>
                     </Grid>)
                 ))
                 :
-                categories.map((category) => ( !category.archived &&
+                categories.map((category) => (!category.archived &&
                     (<Grid item xs={12} key={category?.id}>
-                        <CategoryItem category={category} onUpdateCategory={fetchCategories} isUnarchiveEnabled={isUnarchiveCategoriesEnabled}/>
+                        <CategoryItem category={category} onUpdateCategory={fetchCategories}
+                                      isUnarchiveEnabled={isUnarchiveCategoriesEnabled}/>
                     </Grid>)
                 ))
             }

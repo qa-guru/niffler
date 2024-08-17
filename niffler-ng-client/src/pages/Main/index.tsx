@@ -60,6 +60,7 @@ export const MainPage = () => {
                   }}>
                 <Grid
                     item
+                    id="stat"
                     xs={isMobile ? 12 : shouldRecise ? 5 : 3}
                     sx={{
                         padding: isMobile ? 0 : "0 16px",
@@ -75,7 +76,7 @@ export const MainPage = () => {
                         Statistics
                     </Typography>
                     <Box sx={{
-                        display: isMobile ? "flex": "block",
+                        display: isMobile ? "flex" : "block",
                     }}>
                         <Box sx={{
                             display: "flex",
@@ -95,10 +96,11 @@ export const MainPage = () => {
                 </Grid>
                 <Grid
                     item
+                    id="spendings"
                     xs={isMobile ? 12 : shouldRecise ? 7 : 9}
                     sx={{
-                          padding: isMobile ? 0 : "0 16px",
-                      }}
+                        padding: isMobile ? 0 : "0 16px",
+                    }}
                 >
                     <Typography
                         variant="h5"

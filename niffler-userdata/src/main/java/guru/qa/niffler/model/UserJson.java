@@ -6,8 +6,8 @@ import guru.qa.niffler.data.CurrencyValues;
 import guru.qa.niffler.data.UserEntity;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import niffler_userdata.Currency;
-import niffler_userdata.User;
+import jaxb.userdata.Currency;
+import jaxb.userdata.User;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -44,8 +44,8 @@ public record UserJson(
     jaxbUser.setPhoto(photo);
     jaxbUser.setPhotoSmall(photoSmall);
     jaxbUser.setFriendState(friendState() == null ?
-        niffler_userdata.FriendState.VOID :
-        niffler_userdata.FriendState.valueOf(friendState().name()));
+        jaxb.userdata.FriendState.VOID :
+        jaxb.userdata.FriendState.valueOf(friendState().name()));
     return jaxbUser;
   }
 
@@ -59,7 +59,7 @@ public record UserJson(
         jaxbUser.getCurrency() != null ? CurrencyValues.valueOf(jaxbUser.getCurrency().name()) : null,
         jaxbUser.getPhoto(),
         jaxbUser.getPhotoSmall(),
-        (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != niffler_userdata.FriendState.VOID)
+        (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != jaxb.userdata.FriendState.VOID)
             ? FriendState.valueOf(jaxbUser.getFriendState().name())
             : null
     );

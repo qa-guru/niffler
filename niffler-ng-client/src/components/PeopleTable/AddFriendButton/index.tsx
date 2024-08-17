@@ -1,7 +1,7 @@
 import {SecondaryButton} from "../../Button";
 import AddFriendIcon from "../../../assets/icons/ic_add_friend.svg?react";
 import {Box, useMediaQuery, useTheme} from "@mui/material";
-import { FC } from "react";
+import {FC} from "react";
 import {apiClient} from "../../../api/apiClient.ts";
 import {useSnackBar} from "../../../context/SnackBarContext.tsx";
 import {FriendState} from "../../../types/FriendState.ts";

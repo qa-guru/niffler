@@ -22,7 +22,7 @@ export const AppContent: FC = () => {
                         <Route path="/people/all" element={<PeoplePage activeTab={"all"}/>}/>
                         <Route path="/people/friends" element={<PeoplePage activeTab={"friends"}/>}/>
                     </Route>
-                   <Route path="*" element={<NotFoundPage/>}/>
+                    <Route path="*" element={<NotFoundPage/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

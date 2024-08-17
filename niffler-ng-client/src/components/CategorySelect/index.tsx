@@ -1,7 +1,7 @@
 import * as React from 'react';
+import {FC, useEffect, useState} from 'react';
 import FormControl from '@mui/material/FormControl';
 import {Box, Chip, List, MenuItem, TextField} from '@mui/material';
-import {FC, useEffect, useState} from "react";
 import {apiClient} from "../../api/apiClient.ts";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
 import {MAX_CATEGORIES_COUNT} from "../../const/constants.ts";
@@ -13,7 +13,12 @@ interface CategorySelectInterface {
     helperText: string;
 }
 
-export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory = "", onSelectCategory, error, helperText}) => {
+export const CategorySelect: FC<CategorySelectInterface> = ({
+                                                                selectedCategory = "",
+                                                                onSelectCategory,
+                                                                error,
+                                                                helperText
+                                                            }) => {
     const snackbar = useSnackBar();
     const [allCategories, setAllCategories] = useState<string[]>([]);
 
@@ -36,14 +41,14 @@ export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory = 
             event.preventDefault();
             const value = (event.target as HTMLInputElement).value
             onSelectCategory(value);
-            if(!allCategories.includes(value)) {
+            if (!allCategories.includes(value)) {
                 pushToCategories(value);
             }
         }
     };
 
     const pushToCategories = (category: string) => {
-        if (allCategories.length < MAX_CATEGORIES_COUNT)  {
+        if (allCategories.length < MAX_CATEGORIES_COUNT) {
             setAllCategories([...allCategories, category]);
         }
     }
@@ -57,7 +62,7 @@ export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory = 
             display: "flex",
             alignItens: "center",
         }}>
-            <FormControl sx={{ width: "100%" }}>
+            <FormControl sx={{width: "100%"}}>
                 <TextField
                     name="category"
                     value={selectedCategory}
@@ -69,14 +74,15 @@ export const CategorySelect: FC<CategorySelectInterface> = ({selectedCategory = 
                     placeholder={"Add new category"}
                 />
                 <List sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        marginTop: 1,
-                    }}>
+                    display: "flex",
+                    flexWrap: "wrap",
+                    marginTop: 1,
+                }}>
                     {allCategories.map((name) => (
                         <MenuItem key={name} sx={{margin: "4px", padding: 0, borderRadius: "20px"}}>
-                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }} >
-                                <Chip key={name} label={name} tabIndex={0} onClick={() => onSelectCategory(name)} color={isCategorySelected(name) ? "primary": "default"}/>
+                            <Box sx={{display: "flex", flexWrap: "wrap", gap: 0.5}}>
+                                <Chip key={name} label={name} tabIndex={0} onClick={() => onSelectCategory(name)}
+                                      color={isCategorySelected(name) ? "primary" : "default"}/>
                             </Box>
                         </MenuItem>
                     ))}

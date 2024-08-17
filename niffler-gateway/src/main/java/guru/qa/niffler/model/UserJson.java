@@ -3,10 +3,10 @@ package guru.qa.niffler.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
-import guru.qa.niffler.userdata.wsdl.Currency;
-import guru.qa.niffler.userdata.wsdl.User;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Size;
+import jaxb.userdata.Currency;
+import jaxb.userdata.User;
 
 import java.util.UUID;
 
@@ -50,8 +50,8 @@ public record UserJson(
     jaxbUser.setPhoto(photo);
     jaxbUser.setPhotoSmall(photoSmall);
     jaxbUser.setFriendState(friendState() == null ?
-        guru.qa.niffler.userdata.wsdl.FriendState.VOID :
-        guru.qa.niffler.userdata.wsdl.FriendState.valueOf(friendState().name()));
+        jaxb.userdata.FriendState.VOID :
+        jaxb.userdata.FriendState.valueOf(friendState().name()));
     return jaxbUser;
   }
 
@@ -65,7 +65,7 @@ public record UserJson(
         jaxbUser.getCurrency() != null ? CurrencyValues.valueOf(jaxbUser.getCurrency().name()) : null,
         jaxbUser.getPhoto(),
         jaxbUser.getPhotoSmall(),
-        (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != guru.qa.niffler.userdata.wsdl.FriendState.VOID)
+        (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != jaxb.userdata.FriendState.VOID)
             ? FriendState.valueOf(jaxbUser.getFriendState().name())
             : null
     );

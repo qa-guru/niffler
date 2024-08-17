@@ -10,6 +10,7 @@ import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
+import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.utils.OauthUtils;
 import io.qameta.allure.Step;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -81,9 +82,9 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
 
       if (setUpBrowser) {
         Selenide.open(CFG.frontUrl());
-        Selenide.sessionStorage().setItem("id_token", getToken(context));
+        Selenide.localStorage().setItem("id_token", getToken(context));
         WebDriverRunner.getWebDriver().manage().addCookie(getJsessionIdCookie());
-        Selenide.refresh();
+        Selenide.open(CFG.frontUrl(), MainPage.class).waitForPageLoaded();
       }
     }
   }

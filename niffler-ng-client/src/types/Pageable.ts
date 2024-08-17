@@ -1,4 +1,4 @@
-interface Pageable<T>{
+interface Pageable<T> {
     content: T[],
     number: number,
     empty: boolean,

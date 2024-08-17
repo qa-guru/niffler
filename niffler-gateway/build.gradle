@@ -3,58 +3,11 @@ plugins {
     id 'org.springframework.boot' version '3.3.2'
     id 'io.spring.dependency-management' version '1.1.6'
     id 'com.google.cloud.tools.jib' version '3.4.1'
+    id 'com.github.edeandrea.xjc-generation' version "1.6"
 }
 
 group = 'guru.qa'
 version = '2.0.0'
-
-configurations {
-    jaxb
-}
-
-tasks.register('genJaxb') {
-    ext.sourcesDir = layout.buildDirectory.dir("generated-sources/jaxb").get()
-    ext.classesDir = layout.buildDirectory.dir("classes/jaxb").get()
-    ext.schema = "userdata.wsdl"
-
-    outputs.dir classesDir
-
-    doLast() {
-        project.ant {
-            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask", classpath: configurations.jaxb.asPath
-            mkdir(dir: sourcesDir)
-            mkdir(dir: classesDir)
-
-            xjc(destdir: sourcesDir, schema: schema, package: "guru.qa.niffler.userdata.wsdl") {
-                arg(value: "-wsdl")
-                produces(dir: sourcesDir, includes: "**/*.java")
-            }
-
-            javac(destdir: classesDir, source: 21, target: 21, debug: true,
-                    debugLevel: "lines,vars,source",
-                    classpath: configurations.jaxb.asPath) {
-                src(path: sourcesDir)
-                include(name: "**/*.java")
-                include(name: "*.java")
-            }
-
-            copy(todir: classesDir) {
-                fileset(dir: sourcesDir, erroronmissingdir: false) {
-                    exclude(name: "**/*.java")
-                }
-            }
-        }
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main/java'
-            srcDir 'build/generated-sources/jaxb'
-        }
-    }
-}
 
 dependencies {
     implementation project(':niffler-grpc-common')
@@ -74,12 +27,30 @@ dependencies {
     implementation "net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${project.ext.openApiVersion}"
-    // For Java 11:
-    implementation "org.glassfish.jaxb:jaxb-runtime:${project.ext.glassfishJaxbVersion}"
-    implementation(files(genJaxb.classesDir).builtBy(genJaxb))
-    jaxb "org.glassfish.jaxb:jaxb-xjc:${project.ext.glassfishJaxbVersion}"
+
+    xjc "org.glassfish.jaxb:jaxb-xjc:${project.ext.jakartaJaxbVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+xjcGeneration {
+    defaultAdditionalXjcOptions = ['encoding': 'UTF-8']
+    schemas {
+        wsdlSchema {
+            schemaFile = 'userdata.wsdl'
+            javaPackageName = 'jaxb.userdata'
+            sourceSet = 'main'
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir('src/main/java')
+            srcDir("$buildDir/generated-sources/main/xjc")
+        }
+    }
 }
 
 jib {
@@ -106,7 +77,6 @@ jib {
 
 tasks.jib.dependsOn test
 tasks.jibDockerBuild.dependsOn test
-tasks.compileJava.dependsOn genJaxb
 
 tasks.named('bootJar') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE

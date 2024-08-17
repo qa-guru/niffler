@@ -4,9 +4,9 @@ public enum SuccessMessage {
   FRIEND_DELETED("Friend is deleted"),
   INVITATION_ACCEPTED("Invitation is accepted"),
   INVITATION_DECLINED("Invitation is declined"),
-  SPENDING_ADDED("Spending successfully added"),
+  SPENDING_ADDED("New spending is successfully created"),
   PROFILE_UPDATED("Profile successfully updated"),
-  CATEGORY_ADDED("New category added");
+  CATEGORY_ADDED("You've added new category:");
 
   public final String content;
 

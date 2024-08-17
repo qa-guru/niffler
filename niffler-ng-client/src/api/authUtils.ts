@@ -45,4 +45,11 @@ const clearSession = () => {
     localStorage.removeItem('id_token');
 }
 
-export {generateCodeChallenge, generateCodeVerifier, getAuthLink, getTokenFromUrlEncodedParams, clearSession, initLocalStorageAndRedirectToAuth};
+export {
+    generateCodeChallenge,
+    generateCodeVerifier,
+    getAuthLink,
+    getTokenFromUrlEncodedParams,
+    clearSession,
+    initLocalStorageAndRedirectToAuth
+};

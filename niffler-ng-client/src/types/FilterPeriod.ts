@@ -21,7 +21,7 @@ export type FilterPeriodValue = typeof filterPeriod[number];
 
 export const convertValueToFilterPeriodValue = (value: string): FilterPeriodValue => {
     const res = filterPeriod.find(period => period.value === value);
-    if(res) {
+    if (res) {
         return res
     } else {
         throw Error("Bad period value");

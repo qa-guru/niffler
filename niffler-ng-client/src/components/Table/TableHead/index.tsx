@@ -1,5 +1,5 @@
-import {TableHead as MuiTableHead, TableCell, TableRow, useTheme, Checkbox, Typography} from "@mui/material";
-import { HeadCell } from "../HeadCell";
+import {Checkbox, TableCell, TableHead as MuiTableHead, TableRow, Typography, useTheme} from "@mui/material";
+import {HeadCell} from "../HeadCell";
 import {ChangeEvent, FC} from "react";
 
 interface TableHeadProps {

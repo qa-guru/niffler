@@ -2,7 +2,7 @@ name: e2e
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [ opened, reopened, synchronize ]
 
 jobs:
   e2e-tests:
@@ -25,12 +25,12 @@ jobs:
           PROFILE: docker
           PREFIX: qaguru
           ARCH: amd64
-          FRONT: niffler-frontend
+          FRONT: niffler-ng-client
           ALLURE_DOCKER_API: ${{ secrets.ALLURE_DOCKER_API }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           : # build backends with profile `docker`, only for testing
-          bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test || exit 1
+          bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test || exit 1
           : # pull browser (see browsers.json)        
           docker pull selenoid/vnc_chrome:125.0
           : # run e2e tests
@@ -69,14 +69,12 @@ jobs:
             })
   
   collect-versions:
-    if: false
     needs: e2e-tests
     uses: ./.github/workflows/versions.yml
     with:
       runner: niffler-stage-runner
   
   deploy-services:
-    if: false
     runs-on: niffler-stage-runner
     needs: collect-versions
     steps:
@@ -91,7 +89,7 @@ jobs:
           echo "SPEND_VER=${{ needs.collect-versions.outputs.spend-ver }}" >> $GITHUB_ENV
           echo "USERDATA_VER=${{ needs.collect-versions.outputs.userdata-ver }}" >> $GITHUB_ENV
           echo "FRONT_VER=${{ needs.collect-versions.outputs.front-ver }}" >> $GITHUB_ENV
-          echo "FRONT_IMAGE=niffler-frontend" >> $GITHUB_ENV
+          echo "FRONT_IMAGE=niffler-ng-client" >> $GITHUB_ENV
 
       - name: Summary info
         run: |
@@ -120,9 +118,7 @@ jobs:
             userdata:
               - 'niffler-userdata/**'
             frontend:
-              - 'niffler-frontend/**'            
-            frontend-gql:
-              - 'niffler-frontend-gql/**'     
+              - 'niffler-ng-client/**'              
 
       - name: Docker login
         run: |
@@ -133,7 +129,7 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          bash ./gradlew :niffler-auth:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          bash ./gradlew :niffler-auth:jib -x :niffler-e-2-e-tests:test
           docker compose -f docker-compose.ci.yml pull auth.niffler.dc
           docker compose -f docker-compose.ci.yml stop auth.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps auth.niffler.dc
           docker system prune -a -f
@@ -144,7 +140,7 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          bash ./gradlew :niffler-currency:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          bash ./gradlew :niffler-currency:jib -x :niffler-e-2-e-tests:test
           docker compose -f docker-compose.ci.yml pull currency.niffler.dc
           docker compose -f docker-compose.ci.yml stop currency.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps currency.niffler.dc
           docker system prune -a -f
@@ -155,7 +151,7 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          bash ./gradlew :niffler-gateway:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          bash ./gradlew :niffler-gateway:jib -x :niffler-e-2-e-tests:test
           docker compose -f docker-compose.ci.yml pull gateway.niffler.dc
           docker compose -f docker-compose.ci.yml stop gateway.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps gateway.niffler.dc
           docker system prune -a -f
@@ -166,7 +162,7 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          bash ./gradlew :niffler-spend:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          bash ./gradlew :niffler-spend:jib -x :niffler-e-2-e-tests:test
           docker compose -f docker-compose.ci.yml pull spend.niffler.dc
           docker compose -f docker-compose.ci.yml stop spend.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps spend.niffler.dc
           docker system prune -a -f
@@ -177,7 +173,7 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          bash ./gradlew :niffler-userdata:jib -Pskipjaxb -x :niffler-e-2-e-tests:test
+          bash ./gradlew :niffler-userdata:jib -x :niffler-e-2-e-tests:test
           docker compose -f docker-compose.ci.yml pull userdata.niffler.dc
           docker compose -f docker-compose.ci.yml stop userdata.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps userdata.niffler.dc
           docker system prune -a -f
@@ -185,21 +181,15 @@ jobs:
 
       - name: build frontend & deploy to staging
         if: steps.changes.outputs.frontend == 'true'
-        working-directory: ./niffler-frontend
+        working-directory: ./niffler-ng-client
         run: |
-          pwd     
-          bash ./docker-build.sh staging push
+          pwd
+          IMAGE_TAG="${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}"
+          docker build --build-arg NPM_COMMAND=staging:build -t ${IMAGE_TAG}:${{ env.FRONT_VER }} -t ${IMAGE_TAG}:latest .
+          docker push ${IMAGE_TAG}:${{ env.FRONT_VER }}
+          docker push ${IMAGE_TAG}:latest
           cd ../ || exit 1
           docker compose -f docker-compose.ci.yml pull frontend.niffler.dc
           docker compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
           docker system prune -a -f
           echo "Deploy frontend to staging done!"
-
-      - name: build frontend WITHOUT deploy to staging
-        if: steps.changes.outputs.frontend-gql == 'true'
-        working-directory: ./niffler-frontend-gql
-        run: |
-          pwd
-          bash ./docker-build.sh staging push
-          cd ../ || exit 1
-          echo "Build & push frontend-gql to staging done!"  

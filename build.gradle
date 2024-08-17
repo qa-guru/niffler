@@ -20,7 +20,7 @@ subprojects {
         springGrpcVersion = '3.1.0.RELEASE'
         springGraphqlDateTimeVersion = '6.0.0'
         openApiVersion = '2.6.0'
-        glassfishJaxbVersion = '4.0.5'
+        jakartaJaxbVersion = '4.0.5'
         wsdl4jVersion = '1.6.3'
         thumbnailatorVersion = '0.4.20'
 

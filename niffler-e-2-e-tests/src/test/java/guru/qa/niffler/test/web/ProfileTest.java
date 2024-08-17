@@ -4,9 +4,6 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
-import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.model.rest.CurrencyValues;
-import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.ProfilePage;
 import guru.qa.niffler.utils.SuccessMessage;
 import io.qameta.allure.AllureId;
@@ -17,8 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import static guru.qa.niffler.utils.DataUtils.generateNewCategory;
 import static guru.qa.niffler.utils.DataUtils.generateRandomName;
-import static guru.qa.niffler.utils.DataUtils.generateRandomSurname;
-import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_ADD_CATEGORY;
 import static guru.qa.niffler.utils.SuccessMessage.PROFILE_UPDATED;
 
 @Epic("[WEB][niffler-frontend]: Профиль")
@@ -30,23 +25,18 @@ public class ProfileTest extends BaseWebTest {
   @DisplayName("WEB: Пользователь может отредактировать все поля в профиле")
   @Tag("WEB")
   @ApiLogin(user = @GenerateUser)
-  void shouldUpdateProfileWithAllFieldsSet(@User UserJson user) {
-    String newName = generateRandomName();
-    String newSurname = generateRandomSurname();
+  void shouldUpdateProfileWithAllFieldsSet() {
+    final String newName = generateRandomName();
 
     ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
-        .waitForPageLoaded()
+        .uploadPhotoFromClasspath("img/cat.jpeg")
         .setName(newName)
-        .setSurname(newSurname)
-        .setCurrency(CurrencyValues.EUR)
         .submitProfile()
-        .checkToasterMessage(PROFILE_UPDATED.content);
+        .checkAlertMessage(PROFILE_UPDATED.content);
 
     Selenide.refresh();
 
-    profilePage.checkName(newName);
-    profilePage.checkSurname(newSurname);
-    profilePage.checkCurrency(CurrencyValues.EUR);
+    profilePage.checkName(newName).checkPhotoExist();
   }
 
   @Test
@@ -54,18 +44,18 @@ public class ProfileTest extends BaseWebTest {
   @DisplayName("WEB: Пользователь может отредактировать профиль с заполнением только обязательных полей")
   @Tag("WEB")
   @ApiLogin(user = @GenerateUser)
-  void shouldUpdateProfileWithOnlyRequiredFields(@User UserJson user) {
+  void shouldUpdateProfileWithOnlyRequiredFields() {
+    final String newName = generateRandomName();
+
     ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
         .waitForPageLoaded()
-        .setCurrency(CurrencyValues.KZT)
+        .setName(newName)
         .submitProfile()
-        .checkToasterMessage(PROFILE_UPDATED.content);
+        .checkAlertMessage(PROFILE_UPDATED.content);
 
     Selenide.refresh();
 
-    profilePage.checkName("");
-    profilePage.checkSurname("");
-    profilePage.checkCurrency(CurrencyValues.KZT);
+    profilePage.checkName(newName);
   }
 
   @Test
@@ -73,14 +63,12 @@ public class ProfileTest extends BaseWebTest {
   @DisplayName("WEB: Пользователь имеет возможность добавить категорию трат")
   @Tag("WEB")
   @ApiLogin(user = @GenerateUser)
-  void shouldAddNewCategory(@User UserJson user) {
+  void shouldAddNewCategory() {
     String newCategory = generateNewCategory();
-    ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
-        .waitForPageLoaded()
+    Selenide.open(ProfilePage.URL, ProfilePage.class)
         .addCategory(newCategory)
-        .checkToasterMessage(SuccessMessage.CATEGORY_ADDED.content);
-    Selenide.refresh();
-    profilePage.checkCategoryExists(newCategory);
+        .checkAlertMessage(SuccessMessage.CATEGORY_ADDED.content)
+        .checkCategoryExists(newCategory);
   }
 
   @Test
@@ -99,11 +87,8 @@ public class ProfileTest extends BaseWebTest {
           @GenerateCategory("Books")
       }
   ))
-  void shouldForbidAddingMoreThat8Categories(@User UserJson user) {
-    String newCategory = generateNewCategory();
+  void shouldForbidAddingMoreThat8Categories() {
     Selenide.open(ProfilePage.URL, ProfilePage.class)
-        .waitForPageLoaded()
-        .addCategory(newCategory)
-        .checkToasterMessage(CAN_NOT_ADD_CATEGORY.content);
+        .checkThatCategoryInputDisabled();
   }
 }

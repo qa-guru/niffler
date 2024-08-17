@@ -30,7 +30,7 @@ export const Toolbar: FC<ToolbarInterface> = ({
                                                   currencies,
                                                   selectedSpendIds,
                                                   onDeleteCallback
-}) => {
+                                              }) => {
     const theme = useTheme();
     const dialog = useDialog();
     const snackbar = useSnackBar();
@@ -68,58 +68,58 @@ export const Toolbar: FC<ToolbarInterface> = ({
                 width: "100%",
                 margin: isMobile ? 2 : 0,
             }}>
+                <TextField
+                    sx={{
+                        margin: isMobile ? "0 8px 0 0" : "0 8px",
+                        padding: 0,
+                        maxWidth: "140px",
+                        border: "none",
+                    }}
+                    id="period"
+                    name="period"
+                    type="text"
+                    select
+                    value={period.value}
+                    onChange={e => handleChangePeriod(e)}
+                    error={false}
+                    fullWidth
+                >
+                    {filterPeriod.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                {currencies?.length > 0 && (
                     <TextField
                         sx={{
-                            margin: isMobile ? "0 8px 0 0" : "0 8px",
+                            margin: 0,
+                            marginRight: "8px",
                             padding: 0,
-                            maxWidth: "140px",
-                            border: "none",
+                            maxWidth: "120px"
                         }}
-                        id="period"
-                        name="period"
+                        id="currency"
+                        name="currency"
                         type="text"
                         select
-                        value={period.value}
-                        onChange={e => handleChangePeriod(e)}
                         error={false}
+                        value={selectedCurrency.currency}
+                        onChange={handleChangeCurrency}
                         fullWidth
                     >
-                        {filterPeriod.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                                {option.label}
+                        {currencies.map((option) => (
+                            <MenuItem key={option.currency} value={option.currency}>
+                                <Stack sx={{fontSize: 18, display: "inline"}} component="span">
+                                    {getCurrencyIcon(option.currency as CurrencyValue)}
+                                </Stack>
+                                &nbsp;&nbsp;
+                                <Stack sx={{color: theme.palette.gray_600.main, display: "inline"}} component="span">
+                                    {option.currency}
+                                </Stack>
                             </MenuItem>
                         ))}
                     </TextField>
-                    {currencies?.length > 0 && (
-                        <TextField
-                            sx={{
-                                margin: 0,
-                                marginRight: "8px",
-                                padding: 0,
-                                maxWidth: "120px"
-                            }}
-                            id="currency"
-                            name="currency"
-                            type="text"
-                            select
-                            error={false}
-                            value={selectedCurrency.currency}
-                            onChange={handleChangeCurrency}
-                            fullWidth
-                        >
-                            {currencies.map((option) => (
-                                <MenuItem key={option.currency} value={option.currency}>
-                                    <Stack sx={{fontSize: 18, display: "inline"}} component="span">
-                                        {getCurrencyIcon(option.currency as CurrencyValue)}
-                                    </Stack>
-                                    &nbsp;&nbsp;
-                                    <Stack sx={{color: theme.palette.gray_600.main, display: "inline"}} component="span">
-                                        {option.currency}
-                                    </Stack>
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    )}
+                )}
                 {isMobile ?
                     <SecondaryButton
                         sx={{
@@ -128,6 +128,7 @@ export const Toolbar: FC<ToolbarInterface> = ({
                             minWidth: "48px",
                             minHeight: "48px",
                         }}
+                        id="delete"
                         type={"button"}
                         onClick={onDeleteButtonClick}
                         disabled={selectedSpendIds.length === 0}
@@ -140,6 +141,7 @@ export const Toolbar: FC<ToolbarInterface> = ({
                             fontWeight: 400,
                             minWidth: 100
                         }}
+                        id="delete"
                         type={"button"}
                         startIcon={<DeleteIcon/>}
                         onClick={onDeleteButtonClick}

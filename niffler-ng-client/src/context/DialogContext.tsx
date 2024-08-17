@@ -1,4 +1,5 @@
-import {FC, ReactNode, createContext, useContext, useState, forwardRef, ReactElement} from 'react';
+import * as React from 'react';
+import {createContext, FC, forwardRef, ReactElement, ReactNode, useContext, useState} from 'react';
 import DialogMui from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -7,7 +8,6 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import {TransitionProps} from "@mui/material/transitions";
 import Slide from "@mui/material/Slide";
-import * as React from "react";
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -29,7 +29,7 @@ interface DialogDataInterface {
 
 interface DialogContextActions {
     showDialog: (dialogData: DialogDataInterface) => void;
-};
+}
 
 const DialogContext = createContext({} as DialogContextActions);
 
@@ -56,7 +56,7 @@ const DialogProvider: FC<DialogContextProps> = ({children}) => {
     }
 
     return (
-        <DialogContext.Provider value={{ showDialog }}>
+        <DialogContext.Provider value={{showDialog}}>
             {children}
             <DialogMui
                 open={open}
@@ -108,4 +108,4 @@ const useDialog = (): DialogContextActions => {
     return context;
 };
 
-export { DialogProvider, useDialog };
+export {DialogProvider, useDialog};

@@ -2,7 +2,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import {FC, useState, MouseEvent, useContext} from 'react';
+import {FC, MouseEvent, useContext, useState} from 'react';
 import {Link} from 'react-router-dom';
 import logo from "../../assets/icons/coin.svg";
 import "./styles.css";
@@ -39,18 +39,18 @@ export const MenuAppBar: FC = () => {
                     {
                         isMobile
                             ?
-                                <>
-                                    <MenuButton onMenuClick={onAvatarClick} isMenuOpened={open} photo={user?.photoSmall}/>
-                                    <Box>
-                                        <Link to={"/main"} className="link">
-                                            <img src={logo} alt="Niffler logo" width={30} height={30}/>
-                                            <Typography variant="h5" component="h1" sx={{flexGrow: 1, marginLeft: 1}}>
-                                                Niffler
-                                            </Typography>
-                                        </Link>
-                                    </Box>
-                                    <NewSpendingButton/>
-                                </>
+                            <>
+                                <MenuButton onMenuClick={onAvatarClick} isMenuOpened={open} photo={user?.photoSmall}/>
+                                <Box>
+                                    <Link to={"/main"} className="link">
+                                        <img src={logo} alt="Niffler logo" width={30} height={30}/>
+                                        <Typography variant="h5" component="h1" sx={{flexGrow: 1, marginLeft: 1}}>
+                                            Niffler
+                                        </Typography>
+                                    </Link>
+                                </Box>
+                                <NewSpendingButton/>
+                            </>
                             :
                             <>
                                 <Box>
@@ -63,7 +63,8 @@ export const MenuAppBar: FC = () => {
                                 </Box>
                                 <Box>
                                     <NewSpendingButton/>
-                                    <MenuButton onMenuClick={onAvatarClick} isMenuOpened={open} photo={user?.photoSmall}/>
+                                    <MenuButton onMenuClick={onAvatarClick} isMenuOpened={open}
+                                                photo={user?.photoSmall}/>
                                 </Box>
                             </>
                     }

@@ -47,7 +47,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                 onFailure: (e) => {
                     snackbar.showSnackBar(e.message, "error");
                     console.error(e.message);
-                    if(isApiError(e) && (e.status === 404)){
+                    if (isApiError(e) && (e.status === 404)) {
                         navigate("/not-found");
                     } else {
                         setFormData(convertSpendingToFormData(SPENDING_INITIAL_STATE));

@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
+import static jakarta.persistence.CascadeType.PERSIST;
+
 @Getter
 @Setter
 @Entity
@@ -47,7 +49,7 @@ public class SpendEntity implements Serializable {
   @Column(nullable = false)
   private String description;
 
-  @OneToOne(fetch = FetchType.EAGER)
+  @OneToOne(fetch = FetchType.EAGER, cascade = PERSIST)
   @JoinColumn(name = "category_id", referencedColumnName = "id")
   private CategoryEntity category;
 

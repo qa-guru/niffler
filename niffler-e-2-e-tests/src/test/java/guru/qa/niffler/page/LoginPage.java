@@ -14,7 +14,13 @@ public class LoginPage extends BasePage<LoginPage> {
   private final SelenideElement usernameInput = $("input[name='username']");
   private final SelenideElement passwordInput = $("input[name='password']");
   private final SelenideElement submitButton = $("button[type='submit']");
+  private final SelenideElement registerButton = $("a[href='/register']");
   private final SelenideElement errorContainer = $(".form__error");
+
+  public RegisterPage doRegister() {
+    registerButton.click();
+    return new RegisterPage();
+  }
 
   @Step("Fill login page with credentials: username: {0}, password: {1}")
   public LoginPage fillLoginPage(String login, String password) {

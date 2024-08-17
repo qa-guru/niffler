@@ -63,6 +63,7 @@ export const AllTable = () => {
                         <PeopleTable
                             data={people}
                             setData={setPeople}
+                            label="all"
                         />
                         <TablePagination
                             onPreviousClick={() => setPage(page - 1)}

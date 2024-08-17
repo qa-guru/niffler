@@ -1,1 +1,2 @@
-export interface IStringIndex extends Record<string, any> {};
+export interface IStringIndex extends Record<string, any> {
+}

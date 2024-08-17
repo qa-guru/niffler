@@ -32,7 +32,11 @@ public class SpendRepositoryJdbc implements SpendRepository {
       usersPs.setString(3, spend.getCurrency().name());
       usersPs.setDouble(4, spend.getAmount());
       usersPs.setString(5, spend.getDescription());
-      usersPs.setObject(6, spend.getCategory().getId());
+      final UUID categoryId = spend.getCategory().getId() == null
+          ? createCategory(spend.getCategory()).getId()
+          : spend.getCategory().getId();
+
+      usersPs.setObject(6, categoryId);
       usersPs.executeUpdate();
       UUID generatedUserId;
       try (ResultSet generatedKeys = usersPs.getGeneratedKeys()) {

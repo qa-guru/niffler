@@ -13,7 +13,6 @@ import org.openqa.selenium.WebElement;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SpendCondition {
 
@@ -39,39 +38,32 @@ public class SpendCondition {
           SpendJson expectedSpending = expectedSpends[i];
           List<WebElement> cells = row.findElements(By.cssSelector("td"));
 
-          final String formattedDate = DateUtils.getDateAsString(expectedSpending.spendDate());
-          if (!cells.get(1).getText().equals(formattedDate)) {
+          final String formattedDate = DateUtils.getDateAsString(expectedSpending.spendDate(), "MMM d, yyyy");
+          if (!cells.get(1).getText().equals(expectedSpending.category().name())) {
             String message = String.format(
-                "Spend date mismatch (expected: %s, actual: %s)",
-                formattedDate, cells.get(1).getText()
+                "Spend category mismatch (expected: %s, actual: %s)",
+                expectedSpending.category().name(), cells.get(1).getText()
             );
             return CheckResult.rejected(message, bindElementsToSpends(elements));
           }
-          if (!Double.valueOf(cells.get(2).getText()).equals(expectedSpending.amount())) {
+          if (cells.get(2).getText().equals(expectedSpending.amount() + " " + expectedSpending.currency().symbol)) {
             String message = String.format(
-                "Spend amount mismatch (expected: %s, actual: %s)",
+                "Spend amount or currency mismatch (expected: %s, actual: %s)",
                 expectedSpending.amount(), cells.get(2).getText()
             );
             return CheckResult.rejected(message, bindElementsToSpends(elements));
           }
-          if (!cells.get(3).getText().equals(expectedSpending.currency().name())) {
-            String message = String.format(
-                "Spend currency mismatch (expected: %s, actual: %s)",
-                expectedSpending.currency().name(), cells.get(3).getText()
-            );
-            return CheckResult.rejected(message, bindElementsToSpends(elements));
-          }
-          if (!cells.get(4).getText().equals(expectedSpending.category().name())) {
-            String message = String.format(
-                "Spend category mismatch (expected: %s, actual: %s)",
-                expectedSpending.category().name(), cells.get(4).getText()
-            );
-            return CheckResult.rejected(message, bindElementsToSpends(elements));
-          }
-          if (!cells.get(5).getText().equals(expectedSpending.description())) {
+          if (!cells.get(3).getText().equals(expectedSpending.description())) {
             String message = String.format(
                 "Spend description mismatch (expected: %s, actual: %s)",
-                expectedSpending.description(), cells.get(5).getText()
+                expectedSpending.description(), cells.get(3).getText()
+            );
+            return CheckResult.rejected(message, bindElementsToSpends(elements));
+          }
+          if (!cells.get(4).getText().equals(formattedDate)) {
+            String message = String.format(
+                "Spend date mismatch (expected: %s, actual: %s)",
+                formattedDate, cells.get(4).getText()
             );
             return CheckResult.rejected(message, bindElementsToSpends(elements));
           }
@@ -85,21 +77,24 @@ public class SpendCondition {
     return elements.stream()
         .map(e -> {
           List<WebElement> cells = e.findElements(By.cssSelector("td"));
+          String amount = cells.get(2).getText();
+          Double amountValue = Double.valueOf(amount.split("\\s+")[0]);
+          String amountSymbol = amount.split("\\s+")[1];
           return new SpendJson(
               null,
-              DateUtils.fromString(cells.get(1).getText()),
-              Double.valueOf(cells.get(2).getText()),
-              CurrencyValues.valueOf(cells.get(3).getText()),
+              DateUtils.fromString(cells.get(4).getText(), "MMM d, yyyy"),
+              amountValue,
+              CurrencyValues.fromSymbol(amountSymbol),
               new CategoryJson(
                   null,
-                  cells.get(4).getText(),
+                  cells.get(1).getText(),
                   null,
                   false
               ),
-              cells.get(5).getText(),
+              cells.get(3).getText(),
               null
           );
         })
-        .collect(Collectors.toList());
+        .toList();
   }
 }

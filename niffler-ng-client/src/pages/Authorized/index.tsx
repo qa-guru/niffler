@@ -1,8 +1,8 @@
-import {useEffect } from "react";
-import { Loader } from "../../components/Loader"
-import {useNavigate, useSearchParams } from "react-router-dom";
-import { getTokenFromUrlEncodedParams } from "../../api/authUtils";
-import { authClient } from "../../api/authClient";
+import {useEffect} from "react";
+import {Loader} from "../../components/Loader"
+import {useNavigate, useSearchParams} from "react-router-dom";
+import {getTokenFromUrlEncodedParams} from "../../api/authUtils";
+import {authClient} from "../../api/authClient";
 
 export const AuthorizedPage = () => {
     const [searchParams] = useSearchParams();
@@ -24,7 +24,7 @@ export const AuthorizedPage = () => {
     useEffect(() => {
         const code = searchParams?.get("code");
         const verifier = localStorage.getItem("codeVerifier");
-        if(code && verifier) {
+        if (code && verifier) {
             const data = getTokenFromUrlEncodedParams(code, verifier);
             getToken(data);
         } else {

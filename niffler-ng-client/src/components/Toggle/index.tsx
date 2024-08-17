@@ -1,5 +1,5 @@
-import {ToggleButton, ToggleButtonGroup } from "@mui/material"
-import {FC } from "react";
+import {ToggleButton, ToggleButtonGroup} from "@mui/material"
+import {FC} from "react";
 
 interface ToggleInterface {
     withMyFriends: boolean,

@@ -36,13 +36,13 @@ export const convertUserToFormData = (user: User): UserFormData => {
 
 export const profileFormValidate = (formValues: UserFormData): UserFormData => {
     let newFormValues = {...formValues};
-    
+
     newFormValues = {
         ...newFormValues,
         fullname: {
             ...newFormValues.fullname,
             error: formValues.fullname?.value?.length > MAX_FULLNAME_LENGTH,
-            errorMessage: formValues.fullname?.value?.length > MAX_FULLNAME_LENGTH  ? MAX_FULLNAME_ERROR : "",
+            errorMessage: formValues.fullname?.value?.length > MAX_FULLNAME_LENGTH ? MAX_FULLNAME_ERROR : "",
         },
     }
 

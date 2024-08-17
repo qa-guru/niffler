@@ -1,5 +1,5 @@
 import {createContext, Dispatch, SetStateAction} from "react";
-import { User } from "../types/User";
+import {User} from "../types/User";
 import {Statistic} from "../types/Statistic.ts";
 
 interface SessionContextInterface {
@@ -17,11 +17,13 @@ export const USER_INITIAL_STATE: User = {
 
 export const STAT_INITIAL_STATE: Statistic = {
     total: 0.0,
+    currency: "RUB",
     statByCategories: [],
 }
 
 const defaultState = {
-    updateUser: () => {},
+    updateUser: () => {
+    },
     user: USER_INITIAL_STATE,
     statistic: STAT_INITIAL_STATE,
 };

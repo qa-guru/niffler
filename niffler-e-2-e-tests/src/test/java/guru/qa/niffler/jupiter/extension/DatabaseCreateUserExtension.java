@@ -156,7 +156,13 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
             spendRepository.findUserCategoryByName(
                 createdUser.username(),
                 spend.spendCategory()
-            ).orElseThrow()
+            ).orElseGet(() -> {
+                  CategoryEntity newCategory = new CategoryEntity();
+                  newCategory.setUsername(createdUser.username());
+                  newCategory.setName(spend.spendCategory());
+                  return newCategory;
+                }
+            )
         );
         se = spendRepository.createSpend(se);
         final CategoryEntity categoryEntity = se.getCategory();

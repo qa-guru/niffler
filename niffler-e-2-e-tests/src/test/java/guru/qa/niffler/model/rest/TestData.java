@@ -17,4 +17,20 @@ public record TestData(
   public TestData(@Nonnull String password) {
     this(password, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
   }
+
+  public @Nonnull String[] friendsUsernames() {
+    return extractUsernames(friends);
+  }
+
+  public @Nonnull String[] incomeInvitationsUsernames() {
+    return extractUsernames(incomeInvitations);
+  }
+
+  public @Nonnull String[] outcomeInvitationsUsernames() {
+    return extractUsernames(outcomeInvitations);
+  }
+
+  private @Nonnull String[] extractUsernames(List<UserJson> users) {
+    return users.stream().map(UserJson::username).toArray(String[]::new);
+  }
 }

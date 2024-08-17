@@ -1,4 +1,4 @@
-export interface DoughnutOptions{
+export interface DoughnutOptions {
     cutout: string;
     responsive: boolean;
     maintainAspectRatio: boolean;

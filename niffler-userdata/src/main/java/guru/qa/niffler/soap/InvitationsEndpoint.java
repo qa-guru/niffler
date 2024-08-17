@@ -1,10 +1,10 @@
 package guru.qa.niffler.soap;
 
 import guru.qa.niffler.service.UserService;
-import niffler_userdata.AcceptInvitationRequest;
-import niffler_userdata.DeclineInvitationRequest;
-import niffler_userdata.SendInvitationRequest;
-import niffler_userdata.UserResponse;
+import jaxb.userdata.AcceptInvitationRequest;
+import jaxb.userdata.DeclineInvitationRequest;
+import jaxb.userdata.SendInvitationRequest;
+import jaxb.userdata.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;

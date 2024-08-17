@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static guru.qa.niffler.service.UserService.DEFAULT_USER_CURRENCY;
+import static guru.qa.niffler.service.UserService.isPhotoString;
 
 @Component
 public class MigrationService {
@@ -38,9 +39,11 @@ public class MigrationService {
           && (user.getPhotoSmall() == null || user.getPhotoSmall().length == 0)) {
         try {
           String originalPhoto = new String(user.getPhoto(), StandardCharsets.UTF_8);
-          user.setPhotoSmall(new SmallPhoto(100, 100, originalPhoto).bytes());
-          userRepository.save(user);
-          LOG.info("### Resizing original user Photo for user done: {}", user.getId());
+          if (isPhotoString(originalPhoto)) {
+            user.setPhotoSmall(new SmallPhoto(100, 100, originalPhoto).bytes());
+            userRepository.save(user);
+            LOG.info("### Resizing original user Photo for user done: {}", user.getId());
+          }
         } catch (Exception e) {
           LOG.error("### Error while resizing original user Photo for user :{}", user.getId());
         }

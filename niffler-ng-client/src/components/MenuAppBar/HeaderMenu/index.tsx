@@ -15,6 +15,7 @@ interface HeaderMenuInterface {
     updateUser: (user: User) => void;
 
 }
+
 export const HeaderMenu: FC<HeaderMenuInterface> = ({handleClose, anchorElement, open, updateUser}) => {
     const dialog = useDialog();
     const theme = useTheme();
@@ -32,7 +33,8 @@ export const HeaderMenu: FC<HeaderMenuInterface> = ({handleClose, anchorElement,
                         updateUser(USER_INITIAL_STATE);
                         initLocalStorageAndRedirectToAuth();
                     },
-                    onFailure: () => {},
+                    onFailure: () => {
+                    },
                 });
             },
             submitTitle: "Log out",
@@ -45,8 +47,8 @@ export const HeaderMenu: FC<HeaderMenuInterface> = ({handleClose, anchorElement,
             id="account-menu"
             open={open}
             onClose={handleClose}
-            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            transformOrigin={{horizontal: 'right', vertical: 'top'}}
+            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
             sx={{
                 margin: 0,
             }}
@@ -67,7 +69,7 @@ export const HeaderMenu: FC<HeaderMenuInterface> = ({handleClose, anchorElement,
                     Profile
                 </Link>
             </MenuItem>
-            <Divider />
+            <Divider/>
             <MenuItem onClick={handleClose} sx={{padding: 0}}>
                 <Link to={"/people/friends"} className={"link nav-link"}>
                     <ListItemIcon sx={{padding: "8px 12px"}}>
@@ -84,7 +86,7 @@ export const HeaderMenu: FC<HeaderMenuInterface> = ({handleClose, anchorElement,
                     All People
                 </Link>
             </MenuItem>
-            <Divider />
+            <Divider/>
             <MenuItem onClick={handleLogout} sx={{padding: 0}}>
                 <ListItemIcon sx={{padding: "8px 12px"}}>
                     <Icon type="signOutIcon"/>

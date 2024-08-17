@@ -15,17 +15,31 @@ import deleteIcon from "../../assets/icons/ic_delete.svg";
 
 import {FC} from "react";
 
-export type IconType = "addFriendIcon" | "checkIcon" | "crossIcon" | "plusIcon" | "userIcon" | "friendsIcon" | "allIcon"| "signOutIcon" | "editIcon" | "archiveIcon" | "deleteIcon" | "uploadIcon" | "calendarIcon";
+export type IconType =
+    "addFriendIcon"
+    | "checkIcon"
+    | "crossIcon"
+    | "plusIcon"
+    | "userIcon"
+    | "friendsIcon"
+    | "allIcon"
+    | "signOutIcon"
+    | "editIcon"
+    | "archiveIcon"
+    | "deleteIcon"
+    | "uploadIcon"
+    | "calendarIcon";
 
 export interface IconProps {
     type: IconType,
     color?: string,
 }
 
-export const Icon: FC<IconProps> = ({type, color}) => <img src={getIcon(type)} alt="" style={{color: color ?? '#A8ACC0'}}/>
+export const Icon: FC<IconProps> = ({type, color}) => <img src={getIcon(type)} alt=""
+                                                           style={{color: color ?? '#A8ACC0'}}/>
 
 const getIcon = (type: IconType): string => {
-    switch(type) {
+    switch (type) {
         case "addFriendIcon":
             return addFriendIcon;
         case "checkIcon":

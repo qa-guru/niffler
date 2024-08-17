@@ -37,18 +37,25 @@ export const SearchInput: FC<SearchInputInterface> = ({onSearchSubmit}) => {
             />
             {
                 search?.length > 0
-                    ?   <IconButton
-                            type="button"
-                            sx={{p: '10px'}}
-                            aria-label="search"
-                            color={"primary"}
-                            onClick={() => setSearch("")}
+                    ? <IconButton
+                        type="button"
+                        id="input-clear"
+                        sx={{p: '10px'}}
+                        aria-label="search"
+                        color={"primary"}
+                        onClick={() => setSearch("")}
                     >
-                                <CrossIcon/>
-                        </IconButton>
-                    :   <IconButton type="submit" sx={{p: '10px'}} aria-label="search" color={"primary"}>
-                            <SearchIcon/>
-                        </IconButton>
+                        <CrossIcon/>
+                    </IconButton>
+                    : <IconButton
+                        type="submit"
+                        id="input-submit"
+                        sx={{p: '10px'}}
+                        aria-label="search"
+                        color={"primary"}
+                    >
+                        <SearchIcon/>
+                    </IconButton>
             }
         </Box>
     )

@@ -1,7 +1,7 @@
 const BASE_URL = `${import.meta.env.VITE_AUTH_URL}`;
 
 export const authClient = {
-    getToken: async(url: string, data: URLSearchParams) => {
+    getToken: async (url: string, data: URLSearchParams) => {
         const response = await fetch(`${BASE_URL}/${url}`, {
             method: "POST",
             credentials: "include",
@@ -15,7 +15,7 @@ export const authClient = {
         }
         return response.json();
     },
-    logout: async({onSuccess, onFailure}: {onSuccess: () => void, onFailure: (e: Error) => void}) => {
+    logout: async ({onSuccess, onFailure}: { onSuccess: () => void, onFailure: (e: Error) => void }) => {
         const response = await fetch(`${BASE_URL}/logout`, {
             method: "GET",
             credentials: "include",

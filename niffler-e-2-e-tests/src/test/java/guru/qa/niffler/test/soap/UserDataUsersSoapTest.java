@@ -3,15 +3,15 @@ package guru.qa.niffler.test.soap;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.UserJson;
-import guru.qa.niffler.userdata.wsdl.AllUsersRequest;
-import guru.qa.niffler.userdata.wsdl.Currency;
-import guru.qa.niffler.userdata.wsdl.CurrentUserRequest;
-import guru.qa.niffler.userdata.wsdl.FriendState;
-import guru.qa.niffler.userdata.wsdl.UpdateUserRequest;
-import guru.qa.niffler.userdata.wsdl.UserResponse;
-import guru.qa.niffler.userdata.wsdl.UsersResponse;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
+import jaxb.userdata.AllUsersRequest;
+import jaxb.userdata.Currency;
+import jaxb.userdata.CurrentUserRequest;
+import jaxb.userdata.FriendState;
+import jaxb.userdata.UpdateUserRequest;
+import jaxb.userdata.UserResponse;
+import jaxb.userdata.UsersResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -34,7 +34,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
   @DisplayName("SOAP: Для нового пользователя должна возвращаться информация из niffler-userdata c дефолтными значениями")
   @AllureId("100001")
   @Tag("SOAP")
-  @GenerateUser()
+  @GenerateUser
   void currentUserTest(@User(selector = METHOD) UserJson user) throws Exception {
     CurrentUserRequest cur = new CurrentUserRequest();
     cur.setUsername(user.username());
@@ -59,12 +59,12 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
   @DisplayName("SOAP: При обновлении юзера должны сохраняться значения в niffler-userdata")
   @AllureId("100002")
   @Tag("SOAP")
-  @GenerateUser()
+  @GenerateUser
   void updateUserTest(@User(selector = METHOD) UserJson user) throws Exception {
     final String fullname = "Pizzly Pizzlyvich";
 
     UpdateUserRequest uir = new UpdateUserRequest();
-    guru.qa.niffler.userdata.wsdl.User xmlUser = new guru.qa.niffler.userdata.wsdl.User();
+    jaxb.userdata.User xmlUser = new jaxb.userdata.User();
     xmlUser.setUsername(user.username());
     xmlUser.setCurrency(Currency.USD);
     xmlUser.setFullname(fullname);
@@ -90,7 +90,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
   @DisplayName("SOAP: Список всех пользователей системы не должен быть пустым")
   @AllureId("100003")
   @Tag("SOAP")
-  @GenerateUser()
+  @GenerateUser
   @Order(1)
   void allUsersTest(@User(selector = METHOD) UserJson user) throws Exception {
     AllUsersRequest aur = new AllUsersRequest();

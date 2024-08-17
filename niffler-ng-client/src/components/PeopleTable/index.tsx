@@ -7,11 +7,13 @@ import {ActionButtons} from "./ActionButtons";
 interface PeopleTableInterface {
     data: User[];
     setData: (data: User[]) => void;
+    label: string;
 }
 
 export const PeopleTable: FC<PeopleTableInterface> = ({
                                                           data,
                                                           setData,
+                                                          label,
                                                       }) => {
 
     const theme = useTheme();
@@ -20,8 +22,8 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
         const index = data.findIndex(user => user.username === username);
         if (index === -1) return data;
 
-        if(!newFriendState) {
-            if(data.length === 1) {
+        if (!newFriendState) {
+            if (data.length === 1) {
                 setData([]);
             } else {
                 setData([
@@ -32,7 +34,7 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
         } else {
             setData([
                 ...data.slice(0, index),
-                { ...data[index], friendState: newFriendState},
+                {...data[index], friendState: newFriendState},
                 ...data.slice(index + 1)
             ]);
         }
@@ -42,7 +44,7 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
         <>
             <Table aria-labelledby="tableTitle">
                 {data?.length > 0 && (
-                    <TableBody>
+                    <TableBody id={label}>
                         {data.map((row: User) => {
                             return (
                                 <TableRow
@@ -70,12 +72,14 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
                                         />
                                         <Box>
                                             <Typography variant="body1" component="p">{row.username}</Typography>
-                                            <Typography variant="body2" component="p" sx={{color: theme.palette.gray_600.main}}>{row.fullname}</Typography>
+                                            <Typography variant="body2" component="p"
+                                                        sx={{color: theme.palette.gray_600.main}}>{row.fullname}</Typography>
                                         </Box>
                                     </TableCell>
                                     <TableCell align="right" sx={{padding: "4px 0"}}
                                     >
-                                        <ActionButtons username={row.username} friendState={row.friendState} handleUpdateUserData={handleUpdateUserData}/>
+                                        <ActionButtons username={row.username} friendState={row.friendState}
+                                                       handleUpdateUserData={handleUpdateUserData}/>
                                     </TableCell>
                                 </TableRow>
                             );

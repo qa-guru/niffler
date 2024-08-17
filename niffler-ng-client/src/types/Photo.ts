@@ -1,5 +1,5 @@
-import { Country } from "./Country";
-import { Likes } from "./Likes";
+import {Country} from "./Country";
+import {Likes} from "./Likes";
 
 export type Photo = {
     id: string;

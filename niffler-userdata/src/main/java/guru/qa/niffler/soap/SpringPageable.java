@@ -1,7 +1,7 @@
 package guru.qa.niffler.soap;
 
 import jakarta.annotation.Nonnull;
-import niffler_userdata.PageInfo;
+import jaxb.userdata.PageInfo;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

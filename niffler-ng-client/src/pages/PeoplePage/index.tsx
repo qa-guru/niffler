@@ -27,18 +27,18 @@ export const PeoplePage: FC<PeoplePageInterface> = ({activeTab}) => {
             case "all":
                 return (
                     isMobile
-                        ?   <AllTable/>
-                        :   <TabPanel value="all">
-                                <AllTable/>
-                            </TabPanel>
+                        ? <AllTable/>
+                        : <TabPanel value="all">
+                            <AllTable/>
+                        </TabPanel>
                 );
             case "friends":
                 return (
                     isMobile
-                        ?   <FriendsTable/>
-                        :   <TabPanel value="friends">
-                                <FriendsTable/>
-                            </TabPanel>
+                        ? <FriendsTable/>
+                        : <TabPanel value="friends">
+                            <FriendsTable/>
+                        </TabPanel>
                 );
         }
     }

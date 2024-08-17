@@ -127,7 +127,7 @@ services:
       tags:
         - ${PREFIX}/${FRONT}-docker:latest
       args:
-        NPM_COMMAND: build:docker
+        NPM_COMMAND: docker:build
     ports:
       - 80:80
     depends_on:

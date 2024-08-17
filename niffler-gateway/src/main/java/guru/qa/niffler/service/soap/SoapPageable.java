@@ -1,9 +1,9 @@
 package guru.qa.niffler.service.soap;
 
-import guru.qa.niffler.userdata.wsdl.Direction;
-import guru.qa.niffler.userdata.wsdl.PageInfo;
-import guru.qa.niffler.userdata.wsdl.Sort;
 import jakarta.annotation.Nonnull;
+import jaxb.userdata.Direction;
+import jaxb.userdata.PageInfo;
+import jaxb.userdata.Sort;
 import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
@@ -26,10 +26,10 @@ public class SoapPageable {
   }
 
   private @Nonnull List<Sort> sort() {
-    List<guru.qa.niffler.userdata.wsdl.Sort> result = new ArrayList<>();
+    List<jaxb.userdata.Sort> result = new ArrayList<>();
     if (!pageable.getSort().isEmpty()) {
       for (org.springframework.data.domain.Sort.Order order : pageable.getSort()) {
-        guru.qa.niffler.userdata.wsdl.Sort sort = new guru.qa.niffler.userdata.wsdl.Sort();
+        jaxb.userdata.Sort sort = new jaxb.userdata.Sort();
         sort.setProperty(order.getProperty());
         sort.setDirection(Direction.valueOf(order.getDirection().name()));
         result.add(sort);

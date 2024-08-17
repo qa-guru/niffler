@@ -33,11 +33,12 @@ export const PrivateRoute = () => {
                         },
                     })
                 }
-        },
-        onFailure: (err) => {
-            console.error(err.message);
-            snackbar.showSnackBar(err.message, "error");
-        }});
+            },
+            onFailure: (err) => {
+                console.error(err.message);
+                snackbar.showSnackBar(err.message, "error");
+            }
+        });
     }, []);
 
     return (

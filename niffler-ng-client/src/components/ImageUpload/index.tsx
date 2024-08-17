@@ -1,5 +1,5 @@
 import {Avatar, Box, useTheme} from "@mui/material"
-import {ChangeEvent, FC } from "react";
+import {ChangeEvent, FC} from "react";
 import PhotoCameraRoundedIcon from '@mui/icons-material/PhotoCameraRounded';
 import "./styles.css";
 import {SecondaryButton} from "../Button";
@@ -15,7 +15,14 @@ interface ImageUploadInterface {
     isAvatar?: boolean
 }
 
-export const ImageUpload: FC<ImageUploadInterface> = ({onFileUpload, buttonText, file, error = false, helperText, isAvatar = false}) => {
+export const ImageUpload: FC<ImageUploadInterface> = ({
+                                                          onFileUpload,
+                                                          buttonText,
+                                                          file,
+                                                          error = false,
+                                                          helperText,
+                                                          isAvatar = false
+                                                      }) => {
 
     const theme = useTheme();
 
@@ -35,12 +42,12 @@ export const ImageUpload: FC<ImageUploadInterface> = ({onFileUpload, buttonText,
     return (
         <Box
             sx={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            flexDirection: {xs: "column", sm: "row"}
-        }}>
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                flexDirection: {xs: "column", sm: "row"}
+            }}>
             <input
                 accept={"image/*"}
                 id="image__input"
@@ -67,8 +74,9 @@ export const ImageUpload: FC<ImageUploadInterface> = ({onFileUpload, buttonText,
                                     src={file}
                                     width="100%"
                                     height="100%"
+                                    alt="avatar"
                                 />
-                            ):
+                            ) :
                             <PhotoCameraRoundedIcon
                                 sx={{
                                     width: "100%",
