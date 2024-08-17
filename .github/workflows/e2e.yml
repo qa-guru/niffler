@@ -188,7 +188,7 @@ jobs:
         run: |
           pwd
           IMAGE_TAG="${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}"
-          docker build --build-arg NPM_COMMAND=staging:build -t ${IMAGE_TAG}:${{ env.FRONT_VER }} -t ${IMAGE_TAG}:latest .
+          docker build --build-arg NPM_COMMAND=staging:build VERSION=${{ env.FRONT_VER }} -t ${IMAGE_TAG}:${{ env.FRONT_VER }} -t ${IMAGE_TAG}:latest .
           docker push ${IMAGE_TAG}:${{ env.FRONT_VER }}
           docker push ${IMAGE_TAG}:latest
           cd ../ || exit 1

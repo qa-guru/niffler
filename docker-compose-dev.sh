@@ -2,6 +2,7 @@
 source ./docker.properties
 export PROFILE=docker
 export PREFIX="${IMAGE_PREFIX}"
+export FRONT_VERSION="2.0.0"
 export ARCH=$(uname -m)
 
 echo '### Java version ###'

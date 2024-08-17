@@ -118,6 +118,7 @@ services:
         - ${PREFIX}/${FRONT}-docker:latest
       args:
         NPM_COMMAND: docker:build
+        VERSION: ${FRONT_VERSION}
     expose:
       - 80
     depends_on:

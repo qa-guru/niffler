@@ -4,6 +4,7 @@ export PROFILE=docker
 export PREFIX="${IMAGE_PREFIX}"
 export ALLURE_DOCKER_API=http://allure:5050/
 export HEAD_COMMIT_MESSAGE="local build"
+export FRONT_VERSION="2.0.0"
 export ARCH=$(uname -m)
 
 echo '### Java version ###'
