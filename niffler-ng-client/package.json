@@ -1,16 +1,17 @@
 {
   "name": "niffler-ng-client",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "docker:build": "vite build --mode docker",
-    "staging:build": "vite build --mode staging",
-    "prod:build": "vite build --mode prod"
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "build:dev": "npm run build && npm run preview",
+    "build:docker": "vite build --mode docker",
+    "build:staging": "vite build --mode staging",
+    "build:prod": "vite build --mode prod"
   },
   "dependencies": {
     "@apollo/client": "^3.9.6",

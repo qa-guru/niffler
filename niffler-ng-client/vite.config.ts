@@ -12,5 +12,10 @@ export default defineConfig(({mode}) => {
             host: process.env.VITE_FRONT_HOST,
             port: 3000,
         },
+        preview: {
+            host: process.env.VITE_FRONT_HOST,
+            port: 3000,
+            strictPort: true,
+        },
     });
 });
