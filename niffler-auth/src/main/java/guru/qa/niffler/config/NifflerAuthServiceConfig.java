@@ -40,128 +40,127 @@ import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.UUID;
 
 @Configuration
 public class NifflerAuthServiceConfig {
 
-    private final KeyManager keyManager;
-    private final String nifflerFrontUri;
-    private final String nifflerAuthUri;
-    private final String clientId;
-    private final String clientSecret;
-    private final CorsCustomizer corsCustomizer;
-    private final String serverPort;
-    private final String defaultHttpsPort = "443";
-    private final Environment environment;
+  private final KeyManager keyManager;
+  private final String nifflerFrontUri;
+  private final String nifflerAuthUri;
+  private final String clientId;
+  private final CorsCustomizer corsCustomizer;
+  private final String serverPort;
+  private final String defaultHttpsPort = "443";
+  private final Environment environment;
 
-    @Autowired
-    public NifflerAuthServiceConfig(KeyManager keyManager,
-                                    @Value("${niffler-front.base-uri}") String nifflerFrontUri,
-                                    @Value("${niffler-auth.base-uri}") String nifflerAuthUri,
-                                    @Value("${oauth2.client-id}") String clientId,
-                                    @Value("${oauth2.client-secret}") String clientSecret,
-                                    @Value("${server.port}") String serverPort,
-                                    CorsCustomizer corsCustomizer,
-                                    Environment environment) {
-        this.keyManager = keyManager;
-        this.nifflerFrontUri = nifflerFrontUri;
-        this.nifflerAuthUri = nifflerAuthUri;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.serverPort = serverPort;
-        this.corsCustomizer = corsCustomizer;
-        this.environment = environment;
+  @Autowired
+  public NifflerAuthServiceConfig(KeyManager keyManager,
+                                  @Value("${niffler-front.base-uri}") String nifflerFrontUri,
+                                  @Value("${niffler-auth.base-uri}") String nifflerAuthUri,
+                                  @Value("${oauth2.client-id}") String clientId,
+                                  @Value("${server.port}") String serverPort,
+                                  CorsCustomizer corsCustomizer,
+                                  Environment environment) {
+    this.keyManager = keyManager;
+    this.nifflerFrontUri = nifflerFrontUri;
+    this.nifflerAuthUri = nifflerAuthUri;
+    this.clientId = clientId;
+    this.serverPort = serverPort;
+    this.corsCustomizer = corsCustomizer;
+    this.environment = environment;
+  }
+
+  @Bean
+  @Order(Ordered.HIGHEST_PRECEDENCE)
+  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
+                                                                    LoginUrlAuthenticationEntryPoint entryPoint) throws Exception {
+    OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+    if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
+      http.addFilterBefore(new SpecificRequestDumperFilter(
+          new RequestDumperFilter(),
+          "/login", "/oauth2/.*"
+      ), DisableEncodeUrlFilter.class);
     }
 
-    @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
-                                                                      LoginUrlAuthenticationEntryPoint entryPoint) throws Exception {
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
-            http.addFilterBefore(new SpecificRequestDumperFilter(
-                    new RequestDumperFilter(),
-                    "/login", "/oauth2/.*"
-            ), DisableEncodeUrlFilter.class);
-        }
+    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+        .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
 
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
+    http.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(entryPoint))
+        .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
 
-        http.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(entryPoint))
-                .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
+    corsCustomizer.corsCustomizer(http);
+    return http.build();
+  }
 
-        corsCustomizer.corsCustomizer(http);
-        return http.build();
-    }
+  @Bean
+  @Profile({"staging", "prod"})
+  public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttps() {
+    LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint("/login");
+    PortMapperImpl portMapper = new PortMapperImpl();
+    portMapper.setPortMappings(Map.of(
+        serverPort, defaultHttpsPort,
+        "80", defaultHttpsPort,
+        "8080", "8443"
+    ));
+    PortResolverImpl portResolver = new PortResolverImpl();
+    portResolver.setPortMapper(portMapper);
+    entryPoint.setForceHttps(true);
+    entryPoint.setPortMapper(portMapper);
+    entryPoint.setPortResolver(portResolver);
+    return entryPoint;
+  }
 
-    @Bean
-    @Profile({"staging", "prod"})
-    public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttps() {
-        LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint("/login");
-        PortMapperImpl portMapper = new PortMapperImpl();
-        portMapper.setPortMappings(Map.of(
-                serverPort, defaultHttpsPort,
-                "80", defaultHttpsPort,
-                "8080", "8443"
-        ));
-        PortResolverImpl portResolver = new PortResolverImpl();
-        portResolver.setPortMapper(portMapper);
-        entryPoint.setForceHttps(true);
-        entryPoint.setPortMapper(portMapper);
-        entryPoint.setPortResolver(portResolver);
-        return entryPoint;
-    }
+  @Bean
+  @Profile({"local", "docker"})
+  public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttp() {
+    return new LoginUrlAuthenticationEntryPoint("/login");
+  }
 
-    @Bean
-    @Profile({"local", "docker"})
-    public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttp() {
-        return new LoginUrlAuthenticationEntryPoint("/login");
-    }
+  @Bean
+  public RegisteredClientRepository registeredClientRepository() {
+    RegisteredClient publicClient = RegisteredClient.withId(UUID.randomUUID().toString())
+        .clientId(clientId)
+        .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+        .redirectUri(nifflerFrontUri + "/authorized")
+        .scope(OidcScopes.OPENID)
+        .scope(OidcScopes.PROFILE)
+        .clientSettings(ClientSettings.builder()
+            .requireAuthorizationConsent(true)
+            .requireProofKey(true)
+            .build()
+        )
+        .tokenSettings(TokenSettings.builder()
+            .accessTokenTimeToLive(Duration.of(2, ChronoUnit.HOURS))
+            .build())
+        .build();
 
-    @Bean
-    public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri(nifflerFrontUri + "/authorized")
-                .scope(OidcScopes.OPENID)
-                .clientSettings(ClientSettings.builder()
-                        .requireAuthorizationConsent(true).build())
-                .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofHours(1))
-                        .refreshTokenTimeToLive(Duration.ofHours(10))
-                        .build())
-                .build();
+    return new InMemoryRegisteredClientRepository(publicClient);
+  }
 
-        return new InMemoryRegisteredClientRepository(registeredClient);
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+  @Bean
+  public AuthorizationServerSettings authorizationServerSettings() {
+    return AuthorizationServerSettings.builder()
+        .issuer(nifflerAuthUri)
+        .build();
+  }
 
-    @Bean
-    public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder()
-                .issuer(nifflerAuthUri)
-                .build();
-    }
+  @Bean
+  public JWKSource<SecurityContext> jwkSource() throws NoSuchAlgorithmException {
+    JWKSet set = new JWKSet(keyManager.rsaKey());
+    return (jwkSelector, securityContext) -> jwkSelector.select(set);
+  }
 
-    @Bean
-    public JWKSource<SecurityContext> jwkSource() throws NoSuchAlgorithmException {
-        JWKSet set = new JWKSet(keyManager.rsaKey());
-        return (jwkSelector, securityContext) -> jwkSelector.select(set);
-    }
-
-    @Bean
-    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-    }
+  @Bean
+  public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
+    return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+  }
 }

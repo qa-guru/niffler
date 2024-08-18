@@ -19,26 +19,29 @@ import java.io.Reader;
 
 final class JaxbResponseConverter<T> implements Converter<ResponseBody, T> {
 
-    private final JAXBContext context;
-    private final Class<T> type;
+  private final JAXBContext context;
+  private final Class<T> type;
 
-    JaxbResponseConverter(JAXBContext context, Class<T> type) {
-        this.context = context;
-        this.type = type;
-    }
+  JaxbResponseConverter(JAXBContext context, Class<T> type) {
+    this.context = context;
+    this.type = type;
+  }
 
-    @Override
-    public @Nonnull T convert(@Nonnull final ResponseBody value) throws IOException {
-        try (value; Reader reader = value.charStream()) {
-            SOAPMessage response = MessageFactory.newInstance().createMessage(
-                    new MimeHeaders(),
-                    new ReaderInputStream(reader, Charsets.UTF_8)
-            );
-            Document responseDoc = response.getSOAPBody().extractContentAsDocument();
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            return unmarshaller.unmarshal(responseDoc, type).getValue();
-        } catch (JAXBException | SOAPException e) {
-            throw new RuntimeException(e);
-        }
+  @Override
+  public @Nonnull T convert(@Nonnull final ResponseBody value) throws IOException {
+    try (value; Reader reader = value.charStream()) {
+      SOAPMessage response = MessageFactory.newInstance().createMessage(
+          new MimeHeaders(),
+          ReaderInputStream.builder()
+              .setReader(reader)
+              .setCharset(Charsets.UTF_8)
+              .get()
+      );
+      Document responseDoc = response.getSOAPBody().extractContentAsDocument();
+      Unmarshaller unmarshaller = context.createUnmarshaller();
+      return unmarshaller.unmarshal(responseDoc, type).getValue();
+    } catch (JAXBException | SOAPException e) {
+      throw new RuntimeException(e);
     }
+  }
 }

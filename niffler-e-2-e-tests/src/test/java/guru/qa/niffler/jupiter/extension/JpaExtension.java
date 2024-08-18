@@ -5,8 +5,8 @@ import jakarta.persistence.EntityManagerFactory;
 
 public class JpaExtension implements SuiteExtension {
 
-    @Override
-    public void afterAllTests() {
-        EmfContext.storedEmf().forEach(EntityManagerFactory::close);
-    }
+  @Override
+  public void afterSuite() {
+    EmfContext.storedEmf().forEach(EntityManagerFactory::close);
+  }
 }

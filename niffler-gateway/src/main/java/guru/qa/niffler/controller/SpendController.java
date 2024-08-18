@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,49 +28,52 @@ import java.util.List;
 @RequestMapping("/api/spends")
 public class SpendController {
 
-    private final RestSpendClient restSpendClient;
-    private final UserDataClient userDataClient;
+  private final RestSpendClient restSpendClient;
+  private final UserDataClient userDataClient;
 
-    @Autowired
-    public SpendController(RestSpendClient restSpendClient, UserDataClient userDataClient) {
-        this.restSpendClient = restSpendClient;
-        this.userDataClient = userDataClient;
-    }
+  @Autowired
+  public SpendController(RestSpendClient restSpendClient, UserDataClient userDataClient) {
+    this.restSpendClient = restSpendClient;
+    this.userDataClient = userDataClient;
+  }
 
-    @GetMapping("/all")
-    public List<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal,
-                                     @RequestParam(required = false) DataFilterValues filterPeriod,
-                                     @RequestParam(required = false) CurrencyValues filterCurrency) {
-        String username = principal.getClaim("sub");
-        return restSpendClient.getSpends(username, filterPeriod, filterCurrency);
-    }
+  @GetMapping("/{id}")
+  public SpendJson getSpend(@PathVariable("id") String id,
+                            @AuthenticationPrincipal Jwt principal) {
+    String username = principal.getClaim("sub");
+    return restSpendClient.getSpend(id, username);
+  }
 
-    @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public SpendJson addSpend(@Valid @RequestBody SpendJson spend,
-                              @AuthenticationPrincipal Jwt principal) {
-        String username = principal.getClaim("sub");
-        CurrencyValues userCurrency = userDataClient.currentUser(username).currency();
-        if (userCurrency != spend.currency()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Spending currency should be same with user currency");
-        }
-        return restSpendClient.addSpend(spend.addUsername(username));
-    }
+  @GetMapping("/all")
+  public List<SpendJson> getSpends(@AuthenticationPrincipal Jwt principal,
+                                   @RequestParam(required = false) DataFilterValues filterPeriod,
+                                   @RequestParam(required = false) CurrencyValues filterCurrency) {
+    String username = principal.getClaim("sub");
+    return restSpendClient.getSpends(username, filterPeriod, filterCurrency);
+  }
 
-    @PatchMapping("/edit")
-    public SpendJson editSpend(@Valid @RequestBody SpendJson spend,
-                               @AuthenticationPrincipal Jwt principal) {
-        if (spend.id() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id should be present");
-        }
-        String username = principal.getClaim("sub");
-        return restSpendClient.editSpend(spend.addUsername(username));
-    }
+  @PostMapping("/add")
+  @ResponseStatus(HttpStatus.CREATED)
+  public SpendJson addSpend(@Valid @RequestBody SpendJson spend,
+                            @AuthenticationPrincipal Jwt principal) {
+    String username = principal.getClaim("sub");
+    return restSpendClient.addSpend(spend.addUsername(username));
+  }
 
-    @DeleteMapping("/remove")
-    public void deleteSpends(@AuthenticationPrincipal Jwt principal,
-                             @RequestParam List<String> ids) {
-        String username = principal.getClaim("sub");
-        restSpendClient.deleteSpends(username, ids);
+  @PatchMapping("/edit")
+  public SpendJson editSpend(@Valid @RequestBody SpendJson spend,
+                             @AuthenticationPrincipal Jwt principal) {
+    if (spend.id() == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id should be present");
     }
+    String username = principal.getClaim("sub");
+    return restSpendClient.editSpend(spend.addUsername(username));
+  }
+
+  @DeleteMapping("/remove")
+  public void deleteSpends(@AuthenticationPrincipal Jwt principal,
+                           @RequestParam List<String> ids) {
+    String username = principal.getClaim("sub");
+    restSpendClient.deleteSpends(username, ids);
+  }
 }

@@ -17,25 +17,25 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CookieCsrfFilterTest {
 
-    private final CookieCsrfFilter cookieCsrfFilter = new CookieCsrfFilter();
+  private final CookieCsrfFilter cookieCsrfFilter = new CookieCsrfFilter();
 
-    @Test
-    void doFilterInternal(@Mock HttpServletRequest request,
-                          @Mock HttpServletResponse response,
-                          @Mock FilterChain filterChain,
-                          @Mock CsrfToken csrfToken) throws Exception {
-        final String headerName = "csrf-header-name";
-        final String headerValue = "12345";
+  @Test
+  void doFilterInternal(@Mock HttpServletRequest request,
+                        @Mock HttpServletResponse response,
+                        @Mock FilterChain filterChain,
+                        @Mock CsrfToken csrfToken) throws Exception {
+    final String headerName = "csrf-header-name";
+    final String headerValue = "12345";
 
-        when(csrfToken.getHeaderName()).thenReturn(headerName);
-        when(csrfToken.getToken()).thenReturn(headerValue);
+    when(csrfToken.getHeaderName()).thenReturn(headerName);
+    when(csrfToken.getToken()).thenReturn(headerValue);
 
-        when(request.getAttribute(eq(CsrfToken.class.getName())))
-                .thenReturn(csrfToken);
+    when(request.getAttribute(eq(CsrfToken.class.getName())))
+        .thenReturn(csrfToken);
 
-        cookieCsrfFilter.doFilterInternal(request, response, filterChain);
+    cookieCsrfFilter.doFilterInternal(request, response, filterChain);
 
-        verify(response, times(1)).setHeader(headerName, headerValue);
-        verify(filterChain, times(1)).doFilter(eq(request), eq(response));
-    }
+    verify(response, times(1)).setHeader(headerName, headerValue);
+    verify(filterChain, times(1)).doFilter(eq(request), eq(response));
+  }
 }

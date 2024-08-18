@@ -14,16 +14,16 @@ import java.util.UUID;
 @Component
 public class KeyManager {
 
-    public @Nonnull
-    RSAKey rsaKey() throws NoSuchAlgorithmException {
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-        generator.initialize(2048);
-        KeyPair keyPair = generator.generateKeyPair();
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        return new RSAKey.Builder(publicKey)
-                .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
-                .build();
-    }
+  public @Nonnull
+  RSAKey rsaKey() throws NoSuchAlgorithmException {
+    KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+    generator.initialize(2048);
+    KeyPair keyPair = generator.generateKeyPair();
+    RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+    RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+    return new RSAKey.Builder(publicKey)
+        .privateKey(privateKey)
+        .keyID(UUID.randomUUID().toString())
+        .build();
+  }
 }

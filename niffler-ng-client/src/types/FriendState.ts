@@ -1,0 +1,1 @@
+export type FriendState = "FRIEND" | "INVITE_SENT" | "INVITE_RECEIVED" | undefined;

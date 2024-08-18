@@ -1,52 +1,39 @@
 #!/bin/bash
 source ./docker.properties
 export PROFILE=docker
+export PREFIX="${IMAGE_PREFIX}"
+export ALLURE_DOCKER_API=http://allure:5050/
+export HEAD_COMMIT_MESSAGE="local build"
+export FRONT_VERSION="2.0.0"
+export ARCH=$(uname -m)
 
 echo '### Java version ###'
 java --version
 
-front=""
-front_image=""
-docker_arch=""
 if [[ "$1" = "gql" ]]; then
-  front="./niffler-frontend-gql/";
-  front_image="${IMAGE_PREFIX}/${FRONT_IMAGE_NAME_GQL}-${PROFILE}:latest";
+  export FRONT="niffler-ng-client-gql"
 else
-  front="./niffler-frontend/";
-  front_image="$IMAGE_PREFIX/${FRONT_IMAGE_NAME}-${PROFILE}:latest";
+  export FRONT="niffler-ng-client"
 fi
 
-ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" PROFILE="${PROFILE}" docker-compose -f docker-compose.test.yml down
+docker compose -f docker-compose.test.yml down
 
-docker_containers="$(docker ps -a -q)"
-docker_images="$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'niffler')"
+docker_containers=$(docker ps -a -q)
+docker_images=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'niffler')
 
 if [ ! -z "$docker_containers" ]; then
   echo "### Stop containers: $docker_containers ###"
-  docker stop $(docker ps -a -q)
-  docker rm $(docker ps -a -q)
+  docker stop $docker_containers
+  docker rm $docker_containers
 fi
+
 if [ ! -z "$docker_images" ]; then
   echo "### Remove images: $docker_images ###"
-  docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'niffler')
+  docker rmi $docker_images
 fi
 
-ARCH=$(uname -m)
+bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
 
-bash ./gradlew -Pskipjaxb jibDockerBuild -x :niffler-e-2-e-tests:test || exit 1
-
-if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
-  docker_arch="linux/arm64"
-  docker build --build-arg DOCKER=arm64v8/eclipse-temurin:21-jdk -t "${IMAGE_PREFIX}/${TEST_IMAGE_NAME}:latest" -f ./niffler-e-2-e-tests/Dockerfile . || exit 1
-else
-  docker_arch="linux/amd64"
-  docker build --build-arg DOCKER=eclipse-temurin:21-jdk -t "${IMAGE_PREFIX}/${TEST_IMAGE_NAME}:latest" -f ./niffler-e-2-e-tests/Dockerfile . || exit 1
-fi
-
-cd "$front" || exit 1
-bash ./docker-build.sh ${PROFILE} || exit 1
-cd ../ || exit 1
-docker pull selenoid/vnc_chrome:117.0
-docker images
-ARCH="$docker_arch" FRONT_IMAGE="$front_image" PREFIX="${IMAGE_PREFIX}" PROFILE="${PROFILE}" docker-compose -f docker-compose.test.yml up -d
+docker pull selenoid/vnc_chrome:127.0
+docker compose -f docker-compose.test.yml up -d
 docker ps -a

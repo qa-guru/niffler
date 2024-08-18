@@ -1,8 +1,5 @@
 server:
   port: 8089
-  error:
-    include:
-      message: true
 
 spring:
   application:
@@ -40,7 +37,7 @@ logging:
     org.springframework.kafka: INFO
     org.springframework.web: INFO
     org.springframework.ws: INFO
-#    org.springframework.boot.autoconfigure: DEBUG
+    org.springframework.boot.autoconfigure: INFO
 
 ---
 spring:

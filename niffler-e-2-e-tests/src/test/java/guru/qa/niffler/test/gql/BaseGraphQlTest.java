@@ -9,8 +9,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 @GqlTest
 public abstract class BaseGraphQlTest extends BaseRestTest {
 
-    @RegisterExtension
-    private static ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
+  @RegisterExtension
+  private static final ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
 
-    protected static final GatewayGqlApiClient gqlClient = new GatewayGqlApiClient();
+  protected static final GatewayGqlApiClient gqlClient = new GatewayGqlApiClient();
 }

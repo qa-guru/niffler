@@ -5,19 +5,19 @@ import guru.qa.niffler.data.CurrencyValues;
 import java.util.UUID;
 
 public interface IUserJson {
-    UUID id();
+  UUID id();
 
-    String username();
+  String username();
 
-    String firstname();
+  String firstname();
 
-    String surname();
+  String surname();
 
-    CurrencyValues currency();
+  CurrencyValues currency();
 
-    String photo();
+  String photo();
 
-    String photoSmall();
+  String photoSmall();
 
-    FriendState friendState();
+  FriendState friendState();
 }

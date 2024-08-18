@@ -20,24 +20,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 class UserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @Autowired
-    private UserRepository usersRepository;
+  @Autowired
+  private UserRepository usersRepository;
 
-    @Test
-    void currentUserEndpoint() throws Exception {
-        UserEntity userDataEntity = new UserEntity();
-        userDataEntity.setUsername("dima");
-        userDataEntity.setCurrency(CurrencyValues.RUB);
-        usersRepository.save(userDataEntity);
+  @Test
+  void currentUserEndpoint() throws Exception {
+    UserEntity userDataEntity = new UserEntity();
+    userDataEntity.setUsername("dima");
+    userDataEntity.setCurrency(CurrencyValues.RUB);
+    usersRepository.save(userDataEntity);
 
-        mockMvc.perform(get("/internal/users/current")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("username", "dima")
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value("dima"));
-    }
+    mockMvc.perform(get("/internal/users/current")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("username", "dima")
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.username").value("dima"));
+  }
 }

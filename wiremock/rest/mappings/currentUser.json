@@ -6,10 +6,11 @@
   "response": {
     "status": 200,
     "jsonBody": {
-      "id": "229fc371-2821-4795-81a5-0b26d3cd417e",
-      "username": "dima",
-      "firstname": "dima",
+      "id": "{{randomValue type='UUID'}}",
+      "username": "{{request.query.username}}",
+      "firstname": "null",
       "surname": null,
+      "fullname": "Dmitrii Tuchs",
       "currency": "RUB",
       "photo": null
     },

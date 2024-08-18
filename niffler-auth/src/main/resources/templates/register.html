@@ -1,43 +1,94 @@
 <!DOCTYPE HTML>
-<html xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="ru" xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Register to Niffler</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" th:href="@{images/favicon.ico}"/>
-    <link th:href="@{styles/styles.css}" rel="stylesheet" type="text/css"/>
+    <link href="../static/styles/styles.css" th:href="@{styles/styles.css}" rel="stylesheet"
+          type="text/css"/>
 </head>
 <body>
 <main class="content">
-    <form th:if="${username == null}" class="form" id="register-form" th:object="${registrationModel}"
-          action="/register" th:action="@{/register}"
-          method="post">
-        <h1 class="form__header">Welcome to Niffler. The coin keeper</h1>
-        <img src="../static/images/niffler-logo.png" width="90" th:src="@{images/niffler-logo.png}" alt="Niffler logo"/>
-        <p class="form__paragraph">Registration form</p>
-        <label class="form__label">Username:
-            <input class="form__input" type="text" id="username" th:field="*{username}" name="username"
-                   placeholder="Type your username" required/>
-            <span class="form__error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
-        </label>
-        <label class="form__label">Password:
-            <input class="form__input" type="password" id="password" name="password" th:field="*{password}"
-                   placeholder="Type your password" required/>
-            <span class="form__error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-        </label>
-        <label class="form__label">Submit Password:
-            <input class="form__input" type="password" id="passwordSubmit" name="passwordSubmit"
-                   th:field="*{passwordSubmit}" placeholder="Submit your password" required/>
-            <span class="form__error" th:if="${#fields.hasErrors('passwordSubmit')}"
-                  th:errors="*{passwordSubmit}"></span>
-        </label>
-        <button class="form__submit" type="submit">
-            Sign Up
-        </button>
-        <p class="form__paragraph">Already have an account? <a th:href="@{|${frontUri}|}">Sign in!</a></p>
-    </form>
-    <div class="form" th:unless="${username == null}">
-        <p class="form__paragraph">Congratulations! You've registered!</p>
-        <p class="form__paragraph"><a th:href="@{|${frontUri}|}">Sign in!</a></p>
+    <div class="content__wrapper">
+        <div class="main__hero"></div>
+        <section class="main__form">
+            <div class="logo-section">
+                <img class="logo-section__logo" src="./../static/images/coin.svg" width="36" th:src="@{images/coin.svg}"
+                     alt="Niffler logo"/>
+                <p class="logo-section__text">
+                    Niffler
+                </p>
+            </div>
+            <div class="form-section">
+                <form th:if="${username == null}" class="form" id="register-form" th:object="${registrationModel}"
+                      action="/register" th:action="@{/register}"
+                      method="post">
+                    <h1 class="header">
+                        Sign up
+                    </h1>
+                    <p class="header__additional">
+                        Already have an account? <a class="form__link" th:href="@{|${frontUri}|}">Log in!</a>
+                    </p>
+                    <label class="form__label">Username
+                        <input class="form__input" type="text" id="username" th:field="*{username}" name="username"
+                               placeholder="Type your username" required/>
+                        <span class="form__error" th:if="${#fields.hasErrors('username')}"
+                              th:errors="*{username}"></span>
+                    </label>
+                    <label class="form__label">Password
+                        <input class="form__input" type="password" id="password" name="password"
+                               th:field="*{password}" placeholder="Type your password" required/>
+                        <button type="button" class="form__password-button" id="passwordBtn"></button>
+                        <span class="form__error" th:if="${#fields.hasErrors('password')}"
+                              th:errors="*{password}"></span>
+                    </label>
+                    <label class="form__label">Submit password
+                        <input class="form__input" type="password" id="passwordSubmit" name="passwordSubmit"
+                               th:field="*{passwordSubmit}" placeholder="Submit your password" required/>
+                        <button type="button" class="form__password-button" id="passwordSubmitBtn"></button>
+                        <span class="form__error" th:if="${#fields.hasErrors('passwordSubmit')}"
+                              th:errors="*{passwordSubmit}"></span>
+                    </label>
+                    <button class="form__submit" type="submit">
+                        Sign Up
+                    </button>
+                </form>
+                <div class="form" th:unless="${username == null}">
+                    <p class="form__paragraph form__paragraph_success">Congratulations! You've registered!</p>
+                    <a class="form_sign-in" th:href="@{|${frontUri}|}">Sign in</a>
+                </div>
+            </div>
+        </section>
     </div>
 </main>
+<script>
+    const passwordButton = document.getElementById("passwordBtn");
+    const passwordInput = document.getElementById("password");
+
+    const passwordSubmitButton = document.getElementById("passwordSubmitBtn");
+    const passwordSubmitInput = document.getElementById("passwordSubmit");
+
+    const togglePasswordInputType = (inputType) => {
+        return inputType === "password" ? "text" : "password";
+    }
+
+    const togglePasswordButtonClass = (passwordBtn) => {
+        passwordBtn.classList.toggle("form__password-button_active");
+    }
+
+    const handlePasswordButtonClick = () => {
+        passwordInput.setAttribute("type", togglePasswordInputType(passwordInput.getAttribute("type")));
+        togglePasswordButtonClass(passwordButton);
+    }
+
+    const handleSubmitPasswordButtonClick = () => {
+        passwordSubmitInput.setAttribute("type", togglePasswordInputType(passwordSubmitInput.getAttribute("type")));
+        togglePasswordButtonClass(passwordSubmitButton);
+    }
+
+    passwordButton.addEventListener("click", handlePasswordButtonClick);
+    passwordSubmitButton.addEventListener("click", handleSubmitPasswordButtonClick);
+
+</script>
 </body>
 </html>

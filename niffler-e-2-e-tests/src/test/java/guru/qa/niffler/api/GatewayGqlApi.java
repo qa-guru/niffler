@@ -11,24 +11,24 @@ import retrofit2.http.POST;
 
 public interface GatewayGqlApi {
 
-    @POST("graphql")
-    Call<UserDataGql> currentUser(
-            @Header("Authorization") String bearerToken,
-            @Body GqlRequest request);
+  @POST("graphql")
+  Call<UserDataGql> currentUser(
+      @Header("Authorization") String bearerToken,
+      @Body GqlRequest request);
 
-    @POST("graphql")
-    Call<UpdateUserDataGql> updateUser(
-            @Header("Authorization") String bearerToken,
-            @Body GqlRequest request);
+  @POST("graphql")
+  Call<UpdateUserDataGql> updateUser(
+      @Header("Authorization") String bearerToken,
+      @Body GqlRequest request);
 
-    @POST("graphql")
-    Call<UsersDataGql> allUsers(
-            @Header("Authorization") String bearerToken,
-            @Body GqlRequest request);
+  @POST("graphql")
+  Call<UsersDataGql> allUsers(
+      @Header("Authorization") String bearerToken,
+      @Body GqlRequest request);
 
-    @POST("graphql")
-    Call<UserDataGql> friends(
-            @Header("Authorization") String bearerToken,
-            @Body GqlRequest request);
+  @POST("graphql")
+  Call<UserDataGql> friends(
+      @Header("Authorization") String bearerToken,
+      @Body GqlRequest request);
 
 }

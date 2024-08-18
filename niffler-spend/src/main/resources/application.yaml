@@ -1,8 +1,5 @@
 server:
   port: 8093
-  error:
-    include:
-      message: true
 
 spring:
   application:
@@ -37,10 +34,10 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-#    org.springframework.boot.autoconfigure: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+    org.springframework.boot.autoconfigure: INFO
 
 ---
 spring:

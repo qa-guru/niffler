@@ -1,81 +1,87 @@
 package guru.qa.niffler.page.component;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.model.rest.DataFilterValues;
 import guru.qa.niffler.model.rest.SpendJson;
+import guru.qa.niffler.page.EditSpendingPage;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.ClickOptions.usingJavaScript;
+import static com.codeborne.selenide.CollectionCondition.size;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 import static guru.qa.niffler.condition.spend.SpendCondition.spends;
 
 public class SpendingTable extends BaseComponent<SpendingTable> {
 
-    private final ElementsCollection spendingButtons = self.$$(".spendings__buttons button");
+  private final SearchField searchField = new SearchField();
+  private final SelenideElement periodMenu = self.$("#period");
+  private final SelenideElement currencyMenu = self.$("#currency");
+  private final ElementsCollection menuItems = $$(".MuiList-padding li");
+  private final SelenideElement deleteBtn = self.$("#delete");
+  private final SelenideElement popup = $("div[role='dialog']");
 
-    public SpendingTable() {
-        super($(".main-content__section-history"));
-    }
+  private final SelenideElement tableHeader = self.$(".MuiTableHead-root");
+  private final ElementsCollection headerCells = tableHeader.$$(".MuiTableCell-root");
 
-    @Step("Click by button {0}")
-    @Nonnull
-    public SpendingTable clickByButton(@Nonnull String buttonText) {
-        spendingButtons.find(Condition.text(buttonText))
-                .scrollIntoView(false)
-                .click();
-        return this;
-    }
+  private final ElementsCollection tableRows = self.$("tbody").$$("tr");
 
-    @Step("Check that table contains data {0}")
-    @Nonnull
-    public SpendingTable checkTableContains(@Nonnull SpendJson... expectedSpends) {
-        self.$$("tbody tr").should(spends(expectedSpends));
-        return this;
-    }
 
-    public SpendingTable editSpending(int row, SpendJson editedSpending) {
-        SelenideElement rowElement = self.$$("tbody tr").get(row);
-        rowElement.$(".button-icon_type_edit").click();
-        setSpendingAmount(rowElement, editedSpending.amount());
-        setSpendingDescription(rowElement, editedSpending.description());
-        setSpendingCategory(rowElement, editedSpending.category());
-//        setSpendingDate(rowElement, editedSpending.getSpendDate());
-        submitEditSpending(rowElement);
-        return this;
-    }
+  public SpendingTable() {
+    super($("#spendings"));
+  }
 
-    public SpendingTable deleteSpending() {
-        return this;
-    }
+  @Step("Select table period {0}")
+  @Nonnull
+  public SpendingTable selectPeriod(DataFilterValues period) {
+    periodMenu.click();
+    menuItems.find(text(period.text)).click();
+    return this;
+  }
 
-    private void setSpendingAmount(SelenideElement row, Double amount) {
-        row.$("input[name=amount]").setValue(String.valueOf(amount));
-    }
+  @Step("Edit spending with description {0}")
+  @Nonnull
+  public EditSpendingPage editSpending(String description) {
+    searchSpendingByDescription(description);
+    SelenideElement row = tableRows.find(text(description));
+    row.$$("td").get(5).click();
+    return new EditSpendingPage();
+  }
 
-    private void setSpendingDescription(SelenideElement row, String description) {
-        row.$("input[name=description]").setValue(String.valueOf(description));
-    }
+  @Step("Delete spending with description {0}")
+  @Nonnull
+  public SpendingTable deleteSpending(String description) {
+    searchSpendingByDescription(description);
+    SelenideElement row = tableRows.find(text(description));
+    row.$$("td").get(0).click();
+    deleteBtn.click();
+    popup.$(byText("Delete")).click(usingJavaScript());
+    return this;
+  }
 
-    private void setSpendingDate(SelenideElement row, Date date) {
-        SelenideElement input = row.$(".react-datepicker-wrapper #editable__input");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        input.clear();
-        input.setValue(dateFormat.format(date));
-        self.click();
-        self.scrollIntoView(false);
-    }
+  @Step("Search spending with description {0}")
+  @Nonnull
+  public SpendingTable searchSpendingByDescription(String description) {
+    searchField.search(description);
+    return this;
+  }
 
-    private void setSpendingCategory(SelenideElement row, String category) {
-        row.$("input[id^='react-select']").scrollIntoView(false).setValue(category);
-        row.$$("div[id^='react-select']").find(exactText(category)).click();
-    }
+  @Step("Check that table contains data {0}")
+  @Nonnull
+  public SpendingTable checkTableContains(@Nonnull SpendJson... expectedSpends) {
+    tableRows.should(spends(expectedSpends));
+    return this;
+  }
 
-    private void submitEditSpending(SelenideElement row) {
-        row.$(".button-icon_type_submit").click();
-    }
+  @Step("Check that table have size {0}")
+  @Nonnull
+  public SpendingTable checkTableSize(int expectedSize) {
+    tableRows.should(size(expectedSize));
+    return this;
+  }
 }

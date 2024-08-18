@@ -13,25 +13,25 @@ import java.util.List;
 @Component
 public class CorsCustomizer {
 
-    private final String nifflerFrontUri;
+  private final String nifflerFrontUri;
 
-    @Autowired
-    public CorsCustomizer(@Value("${niffler-front.base-uri}") String nifflerFrontUri) {
-        this.nifflerFrontUri = nifflerFrontUri;
-    }
+  @Autowired
+  public CorsCustomizer(@Value("${niffler-front.base-uri}") String nifflerFrontUri) {
+    this.nifflerFrontUri = nifflerFrontUri;
+  }
 
-    public void corsCustomizer(@Nonnull HttpSecurity http) throws Exception {
-        http.cors(c -> {
-            CorsConfigurationSource source = s -> {
-                CorsConfiguration cc = new CorsConfiguration();
-                cc.setAllowCredentials(true);
-                cc.setAllowedOrigins(List.of(nifflerFrontUri));
-                cc.setAllowedHeaders(List.of("*"));
-                cc.setAllowedMethods(List.of("*"));
-                return cc;
-            };
+  public void corsCustomizer(@Nonnull HttpSecurity http) throws Exception {
+    http.cors(c -> {
+      CorsConfigurationSource source = s -> {
+        CorsConfiguration cc = new CorsConfiguration();
+        cc.setAllowCredentials(true);
+        cc.setAllowedOrigins(List.of(nifflerFrontUri));
+        cc.setAllowedHeaders(List.of("*"));
+        cc.setAllowedMethods(List.of("*"));
+        return cc;
+      };
 
-            c.configurationSource(source);
-        });
-    }
+      c.configurationSource(source);
+    });
+  }
 }

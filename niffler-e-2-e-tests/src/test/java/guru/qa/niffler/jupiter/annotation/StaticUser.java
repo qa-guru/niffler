@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 public @interface StaticUser {
 
-    Type value() default Type.COMMON;
+  Type value() default Type.COMMON;
 
-    enum Type {
-        ADMIN, COMMON;
-    }
+  enum Type {
+    ADMIN, COMMON
+  }
 }

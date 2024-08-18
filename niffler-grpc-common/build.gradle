@@ -1,19 +1,18 @@
 buildscript {
     ext {
-        protobufVersion = '3.24.3'
-        grpcVersion = '1.58.0'
+        protobufVersion = '3.25.3'
+        grpcVersion = '1.63.0'
         protobufPluginVersion = '0.9.4'
     }
 }
 
 plugins {
-    id 'java'
     id 'idea'
     id 'com.google.protobuf' version "${protobufPluginVersion}"
 }
 
 group = 'guru.qa'
-version = '1.0.0'
+version = '1.0.1'
 
 repositories {
     mavenCentral()
@@ -30,7 +29,6 @@ protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
     }
-    generatedFilesBaseDir = "$projectDir/src/generated"
     clean {
         delete generatedFilesBaseDir
     }
@@ -49,14 +47,5 @@ protobuf {
 tasks.register('printVersion') {
     doLast {
         println project.version
-    }
-}
-
-idea {
-    module {
-        sourceDirs += file("src/generated/main/java")
-        sourceDirs += file("src/generated/main/grpc")
-        generatedSourceDirs += file("src/generated/main/java")
-        generatedSourceDirs += file("src/generated/main/grpc")
     }
 }

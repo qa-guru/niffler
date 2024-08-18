@@ -26,35 +26,35 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("[REST][niffler-gateway]: Spends")
 public class GatewaySpendRestTest extends BaseRestTest {
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+  private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    @AllureId("200008")
-    @ValueSource(strings = {
-            "rest/spend0.json",
-            "rest/spend1.json"
-    })
-    @DisplayName("REST: При создании нового spend возвращается ID из niffler-spend")
-    @ParameterizedTest(name = "Тестовые данные для запроса: {0}")
-    @ApiLogin(
-            user = @GenerateUser(categories = {
-                    @GenerateCategory("Рестораны"),
-                    @GenerateCategory("Бары"),
-            })
-    )
-    @Tag("REST")
-    void apiShouldReturnIdOfCreatedSpend(@ConvertWith(SpendConverter.class) SpendJson spend,
-                                         @User UserJson user,
-                                         @Token String bearerToken) throws Exception {
-        final SpendJson created = gatewayApiClient.addSpend(
-                bearerToken,
-                spend.addUsername(user.username())
-        );
+  @AllureId("200008")
+  @ValueSource(strings = {
+      "rest/spend0.json",
+      "rest/spend1.json"
+  })
+  @DisplayName("REST: При создании нового spend возвращается ID из niffler-spend")
+  @ParameterizedTest(name = "Тестовые данные для запроса: {0}")
+  @ApiLogin(
+      user = @GenerateUser(categories = {
+          @GenerateCategory("Рестораны"),
+          @GenerateCategory("Бары"),
+      })
+  )
+  @Tag("REST")
+  void apiShouldReturnIdOfCreatedSpend(@ConvertWith(SpendConverter.class) SpendJson spend,
+                                       @User UserJson user,
+                                       @Token String bearerToken) throws Exception {
+    final SpendJson created = gatewayApiClient.addSpend(
+        bearerToken,
+        spend.addUsername(user.username())
+    );
 
-        step("Check that response contains ID (GUID)", () ->
-                assertTrue(created.id().toString().matches(ID_REGEXP))
-        );
-        step("Check that response contains username", () ->
-                assertEquals(user.username(), created.username())
-        );
-    }
+    step("Check that response contains ID (GUID)", () ->
+        assertTrue(created.id().toString().matches(ID_REGEXP))
+    );
+    step("Check that response contains username", () ->
+        assertEquals(user.username(), created.username())
+    );
+  }
 }

@@ -28,7 +28,7 @@ jobs:
           echo "SPEND_VER=${{ needs.collect-versions.outputs.spend-ver }}" >> $GITHUB_ENV
           echo "USERDATA_VER=${{ needs.collect-versions.outputs.userdata-ver }}" >> $GITHUB_ENV
           echo "FRONT_VER=${{ needs.collect-versions.outputs.front-ver }}" >> $GITHUB_ENV
-          echo "FRONT_IMAGE=niffler-frontend" >> $GITHUB_ENV
+          echo "FRONT_IMAGE=niffler-ng-client" >> $GITHUB_ENV
       - name: Docker login
         run: |
           docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
@@ -36,9 +36,11 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          echo "### niffler-auth version will be used: ${{ env.AUTH_VER }}"
-          bash ./gradlew :niffler-auth:jib -Pskipjaxb -x :niffler-e-2-e-tests:test || exit 1
-          docker-compose -f docker-compose.ci.yml pull auth.niffler.dc
-          docker-compose -f docker-compose.ci.yml stop auth.niffler.dc && docker-compose -f docker-compose.ci.yml up -d --no-deps auth.niffler.dc
+          echo "### niffler-auth version will be used: ${{ env.AUTH_VER }} ###"
+          echo "### java version ###"
+          java -version
+          bash ./gradlew :niffler-auth:jib -x :niffler-e-2-e-tests:test || exit 1
+          docker compose -f docker-compose.ci.yml pull auth.niffler.dc
+          docker compose -f docker-compose.ci.yml stop auth.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps auth.niffler.dc
           docker system prune -a -f
           echo "Done!"

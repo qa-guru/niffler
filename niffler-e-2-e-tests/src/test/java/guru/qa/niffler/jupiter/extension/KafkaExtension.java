@@ -8,17 +8,17 @@ import java.util.concurrent.Executors;
 
 public class KafkaExtension implements SuiteExtension {
 
-    private static final KafkaConsumer KAFKA_CONSUMER = new KafkaConsumer();
-    private static final ExecutorService es = Executors.newSingleThreadExecutor();
+  private static final KafkaConsumer KAFKA_CONSUMER = new KafkaConsumer();
+  private static final ExecutorService es = Executors.newSingleThreadExecutor();
 
-    @Override
-    public void beforeAllTests(ExtensionContext context) {
-        es.execute(KAFKA_CONSUMER);
-        es.shutdown();
-    }
+  @Override
+  public void beforeSuite(ExtensionContext context) {
+    es.execute(KAFKA_CONSUMER);
+    es.shutdown();
+  }
 
-    @Override
-    public void afterAllTests() {
-        KAFKA_CONSUMER.shutdown();
-    }
+  @Override
+  public void afterSuite() {
+    KAFKA_CONSUMER.shutdown();
+  }
 }

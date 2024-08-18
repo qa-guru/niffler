@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 public @interface User {
 
-    Selector selector() default Selector.NESTED;
+  Selector selector() default Selector.NESTED;
 
-    enum Selector {
-        METHOD, NESTED;
-    }
+  enum Selector {
+    METHOD, NESTED
+  }
 }

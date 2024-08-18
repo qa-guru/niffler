@@ -9,7 +9,6 @@ import javax.annotation.Nonnull;
 import java.time.Month;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Objects;
 
 import static com.codeborne.selenide.Selenide.$;
 import static java.util.Calendar.DAY_OF_MONTH;
@@ -18,84 +17,88 @@ import static java.util.Calendar.YEAR;
 
 public class Calendar extends BaseComponent<Calendar> {
 
-    public Calendar(@Nonnull SelenideElement self) {
-        super(self);
+  public Calendar(@Nonnull SelenideElement self) {
+    super(self);
+  }
+
+  public Calendar() {
+    super($(".MuiPickersLayout-root"));
+  }
+
+  private final SelenideElement input = $("input[name='date']");
+  private final SelenideElement calendarButton = $("button[aria-label*='Choose date']");
+  private final SelenideElement prevMonthButton = self.$("button[title='Previous month']");
+  private final SelenideElement nextMonthButton = self.$("button[title='Next month']");
+  private final SelenideElement currentMonthAndYear = self.$(".MuiPickersCalendarHeader-label");
+  private final ElementsCollection dateRows = self.$$(".MuiDayCalendar-weekContainer");
+
+  @Step("Select date in calendar: {date}")
+  public void selectDateInCalendar(@Nonnull Date date) {
+    java.util.Calendar cal = new GregorianCalendar();
+    cal.setTime(date);
+    calendarButton.click();
+    final int desiredMonthIndex = cal.get(MONTH);
+    selectYear(cal.get(YEAR));
+    selectMonth(desiredMonthIndex);
+    selectDay(cal.get(DAY_OF_MONTH));
+  }
+
+  private void selectYear(int expectedYear) {
+    int actualYear = getActualYear();
+
+    while (actualYear > expectedYear) {
+      prevMonthButton.click();
+      Selenide.sleep(200);
+      actualYear = getActualYear();
     }
-
-    private final SelenideElement input = $(".react-datepicker__input-container input");
-    private final SelenideElement prevButton = self.$(".react-datepicker__navigation--previous");
-    private final SelenideElement nextButton = self.$(".react-datepicker__navigation--next");
-    private final SelenideElement currentMonthAndYear = self.$(".react-datepicker__current-month");
-
-    @Step("Select date in calendar: {date}")
-    public void selectDateInCalendar(@Nonnull Date date) {
-        java.util.Calendar cal = new GregorianCalendar();
-        cal.setTime(date);
-        input.click();
-        final int desiredMonthIndex = cal.get(MONTH);
-        selectYear(cal.get(YEAR));
-        selectMonth(desiredMonthIndex);
-        selectDay(desiredMonthIndex, cal.get(DAY_OF_MONTH));
+    while (actualYear < expectedYear) {
+      nextMonthButton.click();
+      Selenide.sleep(200);
+      actualYear = getActualYear();
     }
+  }
 
-    private void selectYear(int expectedYear) {
-        int actualYear = getActualYear();
+  private void selectMonth(int desiredMonthIndex) {
+    int actualMonth = getActualMonthIndex();
 
-        while (actualYear > expectedYear) {
-            prevButton.click();
-            Selenide.sleep(200);
-            actualYear = getActualYear();
+    while (actualMonth > desiredMonthIndex) {
+      prevMonthButton.click();
+      Selenide.sleep(200);
+      actualMonth = getActualMonthIndex();
+    }
+    while (actualMonth < desiredMonthIndex) {
+      nextMonthButton.click();
+      Selenide.sleep(200);
+      actualMonth = getActualMonthIndex();
+    }
+  }
+
+  private void selectDay(int desiredDay) {
+    ElementsCollection rows = dateRows.snapshot();
+
+    for (SelenideElement row : rows) {
+      ElementsCollection days = row.$$("button").snapshot();
+      for (SelenideElement day : days) {
+        if (day.getText().equals(String.valueOf(desiredDay))) {
+          day.click();
+          return;
         }
-        while (actualYear < expectedYear) {
-            nextButton.click();
-            Selenide.sleep(200);
-            actualYear = getActualYear();
-        }
+      }
     }
+  }
 
-    private void selectMonth(int desiredMonthIndex) {
-        int actualMonth = getActualMonthIndex();
+  private String getMonthNameByIndex(int mothIndex) {
+    return Month.of(mothIndex + 1).name();
+  }
 
-        while (actualMonth > desiredMonthIndex) {
-            prevButton.click();
-            Selenide.sleep(200);
-            actualMonth = getActualMonthIndex();
-        }
-        while (actualMonth < desiredMonthIndex) {
-            nextButton.click();
-            Selenide.sleep(200);
-            actualMonth = getActualMonthIndex();
-        }
-    }
+  private int getActualMonthIndex() {
+    return Month.valueOf(currentMonthAndYear.getText()
+            .split(" ")[0]
+            .toUpperCase())
+        .ordinal();
+  }
 
-    private void selectDay(int desiredMonthIndex, int desiredDay) {
-        ElementsCollection rows = self.findAll(".react-datepicker__week").snapshot();
-
-        for (SelenideElement row : rows) {
-            ElementsCollection days = row.$$(".react-datepicker__day").snapshot();
-            for (SelenideElement day : days) {
-                if (Objects.requireNonNull(day.getAttribute("aria-label"))
-                        .toUpperCase()
-                        .contains(getMonthNameByIndex(desiredMonthIndex)) && Integer.parseInt(day.getText()) == desiredDay) {
-                    day.click();
-                    return;
-                }
-            }
-        }
-    }
-
-    private String getMonthNameByIndex(int mothIndex) {
-        return Month.of(mothIndex + 1).name();
-    }
-
-    private int getActualMonthIndex() {
-        return Month.valueOf(currentMonthAndYear.getText()
-                        .split(" ")[0]
-                        .toUpperCase())
-                .ordinal();
-    }
-
-    private int getActualYear() {
-        return Integer.parseInt(currentMonthAndYear.getText().split(" ")[1]);
-    }
+  private int getActualYear() {
+    return Integer.parseInt(currentMonthAndYear.getText().split(" ")[1]);
+  }
 }

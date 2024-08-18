@@ -8,9 +8,9 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 @RestTest
 public abstract class BaseRestTest {
 
-    protected static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-    protected static final GatewayApiClient gatewayApiClient = new GatewayApiClient();
+  protected static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+  protected static final GatewayApiClient gatewayApiClient = new GatewayApiClient();
 
-    @RegisterExtension
-    private static ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
+  @RegisterExtension
+  private static final ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
 }

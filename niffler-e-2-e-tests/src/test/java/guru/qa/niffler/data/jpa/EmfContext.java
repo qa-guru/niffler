@@ -11,36 +11,36 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public enum EmfContext {
-    INSTANCE;
+  INSTANCE;
 
-    private final Map<DataBase, EntityManagerFactory> emfContext = new ConcurrentHashMap<>();
+  private final Map<DataBase, EntityManagerFactory> emfContext = new ConcurrentHashMap<>();
 
-    private EntityManagerFactory emf(DataBase dataBase) {
-        return emfContext.computeIfAbsent(dataBase, key -> {
-            Map<String, String> settings = new HashMap<>();
-            settings.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+  private EntityManagerFactory emf(DataBase dataBase) {
+    return emfContext.computeIfAbsent(dataBase, key -> {
+      Map<String, String> settings = new HashMap<>();
+      settings.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 //            settings.put("hibernate.connection.driver_class", "org.postgresql.Driver");
-            settings.put("hibernate.connection.driver_class", "com.p6spy.engine.spy.P6SpyDriver");
-            settings.put("hibernate.connection.username", "postgres");
-            settings.put("hibernate.connection.password", "secret");
-            settings.put("hibernate.connection.url", dataBase.getUrlForP6Spy());
+      settings.put("hibernate.connection.driver_class", "com.p6spy.engine.spy.P6SpyDriver");
+      settings.put("hibernate.connection.username", "postgres");
+      settings.put("hibernate.connection.password", "secret");
+      settings.put("hibernate.connection.url", dataBase.getUrlForP6Spy());
 //            settings.put("hibernate.connection.url", dataBase.url);
-            return Persistence.createEntityManagerFactory(
-                    "niffler-persistence-unit-name",
-                    settings
-            );
-        });
-    }
+      return Persistence.createEntityManagerFactory(
+          "niffler-persistence-unit-name",
+          settings
+      );
+    });
+  }
 
-    public static EntityManager entityManager(DataBase dataBase) {
-        return new TransactionalEntityManager(
-                new ThreadSafeEntityManager(
-                        INSTANCE.emf(dataBase).createEntityManager()
-                )
-        );
-    }
+  public static EntityManager entityManager(DataBase dataBase) {
+    return new TransactionalEntityManager(
+        new ThreadSafeEntityManager(
+            INSTANCE.emf(dataBase).createEntityManager()
+        )
+    );
+  }
 
-    public static Collection<EntityManagerFactory> storedEmf() {
-        return INSTANCE.emfContext.values();
-    }
+  public static Collection<EntityManagerFactory> storedEmf() {
+    return INSTANCE.emfContext.values();
+  }
 }

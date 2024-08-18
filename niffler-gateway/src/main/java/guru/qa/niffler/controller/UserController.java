@@ -22,32 +22,32 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
-    private final UserDataClient userDataClient;
+  private final UserDataClient userDataClient;
 
-    @Autowired
-    public UserController(UserDataClient userDataClient) {
-        this.userDataClient = userDataClient;
-    }
+  @Autowired
+  public UserController(UserDataClient userDataClient) {
+    this.userDataClient = userDataClient;
+  }
 
-    @GetMapping("/current")
-    public UserJson currentUser(@AuthenticationPrincipal Jwt principal) {
-        String username = principal.getClaim("sub");
-        return userDataClient.currentUser(username);
-    }
+  @GetMapping("/current")
+  public UserJson currentUser(@AuthenticationPrincipal Jwt principal) {
+    String username = principal.getClaim("sub");
+    return userDataClient.currentUser(username);
+  }
 
-    @GetMapping("/all")
-    public List<UserJson> allUsers(@AuthenticationPrincipal Jwt principal,
-                                   @RequestParam(required = false) String searchQuery) {
-        String username = principal.getClaim("sub");
-        return userDataClient.allUsers(username, searchQuery);
-    }
+  @GetMapping("/all")
+  public List<UserJson> allUsers(@AuthenticationPrincipal Jwt principal,
+                                 @RequestParam(required = false) String searchQuery) {
+    String username = principal.getClaim("sub");
+    return userDataClient.allUsers(username, searchQuery);
+  }
 
-    @PostMapping("/update")
-    public UserJson updateUserInfo(@AuthenticationPrincipal Jwt principal,
-                                   @Valid @RequestBody UserJson user) {
-        String username = principal.getClaim("sub");
-        return userDataClient.updateUserInfo(user.addUsername(username));
-    }
+  @PostMapping("/update")
+  public UserJson updateUserInfo(@AuthenticationPrincipal Jwt principal,
+                                 @Valid @RequestBody UserJson user) {
+    String username = principal.getClaim("sub");
+    return userDataClient.updateUserInfo(user.addUsername(username));
+  }
 }

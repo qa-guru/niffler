@@ -24,104 +24,89 @@ import java.util.stream.Collectors;
 @Controller
 public class UserGraphqlController {
 
-    private final UserDataClient userDataClient;
+  private final UserDataClient userDataClient;
 
-    @Autowired
-    public UserGraphqlController(UserDataClient userDataClient) {
-        this.userDataClient = userDataClient;
-    }
+  @Autowired
+  public UserGraphqlController(UserDataClient userDataClient) {
+    this.userDataClient = userDataClient;
+  }
 
-    @SchemaMapping(typeName = "User", field = "friends")
-    public List<UserJsonGQL> getFriends(UserJsonGQL user) {
-        return getFriends(user.username());
-    }
+  @SchemaMapping(typeName = "User", field = "friends")
+  public List<UserJsonGQL> getFriends(UserJsonGQL user) {
+    return userDataClient.friends(user.username(), null)
+        .stream()
+        .map(UserJsonGQL::fromUserJson)
+        .toList();
+  }
 
-    @SchemaMapping(typeName = "User", field = "invitations")
-    public List<UserJsonGQL> getIncomeInvitations(UserJsonGQL user) {
-        return getIncomeInvitations(user.username());
-    }
+  @QueryMapping
+  public UserJsonGQL user(@AuthenticationPrincipal Jwt principal,
+                          @Nonnull DataFetchingEnvironment env) {
+    checkSubQueries(env, 2, "friends", "invitations");
+    String username = principal.getClaim("sub");
+    UserJson userJson = userDataClient.currentUser(username);
+    return UserJsonGQL.fromUserJson(userJson);
+  }
 
-    @QueryMapping
-    public UserJsonGQL user(@AuthenticationPrincipal Jwt principal,
-                            @Nonnull DataFetchingEnvironment env) {
-        checkSubQueries(env, 2, "friends", "invitations");
-        String username = principal.getClaim("sub");
-        UserJson userJson = userDataClient.currentUser(username);
-        return UserJsonGQL.fromUserJson(userJson);
-    }
+  @QueryMapping
+  public List<UserJsonGQL> users(@AuthenticationPrincipal Jwt principal) {
+    String username = principal.getClaim("sub");
+    return userDataClient.allUsers(username, null).stream()
+        .map(UserJsonGQL::fromUserJson)
+        .collect(Collectors.toList());
+  }
 
-    @QueryMapping
-    public List<UserJsonGQL> users(@AuthenticationPrincipal Jwt principal) {
-        String username = principal.getClaim("sub");
-        return userDataClient.allUsers(username, null).stream()
-                .map(UserJsonGQL::fromUserJson)
-                .collect(Collectors.toList());
-    }
+  @MutationMapping
+  public UserJsonGQL updateUser(@AuthenticationPrincipal Jwt principal,
+                                @Argument @Valid UpdateUserInfoInput input) {
+    String username = principal.getClaim("sub");
+    return UserJsonGQL.fromUserJson(userDataClient.updateUserInfo(new UserJson(
+        null,
+        username,
+        input.firstname(),
+        input.surname(),
+        input.fullname(),
+        input.currency(),
+        input.photo(),
+        null,
+        null
+    )));
+  }
 
-    @MutationMapping
-    public UserJsonGQL updateUser(@AuthenticationPrincipal Jwt principal,
-                                  @Argument @Valid UpdateUserInfoInput input) {
-        String username = principal.getClaim("sub");
-        return UserJsonGQL.fromUserJson(userDataClient.updateUserInfo(new UserJson(
-                null,
-                username,
-                input.firstname(),
-                input.surname(),
-                input.currency(),
-                input.photo(),
-                null,
-                null
-        )));
-    }
+  @MutationMapping
+  public UserJsonGQL addFriend(@AuthenticationPrincipal Jwt principal,
+                               @Argument String friendUsername) {
+    String username = principal.getClaim("sub");
+    return UserJsonGQL.fromUserJson(userDataClient.sendInvitation(username, friendUsername));
+  }
 
-    @MutationMapping
-    public UserJsonGQL addFriend(@AuthenticationPrincipal Jwt principal,
-                                 @Argument String friendUsername) {
-        String username = principal.getClaim("sub");
-        return UserJsonGQL.fromUserJson(userDataClient.sendInvitation(username, friendUsername));
-    }
+  @MutationMapping
+  public UserJsonGQL acceptInvitation(@AuthenticationPrincipal Jwt principal,
+                                      @Argument String friendUsername) {
+    String username = principal.getClaim("sub");
+    return UserJsonGQL.fromUserJson(userDataClient.acceptInvitation(username, friendUsername));
+  }
 
-    @MutationMapping
-    public UserJsonGQL acceptInvitation(@AuthenticationPrincipal Jwt principal,
-                                        @Argument String friendUsername) {
-        String username = principal.getClaim("sub");
-        return UserJsonGQL.fromUserJson(userDataClient.acceptInvitation(username, friendUsername));
-    }
+  @MutationMapping
+  public UserJsonGQL declineInvitation(@AuthenticationPrincipal Jwt principal,
+                                       @Argument String friendUsername) {
+    String username = principal.getClaim("sub");
+    return UserJsonGQL.fromUserJson(userDataClient.declineInvitation(username, friendUsername));
+  }
 
-    @MutationMapping
-    public UserJsonGQL declineInvitation(@AuthenticationPrincipal Jwt principal,
-                                         @Argument String friendUsername) {
-        String username = principal.getClaim("sub");
-        return UserJsonGQL.fromUserJson(userDataClient.declineInvitation(username, friendUsername));
-    }
+  @MutationMapping
+  public void removeFriend(@AuthenticationPrincipal Jwt principal,
+                           @Argument String friendUsername) {
+    String username = principal.getClaim("sub");
+    userDataClient.removeFriend(username, friendUsername);
+  }
 
-    @MutationMapping
-    public void removeFriend(@AuthenticationPrincipal Jwt principal,
-                             @Argument String friendUsername) {
-        String username = principal.getClaim("sub");
-        userDataClient.removeFriend(username, friendUsername);
+  private void checkSubQueries(@Nonnull DataFetchingEnvironment env, int depth, @Nonnull String... queryKeys) {
+    for (String queryKey : queryKeys) {
+      List<SelectedField> selectors = env.getSelectionSet().getFieldsGroupedByResultKey().get(queryKey);
+      if (selectors != null && selectors.size() > depth) {
+        throw new TooManySubQueriesException("Can`t fetch over 2 " + queryKey + " sub-queries");
+      }
     }
-
-    private List<UserJsonGQL> getFriends(String username) {
-        return userDataClient.friends(username, null)
-                .stream()
-                .map(UserJsonGQL::fromUserJson)
-                .toList();
-    }
-
-    private List<UserJsonGQL> getIncomeInvitations(String username) {
-        return userDataClient.incomeInvitations(username, null)
-                .stream()
-                .map(UserJsonGQL::fromUserJson)
-                .collect(Collectors.toList());
-    }
-
-    private void checkSubQueries(@Nonnull DataFetchingEnvironment env, int depth, @Nonnull String... queryKeys) {
-        for (String queryKey : queryKeys) {
-            List<SelectedField> selectors = env.getSelectionSet().getFieldsGroupedByResultKey().get(queryKey);
-            if (selectors != null && selectors.size() > depth) {
-                throw new TooManySubQueriesException("Can`t fetch over 2 " + queryKey + " sub-queries");
-            }
-        }
-    }
+  }
 }

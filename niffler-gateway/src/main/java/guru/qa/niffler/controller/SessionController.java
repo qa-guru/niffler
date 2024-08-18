@@ -15,16 +15,16 @@ import java.util.Date;
 @RequestMapping("/api/session")
 public class SessionController {
 
-    @GetMapping("/current")
-    public SessionJson session(@AuthenticationPrincipal Jwt principal) {
-        if (principal != null) {
-            return new SessionJson(
-                    principal.getClaim("sub"),
-                    Date.from(principal.getIssuedAt()),
-                    Date.from(principal.getExpiresAt())
-            );
-        } else {
-            return SessionJson.empty();
-        }
+  @GetMapping("/current")
+  public SessionJson session(@AuthenticationPrincipal Jwt principal) {
+    if (principal != null) {
+      return new SessionJson(
+          principal.getClaim("sub"),
+          Date.from(principal.getIssuedAt()),
+          Date.from(principal.getExpiresAt())
+      );
+    } else {
+      return SessionJson.empty();
     }
+  }
 }

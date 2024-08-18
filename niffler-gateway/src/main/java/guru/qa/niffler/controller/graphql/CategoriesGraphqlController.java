@@ -17,26 +17,27 @@ import java.util.List;
 @Controller
 public class CategoriesGraphqlController {
 
-    private final RestSpendClient restSpendClient;
+  private final RestSpendClient restSpendClient;
 
-    @Autowired
-    public CategoriesGraphqlController(RestSpendClient restSpendClient) {
-        this.restSpendClient = restSpendClient;
-    }
+  @Autowired
+  public CategoriesGraphqlController(RestSpendClient restSpendClient) {
+    this.restSpendClient = restSpendClient;
+  }
 
-    @QueryMapping
-    public List<CategoryJson> categories(@AuthenticationPrincipal Jwt principal) {
-        String username = principal.getClaim("sub");
-        return restSpendClient.getCategories(username);
-    }
+  @QueryMapping
+  public List<CategoryJson> categories(@AuthenticationPrincipal Jwt principal) {
+    String username = principal.getClaim("sub");
+    return restSpendClient.getCategories(username, false);
+  }
 
-    @MutationMapping
-    public CategoryJson createCategory(@AuthenticationPrincipal Jwt principal, @Argument @Valid CreateCategoryInput input) {
-        String username = principal.getClaim("sub");
-        return restSpendClient.addCategory(new CategoryJson(
-                null,
-                input.category(),
-                username
-        ));
-    }
+  @MutationMapping
+  public CategoryJson createCategory(@AuthenticationPrincipal Jwt principal, @Argument @Valid CreateCategoryInput input) {
+    String username = principal.getClaim("sub");
+    return restSpendClient.addCategory(new CategoryJson(
+        null,
+        input.name(),
+        username,
+        input.archived()
+    ));
+  }
 }

@@ -11,7 +11,7 @@ public record SessionJson(@JsonProperty("username")
                           Date issuedAt,
                           @JsonProperty("expiresAt")
                           Date expiresAt) {
-    public static @Nonnull SessionJson empty() {
-        return new SessionJson(null, null, null);
-    }
+  public static @Nonnull SessionJson empty() {
+    return new SessionJson(null, null, null);
+  }
 }

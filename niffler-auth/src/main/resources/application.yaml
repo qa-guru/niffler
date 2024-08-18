@@ -1,11 +1,9 @@
 server:
   port: 9000
-  # ONLY FOR TESTING
-  servlet:
-    session:
-      cookie:
-        http-only: false
-        secure: false
+  error:
+    whitelabel:
+      enabled: false
+    path: /error
 
 spring:
   application:
@@ -47,8 +45,8 @@ logging:
     org.springframework.security: INFO
     org.springframework.security.oauth2: INFO
     org.springframework.web.cors: INFO
-    org.apache.catalina.filters.RequestDumperFilter: DEBUG
-#    org.springframework.boot.autoconfigure: DEBUG
+    org.apache.catalina.filters.RequestDumperFilter: INFO
+    org.springframework.boot.autoconfigure: INFO
 
 ---
 spring:
@@ -72,7 +70,6 @@ niffler-auth:
   base-uri: 'http://127.0.0.1:9000'
 oauth2:
   client-id: 'client'
-  client-secret: '{noop}secret'
 ---
 spring:
   config:
@@ -95,7 +92,6 @@ niffler-auth:
   base-uri: 'http://auth.niffler.dc:9000'
 oauth2:
   client-id: 'client'
-  client-secret: '{noop}secret'
 ---
 spring:
   config:
@@ -122,7 +118,6 @@ niffler-auth:
   base-uri: 'https://auth.niffler.qa.guru'
 oauth2:
   client-id: ${client-id}
-  client-secret: ${client-secret}
 ---
 spring:
   config:
@@ -149,5 +144,4 @@ niffler-auth:
   base-uri: 'https://auth.niffler-stage.qa.guru'
 oauth2:
   client-id: ${client-id}
-  client-secret: ${client-secret}
 ---

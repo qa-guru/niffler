@@ -8,29 +8,29 @@ import java.util.UUID;
 
 public interface UserRepository {
 
-    static UserRepository getInstance() {
-        if ("spring".equals(System.getProperty("repository", null))) {
-            return new UserRepositorySpringJdbc();
-        } else if ("jdbc".equals(System.getProperty("repository", null))) {
-            return new UserRepositoryJdbc();
-        } else {
-            return new UserRepositoryHibernate();
-        }
+  static UserRepository getInstance() {
+    if ("spring".equals(System.getProperty("repository", null))) {
+      return new UserRepositorySpringJdbc();
+    } else if ("jdbc".equals(System.getProperty("repository", null))) {
+      return new UserRepositoryJdbc();
+    } else {
+      return new UserRepositoryHibernate();
     }
+  }
 
-    AuthUserEntity createInAuth(AuthUserEntity user);
+  AuthUserEntity createInAuth(AuthUserEntity user);
 
-    Optional<AuthUserEntity> findByIdInAuth(UUID id);
+  Optional<AuthUserEntity> findByIdInAuth(UUID id);
 
-    UserEntity createInUserdata(UserEntity user);
+  UserEntity createInUserdata(UserEntity user);
 
-    Optional<UserEntity> findByIdInUserdata(UUID id);
+  Optional<UserEntity> findByIdInUserdata(UUID id);
 
-    void updateInAuth(AuthUserEntity user);
+  void updateInAuth(AuthUserEntity user);
 
-    void updateInUserdata(UserEntity user);
+  void updateInUserdata(UserEntity user);
 
-    void deleteInAuth(AuthUserEntity user);
+  void deleteInAuth(AuthUserEntity user);
 
-    void deleteInUserdata(UserEntity user);
+  void deleteInUserdata(UserEntity user);
 }

@@ -10,7 +10,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 public @interface GenerateCategory {
 
-    boolean handleAnnotation() default true;
+  boolean handleAnnotation() default true;
 
-    String value();
+  String value();
+
+  boolean archived() default false;
 }

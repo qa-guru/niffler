@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,36 +24,42 @@ import java.util.List;
 @RequestMapping("/internal/spends")
 public class SpendController {
 
-    private final SpendService spendService;
+  private final SpendService spendService;
 
-    @Autowired
-    public SpendController(SpendService spendService) {
-        this.spendService = spendService;
-    }
+  @Autowired
+  public SpendController(SpendService spendService) {
+    this.spendService = spendService;
+  }
 
-    @GetMapping("/all")
-    public List<SpendJson> getSpends(@RequestParam String username,
-                                     @RequestParam(required = false) CurrencyValues filterCurrency,
-                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) {
-        return spendService.getSpendsForUser(username, filterCurrency, from, to);
-    }
+  @GetMapping("/{id}")
+  public SpendJson getSpend(@PathVariable("id") String id,
+                            @RequestParam String username) {
+    return spendService.getSpendForUser(id, username);
+  }
 
-    @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public SpendJson addSpend(@RequestBody SpendJson spend) {
-        return spendService.saveSpendForUser(spend);
-    }
+  @GetMapping("/all")
+  public List<SpendJson> getSpends(@RequestParam String username,
+                                   @RequestParam(required = false) CurrencyValues filterCurrency,
+                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) {
+    return spendService.getSpendsForUser(username, filterCurrency, from, to);
+  }
 
-    @PatchMapping("/edit")
-    public SpendJson editSpend(@RequestBody SpendJson spend) {
-        return spendService.editSpendForUser(spend);
-    }
+  @PostMapping("/add")
+  @ResponseStatus(HttpStatus.CREATED)
+  public SpendJson addSpend(@RequestBody SpendJson spend) {
+    return spendService.saveSpendForUser(spend);
+  }
 
-    @DeleteMapping("/remove")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteSpends(@RequestParam String username,
-                             @RequestParam List<String> ids) {
-        spendService.deleteSpends(username, ids);
-    }
+  @PatchMapping("/edit")
+  public SpendJson editSpend(@RequestBody SpendJson spend) {
+    return spendService.editSpendForUser(spend);
+  }
+
+  @DeleteMapping("/remove")
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  public void deleteSpends(@RequestParam String username,
+                           @RequestParam List<String> ids) {
+    spendService.deleteSpends(username, ids);
+  }
 }

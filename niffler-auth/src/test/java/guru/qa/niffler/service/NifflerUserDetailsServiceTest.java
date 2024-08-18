@@ -27,76 +27,76 @@ import static org.mockito.Mockito.lenient;
 @ExtendWith(MockitoExtension.class)
 class NifflerUserDetailsServiceTest {
 
-    private NifflerUserDetailsService nifflerUserDetailsService;
-    private UserEntity testUserEntity;
-    private List<AuthorityEntity> authorityEntities;
+  private NifflerUserDetailsService nifflerUserDetailsService;
+  private UserEntity testUserEntity;
+  private List<AuthorityEntity> authorityEntities;
 
-    @BeforeEach
-    void initMockRepository(@Mock UserRepository userRepository) {
-        AuthorityEntity read = new AuthorityEntity();
-        read.setUser(testUserEntity);
-        read.setAuthority(Authority.read);
-        AuthorityEntity write = new AuthorityEntity();
-        write.setUser(testUserEntity);
-        write.setAuthority(Authority.write);
-        authorityEntities = List.of(read, write);
+  @BeforeEach
+  void initMockRepository(@Mock UserRepository userRepository) {
+    AuthorityEntity read = new AuthorityEntity();
+    read.setUser(testUserEntity);
+    read.setAuthority(Authority.read);
+    AuthorityEntity write = new AuthorityEntity();
+    write.setUser(testUserEntity);
+    write.setAuthority(Authority.write);
+    authorityEntities = List.of(read, write);
 
-        testUserEntity = new UserEntity();
-        testUserEntity.setUsername("correct");
-        testUserEntity.setAuthorities(authorityEntities);
-        testUserEntity.setEnabled(true);
-        testUserEntity.setPassword("test-pass");
-        testUserEntity.setAccountNonExpired(true);
-        testUserEntity.setAccountNonLocked(true);
-        testUserEntity.setCredentialsNonExpired(true);
-        testUserEntity.setId(UUID.randomUUID());
+    testUserEntity = new UserEntity();
+    testUserEntity.setUsername("correct");
+    testUserEntity.setAuthorities(authorityEntities);
+    testUserEntity.setEnabled(true);
+    testUserEntity.setPassword("test-pass");
+    testUserEntity.setAccountNonExpired(true);
+    testUserEntity.setAccountNonLocked(true);
+    testUserEntity.setCredentialsNonExpired(true);
+    testUserEntity.setId(UUID.randomUUID());
 
-        lenient().when(userRepository.findByUsername("correct"))
-                .thenReturn(Optional.of(testUserEntity));
+    lenient().when(userRepository.findByUsername("correct"))
+        .thenReturn(Optional.of(testUserEntity));
 
-        lenient().when(userRepository.findByUsername(not(eq("correct"))))
-                .thenReturn(Optional.empty());
+    lenient().when(userRepository.findByUsername(not(eq("correct"))))
+        .thenReturn(Optional.empty());
 
-        nifflerUserDetailsService = new NifflerUserDetailsService(userRepository);
-    }
+    nifflerUserDetailsService = new NifflerUserDetailsService(userRepository);
+  }
 
-    @Test
-    void loadUserByUsername() {
-        final UserDetails correct = nifflerUserDetailsService.loadUserByUsername("correct");
+  @Test
+  void loadUserByUsername() {
+    final UserDetails correct = nifflerUserDetailsService.loadUserByUsername("correct");
 
-        final List<SimpleGrantedAuthority> expectedAuthorities = authorityEntities.stream()
-                .map(a -> new SimpleGrantedAuthority(a.getAuthority().name()))
-                .toList();
+    final List<SimpleGrantedAuthority> expectedAuthorities = authorityEntities.stream()
+        .map(a -> new SimpleGrantedAuthority(a.getAuthority().name()))
+        .toList();
 
-        assertEquals(
-                "correct",
-                correct.getUsername()
-        );
-        assertEquals(
-                "test-pass",
-                correct.getPassword()
-        );
-        assertEquals(
-                expectedAuthorities,
-                correct.getAuthorities()
-        );
+    assertEquals(
+        "correct",
+        correct.getUsername()
+    );
+    assertEquals(
+        "test-pass",
+        correct.getPassword()
+    );
+    assertEquals(
+        expectedAuthorities,
+        correct.getAuthorities()
+    );
 
-        assertTrue(correct.isAccountNonExpired());
-        assertTrue(correct.isAccountNonLocked());
-        assertTrue(correct.isCredentialsNonExpired());
-        assertTrue(correct.isEnabled());
-    }
+    assertTrue(correct.isAccountNonExpired());
+    assertTrue(correct.isAccountNonLocked());
+    assertTrue(correct.isCredentialsNonExpired());
+    assertTrue(correct.isEnabled());
+  }
 
-    @Test
-    void loadUserByUsernameNegative() {
-        final UsernameNotFoundException exception = assertThrows(
-                UsernameNotFoundException.class,
-                () -> nifflerUserDetailsService.loadUserByUsername("incorrect")
-        );
+  @Test
+  void loadUserByUsernameNegative() {
+    final UsernameNotFoundException exception = assertThrows(
+        UsernameNotFoundException.class,
+        () -> nifflerUserDetailsService.loadUserByUsername("incorrect")
+    );
 
-        assertEquals(
-                "Username: `incorrect` not found",
-                exception.getMessage()
-        );
-    }
+    assertEquals(
+        "Username: `incorrect` not found",
+        exception.getMessage()
+    );
+  }
 }

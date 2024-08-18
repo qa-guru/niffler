@@ -1,21 +1,20 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.2.3'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
     id 'com.google.cloud.tools.jib' version '3.4.1'
 }
 
 group = 'guru.qa'
-version = '1.2.3'
+version = '2.0.0'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.security:spring-security-oauth2-authorization-server:${project.ext.oauth2AuthorizationServerVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation "org.springframework.kafka:spring-kafka:${project.ext.springKafkaVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
     implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
@@ -34,6 +33,10 @@ jib {
         jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
         environment = ['VAULT_TOKEN': "${System.env.VAULT_TOKEN}".toString()]
         creationTime = 'USE_CURRENT_TIMESTAMP'
+        labels = [
+                'maintainer': 'Dmitrii Tuchs @dtuchs',
+                'version': "${project.version}".toString()
+        ]
     }
     from {
         image = "${project.ext.dockerImage}"
@@ -62,4 +65,3 @@ tasks.register('printVersion') {
 tasks.named('test') {
     useJUnitPlatform()
 }
-

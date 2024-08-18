@@ -11,23 +11,23 @@ import java.io.IOException;
 
 public class CodeInterceptor implements Interceptor {
 
-    public static final String CODE_PARAM = "code=";
+  public static final String CODE_PARAM = "code=";
 
-    @Override
-    @Nonnull
-    public Response intercept(@Nonnull Interceptor.Chain chain) throws IOException {
-        final Response response = chain.proceed(chain.request());
-        if (response.isRedirect()) {
-            final String location = response.header("Location");
-            if (location.contains(CODE_PARAM)) {
-                ApiLoginExtension.setCode(
-                        ContextHolderExtension.context(),
-                        StringUtils.substringAfter(
-                                location, CODE_PARAM
-                        )
-                );
-            }
-        }
-        return response;
+  @Override
+  @Nonnull
+  public Response intercept(@Nonnull Interceptor.Chain chain) throws IOException {
+    final Response response = chain.proceed(chain.request());
+    if (response.isRedirect()) {
+      final String location = response.header("Location");
+      if (location.contains(CODE_PARAM)) {
+        ApiLoginExtension.setCode(
+            ContextHolderExtension.context(),
+            StringUtils.substringAfter(
+                location, CODE_PARAM
+            )
+        );
+      }
     }
+    return response;
+  }
 }

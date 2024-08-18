@@ -23,54 +23,58 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Configuration
 public class SecurityConfig {
 
-    private final CorsCustomizer corsCustomizer;
-    private final Environment environment;
+  private final CorsCustomizer corsCustomizer;
+  private final Environment environment;
 
-    @Autowired
-    public SecurityConfig(CorsCustomizer corsCustomizer, Environment environment) {
-        this.corsCustomizer = corsCustomizer;
-        this.environment = environment;
+  @Autowired
+  public SecurityConfig(CorsCustomizer corsCustomizer, Environment environment) {
+    this.corsCustomizer = corsCustomizer;
+    this.environment = environment;
+  }
+
+  @Bean
+  public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    corsCustomizer.corsCustomizer(http);
+
+    if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
+      http.addFilterBefore(new SpecificRequestDumperFilter(
+          new RequestDumperFilter(),
+          "/login", "/oauth2/.*"
+      ), DisableEncodeUrlFilter.class);
     }
 
-    @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        corsCustomizer.corsCustomizer(http);
-
-        if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
-            http.addFilterBefore(new SpecificRequestDumperFilter(
-                    new RequestDumperFilter(),
-                    "/login", "/oauth2/.*"
-            ), DisableEncodeUrlFilter.class);
-        }
-
-        return http.authorizeHttpRequests(customizer -> customizer
-                        .requestMatchers(
-                                antMatcher("/register"),
-                                antMatcher("/images/**"),
-                                antMatcher("/styles/**"),
-                                antMatcher("/fonts/**"),
-                                antMatcher("/actuator/health")
-                        ).permitAll()
-                        .anyRequest()
-                        .authenticated()
-                )
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        // https://stackoverflow.com/a/74521360/65681
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                )
-                .addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
-                .formLogin(login -> login
-                        .loginPage("/login")
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutRequestMatcher(antMatcher("/logout")) // https://github.com/spring-projects/spring-authorization-server/issues/266
-                        .deleteCookies("JSESSIONID", "XSRF-TOKEN")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
-                )
-                .sessionManagement(sm -> sm.invalidSessionUrl("/login"))
-                .build();
-    }
+    return http.authorizeHttpRequests(customizer -> customizer
+            .requestMatchers(
+                antMatcher("/register"),
+                antMatcher("/error"),
+                antMatcher("/images/**"),
+                antMatcher("/styles/**"),
+                antMatcher("/fonts/**"),
+                antMatcher("/actuator/health")
+            ).permitAll()
+            .anyRequest()
+            .authenticated()
+        )
+        .csrf(csrf -> csrf
+            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            // https://stackoverflow.com/a/74521360/65681
+            .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+        )
+        .addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
+        .formLogin(login -> login
+            .loginPage("/login")
+            .permitAll())
+        .logout(logout -> logout
+            .logoutRequestMatcher(antMatcher("/logout")) // https://github.com/spring-projects/spring-authorization-server/issues/266
+            .deleteCookies("JSESSIONID", "XSRF-TOKEN")
+            .invalidateHttpSession(true)
+            .clearAuthentication(true)
+            .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
+        )
+        .exceptionHandling(customizer -> customizer
+            .accessDeniedPage("/error")
+        )
+        .sessionManagement(sm -> sm.invalidSessionUrl("/login"))
+        .build();
+  }
 }

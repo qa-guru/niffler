@@ -10,56 +10,63 @@ import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 public class SpendApiClient extends RestClient {
 
-    private final SpendApi spendApi;
+  private final SpendApi spendApi;
 
-    public SpendApiClient() {
-        super(CFG.spendUrl());
-        this.spendApi = retrofit.create(SpendApi.class);
-    }
+  public SpendApiClient() {
+    super(CFG.spendUrl());
+    this.spendApi = retrofit.create(SpendApi.class);
+  }
 
-    @Step("Send REST POST('/internal/spends/add') request to niffler-spend")
-    @Nullable
-    public SpendJson createSpend(@Nonnull SpendJson spend) throws Exception {
-        return spendApi.addSpend(spend)
-                .execute()
-                .body();
-    }
+  @Step("Send REST POST('/internal/spends/add') request to niffler-spend")
+  @Nullable
+  public SpendJson createSpend(@Nonnull SpendJson spend) throws Exception {
+    return spendApi.addSpend(spend)
+        .execute()
+        .body();
+  }
 
-    @Step("Send REST POST('/internal/categories/add') request to niffler-spend")
-    @Nullable
-    public CategoryJson createCategory(@Nonnull CategoryJson category) throws Exception {
-        return spendApi.addCategory(category)
-                .execute()
-                .body();
-    }
+  @Step("Send REST DELETE('/internal/spends/remove') request to niffler-spend")
+  public void removeSpends(@Nonnull String username, @Nonnull String... ids) throws Exception {
+    spendApi.removeSpends(username, Arrays.stream(ids).toList())
+        .execute();
+  }
 
-    @Step("Send REST GET('/internal/v2/spends/all') request to niffler-spend")
-    @Nullable
-    public RestPage<SpendJson> allSpendsPageable(@Nonnull String username,
-                                                 @Nullable CurrencyValues currency,
-                                                 @Nullable String from,
-                                                 @Nullable String to,
-                                                 @Nullable Integer page,
-                                                 @Nullable Integer size,
-                                                 @Nullable List<String> sort) throws Exception {
-        return spendApi.allSpendsPageable(username, currency, from, to, page, size, sort)
-                .execute()
-                .body();
-    }
+  @Step("Send REST POST('/internal/categories/add') request to niffler-spend")
+  @Nullable
+  public CategoryJson createCategory(@Nonnull CategoryJson category) throws Exception {
+    return spendApi.addCategory(category)
+        .execute()
+        .body();
+  }
 
-    @Step("Send REST GET('/internal/stat/total') request to niffler-spend")
-    @Nullable
-    public List<StatisticJson> statistic(@Nonnull String username,
-                                         @Nullable CurrencyValues userCurrency,
-                                         @Nullable CurrencyValues filterCurrency,
-                                         @Nullable String from,
-                                         @Nullable String to) throws Exception {
-        return spendApi.stat(username, userCurrency, filterCurrency, from, to)
-                .execute()
-                .body();
-    }
+  @Step("Send REST GET('/internal/v2/spends/all') request to niffler-spend")
+  @Nullable
+  public RestPage<SpendJson> allSpendsPageable(@Nonnull String username,
+                                               @Nullable CurrencyValues currency,
+                                               @Nullable String from,
+                                               @Nullable String to,
+                                               @Nullable Integer page,
+                                               @Nullable Integer size,
+                                               @Nullable List<String> sort) throws Exception {
+    return spendApi.allSpendsPageable(username, currency, from, to, page, size, sort)
+        .execute()
+        .body();
+  }
+
+  @Step("Send REST GET('/internal/stat/total') request to niffler-spend")
+  @Nullable
+  public List<StatisticJson> statistic(@Nonnull String username,
+                                       @Nullable CurrencyValues userCurrency,
+                                       @Nullable CurrencyValues filterCurrency,
+                                       @Nullable String from,
+                                       @Nullable String to) throws Exception {
+    return spendApi.stat(username, userCurrency, filterCurrency, from, to)
+        .execute()
+        .body();
+  }
 }

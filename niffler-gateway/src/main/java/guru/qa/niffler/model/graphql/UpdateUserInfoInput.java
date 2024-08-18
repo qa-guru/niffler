@@ -5,13 +5,15 @@ import guru.qa.niffler.model.CurrencyValues;
 
 
 public record UpdateUserInfoInput(
-        @JsonProperty("firstname")
-        String firstname,
-        @JsonProperty("surname")
-        String surname,
-        @JsonProperty("currency")
-        CurrencyValues currency,
-        @JsonProperty("photo")
-        String photo) {
+    @JsonProperty("firstname")
+    String firstname,
+    @JsonProperty("surname")
+    String surname,
+    @JsonProperty("fullname")
+    String fullname,
+    @JsonProperty("currency")
+    CurrencyValues currency,
+    @JsonProperty("photo")
+    String photo) {
 
 }

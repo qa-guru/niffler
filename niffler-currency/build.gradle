@@ -1,12 +1,11 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.2.3'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
     id 'com.google.cloud.tools.jib' version '3.4.1'
 }
 
 group = 'guru.qa'
-version = '1.2.2'
+version = '2.0.0'
 
 dependencies {
     implementation project(':niffler-grpc-common')
@@ -29,6 +28,10 @@ jib {
         jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
         environment = ['VAULT_TOKEN': "${System.env.VAULT_TOKEN}".toString()]
         creationTime = 'USE_CURRENT_TIMESTAMP'
+        labels = [
+                'maintainer': 'Dmitrii Tuchs @dtuchs',
+                'version': "${project.version}".toString()
+        ]
     }
     from {
         image = "${project.ext.dockerImage}"
@@ -57,4 +60,3 @@ tasks.register('printVersion') {
 tasks.named('test') {
     useJUnitPlatform()
 }
-

@@ -11,13 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 @DBTest
 public abstract class BaseWebTest {
 
-    protected static final Config CFG = Config.getConfig();
+  protected static final Config CFG = Config.getConfig();
 
-    @BeforeEach
-    void setup() {
-        SelenideLogger.addListener("AllureSelenide", new AllureSelenide()
-                .screenshots(false)
-                .savePageSource(false)
-        );
-    }
+  @BeforeEach
+  void setup() {
+    SelenideLogger.addListener("AllureSelenide", new AllureSelenide()
+        .screenshots(false)
+        .savePageSource(false)
+    );
+  }
 }

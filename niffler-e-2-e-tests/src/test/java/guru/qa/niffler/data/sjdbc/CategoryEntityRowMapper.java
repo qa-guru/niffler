@@ -9,14 +9,15 @@ import java.util.UUID;
 
 public class CategoryEntityRowMapper implements RowMapper<CategoryEntity> {
 
-    public static final CategoryEntityRowMapper instance = new CategoryEntityRowMapper();
+  public static final CategoryEntityRowMapper instance = new CategoryEntityRowMapper();
 
-    @Override
-    public CategoryEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-        CategoryEntity category = new CategoryEntity();
-        category.setId(rs.getObject("id", UUID.class));
-        category.setUsername(rs.getString("username"));
-        category.setCategory(rs.getString("category"));
-        return category;
-    }
+  @Override
+  public CategoryEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+    CategoryEntity category = new CategoryEntity();
+    category.setId(rs.getObject("id", UUID.class));
+    category.setUsername(rs.getString("username"));
+    category.setName(rs.getString("name"));
+    category.setArchived(rs.getBoolean("archived"));
+    return category;
+  }
 }

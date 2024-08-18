@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface Friends {
 
-    boolean handleAnnotation() default true;
+  boolean handleAnnotation() default true;
 
-    int count() default 0;
+  int count() default 0;
 }

@@ -1,8 +1,5 @@
 server:
   port: 8090
-  error:
-    include:
-      message: true
 
 spring:
   application:
@@ -11,14 +8,14 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-    net.devh.boot.grpc: DEBUG
-#    org.springframework.boot.autoconfigure: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+    net.devh.boot.grpc: INFO
+    org.springframework.boot.autoconfigure: INFO
 
 niffler-userdata:
-  client: soap
+  client: rest
 
 ---
 spring:

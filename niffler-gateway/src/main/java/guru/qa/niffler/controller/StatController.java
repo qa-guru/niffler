@@ -18,18 +18,19 @@ import java.util.List;
 @RequestMapping("/api/stat")
 public class StatController {
 
-    private final StatisticAggregator statisticAggregator;
+  private final StatisticAggregator statisticAggregator;
 
-    @Autowired
-    public StatController(StatisticAggregator statisticAggregator) {
-        this.statisticAggregator = statisticAggregator;
-    }
+  @Autowired
+  public StatController(StatisticAggregator statisticAggregator) {
+    this.statisticAggregator = statisticAggregator;
+  }
 
-    @GetMapping("/total")
-    public List<StatisticJson> getTotalStatistic(@AuthenticationPrincipal Jwt principal,
-                                                 @RequestParam(required = false) CurrencyValues filterCurrency,
-                                                 @RequestParam(required = false) DataFilterValues filterPeriod) {
-        String username = principal.getClaim("sub");
-        return statisticAggregator.enrichStatisticRequest(username, filterCurrency, filterPeriod);
-    }
+  @GetMapping("/total")
+  public List<StatisticJson> getTotalStatistic(@AuthenticationPrincipal Jwt principal,
+                                               @RequestParam(required = false) CurrencyValues statCurrency,
+                                               @RequestParam(required = false) CurrencyValues filterCurrency,
+                                               @RequestParam(required = false) DataFilterValues filterPeriod) {
+    String username = principal.getClaim("sub");
+    return statisticAggregator.enrichStatisticRequest(username, statCurrency, filterCurrency, filterPeriod);
+  }
 }

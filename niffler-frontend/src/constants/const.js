@@ -1,1 +1,0 @@
-export const MAX_TEXT_INPUT_FIELD_LENGTH = 255;

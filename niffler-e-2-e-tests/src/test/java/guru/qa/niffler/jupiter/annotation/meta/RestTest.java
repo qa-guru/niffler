@@ -1,8 +1,6 @@
 package guru.qa.niffler.jupiter.annotation.meta;
 
-import guru.qa.niffler.jupiter.extension.ClearCookiesExtension;
-import guru.qa.niffler.jupiter.extension.ContextHolderExtension;
-import guru.qa.niffler.jupiter.extension.RestCreateUserExtension;
+import guru.qa.niffler.jupiter.extension.DatabaseCreateUserExtension;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -14,10 +12,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ExtendWith({
-        ContextHolderExtension.class,
-        RestCreateUserExtension.class,
-        ClearCookiesExtension.class,
-        AllureJunit5.class
+    DatabaseCreateUserExtension.class,
+    AllureJunit5.class
 })
 public @interface RestTest {
 

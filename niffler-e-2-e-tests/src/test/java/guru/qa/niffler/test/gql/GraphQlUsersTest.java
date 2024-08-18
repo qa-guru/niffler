@@ -30,71 +30,68 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("[GraphQL][niffler-gateway]: Пользователи")
 public class GraphQlUsersTest extends BaseGraphQlTest {
 
-    @Test
-    @DisplayName("GraphQL: Для нового пользователя должна возвращаться информация из niffler-gateway c дефолтными значениями")
-    @AllureId("400001")
-    @Tag("GraphQL")
-    @ApiLogin(user = @GenerateUser)
-    void currentUserInfoShouldReceived(@User UserJson user,
-                                       @Token String bearerToken,
-                                       @GqlReq("gql/currentUserQuery.json") GqlRequest query) throws Exception {
-        final UserDataGql currentUserResponse = gqlClient.currentUser(bearerToken, query);
-        final UserGql userGql = currentUserResponse.getData().getUser();
+  @Test
+  @DisplayName("GraphQL: Для нового пользователя должна возвращаться информация из niffler-gateway c дефолтными значениями")
+  @AllureId("400001")
+  @Tag("GraphQL")
+  @ApiLogin(user = @GenerateUser)
+  void currentUserInfoShouldReceived(@User UserJson user,
+                                     @Token String bearerToken,
+                                     @GqlReq("gql/currentUserQuery.json") GqlRequest query) throws Exception {
+    final UserDataGql currentUserResponse = gqlClient.currentUser(bearerToken, query);
+    final UserGql userGql = currentUserResponse.getData().getUser();
 
-        step("Check that response contains ID (GUID)", () ->
-                assertTrue(userGql.getId().toString().matches(ID_REGEXP))
-        );
-        step("Check that response contains username", () ->
-                assertEquals(user.username(), userGql.getUsername())
-        );
-        step("Check that response contains default currency (RUB)", () ->
-                assertEquals(CurrencyValues.RUB, userGql.getCurrency())
-        );
-    }
+    step("Check that response contains ID (GUID)", () ->
+        assertTrue(userGql.getId().toString().matches(ID_REGEXP))
+    );
+    step("Check that response contains username", () ->
+        assertEquals(user.username(), userGql.getUsername())
+    );
+    step("Check that response contains default currency (RUB)", () ->
+        assertEquals(CurrencyValues.RUB, userGql.getCurrency())
+    );
+  }
 
-    @Test
-    @DisplayName("GraphQL: При обновлении юзера должны сохраняться значения в niffler-userdata")
-    @AllureId("400002")
-    @Tag("GraphQL")
-    @ApiLogin(user = @GenerateUser)
-    void updatedUserInfoShouldReceived(@User UserJson user,
-                                       @Token String bearerToken,
-                                       @GqlReq("gql/updateUserQuery.json") GqlRequest query) throws Exception {
-        final UpdateUserDataGql updateUserResponse = gqlClient.updateUser(bearerToken, query);
-        final UserGql userGql = updateUserResponse.getData().getUpdateUser();
+  @Test
+  @DisplayName("GraphQL: При обновлении юзера должны сохраняться значения в niffler-userdata")
+  @AllureId("400002")
+  @Tag("GraphQL")
+  @ApiLogin(user = @GenerateUser)
+  void updatedUserInfoShouldReceived(@User UserJson user,
+                                     @Token String bearerToken,
+                                     @GqlReq("gql/updateUserQuery.json") GqlRequest query) throws Exception {
+    final UpdateUserDataGql updateUserResponse = gqlClient.updateUser(bearerToken, query);
+    final UserGql userGql = updateUserResponse.getData().getUpdateUser();
 
-        step("Check that response contains ID (GUID)", () ->
-                assertTrue(userGql.getId().toString().matches(ID_REGEXP))
-        );
-        step("Check that response contains username", () ->
-                assertEquals(user.username(), userGql.getUsername())
-        );
-        step("Check that response contains updated currency (EUR)", () ->
-                assertEquals(CurrencyValues.EUR, userGql.getCurrency())
-        );
-        step("Check that response contains updated firstname (Pizzly)", () ->
-                assertEquals("Pizzly", userGql.getFirstname())
-        );
-        step("Check that response contains updated surname (Pizzlyvich)", () ->
-                assertEquals("Pizzlyvich", userGql.getSurname())
-        );
-    }
+    step("Check that response contains ID (GUID)", () ->
+        assertTrue(userGql.getId().toString().matches(ID_REGEXP))
+    );
+    step("Check that response contains username", () ->
+        assertEquals(user.username(), userGql.getUsername())
+    );
+    step("Check that response contains updated currency (EUR)", () ->
+        assertEquals(CurrencyValues.EUR, userGql.getCurrency())
+    );
+    step("Check that response contains updated fullname (Pizzly Pizzlyvich)", () ->
+        assertEquals("Pizzly Pizzlyvich", userGql.getFullname())
+    );
+  }
 
-    @Test
-    @DisplayName("GraphQL: Список всех пользователей системы не должен быть пустым")
-    @AllureId("400003")
-    @Tag("GraphQL")
-    @ApiLogin(user = @GenerateUser)
-    @GenerateUsers({
-            @GenerateUser
-    })
-    void notEmptyUsersListShouldReceived(@Token String bearerToken,
-                                         @GqlReq("gql/usersQuery.json") GqlRequest query) throws Exception {
-        final UsersDataGql usersDataGql = gqlClient.allUsers(bearerToken, query);
-        final List<UserGql> userGql = usersDataGql.getData().getUsers();
+  @Test
+  @DisplayName("GraphQL: Список всех пользователей системы не должен быть пустым")
+  @AllureId("400003")
+  @Tag("GraphQL")
+  @ApiLogin(user = @GenerateUser)
+  @GenerateUsers({
+      @GenerateUser
+  })
+  void notEmptyUsersListShouldReceived(@Token String bearerToken,
+                                       @GqlReq("gql/usersQuery.json") GqlRequest query) throws Exception {
+    final UsersDataGql usersDataGql = gqlClient.allUsers(bearerToken, query);
+    final List<UserGql> userGql = usersDataGql.getData().getUsers();
 
-        step("Check that all users list is not empty", () ->
-                assertFalse(userGql.isEmpty())
-        );
-    }
+    step("Check that all users list is not empty", () ->
+        assertFalse(userGql.isEmpty())
+    );
+  }
 }

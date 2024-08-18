@@ -15,29 +15,29 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 @Configuration
 public class NifflerUserdataConsumerConfiguration {
 
-    private final KafkaProperties kafkaProperties;
+  private final KafkaProperties kafkaProperties;
 
-    @Autowired
-    public NifflerUserdataConsumerConfiguration(KafkaProperties kafkaProperties) {
-        this.kafkaProperties = kafkaProperties;
-    }
+  @Autowired
+  public NifflerUserdataConsumerConfiguration(KafkaProperties kafkaProperties) {
+    this.kafkaProperties = kafkaProperties;
+  }
 
-    @Bean
-    public ConsumerFactory<String, UserJson> consumerFactory(SslBundles sslBundles) {
-        final JsonDeserializer<UserJson> jsonDeserializer = new JsonDeserializer<>();
-        jsonDeserializer.addTrustedPackages("*");
-        return new DefaultKafkaConsumerFactory<>(
-                kafkaProperties.buildConsumerProperties(sslBundles),
-                new StringDeserializer(),
-                jsonDeserializer
-        );
-    }
+  @Bean
+  public ConsumerFactory<String, UserJson> consumerFactory(SslBundles sslBundles) {
+    final JsonDeserializer<UserJson> jsonDeserializer = new JsonDeserializer<>();
+    jsonDeserializer.addTrustedPackages("*");
+    return new DefaultKafkaConsumerFactory<>(
+        kafkaProperties.buildConsumerProperties(sslBundles),
+        new StringDeserializer(),
+        jsonDeserializer
+    );
+  }
 
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, UserJson> kafkaListenerContainerFactory(SslBundles sslBundles) {
-        ConcurrentKafkaListenerContainerFactory<String, UserJson> concurrentKafkaListenerContainerFactory
-                = new ConcurrentKafkaListenerContainerFactory<>();
-        concurrentKafkaListenerContainerFactory.setConsumerFactory(consumerFactory(sslBundles));
-        return concurrentKafkaListenerContainerFactory;
-    }
+  @Bean
+  public ConcurrentKafkaListenerContainerFactory<String, UserJson> kafkaListenerContainerFactory(SslBundles sslBundles) {
+    ConcurrentKafkaListenerContainerFactory<String, UserJson> concurrentKafkaListenerContainerFactory
+        = new ConcurrentKafkaListenerContainerFactory<>();
+    concurrentKafkaListenerContainerFactory.setConsumerFactory(consumerFactory(sslBundles));
+    return concurrentKafkaListenerContainerFactory;
+  }
 }

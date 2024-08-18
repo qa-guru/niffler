@@ -14,34 +14,34 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class NifflerGatewayServiceConfig {
 
-    public static final int ONE_MB = 1024 * 1024;
+  public static final int ONE_MB = 1024 * 1024;
 
-    private final String nifflerUserdataBaseUri;
+  private final String nifflerUserdataBaseUri;
 
-    @Autowired
-    public NifflerGatewayServiceConfig(@Value("${niffler-userdata.base-uri}") String nifflerUserdataBaseUri) {
-        this.nifflerUserdataBaseUri = nifflerUserdataBaseUri;
-    }
+  @Autowired
+  public NifflerGatewayServiceConfig(@Value("${niffler-userdata.base-uri}") String nifflerUserdataBaseUri) {
+    this.nifflerUserdataBaseUri = nifflerUserdataBaseUri;
+  }
 
-    @Bean
-    public Jaxb2Marshaller marshaller() {
-        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setContextPath("guru.qa.niffler.userdata.wsdl");
-        return marshaller;
-    }
+  @Bean
+  public Jaxb2Marshaller marshaller() {
+    Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+    marshaller.setContextPath("jaxb.userdata");
+    return marshaller;
+  }
 
-    @Bean
-    @ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "soap")
-    public UserDataClient userDataClient(Jaxb2Marshaller marshaller) {
-        SoapUserDataClient client = new SoapUserDataClient();
-        client.setDefaultUri(nifflerUserdataBaseUri + "/ws");
-        client.setMarshaller(marshaller);
-        client.setUnmarshaller(marshaller);
-        return client;
-    }
+  @Bean
+  @ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "soap")
+  public UserDataClient userDataClient(Jaxb2Marshaller marshaller) {
+    SoapUserDataClient client = new SoapUserDataClient();
+    client.setDefaultUri(nifflerUserdataBaseUri + "/ws");
+    client.setMarshaller(marshaller);
+    client.setUnmarshaller(marshaller);
+    return client;
+  }
 
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
-    }
+  @Bean
+  public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    return builder.build();
+  }
 }

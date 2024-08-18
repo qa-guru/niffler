@@ -16,36 +16,36 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class EqualPasswordsValidatorTest {
 
-    private final EqualPasswordsValidator equalPasswordsValidator = new EqualPasswordsValidator();
+  private final EqualPasswordsValidator equalPasswordsValidator = new EqualPasswordsValidator();
 
-    @Test
-    void isValidTest(@Mock ConstraintValidatorContext context) {
-        RegistrationModel rm = new RegistrationModel(
-                "test",
-                "qwerty",
-                "qwerty"
-        );
+  @Test
+  void isValidTest(@Mock ConstraintValidatorContext context) {
+    RegistrationModel rm = new RegistrationModel(
+        "test",
+        "qwerty",
+        "qwerty"
+    );
 
-        assertTrue(equalPasswordsValidator.isValid(rm, context));
-    }
+    assertTrue(equalPasswordsValidator.isValid(rm, context));
+  }
 
-    @Test
-    void isValidNegativeTest(
-            @Mock ConstraintValidatorContext context,
-            @Mock ConstraintValidatorContext.ConstraintViolationBuilder constraintViolationBuilder,
-            @Mock ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext nodeBuilderCustomizableContext) {
-        when(context.buildConstraintViolationWithTemplate(any()))
-                .thenReturn(constraintViolationBuilder);
+  @Test
+  void isValidNegativeTest(
+      @Mock ConstraintValidatorContext context,
+      @Mock ConstraintValidatorContext.ConstraintViolationBuilder constraintViolationBuilder,
+      @Mock ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext nodeBuilderCustomizableContext) {
+    when(context.buildConstraintViolationWithTemplate(any()))
+        .thenReturn(constraintViolationBuilder);
 
-        when(constraintViolationBuilder.addPropertyNode(eq("password")))
-                .thenReturn(nodeBuilderCustomizableContext);
+    when(constraintViolationBuilder.addPropertyNode(eq("password")))
+        .thenReturn(nodeBuilderCustomizableContext);
 
-        RegistrationModel rm = new RegistrationModel(
-                "test",
-                "qwerty",
-                "qwerty12345"
-        );
+    RegistrationModel rm = new RegistrationModel(
+        "test",
+        "qwerty",
+        "qwerty12345"
+    );
 
-        assertFalse(equalPasswordsValidator.isValid(rm, context));
-    }
+    assertFalse(equalPasswordsValidator.isValid(rm, context));
+  }
 }

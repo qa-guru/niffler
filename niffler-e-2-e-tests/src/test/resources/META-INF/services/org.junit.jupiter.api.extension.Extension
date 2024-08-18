@@ -1,2 +1,4 @@
+guru.qa.niffler.jupiter.extension.ContextHolderExtension
+guru.qa.niffler.jupiter.extension.CookiesExtension
 guru.qa.niffler.jupiter.extension.JpaExtension
 guru.qa.niffler.jupiter.extension.AllureDockerExtension

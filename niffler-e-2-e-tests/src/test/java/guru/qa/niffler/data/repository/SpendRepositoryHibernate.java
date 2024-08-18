@@ -13,44 +13,44 @@ import static guru.qa.niffler.data.jpa.EmfContext.entityManager;
 
 public class SpendRepositoryHibernate implements SpendRepository {
 
-    private final EntityManager spendEm = entityManager(SPEND);
+  private final EntityManager spendEm = entityManager(SPEND);
 
-    @Override
-    public SpendEntity createSpend(SpendEntity spend) {
-        spendEm.persist(spend);
-        return spend;
-    }
+  @Override
+  public SpendEntity createSpend(SpendEntity spend) {
+    spendEm.persist(spend);
+    return spend;
+  }
 
-    @Override
-    public Optional<SpendEntity> findSpendById(UUID id) {
-        return Optional.ofNullable(
-                spendEm.find(SpendEntity.class, id)
-        );
-    }
+  @Override
+  public Optional<SpendEntity> findSpendById(UUID id) {
+    return Optional.ofNullable(
+        spendEm.find(SpendEntity.class, id)
+    );
+  }
 
-    @Override
-    public CategoryEntity createCategory(CategoryEntity category) {
-        spendEm.persist(category);
-        return category;
-    }
+  @Override
+  public CategoryEntity createCategory(CategoryEntity category) {
+    spendEm.persist(category);
+    return category;
+  }
 
-    @Override
-    public Optional<CategoryEntity> findCategoryById(UUID id) {
-        return Optional.ofNullable(
-                spendEm.find(CategoryEntity.class, id)
-        );
-    }
+  @Override
+  public Optional<CategoryEntity> findCategoryById(UUID id) {
+    return Optional.ofNullable(
+        spendEm.find(CategoryEntity.class, id)
+    );
+  }
 
-    @Override
-    public Optional<CategoryEntity> findUserCategoryByName(String username,
-                                                           String category) {
-        try {
-            return Optional.of(spendEm.createQuery("select c from CategoryEntity c where c.category=:category and c.username=:username", CategoryEntity.class)
-                    .setParameter("category", category)
-                    .setParameter("username", username)
-                    .getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+  @Override
+  public Optional<CategoryEntity> findUserCategoryByName(String username,
+                                                         String name) {
+    try {
+      return Optional.of(spendEm.createQuery("select c from CategoryEntity c where c.name=:name and c.username=:username", CategoryEntity.class)
+          .setParameter("name", name)
+          .setParameter("username", username)
+          .getSingleResult());
+    } catch (NoResultException e) {
+      return Optional.empty();
     }
+  }
 }
