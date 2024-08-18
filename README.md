@@ -189,12 +189,13 @@ User-MacBook-Pro niffler % cd niffler-ng-client
 User-MacBook-Pro niffler % cd niffler-ng-client-gql
 ```
 
-#### 2. Запустить фронтенд (сначала обновить зависимости)
+#### 2. Запустить фронтенд в режиме preview (сначала обновить зависимости)
 
 ```posh
 User-MacBook-Pro niffler-ng-client % npm i
-User-MacBook-Pro niffler-ng-client % npm run dev
+User-MacBook-Pro niffler-ng-client % npm run build:dev
 ```
+Если требуется dev режим (вы собираетесь править frontend и на лету видеть изменения), запускаем командой `npm run dev`
 
 #### 3. Прописать run конфигурацию для всех сервисов niffler-* - Active profiles local
 

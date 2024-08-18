@@ -21,6 +21,7 @@ jobs:
         with:
           gradle-version: 8.6
       - name: Build and run e2e-tests
+        id: e2e
         env:
           PROFILE: docker
           PREFIX: qaguru
@@ -41,6 +42,7 @@ jobs:
           docker ps -a
           docker wait niffler-e-2-e
           exit_code=$(docker inspect -f '{{.State.ExitCode}}' niffler-e-2-e)
+          echo "e2e_exit_code=$exit_code" >> $GITHUB_OUTPUT
           echo "### Test logs ###"
           docker logs niffler-e-2-e
           docker compose -f docker-compose.test.yml down
@@ -64,11 +66,15 @@ jobs:
               head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
             })
             const pr = context.issue.number || issues.data[0].number
+            const exitCode = ${{ steps.e2e.outputs.e2e_exit_code }}
+            const message = exitCode == '0' ? 
+              '✅ TEST RUN PASSED ✅ There is the [report](https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler-ng/reports/latest/index.html)\n🕓 All reports [history](https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler-ng)' :
+              '🔴 TEST RUN FAILED 🔴 There is the [report](https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler-ng/reports/latest/index.html)\n🕓 All reports [history](https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler-ng)'
             github.rest.issues.createComment({
               issue_number: pr,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 There is the last [Allure report](https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler-ng/reports/latest/index.html)\n🕓 All reports [history](https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler-ng)'
+              body: message
             })
   
   collect-versions:
@@ -188,7 +194,7 @@ jobs:
         run: |
           pwd
           IMAGE_TAG="${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}"
-          docker build --build-arg NPM_COMMAND=staging:build --build-arg VERSION=${{ env.FRONT_VER }} -t ${IMAGE_TAG}:${{ env.FRONT_VER }} -t ${IMAGE_TAG}:latest .
+          docker build --build-arg NPM_COMMAND=build:staging --build-arg VERSION=${{ env.FRONT_VER }} -t ${IMAGE_TAG}:${{ env.FRONT_VER }} -t ${IMAGE_TAG}:latest .
           docker push ${IMAGE_TAG}:${{ env.FRONT_VER }}
           docker push ${IMAGE_TAG}:latest
           cd ../ || exit 1

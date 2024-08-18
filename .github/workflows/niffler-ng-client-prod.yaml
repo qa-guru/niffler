@@ -38,7 +38,7 @@ jobs:
           pwd
           IMAGE_TAG="${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}"
           echo "### niffler-front version will be used: ${IMAGE_TAG}:${{ env.FRONT_VER }} ###"
-          docker build --build-arg NPM_COMMAND=prod:build --build-arg VERSION=${{ env.FRONT_VER }} -t ${IMAGE_TAG}:${{ env.FRONT_VER }} -t ${IMAGE_TAG}:latest .
+          docker build --build-arg NPM_COMMAND=build:prod --build-arg VERSION=${{ env.FRONT_VER }} -t ${IMAGE_TAG}:${{ env.FRONT_VER }} -t ${IMAGE_TAG}:latest .
           docker push ${IMAGE_TAG}:${{ env.FRONT_VER }}
           docker push ${IMAGE_TAG}:latest
       - name: deploy
