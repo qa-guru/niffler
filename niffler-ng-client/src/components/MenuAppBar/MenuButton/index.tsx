@@ -1,7 +1,8 @@
 import IconButton from "@mui/material/IconButton";
 import {Avatar, useMediaQuery, useTheme} from "@mui/material";
 import {FC, MouseEvent} from "react";
-import MenuIcon from "../../../assets/icons/ic_menu.svg?react"
+import MenuIcon from "../../../assets/icons/ic_menu.svg?react";
+import CrossIcon from "../../../assets/icons/ic_cross.svg?react";
 
 
 interface MenuButtonInterface {
@@ -28,7 +29,9 @@ export const MenuButton: FC<MenuButtonInterface> = ({onMenuClick, isMenuOpened, 
             }}
         >
             {isMobile
-                ? <MenuIcon/>
+                ? isMenuOpened ?
+                    <CrossIcon color={theme.palette.blue100.main}/>
+                    : <MenuIcon/>
                 : <Avatar sx={{width: 48, height: 48}} src={photo}/>
             }
         </IconButton>

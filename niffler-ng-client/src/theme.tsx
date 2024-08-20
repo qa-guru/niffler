@@ -204,6 +204,13 @@ const theme = createTheme({
                 }
             }
         },
+        MuiDrawer: {
+            styleOverrides: {
+                paper: {
+                    width: "100%",
+                }
+            }
+        }
     }
 });
 

@@ -11,6 +11,11 @@
     box-sizing: border-box;
 }
 
+.custom-input:focus {
+    outline: #2941CC solid 2px;
+    outline-offset: -1px;
+}
+
 .custom-input--error {
     border: 1px solid #d32f2f;
 }

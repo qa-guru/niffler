@@ -8,6 +8,9 @@ export interface DoughnutOptions {
         text: string,
         currency: string,
     },
+    arc: {
+        width: number,
+    },
     plugins: {
         legend: {
             display: boolean,
