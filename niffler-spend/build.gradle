@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '2.0.0'
+version = '2.0.1'
 
 dependencies {
     implementation project(':niffler-grpc-common')
@@ -21,9 +21,9 @@ dependencies {
     runtimeOnly "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'com.h2database:h2:2.2.224'
-    testImplementation 'org.mockito:mockito-core:5.5.0'
-    testImplementation("org.mockito:mockito-junit-jupiter:5.5.0") {
+    testImplementation "com.h2database:h2:${project.ext.h2Version}"
+    testImplementation "org.mockito:mockito-core:${project.ext.mockitoVersion}"
+    testImplementation("org.mockito:mockito-junit-jupiter:${project.ext.mockitoVersion}") {
         exclude group: "org.junit.jupiter"
     }
 }
@@ -36,7 +36,7 @@ jib {
         creationTime = 'USE_CURRENT_TIMESTAMP'
         labels = [
                 'maintainer': 'Dmitrii Tuchs @dtuchs',
-                'version': "${project.version}".toString()
+                'version'   : "${project.version}".toString()
         ]
     }
     from {

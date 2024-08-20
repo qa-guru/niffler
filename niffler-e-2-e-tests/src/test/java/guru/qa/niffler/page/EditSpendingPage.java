@@ -7,10 +7,8 @@ import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.page.component.Calendar;
 import guru.qa.niffler.page.component.SelectField;
 import io.qameta.allure.Step;
-import org.openqa.selenium.Keys;
 
 import java.util.Date;
-import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -24,12 +22,12 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
   private final SelectField currencySelect = new SelectField($("#currency"));
 
   private final SelenideElement amountInput = $("#amount");
-  private final SelenideElement categoryInput = $("input[name='category']");
+  private final SelenideElement categoryInput = $("#category");
   private final ElementsCollection categories = $$(".MuiChip-root");
   private final SelenideElement descriptionInput = $("#description");
 
-  private final SelenideElement cancelBtn = $(".MuiGrid-root button[type='button']");
-  private final SelenideElement saveBtn = $(".MuiGrid-root button[type='submit']");
+  private final SelenideElement cancelBtn = $("#cancel");
+  private final SelenideElement saveBtn = $("#save");
 
   @Override
   public EditSpendingPage waitForPageLoaded() {
@@ -54,21 +52,21 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
 
   @Step("Select new spending category: {0}")
   public EditSpendingPage setNewSpendingCategory(String category) {
-    clearField(categoryInput);
+    categoryInput.clear();
     categoryInput.setValue(category);
     return this;
   }
 
   @Step("Set new spending amount: {0}")
   public EditSpendingPage setNewSpendingAmount(double amount) {
-    clearField(amountInput);
+    amountInput.clear();
     amountInput.setValue(String.valueOf(amount));
     return this;
   }
 
   @Step("Set new spending amount: {0}")
   public EditSpendingPage setNewSpendingAmount(int amount) {
-    clearField(amountInput);
+    amountInput.clear();
     amountInput.setValue(String.valueOf(amount));
     return this;
   }
@@ -81,7 +79,7 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
 
   @Step("Set new spending description: {0}")
   public EditSpendingPage setNewSpendingDescription(String description) {
-    clearField(descriptionInput);
+    descriptionInput.clear();
     descriptionInput.setValue(description);
     return this;
   }
@@ -90,12 +88,5 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
   public EditSpendingPage saveSpending() {
     saveBtn.click();
     return this;
-  }
-
-  private void clearField(SelenideElement field) {
-    field.click();
-    while (!Objects.equals(field.getValue(), "")) {
-      field.sendKeys(Keys.BACK_SPACE);
-    }
   }
 }

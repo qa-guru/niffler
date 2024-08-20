@@ -15,7 +15,7 @@ public abstract class BasePage<T extends BasePage<?>> {
   protected static final Config CFG = Config.getConfig();
 
   private final SelenideElement alert = $(".MuiSnackbar-root");
-  private final ElementsCollection formErrors = $$("p.Mui-error");
+  private final ElementsCollection formErrors = $$("p.Mui-error, .input__helper-text");
 
   public abstract T waitForPageLoaded();
 

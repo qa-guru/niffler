@@ -2,7 +2,7 @@
 source ./docker.properties
 export PROFILE=docker
 export PREFIX="${IMAGE_PREFIX}"
-export FRONT_VERSION="2.0.0"
+export FRONT_VERSION="2.1.0"
 export ARCH=$(uname -m)
 
 echo '### Java version ###'
@@ -30,6 +30,7 @@ if [ ! -z "$docker_images" ]; then
   docker rmi $docker_images
 fi
 
+bash ./gradlew clean
 if [ "$1" = "push" ] || [ "$2" = "push" ]; then
   echo "### Build & push images ###"
   bash ./gradlew jib -x :niffler-e-2-e-tests:test

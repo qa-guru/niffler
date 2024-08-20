@@ -23,7 +23,8 @@ export const SearchInput: FC<SearchInputInterface> = ({onSearchSubmit}) => {
             width: "100%",
             backgroundColor: theme.palette.secondary.light,
             border: "1px solid #E4E6F1",
-            borderRadius: "8px"
+            borderRadius: "8px",
+            padding: "0.1rem",
         }}
              component="form"
              onSubmit={handleSubmitSearch}

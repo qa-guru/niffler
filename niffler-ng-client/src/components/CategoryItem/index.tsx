@@ -1,5 +1,5 @@
 import {FC, FormEvent, useState} from "react";
-import {Box, Chip, IconButton, TextField, Tooltip, useTheme} from "@mui/material";
+import {Box, Chip, IconButton, Tooltip, useTheme} from "@mui/material";
 import EditIcon from "../../assets/icons/ic_edit.svg?react";
 import ArchiveIcon from "../../assets/icons/ic_archive.svg?react";
 import {useDialog} from "../../context/DialogContext.tsx";
@@ -8,6 +8,7 @@ import {apiClient} from "../../api/apiClient.ts";
 import {Category} from "../../types/Category.ts";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
 import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
+import {Input} from "../Input";
 
 interface CategoryItemInterface {
     category: Category;
@@ -20,6 +21,7 @@ export const CategoryItem: FC<CategoryItemInterface> = ({category, onUpdateCateg
     const snackbar = useSnackBar();
     const [isEdit, setEdit] = useState<boolean>(false);
     const [editValue, setEditValue] = useState(category);
+    const [error, setError] = useState(false);
     const theme = useTheme();
 
     const handleArchiveClick = (category: Category) => {
@@ -72,21 +74,23 @@ export const CategoryItem: FC<CategoryItemInterface> = ({category, onUpdateCateg
 
     const handleChangeCategoryName = (e: FormEvent) => {
         e.preventDefault();
-        console.log(editValue);
-        console.log(category);
-        apiClient.editCategory(editValue, {
-                onSuccess: () => {
-                    onUpdateCategory();
-                    setEdit(false);
-                    snackbar.showSnackBar("Category name is changed", "success");
+        if (editValue.name?.length > 1) {
+            apiClient.editCategory(editValue, {
+                    onSuccess: () => {
+                        onUpdateCategory();
+                        setEdit(false);
+                        snackbar.showSnackBar("Category name is changed", "success");
 
-                },
-                onFailure: (e) => {
-                    snackbar.showSnackBar("Can not change category name", "error");
-                    console.error(e.message)
+                    },
+                    onFailure: (e) => {
+                        snackbar.showSnackBar("Can not change category name", "error");
+                        console.error(e.message)
+                    }
                 }
-            }
-        )
+            );
+        } else {
+            setError(true);
+        }
     };
 
     return (
@@ -100,20 +104,21 @@ export const CategoryItem: FC<CategoryItemInterface> = ({category, onUpdateCateg
                         component={"form"}
                         onSubmit={handleChangeCategoryName}
                         sx={{
-                            display: "flex",
                             width: "100%",
                             position: "relative",
                         }}
                     >
-                        <TextField
+                        <Input
                             id="category"
                             name="category"
                             type="text"
                             value={editValue.name}
-                            onChange={e => setEditValue({...category, name: e.target.value})}
-                            error={false}
-                            helperText={""}
-                            fullWidth
+                            error={error}
+                            helperText={error ? "Allowed category length is from 2 to 50 symbols" : ""}
+                            onChange={e => {
+                                setEditValue({...category, name: e.target.value});
+                                setError(false);
+                            }}
                             placeholder={"Edit category"}
                         />
                         <IconButton

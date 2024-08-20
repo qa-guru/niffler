@@ -42,7 +42,10 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
 
     return (
         <>
-            <Table aria-labelledby="tableTitle">
+            <Table
+                aria-labelledby="tableTitle"
+                sx={{marginBottom: "12px"}}
+            >
                 {data?.length > 0 && (
                     <TableBody id={label}>
                         {data.map((row: User) => {
@@ -78,8 +81,11 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
                                     </TableCell>
                                     <TableCell align="right" sx={{padding: "4px 0"}}
                                     >
-                                        <ActionButtons username={row.username} friendState={row.friendState}
-                                                       handleUpdateUserData={handleUpdateUserData}/>
+                                        <ActionButtons
+                                            username={row.username}
+                                            friendState={row.friendState}
+                                            handleUpdateUserData={handleUpdateUserData}
+                                        />
                                     </TableCell>
                                 </TableRow>
                             );

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '2.0.0'
+version = '2.0.1'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -27,7 +27,7 @@ dependencies {
     xjc "org.glassfish.jaxb:jaxb-xjc:${project.ext.jakartaJaxbVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'com.h2database:h2:2.2.224'
+    testImplementation "com.h2database:h2:${project.ext.h2Version}"
 }
 
 xjcGeneration {
@@ -59,7 +59,7 @@ jib {
         creationTime = 'USE_CURRENT_TIMESTAMP'
         labels = [
                 'maintainer': 'Dmitrii Tuchs @dtuchs',
-                'version': "${project.version}".toString()
+                'version'   : "${project.version}".toString()
         ]
     }
     from {

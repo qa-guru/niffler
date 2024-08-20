@@ -106,6 +106,7 @@ export const MainPage = () => {
                         variant="h5"
                         component="h2"
                         sx={{
+                            marginTop: isMobile ? 2 : 0,
                             marginBottom: 2,
                         }}
                     >

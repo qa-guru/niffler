@@ -1,4 +1,4 @@
-import {Button, Grid, InputLabel, TextField, Typography, useTheme} from "@mui/material";
+import {Button, Grid, InputLabel, Typography, useTheme} from "@mui/material";
 import {ChangeEvent, FC, FormEvent, useEffect, useState} from "react";
 import {CategorySelect} from "../CategorySelect";
 import {CurrencySelect} from "../CurrencySelect";
@@ -14,6 +14,8 @@ import {convertSpendingToFormData, SPENDING_INITIAL_STATE, spendingFormValidate}
 import {formHasErrors} from "../../utils/form.ts";
 import {Loader} from "../Loader";
 import {isApiError} from "../../types/Error.ts";
+import {Input} from "../Input";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 
 interface SpendingFormInterface {
@@ -29,6 +31,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
 
     const [formData, setFormData] = useState(convertSpendingToFormData(SPENDING_INITIAL_STATE));
     const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
+    const [isSaveButtonLoading, setSaveButtonLoading] = useState(false);
 
     useEffect(() => {
         if (isEdit && id) {
@@ -77,6 +80,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
         const validatedData = spendingFormValidate(formData);
         setFormData(validatedData);
         if (!formHasErrors(validatedData)) {
+            setSaveButtonLoading(true);
             const data = {
                 amount: formData.amount.value,
                 description: formData.description.value,
@@ -90,8 +94,13 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                 onSuccess: (_data) => {
                     snackbar.showSnackBar("New spending is successfully created", "success");
                     navigate("/main");
+                    setSaveButtonLoading(false);
                 },
-                onFailure: e => console.log(e),
+                onFailure: (e) => {
+                    console.error(e);
+                    snackbar.showSnackBar(e.message, "error");
+                    setSaveButtonLoading(false);
+                },
             });
         }
     };
@@ -101,6 +110,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
         const validatedData = spendingFormValidate(formData);
         setFormData(validatedData);
         if (!formHasErrors(validatedData)) {
+            setSaveButtonLoading(true);
             const data = {
                 id,
                 amount: formData.amount.value,
@@ -114,9 +124,14 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
             apiClient.editSpend(data, {
                 onSuccess: (_data) => {
                     snackbar.showSnackBar(`Spending is edited successfully`, "success");
+                    setSaveButtonLoading(false);
                     navigate("/main");
                 },
-                onFailure: e => console.log(e),
+                onFailure: (e) => {
+                    console.error(e);
+                    snackbar.showSnackBar(e.message, "error");
+                    setSaveButtonLoading(false);
+                },
             });
         }
     };
@@ -159,11 +174,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                                 }}>
                                 Amount
                             </InputLabel>
-                            <TextField
-                                sx={{
-                                    margin: 0,
-                                    padding: 0
-                                }}
+                            <Input
                                 id="amount"
                                 name="amount"
                                 type="number"
@@ -171,7 +182,6 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                                 error={formData.amount.error}
                                 onChange={handleChange}
                                 helperText={formData.amount.errorMessage}
-                                fullWidth
                             />
                         </Grid>
                         <Grid item xs={5} sx={{width: "100%"}}>
@@ -254,20 +264,14 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                         }}>
                         Description
                     </InputLabel>
-                    <TextField
-                        sx={{
-                            margin: 0,
-                            padding: 0
-                        }}
+                    <Input
                         id="description"
                         name="description"
                         type="text"
                         value={formData.description.value}
                         error={formData.description.error}
-                        helperText={formData.description.errorMessage}
                         onChange={handleChange}
                         placeholder={"Type something"}
-                        fullWidth
                     />
                 </Grid>
                 <Grid item xs={12} sx={{
@@ -280,23 +284,26 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                                 marginRight: 3,
                                 width: "100%",
                             }}
+                            id="cancel"
                             color="secondary"
                             variant="contained"
                             onClick={onCancel}
                     >
                         Cancel
                     </Button>
-                    <Button
+                    <LoadingButton
                         sx={{
                             width: "100%",
                         }}
+                        id="save"
                         type="submit"
                         color="primary"
                         variant="contained"
+                        loading={isSaveButtonLoading}
                     >
                         {isEdit ? "Save changes" : "Add"}
 
-                    </Button>
+                    </LoadingButton>
                 </Grid>
             </Grid>
     )
