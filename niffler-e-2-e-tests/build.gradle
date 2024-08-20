@@ -1,22 +1,21 @@
 buildscript {
     ext {
-        protobufVersion = '3.25.3'
-        grpcVersion = '1.62.2'
-        junitVersion = '5.10.2'
-        allureVersion = '2.27.0'
-        selenideVersion = '7.2.3'
+        grpcVersion = '1.66.0'
+        junitVersion = '5.11.0'
+        allureVersion = '2.29.0'
+        selenideVersion = '7.4.2'
         retrofitVersion = '2.11.0'
         okhttp3Version = '3.14.9'
         logbackVersion = '1.4.11'
         slf4jVersion = '2.0.9'
-        springJdbcVersion = '6.1.6'
-        springCryptoVersion = '6.2.3'
+        springJdbcVersion = '6.1.12'
+        springCryptoVersion = '6.3.1'
         p6spyVersion = '3.9.1'
-        hibernateVersion = '6.4.4.Final'
-        kafkaClientsVersion = '3.7.0'
-        saajVersion = '3.0.3'
+        hibernateVersion = '6.6.0.Final'
+        kafkaClientsVersion = '3.8.0'
+        saajVersion = '3.0.4'
         jakartaJaxbVersion = '4.0.2'
-        springDataCommonsVersion = '3.2.5'
+        springDataCommonsVersion = '3.3.3'
         wiremockVersion = '3.0.1'
         fakerVersion = '1.0.2'
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
@@ -26,13 +25,13 @@ buildscript {
 }
 
 plugins {
-    id 'io.qameta.allure' version '2.11.2'
-    id 'io.qameta.allure-adapter' version '2.11.2'
-    id 'com.github.edeandrea.xjc-generation' version "1.6"
+    id 'io.qameta.allure' version '2.12.0'
+    id 'io.qameta.allure-adapter' version '2.12.0'
+    id 'com.github.edeandrea.xjc-generation' version '1.6'
 }
 
 group = 'guru.qa'
-version = '2.0.0'
+version = '2.0.1'
 
 allure {
     version.set("${allureVersion}")
@@ -96,15 +95,15 @@ dependencies {
     testImplementation("com.github.javafaker:javafaker:${fakerVersion}") {
         exclude group: 'org.yaml'
     }
-    testImplementation 'commons-io:commons-io:2.11.0'
+    testImplementation 'commons-io:commons-io:2.16.1'
     testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
-    testImplementation 'com.github.vertical-blank:sql-formatter:2.0.3'
+    testImplementation 'com.github.vertical-blank:sql-formatter:2.0.5'
     // gRPC
-    testImplementation "io.grpc:grpc-protobuf:${grpcVersion}"
-    testImplementation "io.grpc:grpc-stub:${grpcVersion}"
-    testImplementation "io.grpc:grpc-netty:${grpcVersion}"
-    testImplementation "com.google.protobuf:protobuf-java:${protobufVersion}"
-    testImplementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+    testImplementation "io.grpc:grpc-protobuf:${project.ext.grpcVersion}"
+    testImplementation "io.grpc:grpc-stub:${project.ext.grpcVersion}"
+    testImplementation "io.grpc:grpc-netty:${project.ext.grpcVersion}"
+    testImplementation "com.google.protobuf:protobuf-java:${project.ext.protobufVersion}"
+    testImplementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
     testImplementation project(':niffler-grpc-common')
     compileOnly 'jakarta.annotation:jakarta.annotation-api:1.3.5' // Java 9+ compatibility - Do NOT update to 2.0.0
     // SOAP

@@ -67,6 +67,7 @@ export const Toolbar: FC<ToolbarInterface> = ({
                 display: "flex",
                 width: "100%",
                 margin: isMobile ? 2 : 0,
+                justifyContent: "space-between",
             }}>
                 <TextField
                     sx={{

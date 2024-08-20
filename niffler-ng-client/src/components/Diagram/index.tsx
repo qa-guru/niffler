@@ -1,6 +1,6 @@
 import {Doughnut} from "react-chartjs-2";
 import {FC} from "react";
-import {useTheme} from "@mui/material";
+import {useMediaQuery, useTheme} from "@mui/material";
 import {Statistic} from "../../types/Statistic.ts";
 import {DoughnutOptions} from "../../types/DoughnutOptions.ts";
 import {ArcElement, Chart, Legend} from "chart.js";
@@ -19,6 +19,8 @@ Chart.register(emptyCirclePlugin);
 export const Diagram: FC<DiagramInterface> = ({stat}) => {
 
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
 
     const data = {
         title: stat.total,
@@ -54,6 +56,9 @@ export const Diagram: FC<DiagramInterface> = ({stat}) => {
             display: true,
             text: `${stat.total} ${getCurrencyIcon(stat.currency as CurrencyValue)}`,
             currency: getCurrencyIcon(stat.currency as CurrencyValue),
+        },
+        arc: {
+            width: isMobile ? 16 : 23,
         },
         plugins: {
             legend: {

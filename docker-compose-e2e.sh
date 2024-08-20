@@ -4,7 +4,7 @@ export PROFILE=docker
 export PREFIX="${IMAGE_PREFIX}"
 export ALLURE_DOCKER_API=http://allure:5050/
 export HEAD_COMMIT_MESSAGE="local build"
-export FRONT_VERSION="2.0.0"
+export FRONT_VERSION="2.1.0"
 export ARCH=$(uname -m)
 
 echo '### Java version ###'
@@ -32,6 +32,7 @@ if [ ! -z "$docker_images" ]; then
   docker rmi $docker_images
 fi
 
+bash ./gradlew clean
 bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
 
 docker pull selenoid/vnc_chrome:127.0

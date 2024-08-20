@@ -210,6 +210,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                         <>
                             <Table
                                 aria-labelledby="tableTitle"
+                                sx={{marginBottom: "12px"}}
                             >
                                 {!isMobile &&
                                     <TableHead
@@ -255,7 +256,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                                     padding="none"
                                                                     align="left"
                                                                 >
-                                                                    <Typography component="p" variant={"body1"}>
+                                                                    <Typography component="span" variant={"body1"}>
                                                                         <Stack>{row.category.name}</Stack>
                                                                         <Stack
                                                                             sx={{color: theme.palette.gray_600.main}}>{row.description}</Stack>
@@ -263,7 +264,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                                 </TableCell>
                                                                 <TableCell align="right" padding={"normal"}
                                                                            sx={{minWidth: 110}}>
-                                                                    <Typography component="p" variant={"body1"}>
+                                                                    <Typography component="span" variant={"body1"}>
                                                                         <Stack>{row.amount}</Stack>
                                                                         <Stack
                                                                             sx={{color: theme.palette.gray_600.main}}>{row.spendDate}</Stack>
@@ -279,11 +280,11 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                                     padding="none"
                                                                     align="left"
                                                                 >
-                                                                    <Typography component="p"
+                                                                    <Typography component="span"
                                                                                 variant={"body1"}>{row.category.name}</Typography>
                                                                 </TableCell>
                                                                 <TableCell align="center" padding={"normal"}>
-                                                                    <Typography component="p"
+                                                                    <Typography component="span"
                                                                                 variant={"body1"}> {row.amount}</Typography>
                                                                 </TableCell>
                                                                 <TableCell align="center"
@@ -292,7 +293,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                                                color: theme.palette.gray_600.main,
                                                                            }}
                                                                 >
-                                                                    <Typography component="p"
+                                                                    <Typography component="span"
                                                                                 variant={"body1"}>{row.description}</Typography>
                                                                 </TableCell>
                                                                 <TableCell align="center"
@@ -301,7 +302,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                                                minWidth: 110,
                                                                                color: theme.palette.gray_600.main
                                                                            }}>
-                                                                    <Typography component="p"
+                                                                    <Typography component="span"
                                                                                 variant={"body1"}>{row.spendDate}</Typography>
                                                                 </TableCell>
                                                             </>

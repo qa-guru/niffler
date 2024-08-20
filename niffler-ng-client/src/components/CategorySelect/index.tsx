@@ -1,10 +1,11 @@
 import * as React from 'react';
 import {FC, useEffect, useState} from 'react';
 import FormControl from '@mui/material/FormControl';
-import {Box, Chip, List, MenuItem, TextField} from '@mui/material';
+import {Box, Chip, List, MenuItem} from '@mui/material';
 import {apiClient} from "../../api/apiClient.ts";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
 import {MAX_CATEGORIES_COUNT} from "../../const/constants.ts";
+import {Input} from "../Input";
 
 interface CategorySelectInterface {
     selectedCategory: string;
@@ -63,7 +64,8 @@ export const CategorySelect: FC<CategorySelectInterface> = ({
             alignItens: "center",
         }}>
             <FormControl sx={{width: "100%"}}>
-                <TextField
+                <Input
+                    id="category"
                     name="category"
                     value={selectedCategory}
                     onChange={(e) => onSelectCategory(e.target.value)}
@@ -72,6 +74,7 @@ export const CategorySelect: FC<CategorySelectInterface> = ({
                     helperText={helperText}
                     disabled={allCategories.length >= MAX_CATEGORIES_COUNT}
                     placeholder={"Add new category"}
+                    type="text"
                 />
                 <List sx={{
                     display: "flex",

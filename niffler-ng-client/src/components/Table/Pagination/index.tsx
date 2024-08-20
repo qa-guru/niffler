@@ -1,4 +1,4 @@
-import {Box} from "@mui/material"
+import {Box, useMediaQuery, useTheme} from "@mui/material"
 import LoadingButton from '@mui/lab/LoadingButton';
 import {FC} from "react"
 
@@ -19,12 +19,15 @@ export const TablePagination: FC<TablePaginationInterface> = ({
                                                                   isPreviousButtonLoading,
                                                                   isNextButtonLoading
                                                               }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     return (
         <Box sx={{
             display: "flex",
             width: "100%",
             alignItems: "center",
-            justifyContent: "flex-end",
+            justifyContent: isMobile ? "space-between" : "flex-end",
         }}>
             <LoadingButton
                 type="button"

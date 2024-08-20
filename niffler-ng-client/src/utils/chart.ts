@@ -15,7 +15,7 @@ export const emptyCirclePlugin: Plugin = {
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
             ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.lineWidth = 23;
+            ctx.lineWidth = (chart.config.options as DoughnutOptions).arc.width;
             ctx.stroke();
             ctx.restore();
         }

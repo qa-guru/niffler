@@ -12,5 +12,5 @@ public abstract class BaseRestTest {
   protected static final GatewayApiClient gatewayApiClient = new GatewayApiClient();
 
   @RegisterExtension
-  private static final ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
+  protected static final ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
 }

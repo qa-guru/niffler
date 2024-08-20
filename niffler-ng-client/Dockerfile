@@ -10,7 +10,7 @@ RUN npm run ${NPM_COMMAND}
 # release step
 FROM nginx:1.27.1-alpine AS release
 LABEL maintainer="Irina Stiazhkina @irin_alexis"
-LABEL version="${VERSION}"
+LABEL version=${VERSION}
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html/
 EXPOSE 80

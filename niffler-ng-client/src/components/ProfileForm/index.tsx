@@ -1,4 +1,4 @@
-import {Button, Grid, InputLabel, TextField, Typography, useMediaQuery, useTheme} from "@mui/material"
+import {Grid, InputLabel, Typography, useMediaQuery, useTheme} from "@mui/material"
 import {FC, FormEvent, useContext, useEffect, useState,} from "react";
 import {ImageUpload} from "../ImageUpload";
 import {apiClient} from "../../api/apiClient.ts";
@@ -6,13 +6,15 @@ import {useSnackBar} from "../../context/SnackBarContext.tsx";
 import {SessionContext} from "../../context/SessionContext.tsx";
 import {convertUserToFormData, profileFormValidate, UserFormData} from "./formValidate.ts";
 import {formHasErrors} from "../../utils/form.ts";
-
+import {Input} from "../Input";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 export const ProfileForm: FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const {user, updateUser} = useContext(SessionContext);
     const [formData, setFormData] = useState<UserFormData>(convertUserToFormData(user));
+    const [isSaveButtonLoading, setSaveButtonLoading] = useState(false);
     const snackbar = useSnackBar();
 
     useEffect(() => {
@@ -24,6 +26,7 @@ export const ProfileForm: FC = () => {
         const validatedData = profileFormValidate(formData);
         setFormData(validatedData);
         if (!formHasErrors(validatedData)) {
+            setSaveButtonLoading(true);
             apiClient.updateProfile({
                 id: user.id,
                 username: user.username,
@@ -33,9 +36,11 @@ export const ProfileForm: FC = () => {
                 onSuccess: (data) => {
                     updateUser(data);
                     snackbar.showSnackBar("Profile successfully updated", "success");
+                    setSaveButtonLoading(false);
                 },
                 onFailure: (e) => {
-                    snackbar.showSnackBar(`Error while updating profile: ${e.message}`, "error")
+                    snackbar.showSnackBar(`Error while updating profile: ${e.message}`, "error");
+                    setSaveButtonLoading(false);
                 },
             });
         }
@@ -82,7 +87,7 @@ export const ProfileForm: FC = () => {
                         flexDirection: {xs: "column", sm: "row"}
                     }}
                 >
-                    <Grid item xs={isMobile ? true : 4} sx={{width: "100%"}} spacing={0}>
+                    <Grid item xs={isMobile ? true : 4} sx={{width: "100%"}}>
                         <InputLabel
                             htmlFor={"username"}
                             sx={{
@@ -90,18 +95,13 @@ export const ProfileForm: FC = () => {
                             }}>
                             Username
                         </InputLabel>
-                        <TextField
-                            sx={{
-                                margin: 0,
-                                padding: 0
-                            }}
+                        <Input
                             id="username"
                             name="username"
                             type="text"
                             value={user.username}
                             error={false}
                             disabled
-                            fullWidth
                         />
                     </Grid>
                     <Grid item xs={isMobile ? true : 4} sx={{width: "100%"}}>
@@ -109,11 +109,7 @@ export const ProfileForm: FC = () => {
                                     sx={{color: theme.palette.black.main}}>
                             Name
                         </InputLabel>
-                        <TextField
-                            sx={{
-                                margin: 0,
-                                padding: 0
-                            }}
+                        <Input
                             id="name"
                             name="name"
                             type="text"
@@ -125,22 +121,24 @@ export const ProfileForm: FC = () => {
                                     ...formData.fullname, value: event.target.value, error: false, errorMessage: "",
                                 }
                             })}
-                            fullWidth
                         />
                     </Grid>
                     <Grid item xs={isMobile ? true : 4} sx={{
                         margin: "0 auto",
                         width: "100%",
                     }}>
-                        <Button
+                        <LoadingButton
                             variant="contained"
                             type="submit"
                             size={"large"}
+                            loading={isSaveButtonLoading}
                             sx={{
                                 width: "100%",
                                 marginTop: 2.75,
                             }}
-                        >Save changes</Button>
+                        >
+                            Save changes
+                        </LoadingButton>
                     </Grid>
                 </Grid>
             </Grid>

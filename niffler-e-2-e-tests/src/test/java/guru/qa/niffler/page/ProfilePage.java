@@ -34,6 +34,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
 
   @Step("Set name: {0}")
   public ProfilePage setName(String name) {
+    nameInput.clear();
     nameInput.setValue(name);
     return this;
   }

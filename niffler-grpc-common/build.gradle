@@ -1,40 +1,32 @@
-buildscript {
-    ext {
-        protobufVersion = '3.25.3'
-        grpcVersion = '1.63.0'
-        protobufPluginVersion = '0.9.4'
-    }
-}
-
 plugins {
     id 'idea'
-    id 'com.google.protobuf' version "${protobufPluginVersion}"
+    id 'com.google.protobuf' version '0.9.4'
 }
 
 group = 'guru.qa'
-version = '1.0.1'
+version = '1.0.2'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
-    implementation "io.grpc:grpc-stub:${grpcVersion}"
-    implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
+    implementation "io.grpc:grpc-protobuf:${project.ext.grpcVersion}"
+    implementation "io.grpc:grpc-stub:${project.ext.grpcVersion}"
+    implementation "com.google.protobuf:protobuf-java:${project.ext.protobufVersion}"
     compileOnly 'jakarta.annotation:jakarta.annotation-api:1.3.5' // Java 9+ compatibility - Do NOT update to 2.0.0
 }
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+        artifact = "com.google.protobuf:protoc:${project.ext.protobufVersion}"
     }
     clean {
         delete generatedFilesBaseDir
     }
     plugins {
         grpc {
-            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+            artifact = "io.grpc:protoc-gen-grpc-java:${project.ext.grpcVersion}"
         }
     }
     generateProtoTasks {
