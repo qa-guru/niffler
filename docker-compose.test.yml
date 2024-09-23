@@ -7,7 +7,8 @@ services:
       - PGUSER=postgres
       - POSTGRES_PASSWORD=secret
     volumes:
-      - ./postgres:/docker-entrypoint-initdb.d
+      - ./postgres/script:/docker-entrypoint-initdb.d
+      - ./postgres/conf/postgresql.conf:/etc/postgresql.conf
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
       interval: 3s

@@ -14,7 +14,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 
 @EnableWebSecurity
 @Configuration
-@Profile({"staging", "prod"})
+@Profile({"prod"})
 public class SecurityConfigMain {
 
   private final CorsCustomizer corsCustomizer;
