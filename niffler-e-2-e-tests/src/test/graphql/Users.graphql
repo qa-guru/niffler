@@ -1,0 +1,9 @@
+query Users {
+    users {
+        id
+        username
+        fullname
+        photoSmall
+        friendState
+    }
+}

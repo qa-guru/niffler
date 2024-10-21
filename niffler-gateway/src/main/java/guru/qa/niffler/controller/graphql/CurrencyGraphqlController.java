@@ -4,11 +4,13 @@ import guru.qa.niffler.model.CurrencyJson;
 import guru.qa.niffler.service.api.GrpcCurrencyClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
 @Controller
+@PreAuthorize("isAuthenticated()")
 public class CurrencyGraphqlController {
 
   private final GrpcCurrencyClient grpcCurrencyClient;

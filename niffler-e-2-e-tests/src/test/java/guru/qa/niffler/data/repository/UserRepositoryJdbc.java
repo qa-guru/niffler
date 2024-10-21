@@ -154,7 +154,6 @@ public class UserRepositoryJdbc implements UserRepository {
   public void updateInAuth(AuthUserEntity user) {
     try (Connection conn = authDs.getConnection()) {
       conn.setAutoCommit(false);
-
       try (PreparedStatement usersPs = conn.prepareStatement(
           "UPDATE \"user\" SET " +
               "password = ?, " +

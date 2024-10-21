@@ -4,8 +4,9 @@ buildscript {
         junitVersion = '5.11.0'
         allureVersion = '2.29.0'
         selenideVersion = '7.4.2'
+        okhttp3Version = '4.11.0'
         retrofitVersion = '2.11.0'
-        okhttp3Version = '3.14.9'
+        apollographqlVersion = '0.0.2'
         logbackVersion = '1.4.11'
         slf4jVersion = '2.0.9'
         springJdbcVersion = '6.1.12'
@@ -21,6 +22,9 @@ buildscript {
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
                 ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
                 : "http://127.0.0.1:8089/ws/userdata.wsdl"
+        gatewayGraphqlUrl = System.getProperty("test.env") == "docker"
+                ? "http://gateway.niffler.dc:8090/graphql"
+                : "http://127.0.0.1:8090/graphql"
     }
 }
 
@@ -28,6 +32,7 @@ plugins {
     id 'io.qameta.allure' version '2.12.0'
     id 'io.qameta.allure-adapter' version '2.12.0'
     id 'com.github.edeandrea.xjc-generation' version '1.6'
+    id 'com.apollographql.apollo' version '4.0.0'
 }
 
 group = 'guru.qa'
@@ -52,11 +57,28 @@ xjcGeneration {
     }
 }
 
+apollo {
+    service("niffler") {
+        generateKotlinModels.set(false)
+        packageName.set("guru.qa")
+        srcDir("src/test/graphql")
+        mapScalar("Date", "java.util.Date")
+        introspection {
+            endpointUrl.set("${gatewayGraphqlUrl}")
+            schemaFile.set(file("src/test/graphql/schema.graphqls"))
+        }
+        outputDirConnection {
+            connectToJavaSourceSet("test")
+        }
+    }
+}
+
 sourceSets {
     test {
         java {
             srcDir('src/test/java')
             srcDir("$buildDir/generated-sources/test/xjc")
+            srcDir("$buildDir/generated/source/apollo/e2e")
         }
     }
 }
@@ -68,11 +90,18 @@ dependencies {
     // JUnit
     testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
     // REST
-    testImplementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
-    testImplementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
     testImplementation "com.squareup.okhttp3:logging-interceptor:${okhttp3Version}"
     testImplementation "com.squareup.okhttp3:okhttp-urlconnection:${okhttp3Version}"
+    testImplementation("com.squareup.retrofit2:retrofit:${retrofitVersion}") {
+        exclude group: "com.squareup.okhttp3"
+    }
+    testImplementation("com.squareup.retrofit2:converter-jackson:${retrofitVersion}") {
+        exclude group: "com.squareup.okhttp3"
+    }
     testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
+    // GraphQL
+    testImplementation "com.apollographql.java:client:${apollographqlVersion}"
+    testImplementation "com.apollographql.java:rx2:${apollographqlVersion}"
     // DB
     testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
@@ -130,7 +159,12 @@ tasks.register('printVersion') {
     }
 }
 
+tasks.named { it == "generateNifflerApolloSources" }.configureEach {
+    dependsOn("downloadNifflerApolloSchemaFromIntrospection")
+}
+
 test {
+    dependsOn("generateNifflerApolloSources")
     options {
         systemProperties(System.getProperties())
     }

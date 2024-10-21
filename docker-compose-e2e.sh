@@ -5,6 +5,7 @@ export PREFIX="${IMAGE_PREFIX}"
 export ALLURE_DOCKER_API=http://allure:5050/
 export HEAD_COMMIT_MESSAGE="local build"
 export FRONT_VERSION="2.1.0"
+export COMPOSE_PROFILES=test
 export ARCH=$(uname -m)
 
 echo '### Java version ###'
@@ -16,7 +17,7 @@ else
   export FRONT="niffler-ng-client"
 fi
 
-docker compose -f docker-compose.test.yml down
+docker compose down
 
 docker_containers=$(docker ps -a -q)
 docker_images=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'niffler')
@@ -36,5 +37,5 @@ bash ./gradlew clean
 bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
 
 docker pull selenoid/vnc_chrome:127.0
-docker compose -f docker-compose.test.yml up -d
+docker compose up -d
 docker ps -a
