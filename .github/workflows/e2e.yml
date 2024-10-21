@@ -39,6 +39,7 @@ jobs:
           EXECUTION_TYPE: github
         run: |
           : # run e2e tests
+          docker compose up -d
           docker ps -a
           docker wait niffler-e-2-e
           exit_code=$(docker inspect -f '{{.State.ExitCode}}' niffler-e-2-e)
