@@ -1,15 +1,17 @@
 package guru.qa.niffler.test.gql;
 
+import com.apollographql.apollo.api.ApolloResponse;
+import com.apollographql.apollo.api.Error;
+import com.apollographql.java.client.ApolloCall;
+import com.apollographql.java.rx2.Rx2Apollo;
+import guru.qa.Friends2SubQueriesQuery;
+import guru.qa.FriendsQuery;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
-import guru.qa.niffler.jupiter.annotation.GqlReq;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.model.gql.GqlRequest;
-import guru.qa.niffler.model.gql.UserDataGql;
-import guru.qa.niffler.model.gql.UserGql;
 import guru.qa.niffler.model.rest.FriendState;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
@@ -25,6 +27,7 @@ import java.util.List;
 import static guru.qa.niffler.model.rest.FriendState.INVITE_RECEIVED;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("[GraphQL][niffler-gateway]: Друзья")
@@ -32,15 +35,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class GraphQlFriendsTest extends BaseGraphQlTest {
 
   @Test
-  @DisplayName("GraphQL: Для нового пользователя должен возвращаться пустой список friends и invitations из niffler-gateway")
+  @DisplayName("GraphQL: Для нового пользователя должен возвращаться пустой список friends из niffler-gateway")
   @AllureId("400004")
   @Tag("GraphQL")
   @ApiLogin(user = @GenerateUser)
-  void emptyFriendsAndInvitationsListShouldReceivedForNewUser(@Token String bearerToken,
-                                                              @GqlReq("gql/getFriendsQuery.json") GqlRequest query) throws Exception {
-    final UserDataGql response = gqlClient.friends(bearerToken, query);
+  void emptyFriendsAndInvitationsListShouldReceivedForNewUser(@Token String bearerToken) throws Exception {
+    ApolloCall<FriendsQuery.Data> apolloCall = apolloClient.query(new FriendsQuery())
+        .addHttpHeader("Authorization", bearerToken);
 
-    final List<UserGql> friends = response.getData().getUser().getFriends();
+    final ApolloResponse<FriendsQuery.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
+    final FriendsQuery.Data responseData = response.dataOrThrow();
+
+    final List<FriendsQuery.Friend> friends = responseData.user.friends;
 
     step("Check that friends list is empty", () ->
         assertTrue(friends.isEmpty())
@@ -48,7 +54,7 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
   }
 
   @CsvSource({
-      "friends, gql/getFriends2FriedsSubQuery.json"
+      "friends"
   })
   @ParameterizedTest(name = "Получена ошибка Can`t fetch over 2 {0} sub-queries")
   @DisplayName("GraphQL: Невозможно получить более 2-х уровней вложенности запросов")
@@ -61,15 +67,18 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
       )
   )
   void errorShouldReceivedForOver2SubQueries(String expectedMessagePart,
-                                             @GqlReq GqlRequest query,
                                              @Token String bearerToken) throws Exception {
-    final UserDataGql response = gqlClient.friends(bearerToken, query);
+    ApolloCall<Friends2SubQueriesQuery.Data> apolloCall = apolloClient.query(new Friends2SubQueriesQuery())
+        .addHttpHeader("Authorization", bearerToken);
 
-    step("Check error message", () ->
-        assertEquals(
-            "Can`t fetch over 2 " + expectedMessagePart + " sub-queries",
-            response.getErrors().getFirst().message()
-        )
+    final ApolloResponse<Friends2SubQueriesQuery.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
+
+    final Error firstError = response.errors.getFirst();
+
+    assertNull(response.data);
+    assertEquals(
+        "Can`t fetch over 2 " + expectedMessagePart + " sub-queries",
+        firstError.getMessage()
     );
   }
 
@@ -84,34 +93,37 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
           incomeInvitations = @IncomeInvitations(count = 1)
       )
   )
-  void friendsAndIncomeInvitationsListShouldReceived(@GqlReq("gql/getFriendsQuery.json") GqlRequest query,
-                                                     @User UserJson user,
+  void friendsAndIncomeInvitationsListShouldReceived(@User UserJson user,
                                                      @Token String bearerToken) throws Exception {
     UserJson friend = user.testData().friends().getFirst();
     UserJson invitation = user.testData().incomeInvitations().getFirst();
 
-    final UserDataGql response = gqlClient.friends(bearerToken, query);
+    ApolloCall<FriendsQuery.Data> apolloCall = apolloClient.query(new FriendsQuery())
+        .addHttpHeader("Authorization", bearerToken);
 
-    final var friends = response.getData().getUser().getFriends();
+    final ApolloResponse<FriendsQuery.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
+    final FriendsQuery.Data responseData = response.dataOrThrow();
+
+    final List<FriendsQuery.Friend> friends = responseData.user.friends;
 
     step("Check friend in response", () -> {
       assertEquals(2, friends.size());
       step("Check sorting by status", () ->
-          assertEquals(INVITE_RECEIVED, friends.getFirst().getFriendState())
+          assertEquals(INVITE_RECEIVED.name(), friends.getFirst().friendState.rawValue)
       );
 
-      final UserGql friendUser = friends.getLast();
+      final FriendsQuery.Friend friendUser = friends.getLast();
 
-      assertEquals(friend.id(), friendUser.getId());
-      assertEquals(friend.username(), friendUser.getUsername());
-      assertEquals(FriendState.FRIEND, friendUser.getFriendState());
+      assertEquals(friend.id().toString(), friendUser.id);
+      assertEquals(friend.username(), friendUser.username);
+      assertEquals(FriendState.FRIEND.name(), friendUser.friendState.rawValue);
     });
     step("Check income invitation in response", () -> {
-      final UserGql invitationUser = friends.getFirst();
+      final FriendsQuery.Friend invitationUser = friends.getFirst();
 
-      assertEquals(invitation.id(), invitationUser.getId());
-      assertEquals(invitation.username(), invitationUser.getUsername());
-      assertEquals(FriendState.INVITE_RECEIVED, invitationUser.getFriendState());
+      assertEquals(invitation.id().toString(), invitationUser.id);
+      assertEquals(invitation.username(), invitationUser.username);
+      assertEquals(FriendState.INVITE_RECEIVED.name(), invitationUser.friendState.rawValue);
     });
   }
 }

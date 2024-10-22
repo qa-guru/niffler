@@ -21,8 +21,9 @@ public class AllureDockerExtension implements SuiteExtension {
 
   private static final Logger LOG = LoggerFactory.getLogger(AllureDockerExtension.class);
 
+  private static final boolean inDocker = "docker".equals(System.getProperty("test.env"));
   private static final Base64.Encoder encoder = Base64.getEncoder();
-  private static final String allureResultsDirectory = "./niffler-e-2-e-tests/build/allure-results";
+  private static final Path allureResultsDirectory = Path.of("./niffler-e-2-e-tests/build/allure-results");
   private static final String projectId = "niffler-ng";
 
   private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
@@ -30,7 +31,7 @@ public class AllureDockerExtension implements SuiteExtension {
   @Override
   @SneakyThrows
   public void beforeSuite(ExtensionContext context) {
-    if ("docker".equals(System.getProperty("test.env"))) {
+    if (inDocker) {
       allureDockerApiClient.createProjectIfNotExist(projectId);
       allureDockerApiClient.clean(projectId);
     }
@@ -38,11 +39,10 @@ public class AllureDockerExtension implements SuiteExtension {
 
   @Override
   public void afterSuite() {
-    if ("docker".equals(System.getProperty("test.env"))) {
-      try (Stream<Path> paths = Files.walk(Path.of(allureResultsDirectory))) {
-        List<Path> allureResults = paths.filter(Files::isRegularFile).toList();
+    if (inDocker) {
+      try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {
         List<DecodedAllureFile> filesToSend = new ArrayList<>();
-        for (Path allureResult : allureResults) {
+        for (Path allureResult : paths.toList()) {
           try (InputStream is = Files.newInputStream(allureResult)) {
             filesToSend.add(
                 new DecodedAllureFile(
@@ -52,7 +52,6 @@ public class AllureDockerExtension implements SuiteExtension {
             );
           }
         }
-        allureDockerApiClient.createProjectIfNotExist(projectId);
         allureDockerApiClient.sendResultsToAllure(
             projectId,
             new AllureResults(

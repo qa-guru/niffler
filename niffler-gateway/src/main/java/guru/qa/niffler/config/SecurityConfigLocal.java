@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,8 +16,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @EnableWebSecurity
+@EnableMethodSecurity
 @Configuration
-@Profile({"local", "docker"})
+@Profile({"local", "docker", "staging"})
 public class SecurityConfigLocal {
 
   private final CorsCustomizer corsCustomizer;
@@ -33,11 +36,12 @@ public class SecurityConfigLocal {
         .authorizeHttpRequests(customizer ->
             customizer.requestMatchers(
                     antMatcher("/api/session/current"),
+                    antMatcher("/actuator/health"),
                     antMatcher("/swagger-ui/**"),
                     antMatcher("/v3/api-docs/**"),
-                    antMatcher("/actuator/health"),
-                    antMatcher("/graphiql/**")
-                ).permitAll()
+                    antMatcher("/graphiql/**"),
+                    antMatcher(HttpMethod.POST, "/graphql"))
+                .permitAll()
                 .anyRequest()
                 .authenticated()
         ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));

@@ -15,7 +15,8 @@ import java.lang.annotation.Target;
 @ExtendWith({
     DatabaseCreateUserExtension.class,
     GqlReqResolver.class,
-    AllureJunit5.class})
+    AllureJunit5.class
+})
 public @interface GqlTest {
 
 }

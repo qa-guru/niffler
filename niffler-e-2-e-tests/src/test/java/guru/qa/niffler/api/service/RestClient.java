@@ -70,7 +70,10 @@ public abstract class RestClient {
 
     builder.cookieJar(
         new JavaNetCookieJar(
-            new CookieManager(ThreadLocalCookieStore.INSTANCE, CookiePolicy.ACCEPT_ALL)
+            new CookieManager(
+                ThreadLocalCookieStore.INSTANCE,
+                CookiePolicy.ACCEPT_ALL
+            )
         )
     );
     builder.addNetworkInterceptor(

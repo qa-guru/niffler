@@ -1,0 +1,20 @@
+query Friends2SubQueries {
+    user {
+        friends {
+            id
+            username
+            fullname
+            photo
+            friendState
+            friends {
+                id
+                username
+                friends {
+                    id
+                    username
+                }
+            }
+        }
+
+    }
+}

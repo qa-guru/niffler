@@ -1,0 +1,9 @@
+query CurrentUser {
+    user {
+        id
+        username
+        fullname
+        currency
+        photo
+    }
+}
