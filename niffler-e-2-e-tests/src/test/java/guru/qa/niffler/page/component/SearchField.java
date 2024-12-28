@@ -19,12 +19,14 @@ public class SearchField extends BaseComponent<SearchField> {
 
   private final SelenideElement clearSearchInputBtn = $("#input-clear");
 
+  @Nonnull
   public SearchField search(String query) {
     clearIfNotEmpty();
     self.setValue(query).pressEnter();
     return this;
   }
 
+  @Nonnull
   public SearchField clearIfNotEmpty() {
     if (self.is(not(empty))) {
       clearSearchInputBtn.click();
