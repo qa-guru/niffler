@@ -1,8 +1,10 @@
 package guru.qa.niffler.controller.graphql;
 
+import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.graphql.CreateCategoryInput;
 import guru.qa.niffler.service.api.RestSpendClient;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -17,6 +19,7 @@ import java.util.List;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
+@SecurityRequirement(name = NifflerGatewayServiceConfig.OPEN_API_AUTH_SCHEME)
 public class CategoriesGraphqlController {
 
   private final RestSpendClient restSpendClient;
