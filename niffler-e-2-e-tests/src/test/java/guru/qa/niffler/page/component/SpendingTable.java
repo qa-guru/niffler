@@ -73,7 +73,7 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
 
   @Step("Check that table contains data {0}")
   @Nonnull
-  public SpendingTable checkTableContains(@Nonnull SpendJson... expectedSpends) {
+  public SpendingTable checkTableContains(SpendJson... expectedSpends) {
     tableRows.should(spends(expectedSpends));
     return this;
   }

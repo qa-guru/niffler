@@ -32,7 +32,10 @@ jib {
     container {
         ports = ['8093']
         jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
-        environment = ['VAULT_TOKEN': "${System.env.VAULT_TOKEN}".toString()]
+        environment = [
+                'VAULT_TOKEN': "${System.env.VAULT_TOKEN}".toString(),
+                'TZ'         : 'Europe/Moscow'
+        ]
         creationTime = 'USE_CURRENT_TIMESTAMP'
         labels = [
                 'maintainer': 'Dmitrii Tuchs @dtuchs',

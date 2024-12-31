@@ -1,9 +1,11 @@
 package guru.qa.niffler.controller.v2;
 
+import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.StatisticV2Json;
 import guru.qa.niffler.service.StatisticAggregator;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v2/stat")
+@SecurityRequirement(name = NifflerGatewayServiceConfig.OPEN_API_AUTH_SCHEME)
 public class StatV2Controller {
 
   private final StatisticAggregator statisticAggregator;

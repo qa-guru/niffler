@@ -1,7 +1,9 @@
 package guru.qa.niffler.controller;
 
+import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@SecurityRequirement(name = NifflerGatewayServiceConfig.OPEN_API_AUTH_SCHEME)
 public class UserController {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserController.class);

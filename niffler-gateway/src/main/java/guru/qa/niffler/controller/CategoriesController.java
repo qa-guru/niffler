@@ -1,7 +1,9 @@
 package guru.qa.niffler.controller;
 
+import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.service.api.RestSpendClient;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
+@SecurityRequirement(name = NifflerGatewayServiceConfig.OPEN_API_AUTH_SCHEME)
 public class CategoriesController {
 
   private final RestSpendClient restSpendClient;

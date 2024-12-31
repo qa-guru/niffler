@@ -107,7 +107,7 @@ public class GatewayFriendsRestTest extends BaseRestTest {
   }
 
   @Test
-  @DisplayName("REST: Удаление друга")
+  @DisplayName("REST: Дружба должна удаляться")
   @AllureId("200014")
   @Tag("REST")
   @ApiLogin(

@@ -73,7 +73,7 @@ public class ProfileTest extends BaseWebTest {
 
   @Test
   @AllureId("500007")
-  @DisplayName("WEB: Пользователь не имеет возможности добавить более 8 трат")
+  @DisplayName("WEB: Пользователь не имеет возможности добавить более 8 категорий")
   @Tag("WEB")
   @ApiLogin(user = @GenerateUser(
       categories = {

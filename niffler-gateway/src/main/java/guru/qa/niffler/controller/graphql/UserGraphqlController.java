@@ -2,11 +2,13 @@ package guru.qa.niffler.controller.graphql;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
+import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.ex.TooManySubQueriesException;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.model.graphql.UpdateUserInfoInput;
 import guru.qa.niffler.model.graphql.UserJsonGQL;
 import guru.qa.niffler.service.UserDataClient;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
+@SecurityRequirement(name = NifflerGatewayServiceConfig.OPEN_API_AUTH_SCHEME)
 public class UserGraphqlController {
 
   private final UserDataClient userDataClient;

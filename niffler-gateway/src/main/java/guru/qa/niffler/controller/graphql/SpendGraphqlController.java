@@ -1,5 +1,6 @@
 package guru.qa.niffler.controller.graphql;
 
+import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
@@ -8,6 +9,7 @@ import guru.qa.niffler.model.graphql.UpdateSpendInput;
 import guru.qa.niffler.service.StatisticAggregator;
 import guru.qa.niffler.service.UserDataClient;
 import guru.qa.niffler.service.api.RestSpendClient;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -25,6 +27,7 @@ import java.util.List;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
+@SecurityRequirement(name = NifflerGatewayServiceConfig.OPEN_API_AUTH_SCHEME)
 public class SpendGraphqlController {
 
   private final RestSpendClient restSpendClient;
