@@ -9,6 +9,7 @@ import java.time.Month;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.codeborne.selenide.Condition.matchText;
 import static com.codeborne.selenide.Selenide.$;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
@@ -23,6 +24,8 @@ public class Calendar extends BaseComponent<Calendar> {
   public Calendar() {
     super($(".MuiPickersLayout-root"));
   }
+
+  public static final String DATE_REGEXP = "^\\w+ \\d{4}$";
 
   private final SelenideElement input = $("input[name='date']");
   private final SelenideElement calendarButton = $("button[aria-label*='Choose date']");
@@ -91,6 +94,7 @@ public class Calendar extends BaseComponent<Calendar> {
   }
 
   private int getActualMonthIndex() {
+    currentMonthAndYear.should(matchText(DATE_REGEXP));
     return Month.valueOf(currentMonthAndYear.getText()
             .split(" ")[0]
             .toUpperCase())
@@ -98,6 +102,7 @@ public class Calendar extends BaseComponent<Calendar> {
   }
 
   private int getActualYear() {
+    currentMonthAndYear.should(matchText(DATE_REGEXP));
     return Integer.parseInt(currentMonthAndYear.getText().split(" ")[1]);
   }
 }

@@ -50,6 +50,8 @@ niffler-spend:
   base-uri: 'http://127.0.0.1:8093'
 niffler-front:
   base-uri: 'http://127.0.0.1:3000'
+niffler-gateway:
+  base-uri: 'http://127.0.0.1:8090'
 ---
 spring:
   config:
@@ -80,6 +82,8 @@ niffler-spend:
   base-uri: 'http://spend.niffler.dc:8093'
 niffler-front:
   base-uri: 'http://frontend.niffler.dc'
+niffler-gateway:
+  base-uri: 'http://gateway.niffler.dc:8090'
 ---
 spring:
   config:
@@ -114,6 +118,8 @@ niffler-spend:
   base-uri: ${niffler-spend.url}
 niffler-front:
   base-uri: 'https://niffler.qa.guru'
+niffler-gateway:
+  base-uri: 'https://api.niffler.qa.guru'
 ---
 spring:
   config:
@@ -148,4 +154,6 @@ niffler-spend:
   base-uri: ${niffler-spend.url}
 niffler-front:
   base-uri: 'https://niffler-stage.qa.guru'
+niffler-gateway:
+  base-uri: 'https://api.niffler-stage.qa.guru'
 ---

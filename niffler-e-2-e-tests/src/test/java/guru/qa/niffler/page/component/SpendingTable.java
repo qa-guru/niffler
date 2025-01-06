@@ -15,7 +15,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static guru.qa.niffler.condition.spend.SpendCondition.spends;
+import static guru.qa.niffler.condition.NifflerCollectionCondition.spends;
 
 public class SpendingTable extends BaseComponent<SpendingTable> {
 
