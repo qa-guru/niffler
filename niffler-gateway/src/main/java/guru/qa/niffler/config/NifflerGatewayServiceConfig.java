@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -16,6 +17,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Configuration
 public class NifflerGatewayServiceConfig {
 
@@ -23,10 +26,13 @@ public class NifflerGatewayServiceConfig {
   public static final String OPEN_API_AUTH_SCHEME = "bearer";
 
   private final String nifflerUserdataBaseUri;
+  private final String nifflerGatewayBaseUri;
 
   @Autowired
-  public NifflerGatewayServiceConfig(@Value("${niffler-userdata.base-uri}") String nifflerUserdataBaseUri) {
+  public NifflerGatewayServiceConfig(@Value("${niffler-userdata.base-uri}") String nifflerUserdataBaseUri,
+                                     @Value("${niffler-gateway.base-uri}") String nifflerGatewayBaseUri) {
     this.nifflerUserdataBaseUri = nifflerUserdataBaseUri;
+    this.nifflerGatewayBaseUri = nifflerGatewayBaseUri;
   }
 
   @Bean
@@ -53,7 +59,10 @@ public class NifflerGatewayServiceConfig {
 
   @Bean
   public OpenAPI openAPI() {
+    Server server = new Server();
+    server.setUrl(nifflerGatewayBaseUri);
     return new OpenAPI()
+        .servers(List.of(server))
         .info(new Info()
             .title("Niffler Gateway API Documentation")
             .version("1.0")
