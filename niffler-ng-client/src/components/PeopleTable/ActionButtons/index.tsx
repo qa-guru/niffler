@@ -5,18 +5,18 @@ import {SecondaryButton} from "../../Button";
 import {apiClient} from "../../../api/apiClient.ts";
 import {useDialog} from "../../../context/DialogContext.tsx";
 import CrossIcon from "../../../assets/icons/ic_cross.svg?react";
-import {FriendState} from "../../../types/FriendState.ts";
+import {FriendshipStatus} from "../../../types/FriendshipStatus.ts";
 import {AddFriendButton} from "../AddFriendButton";
 import {AcceptButton} from "../AcceptButton";
 import {DeclineButton} from "../DeclineButton";
 
 interface ActionButtonsInterface {
     username: string;
-    friendState?: FriendState;
-    handleUpdateUserData: (username: string, newFriendState: FriendState) => void;
+    friendshipStatus?: FriendshipStatus;
+    handleUpdateUserData: (username: string, newFriendshipStatus: FriendshipStatus) => void;
 }
 
-export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState, handleUpdateUserData}) => {
+export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendshipStatus, handleUpdateUserData}) => {
     const snackbar = useSnackBar();
     const dialog = useDialog();
 
@@ -41,7 +41,7 @@ export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState
         });
     }
 
-    if (!friendState) {
+    if (!friendshipStatus) {
         return (
             <AddFriendButton username={username} handleUpdateUserData={handleUpdateUserData}/>
         )
@@ -52,7 +52,7 @@ export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState
             margin: 1
         }}>
             {
-                friendState === "FRIEND" && (
+                friendshipStatus === "FRIEND" && (
                     <SecondaryButton
                         type="button"
                         size="small"
@@ -62,7 +62,7 @@ export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState
                     </SecondaryButton>
                 )}
             {
-                friendState === "INVITE_SENT" && (
+                friendshipStatus === "INVITE_SENT" && (
                     <Chip
                         sx={{
                             width: 100
@@ -73,7 +73,7 @@ export const ActionButtons: FC<ActionButtonsInterface> = ({username, friendState
                 )
             }
             {
-                friendState === "INVITE_RECEIVED" && (
+                friendshipStatus === "INVITE_RECEIVED" && (
                     <Box sx={{
                         margin: 1
                     }}>

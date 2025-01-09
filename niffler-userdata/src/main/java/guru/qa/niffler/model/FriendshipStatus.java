@@ -1,5 +1,5 @@
 package guru.qa.niffler.model;
 
-public enum FriendState {
+public enum FriendshipStatus {
   INVITE_SENT, INVITE_RECEIVED, FRIEND
 }

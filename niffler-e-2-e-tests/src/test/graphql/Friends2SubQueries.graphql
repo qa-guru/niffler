@@ -1,20 +1,44 @@
 query Friends2SubQueries {
     user {
-        friends {
-            id
-            username
-            fullname
-            photo
-            friendState
-            friends {
-                id
-                username
-                friends {
+        username
+        friends(page: 0, size: 10) {
+            edges {
+                node {
                     id
                     username
+                    friendshipStatus
+                    friends(page: 0, size: 10) {
+                        edges {
+                            node {
+                                id
+                                username
+                                friendshipStatus
+                                friends(page: 0, size: 10) {
+                                    edges {
+                                        node {
+                                            id
+                                            username
+                                            friendshipStatus
+                                        }
+                                    }
+                                    pageInfo {
+                                        hasPreviousPage
+                                        hasNextPage
+                                    }
+                                }
+                            }
+                        }
+                        pageInfo {
+                            hasPreviousPage
+                            hasNextPage
+                        }
+                    }
                 }
             }
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+            }
         }
-
     }
 }

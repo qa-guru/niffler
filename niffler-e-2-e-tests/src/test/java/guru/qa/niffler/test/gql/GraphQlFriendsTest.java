@@ -6,13 +6,15 @@ import com.apollographql.java.client.ApolloCall;
 import com.apollographql.java.rx2.Rx2Apollo;
 import guru.qa.Friends2SubQueriesQuery;
 import guru.qa.FriendsQuery;
+import guru.qa.FriendsWithCategoriesQuery;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Friends;
+import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.model.rest.FriendState;
+import guru.qa.niffler.model.rest.FriendshipStatus;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
@@ -24,9 +26,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
-import static guru.qa.niffler.model.rest.FriendState.INVITE_RECEIVED;
+import static guru.qa.niffler.model.rest.FriendshipStatus.INVITE_RECEIVED;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -46,7 +49,7 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
     final ApolloResponse<FriendsQuery.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
     final FriendsQuery.Data responseData = response.dataOrThrow();
 
-    final List<FriendsQuery.Friend> friends = responseData.user.friends;
+    final List<FriendsQuery.Edge> friends = responseData.user.friends.edges;
 
     step("Check that friends list is empty", () ->
         assertTrue(friends.isEmpty())
@@ -104,26 +107,51 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
     final ApolloResponse<FriendsQuery.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
     final FriendsQuery.Data responseData = response.dataOrThrow();
 
-    final List<FriendsQuery.Friend> friends = responseData.user.friends;
+    final List<FriendsQuery.Edge> friends = responseData.user.friends.edges;
 
     step("Check friend in response", () -> {
       assertEquals(2, friends.size());
       step("Check sorting by status", () ->
-          assertEquals(INVITE_RECEIVED.name(), friends.getFirst().friendState.rawValue)
+          assertEquals(INVITE_RECEIVED.name(), friends.getFirst().node.friendshipStatus.rawValue)
       );
 
-      final FriendsQuery.Friend friendUser = friends.getLast();
+      final FriendsQuery.Node friendUser = friends.getLast().node;
 
       assertEquals(friend.id().toString(), friendUser.id);
       assertEquals(friend.username(), friendUser.username);
-      assertEquals(FriendState.FRIEND.name(), friendUser.friendState.rawValue);
+      assertEquals(FriendshipStatus.FRIEND.name(), friendUser.friendshipStatus.rawValue);
     });
     step("Check income invitation in response", () -> {
-      final FriendsQuery.Friend invitationUser = friends.getFirst();
+      final FriendsQuery.Node invitationUser = friends.getFirst().node;
 
       assertEquals(invitation.id().toString(), invitationUser.id);
       assertEquals(invitation.username(), invitationUser.username);
-      assertEquals(FriendState.INVITE_RECEIVED.name(), invitationUser.friendState.rawValue);
+      assertEquals(FriendshipStatus.INVITE_RECEIVED.name(), invitationUser.friendshipStatus.rawValue);
     });
+  }
+
+  @Test
+  @DisplayName("GraphQL: Невозможно получить чужие категории")
+  @AllureId("400007")
+  @Tag("GraphQL")
+  @ApiLogin(
+      user = @GenerateUser(
+          categories = @GenerateCategory("Бар"),
+          friends = @Friends(count = 1, categories = @GenerateCategory("Магазин"))
+      )
+  )
+  void errorShouldReceivedForOtherPeopleCategories(@Token String bearerToken) throws Exception {
+    ApolloCall<FriendsWithCategoriesQuery.Data> apolloCall = apolloClient.query(new FriendsWithCategoriesQuery())
+        .addHttpHeader("Authorization", bearerToken);
+
+    final ApolloResponse<FriendsWithCategoriesQuery.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
+
+    final Error firstError = response.errors.getFirst();
+
+    assertNotNull(response.data); //because exception in @SchemaMapping, not @QueryMapping
+    assertEquals(
+        "Can`t query categories for another user",
+        firstError.getMessage()
+    );
   }
 }

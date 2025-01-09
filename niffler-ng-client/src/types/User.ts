@@ -4,5 +4,5 @@ export interface User {
     fullname?: string;
     photo?: string;
     photoSmall?: string;
-    friendState?: "FRIEND" | "INVITE_SENT" | "INVITE_RECEIVED";
+    friendshipStatus?: "FRIEND" | "INVITE_SENT" | "INVITE_RECEIVED";
 }

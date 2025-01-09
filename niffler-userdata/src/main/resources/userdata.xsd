@@ -125,7 +125,7 @@
             <xs:element name="currency" type="tns:currency"/>
             <xs:element name="photo" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="photoSmall" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="friendState" type="tns:friendState" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="friendshipStatus" type="tns:friendshipStatus" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -146,7 +146,7 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="friendState">
+    <xs:simpleType name="friendshipStatus">
         <xs:restriction base="xs:string">
             <xs:enumeration value="INVITE_SENT"/>
             <xs:enumeration value="INVITE_RECEIVED"/>

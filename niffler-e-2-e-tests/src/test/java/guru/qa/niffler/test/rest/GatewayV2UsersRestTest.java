@@ -9,7 +9,7 @@ import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.page.RestPage;
-import guru.qa.niffler.model.rest.FriendState;
+import guru.qa.niffler.model.rest.FriendshipStatus;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
@@ -167,7 +167,7 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         assertTrue(firstPage.getTotalPages() > 0)
     );
     step("Check that first element is outcome invitation", () ->
-        assertEquals(FriendState.INVITE_SENT, firstPage.getContent().getFirst().friendState())
+        assertEquals(FriendshipStatus.INVITE_SENT, firstPage.getContent().getFirst().friendshipStatus())
     );
   }
 }

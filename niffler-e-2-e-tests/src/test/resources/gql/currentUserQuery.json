@@ -1,5 +1,0 @@
-{
-  "operationName": "CurrentUser",
-  "variables": {},
-  "query": "query CurrentUser {\n user {\n id\n username\n fullname\n currency\n photo\n __typename\n }\n}"
-}

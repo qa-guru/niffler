@@ -1,12 +1,16 @@
-query Friends {
+query FriendsWithCategories {
     user {
         username
+        categories {
+            name
+        }
         friends(page: 0, size: 10) {
             edges {
                 node {
-                    id
                     username
-                    friendshipStatus
+                    categories {
+                        name
+                    }
                 }
             }
             pageInfo {

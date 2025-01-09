@@ -138,7 +138,7 @@ services:
         condition: service_started
     networks:
       - niffler-network
-        
+
   selenoid:
     profiles:
       - test
@@ -172,7 +172,7 @@ services:
       - niffler-network
 
   niffler-e-2-e:
-    profiles: [test]
+    profiles: [ test ]
     container_name: niffler-e-2-e
     image: ${PREFIX}/niffler-e-2-e-tests:latest
     build:
@@ -191,7 +191,7 @@ services:
       - niffler-network
 
   allure:
-    profiles: [test]
+    profiles: [ test ]
     container_name: allure
     image: frankescobar/allure-docker-service:2.27.0
     depends_on:
@@ -205,7 +205,7 @@ services:
       - niffler-network
 
   allure-ui:
-    profiles: [test]
+    profiles: [ test ]
     container_name: allure-ui
     image: frankescobar/allure-docker-service-ui:7.0.3
     depends_on:

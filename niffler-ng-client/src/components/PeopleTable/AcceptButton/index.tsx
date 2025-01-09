@@ -1,4 +1,4 @@
-import {FriendState} from "../../../types/FriendState.ts";
+import {FriendshipStatus} from "../../../types/FriendshipStatus.ts";
 import {FC} from "react";
 import {useMediaQuery, useTheme} from "@mui/material";
 import {useSnackBar} from "../../../context/SnackBarContext.tsx";
@@ -8,7 +8,7 @@ import CheckIcon from "../../../assets/icons/ic_check.svg?react";
 
 interface AcceptButtonInterface {
     username: string;
-    handleUpdateUserData: (username: string, newFriendState: FriendState) => void;
+    handleUpdateUserData: (username: string, newFriendshipStatus: FriendshipStatus) => void;
 }
 
 export const AcceptButton: FC<AcceptButtonInterface> = ({username, handleUpdateUserData}) => {
@@ -19,7 +19,7 @@ export const AcceptButton: FC<AcceptButtonInterface> = ({username, handleUpdateU
     const handleAcceptInvitation = (username: string) => {
         apiClient.acceptInvitation(username, {
             onSuccess: (data) => {
-                handleUpdateUserData(data.username, data.friendState);
+                handleUpdateUserData(data.username, data.friendshipStatus);
                 snackbar.showSnackBar(`Invitation of ${username} accepted`, "success");
             },
             onFailure: e => {

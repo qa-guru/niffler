@@ -18,11 +18,11 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
 
     const theme = useTheme();
 
-    const handleUpdateUserData = (username: string, newFriendState: "FRIEND" | "INVITE_SENT" | "INVITE_RECEIVED" | undefined) => {
+    const handleUpdateUserData = (username: string, newFriendshipStatus: "FRIEND" | "INVITE_SENT" | "INVITE_RECEIVED" | undefined) => {
         const index = data.findIndex(user => user.username === username);
         if (index === -1) return data;
 
-        if (!newFriendState) {
+        if (!newFriendshipStatus) {
             if (data.length === 1) {
                 setData([]);
             } else {
@@ -34,7 +34,7 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
         } else {
             setData([
                 ...data.slice(0, index),
-                {...data[index], friendState: newFriendState},
+                {...data[index], friendshipStatus: newFriendshipStatus},
                 ...data.slice(index + 1)
             ]);
         }
@@ -83,7 +83,7 @@ export const PeopleTable: FC<PeopleTableInterface> = ({
                                     >
                                         <ActionButtons
                                             username={row.username}
-                                            friendState={row.friendState}
+                                            friendshipStatus={row.friendshipStatus}
                                             handleUpdateUserData={handleUpdateUserData}
                                         />
                                     </TableCell>

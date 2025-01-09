@@ -1,7 +1,7 @@
-query Friends {
+query AllPeople {
     user {
         username
-        friends(page: 0, size: 10) {
+        allPeople(page: 0, size: 10) {
             edges {
                 node {
                     id

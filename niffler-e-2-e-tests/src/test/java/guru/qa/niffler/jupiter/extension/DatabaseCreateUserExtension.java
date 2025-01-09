@@ -130,6 +130,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
       ).orElseThrow();
       for (int i = 0; i < friends.count(); i++) {
         UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
+        createCategoriesIfPresent(friends.categories(), friend);
         UserEntity friendUser = userRepository.findByIdInUserdata(
             friend.id()
         ).orElseThrow();
