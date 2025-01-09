@@ -1,6 +1,7 @@
 scalar Date
 
 type Query {
+    session: Session!
     spend(id: ID!): Spend!
     spendForm: SpendForm!
     user: User!
@@ -14,6 +15,12 @@ type Mutation {
     spend(input: SpendInput!): Spend!
     deleteSpend(ids: [ID!]!): [ID!]!
     friendship(input: FriendshipInput!): User!
+}
+
+type Session {
+    username: String
+    issuedAt: Date
+    expiresAt: Date
 }
 
 type User {

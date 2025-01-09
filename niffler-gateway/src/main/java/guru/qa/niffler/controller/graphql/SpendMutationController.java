@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import java.util.List;
 
 @Controller
+@PreAuthorize("isAuthenticated()")
 public class SpendMutationController {
 
   private final RestSpendClient restSpendClient;
