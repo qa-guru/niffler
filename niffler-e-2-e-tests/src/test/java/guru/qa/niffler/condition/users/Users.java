@@ -65,8 +65,7 @@ public class Users extends WebElementsCondition {
     List<String> actualTexts = lastCheckResult.getActualValue();
     if (actualTexts == null || actualTexts.isEmpty()) {
       throw new ElementNotFound(collection, toString(), timeoutMs, cause);
-    }
-    else {
+    } else {
       String message = lastCheckResult.getMessageOrElse(() -> "Users mismatch");
       throw new TextsMismatch(message, collection, expectedUsers, actualTexts, explanation, timeoutMs, cause);
     }

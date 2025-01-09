@@ -3,7 +3,10 @@ query CurrentUser {
         id
         username
         fullname
-        currency
         photo
+        categories {
+            name
+            archived
+        }
     }
 }

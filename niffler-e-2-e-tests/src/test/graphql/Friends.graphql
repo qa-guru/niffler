@@ -1,12 +1,18 @@
 query Friends {
     user {
-        friends {
-            id
-            username
-            fullname
-            photoSmall
-            friendState
+        username
+        friends(page: 0, size: 10) {
+            edges {
+                node {
+                    id
+                    username
+                    friendshipStatus
+                }
+            }
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+            }
         }
-
     }
 }

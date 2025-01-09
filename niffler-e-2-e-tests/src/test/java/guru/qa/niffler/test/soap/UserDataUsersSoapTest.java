@@ -8,7 +8,7 @@ import io.qameta.allure.Epic;
 import jaxb.userdata.AllUsersRequest;
 import jaxb.userdata.Currency;
 import jaxb.userdata.CurrentUserRequest;
-import jaxb.userdata.FriendState;
+import jaxb.userdata.FriendshipStatus;
 import jaxb.userdata.UpdateUserRequest;
 import jaxb.userdata.UserResponse;
 import jaxb.userdata.UsersResponse;
@@ -51,7 +51,7 @@ public class UserDataUsersSoapTest extends BaseSoapTest {
         assertEquals(Currency.RUB, currentUserResponse.getUser().getCurrency())
     );
     step("Check that response contains default friends state (VOID), only for SOAP", () ->
-        assertEquals(FriendState.VOID, currentUserResponse.getUser().getFriendState())
+        assertEquals(FriendshipStatus.VOID, currentUserResponse.getUser().getFriendshipStatus())
     );
   }
 

@@ -32,11 +32,11 @@ public record UserJson(
     String photo,
     @JsonProperty("photoSmall")
     String photoSmall,
-    @JsonProperty("friendState")
-    FriendState friendState) {
+    @JsonProperty("friendshipStatus")
+    FriendshipStatus friendshipStatus) {
 
   public @Nonnull UserJson addUsername(@Nonnull String username) {
-    return new UserJson(id, username, firstname, surname, fullname, currency, photo, photoSmall, friendState);
+    return new UserJson(id, username, firstname, surname, fullname, currency, photo, photoSmall, friendshipStatus);
   }
 
   public @Nonnull User toJaxbUser() {
@@ -49,9 +49,9 @@ public record UserJson(
     jaxbUser.setCurrency(currency != null ? Currency.valueOf(currency.name()) : null);
     jaxbUser.setPhoto(photo);
     jaxbUser.setPhotoSmall(photoSmall);
-    jaxbUser.setFriendState(friendState() == null ?
-        jaxb.userdata.FriendState.VOID :
-        jaxb.userdata.FriendState.valueOf(friendState().name()));
+    jaxbUser.setFriendshipStatus(friendshipStatus() == null ?
+        jaxb.userdata.FriendshipStatus.VOID :
+        jaxb.userdata.FriendshipStatus.valueOf(friendshipStatus().name()));
     return jaxbUser;
   }
 
@@ -65,8 +65,8 @@ public record UserJson(
         jaxbUser.getCurrency() != null ? CurrencyValues.valueOf(jaxbUser.getCurrency().name()) : null,
         jaxbUser.getPhoto(),
         jaxbUser.getPhotoSmall(),
-        (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != jaxb.userdata.FriendState.VOID)
-            ? FriendState.valueOf(jaxbUser.getFriendState().name())
+        (jaxbUser.getFriendshipStatus() != null && jaxbUser.getFriendshipStatus() != jaxb.userdata.FriendshipStatus.VOID)
+            ? FriendshipStatus.valueOf(jaxbUser.getFriendshipStatus().name())
             : null
     );
   }

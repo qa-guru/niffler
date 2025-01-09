@@ -68,8 +68,7 @@ public class Spends extends WebElementsCondition {
     List<String> actualTexts = lastCheckResult.getActualValue();
     if (actualTexts == null || actualTexts.isEmpty()) {
       throw new ElementNotFound(collection, toString(), timeoutMs, cause);
-    }
-    else {
+    } else {
       String message = lastCheckResult.getMessageOrElse(() -> "Spends mismatch");
       throw new TextsMismatch(message, collection, expectedSpends, actualTexts, explanation, timeoutMs, cause);
     }

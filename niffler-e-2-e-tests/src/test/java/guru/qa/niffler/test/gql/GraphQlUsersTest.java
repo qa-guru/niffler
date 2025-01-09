@@ -3,17 +3,17 @@ package guru.qa.niffler.test.gql;
 import com.apollographql.apollo.api.ApolloResponse;
 import com.apollographql.java.client.ApolloCall;
 import com.apollographql.java.rx2.Rx2Apollo;
+import guru.qa.AllPeopleQuery;
 import guru.qa.CurrentUserQuery;
 import guru.qa.UpdateUserMutation;
-import guru.qa.UsersQuery;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
+import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.GenerateUsers;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.UserJson;
-import guru.qa.type.UpdateUserInfoInput;
+import guru.qa.type.UserInput;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static guru.qa.type.CurrencyValues.EUR;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -36,7 +35,9 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
   @DisplayName("GraphQL: Для нового пользователя должна возвращаться информация из niffler-gateway c дефолтными значениями")
   @AllureId("400001")
   @Tag("GraphQL")
-  @ApiLogin(user = @GenerateUser)
+  @ApiLogin(user = @GenerateUser(
+      categories = @GenerateCategory("Бар")
+  ))
   void currentUserInfoShouldReceived(@User UserJson user,
                                      @Token String bearerToken) throws Exception {
     ApolloCall<CurrentUserQuery.Data> apolloCall = apolloClient.query(new CurrentUserQuery())
@@ -52,8 +53,8 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
     step("Check that response contains username", () ->
         assertEquals(user.username(), userGql.username)
     );
-    step("Check that response contains default currency (RUB)", () ->
-        assertEquals(CurrencyValues.RUB.name(), userGql.currency.rawValue)
+    step("Check that response contains category", () ->
+        assertEquals(user.testData().categories().getFirst().name(), userGql.categories.getFirst().name)
     );
   }
 
@@ -65,25 +66,21 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
   void updatedUserInfoShouldReceived(@User UserJson user,
                                      @Token String bearerToken) throws Exception {
     ApolloCall<UpdateUserMutation.Data> apolloCall = apolloClient.mutation(new UpdateUserMutation(
-            UpdateUserInfoInput.builder()
+            UserInput.builder()
                 .fullname("Pizzly Pizzlyvich")
-                .currency(EUR)
                 .build()
         ))
         .addHttpHeader("Authorization", bearerToken);
 
     final ApolloResponse<UpdateUserMutation.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
     final UpdateUserMutation.Data responseData = response.dataOrThrow();
-    final UpdateUserMutation.UpdateUser userGql = responseData.updateUser;
+    final UpdateUserMutation.User userGql = responseData.user;
 
     step("Check that response contains ID (GUID)", () ->
         assertTrue(userGql.id.matches(ID_REGEXP))
     );
     step("Check that response contains username", () ->
         assertEquals(user.username(), userGql.username)
-    );
-    step("Check that response contains updated currency (EUR)", () ->
-        assertEquals(CurrencyValues.EUR.name(), userGql.currency.rawValue)
     );
     step("Check that response contains updated fullname (Pizzly Pizzlyvich)", () ->
         assertEquals("Pizzly Pizzlyvich", userGql.fullname)
@@ -99,12 +96,12 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
       @GenerateUser
   })
   void notEmptyUsersListShouldReceived(@Token String bearerToken) throws Exception {
-    ApolloCall<UsersQuery.Data> apolloCall = apolloClient.query(new UsersQuery())
+    ApolloCall<AllPeopleQuery.Data> apolloCall = apolloClient.query(new AllPeopleQuery())
         .addHttpHeader("Authorization", bearerToken);
 
-    final ApolloResponse<UsersQuery.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
-    final UsersQuery.Data responseData = response.dataOrThrow();
-    final List<UsersQuery.User> userGql = responseData.users;
+    final ApolloResponse<AllPeopleQuery.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
+    final AllPeopleQuery.Data responseData = response.dataOrThrow();
+    final List<AllPeopleQuery.Edge> userGql = responseData.user.allPeople.edges;
     step("Check that all users list is not empty", () ->
         assertFalse(userGql.isEmpty())
     );

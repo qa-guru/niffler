@@ -3,6 +3,7 @@ package guru.qa.niffler.service;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import graphql.schema.DataFetchingEnvironment;
+import guru.qa.niffler.ex.IllegalGqlFieldAccessException;
 import guru.qa.niffler.ex.TooManySubQueriesException;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -16,7 +17,7 @@ public class GraphQlExceptionResolver extends DataFetcherExceptionResolverAdapte
   @Override
   @Nullable
   protected GraphQLError resolveToSingleError(@Nonnull Throwable ex, @Nonnull DataFetchingEnvironment env) {
-    if (ex instanceof TooManySubQueriesException) {
+    if (ex instanceof TooManySubQueriesException || ex instanceof IllegalGqlFieldAccessException) {
       return GraphqlErrorBuilder.newError()
           .errorType(ErrorType.BAD_REQUEST)
           .message(ex.getMessage())

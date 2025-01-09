@@ -8,7 +8,7 @@ import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.model.rest.FriendState;
+import guru.qa.niffler.model.rest.FriendshipStatus;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static guru.qa.niffler.model.rest.FriendState.INVITE_RECEIVED;
+import static guru.qa.niffler.model.rest.FriendshipStatus.INVITE_RECEIVED;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -56,19 +56,19 @@ public class GatewayFriendsRestTest extends BaseRestTest {
         assertEquals(2, friends.size())
     );
     step("Check sorting by status", () ->
-        assertEquals(INVITE_RECEIVED, friends.getFirst().friendState())
+        assertEquals(INVITE_RECEIVED, friends.getFirst().friendshipStatus())
     );
 
     final var foundedInvitation = friends.getFirst();
     final var foundedFriend = friends.getLast();
 
     step("Check friend in response", () -> {
-      assertSame(FriendState.FRIEND, foundedFriend.friendState());
+      assertSame(FriendshipStatus.FRIEND, foundedFriend.friendshipStatus());
       assertEquals(testFriend.id(), foundedFriend.id());
       assertEquals(testFriend.username(), foundedFriend.username());
     });
     step("Check income invitation in response", () -> {
-      assertSame(FriendState.INVITE_RECEIVED, foundedInvitation.friendState());
+      assertSame(FriendshipStatus.INVITE_RECEIVED, foundedInvitation.friendshipStatus());
       assertEquals(incomeInvitation.id(), foundedInvitation.id());
       assertEquals(incomeInvitation.username(), foundedInvitation.username());
     });
@@ -100,7 +100,7 @@ public class GatewayFriendsRestTest extends BaseRestTest {
     final var foundedFriend = friends.getFirst();
 
     step("Check friend in response", () -> {
-      assertSame(FriendState.FRIEND, foundedFriend.friendState());
+      assertSame(FriendshipStatus.FRIEND, foundedFriend.friendshipStatus());
       assertEquals(testFriend.id(), foundedFriend.id());
       assertEquals(testFriend.username(), foundedFriend.username());
     });

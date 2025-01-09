@@ -79,6 +79,7 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
     if (friends.handleAnnotation() && friends.count() > 0) {
       for (int i = 0; i < friends.count(); i++) {
         UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
+        createCategoriesIfPresent(friends.categories(), friend);
         userdataClient.sendInvitation(createdUser.username(), friend.username());
         userdataClient.acceptInvitation(friend.username(), createdUser.username());
         createdUser.testData().friends().add(friend);

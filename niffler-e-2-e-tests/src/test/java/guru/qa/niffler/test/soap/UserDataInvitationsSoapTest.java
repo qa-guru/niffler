@@ -10,8 +10,8 @@ import io.qameta.allure.Epic;
 import jaxb.userdata.AcceptInvitationRequest;
 import jaxb.userdata.AllUsersRequest;
 import jaxb.userdata.DeclineInvitationRequest;
-import jaxb.userdata.FriendState;
 import jaxb.userdata.FriendsRequest;
+import jaxb.userdata.FriendshipStatus;
 import jaxb.userdata.SendInvitationRequest;
 import jaxb.userdata.UserResponse;
 import jaxb.userdata.UsersResponse;
@@ -54,7 +54,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
 
     step("Check friend in response", () -> {
       assertEquals(incomeInvitationUser.username(), friend.getUser().getUsername());
-      assertSame(FriendState.FRIEND, friend.getUser().getFriendState());
+      assertSame(FriendshipStatus.FRIEND, friend.getUser().getFriendshipStatus());
     });
 
     step("Check that friends present in /friends request for both users", () -> {
@@ -67,8 +67,8 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
                   "Current user should have friend after accepting"
               ),
               () -> assertEquals(
-                  FriendState.FRIEND,
-                  currentUserResponse.getUser().getFirst().getFriendState(),
+                  FriendshipStatus.FRIEND,
+                  currentUserResponse.getUser().getFirst().getFriendshipStatus(),
                   "Current user should have friend after accepting"
               ),
               () -> assertEquals(
@@ -77,8 +77,8 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
                   "Target user should have friend after accepting"
               ),
               () -> assertEquals(
-                  FriendState.FRIEND,
-                  targetUserResponse.getUser().getFirst().getFriendState(),
+                  FriendshipStatus.FRIEND,
+                  targetUserResponse.getUser().getFirst().getFriendshipStatus(),
                   "Target user should have friend after accepting"
               )
           );
@@ -106,7 +106,7 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
 
     step("Check declined friend in response", () -> {
       assertEquals(incomeInvitationUser.username(), declinedFriend.getUser().getUsername());
-      assertSame(FriendState.VOID, declinedFriend.getUser().getFriendState());
+      assertSame(FriendshipStatus.VOID, declinedFriend.getUser().getFriendshipStatus());
     });
 
     step("Check that friends request & income invitation removed for both users", () ->
@@ -117,11 +117,11 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
                     .isEmpty(),
                 "Current user should not have income invitations after declining"),
             () -> assertEquals(
-                FriendState.VOID,
+                FriendshipStatus.VOID,
                 wsClient.allUsersRequest(allUsersRequest(incomeInvitationUser.username(), null))
                     .getUser()
                     .getFirst()
-                    .getFriendState(),
+                    .getFriendshipStatus(),
                 "Inviter should not have outcome invitations after declining"
             ),
             () -> assertTrue(
@@ -155,17 +155,17 @@ public class UserDataInvitationsSoapTest extends BaseSoapTest {
 
     step("Check invitation in response", () -> {
       assertEquals(friendWillBeAdded, targetUserResponse.getUser().getUsername());
-      assertEquals(FriendState.INVITE_SENT, targetUserResponse.getUser().getFriendState());
+      assertEquals(FriendshipStatus.INVITE_SENT, targetUserResponse.getUser().getFriendshipStatus());
     });
 
     step("Check that friends request & income invitation present for both users", () ->
         Assertions.assertAll(
             () -> assertEquals(
-                FriendState.INVITE_SENT,
+                FriendshipStatus.INVITE_SENT,
                 wsClient.allUsersRequest(allUsersRequest(currentUser, null))
                     .getUser()
                     .getFirst()
-                    .getFriendState(),
+                    .getFriendshipStatus(),
                 "Current user should have outcome invitation after adding"),
             () -> assertEquals(
                 1,

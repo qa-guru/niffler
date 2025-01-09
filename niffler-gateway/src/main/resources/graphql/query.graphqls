@@ -1,7 +1,118 @@
+scalar Date
+
 type Query {
-    categories: [Category!]!
-    currencies: [Currency!]!
-    users: [User!]!
+    session: Session!
+    spend(id: ID!): Spend!
+    spendForm: SpendForm!
     user: User!
-    spends(filterPeriod: FilterPeriod, filterCurrency: CurrencyValues): [Spend!]!
+    spends(page:Int, size:Int, searchQuery:String, filterPeriod: FilterPeriod, filterCurrency: CurrencyValues): SpendConnection
+    stat(filterPeriod: FilterPeriod, filterCurrency: CurrencyValues, statCurrency: CurrencyValues): Statistic!
+}
+
+type Mutation {
+    user(input: UserInput!): User!
+    category(input: CategoryInput!): Category!
+    spend(input: SpendInput!): Spend!
+    deleteSpend(ids: [ID!]!): [ID!]!
+    friendship(input: FriendshipInput!): User!
+}
+
+type Session {
+    username: String
+    issuedAt: Date
+    expiresAt: Date
+}
+
+type User {
+    id: ID!
+    username: String!
+    fullname: String
+    photo: String
+    photoSmall: String
+    friendshipStatus: FriendshipStatus
+    categories: [Category!]!
+    friends(page:Int, size:Int, searchQuery:String): UserConnection
+    allPeople(page:Int, size:Int, searchQuery:String): UserConnection
+}
+
+input UserInput {
+    fullname: String
+    photo: String
+}
+
+input FriendshipInput {
+    username: String!
+    action: FriendshipAction!
+}
+
+enum FriendshipAction {
+    ADD, ACCEPT, REJECT, DELETE
+}
+
+enum FriendshipStatus {
+    INVITE_SENT, INVITE_RECEIVED, FRIEND
+}
+
+type Spend {
+    id: ID!
+    spendDate: Date!
+    category: Category!
+    currency: CurrencyValues!
+    amount: Float!
+    description: String
+    username: String
+}
+
+type SpendForm {
+    currencies: [Currency!]!
+    categories: [Category!]!
+}
+
+input SpendInput {
+    id: ID
+    spendDate: Date!
+    category: String!
+    currency: CurrencyValues!
+    amount: Float!
+    description: String
+}
+
+type Category {
+    id: ID!
+    name: String!
+    username: String!
+    archived: Boolean!
+}
+
+input CategoryInput {
+    id: ID!
+    name: String!
+    archived: Boolean!
+}
+
+type Statistic {
+    total: Float!
+    currency: CurrencyValues!
+    statByCategories: [SumByCategory!]!
+}
+
+type SumByCategory {
+    categoryName: String!
+    currency: CurrencyValues!
+    sum: Float!
+    firstSpendDate: Date!
+    lastSpendDate: Date!
+}
+
+type Currency {
+    currency: CurrencyValues!
+    currencyRate: Float!
+}
+
+enum FilterPeriod {
+    TODAY, WEEK, MONTH
+}
+
+enum CurrencyValues {
+    RUB, USD, EUR, KZT
 }

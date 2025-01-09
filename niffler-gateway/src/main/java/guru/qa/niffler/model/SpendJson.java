@@ -1,8 +1,7 @@
 package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.niffler.model.graphql.SpendInput;
-import guru.qa.niffler.model.graphql.UpdateSpendInput;
+import guru.qa.niffler.model.gql.SpendGqlInput;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.DecimalMin;
@@ -51,11 +50,11 @@ public record SpendJson(
     );
   }
 
-  public static SpendJson fromSpendInput(@Nonnull SpendInput input) {
+  public static SpendJson fromSpendInput(@Nonnull SpendGqlInput input) {
     return fromSpendInput(input, null);
   }
 
-  public static SpendJson fromSpendInput(@Nonnull SpendInput input, @Nullable String username) {
+  public static SpendJson fromSpendInput(@Nonnull SpendGqlInput input, @Nullable String username) {
     return new SpendJson(
         null,
         input.spendDate(),
@@ -67,11 +66,11 @@ public record SpendJson(
     );
   }
 
-  public static @Nonnull SpendJson fromUpdateSpendInput(@Nonnull UpdateSpendInput input) {
+  public static @Nonnull SpendJson fromUpdateSpendInput(@Nonnull SpendGqlInput input) {
     return fromUpdateSpendInput(input, null);
   }
 
-  public static @Nonnull SpendJson fromUpdateSpendInput(@Nonnull UpdateSpendInput input, @Nullable String username) {
+  public static @Nonnull SpendJson fromUpdateSpendInput(@Nonnull SpendGqlInput input, @Nullable String username) {
     return new SpendJson(
         input.id(),
         input.spendDate(),

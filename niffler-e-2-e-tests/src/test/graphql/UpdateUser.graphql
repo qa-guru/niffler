@@ -1,9 +1,8 @@
-mutation UpdateUser($input: UpdateUserInfoInput!) {
-    updateUser(input: $input) {
+mutation UpdateUser($input: UserInput!) {
+    user(input: $input) {
         id
         username
         fullname
         photo
-        currency
     }
 }

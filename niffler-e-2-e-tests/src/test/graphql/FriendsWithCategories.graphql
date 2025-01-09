@@ -1,0 +1,22 @@
+query FriendsWithCategories {
+    user {
+        username
+        categories {
+            name
+        }
+        friends(page: 0, size: 10) {
+            edges {
+                node {
+                    username
+                    categories {
+                        name
+                    }
+                }
+            }
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+            }
+        }
+    }
+}
