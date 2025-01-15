@@ -1,4 +1,4 @@
-package guru.qa.niffler.service.api;
+package guru.qa.niffler.service.utils;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

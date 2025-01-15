@@ -4,6 +4,7 @@ import guru.qa.niffler.ex.NoRestResponseException;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.model.page.RestPage;
 import guru.qa.niffler.service.UserDataClient;
+import guru.qa.niffler.service.utils.HttpQueryPaginationAndSort;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +81,7 @@ public class RestUserDataClient implements UserDataClient {
   public Page<UserJson> allUsers(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
     ResponseEntity<RestPage<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v2/users/all?username={username}&searchQuery={searchQuery}"
-            + new HttpQueryPaginationAndSort(pageable),
+        + new HttpQueryPaginationAndSort(pageable),
         HttpMethod.GET,
         null,
         new ParameterizedTypeReference<RestPage<UserJson>>() {
@@ -113,7 +114,7 @@ public class RestUserDataClient implements UserDataClient {
   public Page<UserJson> friends(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
     ResponseEntity<RestPage<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v2/friends/all?username={username}&searchQuery={searchQuery}"
-            + new HttpQueryPaginationAndSort(pageable),
+        + new HttpQueryPaginationAndSort(pageable),
         HttpMethod.GET,
         null,
         new ParameterizedTypeReference<RestPage<UserJson>>() {

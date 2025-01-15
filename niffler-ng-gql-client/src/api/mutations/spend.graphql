@@ -1,0 +1,18 @@
+mutation UpdateSpend($input: SpendInput!) {
+    spend(input: $input) {
+        id
+        spendDate
+        category {
+            id
+            name
+            archived
+        }
+        currency
+        amount
+        description
+    }
+}
+
+mutation DeleteSpends($ids: [ID!]!) {
+    deleteSpend(ids: $ids)
+}

@@ -3,9 +3,10 @@ scalar Date
 type Query {
     session: Session!
     spend(id: ID!): Spend!
-    spendForm: SpendForm!
+    currencies: [Currency!]!
     user: User!
-    spends(page:Int, size:Int, searchQuery:String, filterPeriod: FilterPeriod, filterCurrency: CurrencyValues): SpendConnection
+    allPeople(page:Int!, size:Int!, sort:[String!], searchQuery:String): UserConnection
+    spends(page:Int!, size:Int!, sort:[String!], searchQuery:String, filterPeriod: FilterPeriod, filterCurrency: CurrencyValues): SpendConnection
     stat(filterPeriod: FilterPeriod, filterCurrency: CurrencyValues, statCurrency: CurrencyValues): Statistic!
 }
 
@@ -31,8 +32,7 @@ type User {
     photoSmall: String
     friendshipStatus: FriendshipStatus
     categories: [Category!]!
-    friends(page:Int, size:Int, searchQuery:String): UserConnection
-    allPeople(page:Int, size:Int, searchQuery:String): UserConnection
+    friends(page:Int!, size:Int!, sort:[String!], searchQuery:String): UserConnection
 }
 
 input UserInput {
@@ -63,15 +63,10 @@ type Spend {
     username: String
 }
 
-type SpendForm {
-    currencies: [Currency!]!
-    categories: [Category!]!
-}
-
 input SpendInput {
     id: ID
     spendDate: Date!
-    category: String!
+    category: CategoryInput!
     currency: CurrencyValues!
     amount: Float!
     description: String
@@ -85,7 +80,7 @@ type Category {
 }
 
 input CategoryInput {
-    id: ID!
+    id: ID
     name: String!
     archived: Boolean!
 }

@@ -42,14 +42,7 @@ public class SpendMutationController {
   public CategoryJson category(@AuthenticationPrincipal Jwt principal,
                                @Argument @Valid CategoryGqlInput input) {
     final String username = principal.getClaim("sub");
-
-    final CategoryJson categoryJson = new CategoryJson(
-        input.id(),
-        input.name(),
-        username,
-        input.archived()
-    );
-
+    final CategoryJson categoryJson = CategoryJson.fromCategoryInput(input, username);
     return input.id() == null
         ? restSpendClient.addCategory(categoryJson)
         : restSpendClient.updateCategory(categoryJson);

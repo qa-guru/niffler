@@ -8,10 +8,10 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.gql.UserGql;
 import guru.qa.niffler.service.UserDataClient;
 import guru.qa.niffler.service.api.RestSpendClient;
+import guru.qa.niffler.service.utils.GqlQueryPaginationAndSort;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -36,26 +36,15 @@ public class UserQueryController {
     this.restSpendClient = restSpendClient;
   }
 
-  @SchemaMapping(typeName = "User", field = "allPeople")
-  public Slice<UserGql> allPeople(UserGql user,
-                                  @Argument int page,
-                                  @Argument int size,
-                                  @Argument @Nullable String searchQuery) {
-    return userDataClient.allUsers(
-        user.username(),
-        PageRequest.of(page, size),
-        searchQuery
-    ).map(UserGql::fromUserJson);
-  }
-
   @SchemaMapping(typeName = "User", field = "friends")
   public Slice<UserGql> friends(UserGql user,
                                 @Argument int page,
                                 @Argument int size,
+                                @Argument @Nullable List<String> sort,
                                 @Argument @Nullable String searchQuery) {
     return userDataClient.friends(
         user.username(),
-        PageRequest.of(page, size),
+        new GqlQueryPaginationAndSort(page, size, sort).pageable(),
         searchQuery
     ).map(UserGql::fromUserJson);
   }
@@ -71,9 +60,25 @@ public class UserQueryController {
   }
 
   @QueryMapping
+  public Slice<UserGql> allPeople(@AuthenticationPrincipal Jwt principal,
+                                  @Argument int page,
+                                  @Argument int size,
+                                  @Argument @Nullable List<String> sort,
+                                  @Argument @Nullable String searchQuery,
+                                  @Nonnull DataFetchingEnvironment env) {
+    checkSubQueries(env, 2, "friends");
+    final String username = principal.getClaim("sub");
+    return userDataClient.allUsers(
+        username,
+        new GqlQueryPaginationAndSort(page, size, sort).pageable(),
+        searchQuery
+    ).map(UserGql::fromUserJson);
+  }
+
+  @QueryMapping
   public UserGql user(@AuthenticationPrincipal Jwt principal,
                       @Nonnull DataFetchingEnvironment env) {
-    checkSubQueries(env, 2, "friends", "allPeople");
+    checkSubQueries(env, 2, "friends");
     final String username = principal.getClaim("sub");
     return UserGql.fromUserJson(
         userDataClient.currentUser(username)

@@ -101,7 +101,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
 
     final ApolloResponse<AllPeopleQuery.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
     final AllPeopleQuery.Data responseData = response.dataOrThrow();
-    final List<AllPeopleQuery.Edge> userGql = responseData.user.allPeople.edges;
+    final List<AllPeopleQuery.Edge> userGql = responseData.allPeople.edges;
     step("Check that all users list is not empty", () ->
         assertFalse(userGql.isEmpty())
     );

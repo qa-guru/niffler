@@ -184,7 +184,7 @@ User-MacBook-Pro niffler % cd niffler-ng-client
 или для GraphQL **_(временно недоступно)_**:
 
 ```posh
-User-MacBook-Pro niffler % cd niffler-ng-client-gql
+User-MacBook-Pro niffler % cd niffler-ng-gql-client
 ```
 
 #### 2. Запустить фронтенд в режиме preview (сначала обновить зависимости)
@@ -332,7 +332,7 @@ chmod +x init-database.sh
 #### 1. Войти в свою УЗ на https://hub.docker.com/ и последовательно создать публичные репозитории
 
 - niffler-ng-client
-- niffler-ng-client-gql
+- niffler-ng-gql-client
 - niffler-userdata
 - niffler-spend
 - niffler-gateway

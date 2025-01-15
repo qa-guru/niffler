@@ -1,0 +1,26 @@
+.custom-input {
+    font: inherit;
+    letter-spacing: inherit;
+    width: 100%;
+    padding: 12px 16px;
+    display: block;
+    margin: 0;
+    background-color: #FAFAFD;
+    border-radius: 8px;
+    border: 1px solid #E4E6F1;
+    box-sizing: border-box;
+}
+
+.custom-input:focus {
+    outline: #2941CC solid 2px;
+    outline-offset: -1px;
+}
+
+.custom-input--error {
+    border: 1px solid #d32f2f;
+}
+
+.input__helper-text {
+    color: #d32f2f;
+    font-size: 0.9rem;
+}

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '2.1.0'
+version = '2.1.1'
 
 dependencies {
     implementation project(':niffler-grpc-common')
