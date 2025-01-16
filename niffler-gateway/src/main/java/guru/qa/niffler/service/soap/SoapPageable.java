@@ -26,10 +26,10 @@ public class SoapPageable {
   }
 
   private @Nonnull List<Sort> sort() {
-    List<jaxb.userdata.Sort> result = new ArrayList<>();
+    List<Sort> result = new ArrayList<>();
     if (!pageable.getSort().isEmpty()) {
       for (org.springframework.data.domain.Sort.Order order : pageable.getSort()) {
-        jaxb.userdata.Sort sort = new jaxb.userdata.Sort();
+        Sort sort = new Sort();
         sort.setProperty(order.getProperty());
         sort.setDirection(Direction.valueOf(order.getDirection().name()));
         result.add(sort);

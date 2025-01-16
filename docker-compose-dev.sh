@@ -9,7 +9,7 @@ echo '### Java version ###'
 java --version
 
 if [[ "$1" = "gql" ]]; then
-  export FRONT="niffler-ng-client-gql"
+  export FRONT="niffler-ng-gql-client"
 else
   export FRONT="niffler-ng-client"
 fi

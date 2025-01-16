@@ -1,0 +1,34 @@
+query Spends($page:Int!, $size:Int!, $sort: [String!], $searchQuery:String, $filterPeriod: FilterPeriod, $filterCurrency: CurrencyValues) {
+    spends(page: $page, size: $size, sort: $sort, searchQuery: $searchQuery, filterPeriod: $filterPeriod, filterCurrency: $filterCurrency) {
+        edges {
+            node {
+                id
+                spendDate
+                category {
+                    id
+                    name
+                }
+                currency
+                amount
+                description
+            }
+        }
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+        }
+    }
+}
+
+query Spend($id: ID!) {
+    spend(id: $id) {
+        id
+        spendDate
+        category {
+            name
+        }
+        currency
+        amount
+        description
+    }
+}

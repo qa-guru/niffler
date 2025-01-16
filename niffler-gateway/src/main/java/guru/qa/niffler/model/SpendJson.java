@@ -3,7 +3,6 @@ package guru.qa.niffler.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.model.gql.SpendGqlInput;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -50,31 +49,11 @@ public record SpendJson(
     );
   }
 
-  public static SpendJson fromSpendInput(@Nonnull SpendGqlInput input) {
-    return fromSpendInput(input, null);
-  }
-
-  public static SpendJson fromSpendInput(@Nonnull SpendGqlInput input, @Nullable String username) {
-    return new SpendJson(
-        null,
-        input.spendDate(),
-        input.category(),
-        input.currency(),
-        input.amount(),
-        input.description(),
-        username
-    );
-  }
-
-  public static @Nonnull SpendJson fromUpdateSpendInput(@Nonnull SpendGqlInput input) {
-    return fromUpdateSpendInput(input, null);
-  }
-
-  public static @Nonnull SpendJson fromUpdateSpendInput(@Nonnull SpendGqlInput input, @Nullable String username) {
+  public static SpendJson fromSpendInput(@Nonnull SpendGqlInput input, @Nonnull String username) {
     return new SpendJson(
         input.id(),
         input.spendDate(),
-        input.category(),
+        CategoryJson.fromCategoryInput(input.category(), username),
         input.currency(),
         input.amount(),
         input.description(),

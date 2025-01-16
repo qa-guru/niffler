@@ -1,0 +1,60 @@
+query CurrentUser {
+    user {
+        id
+        username
+        fullname
+        photo
+        categories {
+            id
+            name
+            archived
+        }
+    }
+}
+
+query Categories {
+    user {
+        categories {
+            id
+            name
+            archived
+        }
+    }
+}
+query Friends($page:Int!, $size:Int!, $sort: [String!], $searchQuery:String) {
+    user {
+        friends(page: $page, size: $size, sort: $sort, searchQuery: $searchQuery) {
+            edges {
+                node {
+                    id
+                    username
+                    photoSmall
+                    fullname
+                    friendshipStatus
+                }
+            }
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+            }
+        }
+    }
+}
+
+query AllPeople($page:Int!, $size:Int!, $sort: [String!], $searchQuery:String) {
+    allPeople(page: $page, size: $size, sort: $sort, searchQuery: $searchQuery) {
+        edges {
+            node {
+                id
+                username
+                photoSmall
+                fullname
+                friendshipStatus
+            }
+        }
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+        }
+    }
+}

@@ -1,16 +1,14 @@
 package guru.qa.niffler.controller.graphql;
 
-import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.model.gql.SpendFormGql;
 import guru.qa.niffler.service.api.GrpcCurrencyClient;
 import guru.qa.niffler.service.api.RestSpendClient;
+import guru.qa.niffler.service.utils.GqlQueryPaginationAndSort;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -38,12 +36,13 @@ public class SpendQueryController {
   public Slice<SpendJson> spends(@AuthenticationPrincipal Jwt principal,
                                  @Argument int page,
                                  @Argument int size,
+                                 @Argument @Nullable List<String> sort,
                                  @Argument @Nullable String searchQuery,
-                                 @Argument DataFilterValues filterPeriod,
-                                 @Argument CurrencyValues filterCurrency) {
+                                 @Argument @Nullable DataFilterValues filterPeriod,
+                                 @Argument @Nullable CurrencyValues filterCurrency) {
     return restSpendClient.getSpends(
         principal.getClaim("sub"),
-        PageRequest.of(page, size),
+        new GqlQueryPaginationAndSort(page, size, sort).pageable(),
         filterPeriod,
         filterCurrency,
         searchQuery
@@ -61,13 +60,7 @@ public class SpendQueryController {
   }
 
   @QueryMapping
-  public SpendFormGql spendForm(@AuthenticationPrincipal Jwt principal) {
-    final String username = principal.getClaim("sub");
-    final List<CurrencyJson> allCurrencies = grpcCurrencyClient.getAllCurrencies();
-    final List<CategoryJson> categories = restSpendClient.getCategories(username, true);
-    return new SpendFormGql(
-        allCurrencies,
-        categories
-    );
+  public List<CurrencyJson> currencies() {
+    return grpcCurrencyClient.getAllCurrencies();
   }
 }
