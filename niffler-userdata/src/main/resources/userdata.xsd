@@ -94,7 +94,7 @@
 
     <!-- RESPONSE TYPES -->
 
-    <xs:element name="UserResponse">
+    <xs:element name="userResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="user" type="tns:user"/>
@@ -102,7 +102,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="UsersResponse">
+    <xs:element name="usersResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="user" type="tns:user" minOccurs="0" maxOccurs="unbounded">

@@ -99,7 +99,7 @@
 
             <!-- RESPONSE TYPES -->
 
-            <xs:element name="UserResponse">
+            <xs:element name="userResponse">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="user" type="tns:user"/>
@@ -107,7 +107,7 @@
                 </xs:complexType>
             </xs:element>
 
-            <xs:element name="UsersResponse">
+            <xs:element name="usersResponse">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="tns:user">
@@ -203,8 +203,8 @@
         <wsdl:part element="tns:sendInvitationRequest" name="sendInvitationRequest">
         </wsdl:part>
     </wsdl:message>
-    <wsdl:message name="UserResponse">
-        <wsdl:part element="tns:UserResponse" name="UserResponse">
+    <wsdl:message name="userResponse">
+        <wsdl:part element="tns:userResponse" name="userResponse">
         </wsdl:part>
     </wsdl:message>
     <wsdl:message name="removeFriendRequest">
@@ -215,8 +215,8 @@
         <wsdl:part element="tns:allUsersPageRequest" name="allUsersPageRequest">
         </wsdl:part>
     </wsdl:message>
-    <wsdl:message name="UsersResponse">
-        <wsdl:part element="tns:UsersResponse" name="UsersResponse">
+    <wsdl:message name="usersResponse">
+        <wsdl:part element="tns:usersResponse" name="usersResponse">
         </wsdl:part>
     </wsdl:message>
     <wsdl:message name="currentUserRequest">
@@ -253,7 +253,7 @@
             </wsdl:input>
         </wsdl:operation>
         <wsdl:operation name="User">
-            <wsdl:output message="tns:UserResponse" name="UserResponse">
+            <wsdl:output message="tns:userResponse" name="userResponse">
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="removeFriend">
@@ -265,7 +265,7 @@
             </wsdl:input>
         </wsdl:operation>
         <wsdl:operation name="Users">
-            <wsdl:output message="tns:UsersResponse" name="UsersResponse">
+            <wsdl:output message="tns:usersResponse" name="usersResponse">
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="currentUser">
@@ -319,7 +319,7 @@
         </wsdl:operation>
         <wsdl:operation name="User">
             <soap:operation soapAction=""/>
-            <wsdl:output name="UserResponse">
+            <wsdl:output name="userResponse">
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
@@ -337,7 +337,7 @@
         </wsdl:operation>
         <wsdl:operation name="Users">
             <soap:operation soapAction=""/>
-            <wsdl:output name="UsersResponse">
+            <wsdl:output name="usersResponse">
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
