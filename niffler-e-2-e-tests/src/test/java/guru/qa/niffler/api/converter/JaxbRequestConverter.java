@@ -31,14 +31,14 @@ final class JaxbRequestConverter<T> implements Converter<T, RequestBody> {
   @Override
   public @Nonnull RequestBody convert(@Nonnull final T value) throws IOException {
     try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-      SOAPMessage soapMessage = MessageFactory.newInstance().createMessage();
-      Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+      final SOAPMessage soapMessage = MessageFactory.newInstance().createMessage();
+      final Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 
-      Marshaller marshaller = context.createMarshaller();
+      final Marshaller marshaller = context.createMarshaller();
       marshaller.marshal(value, document);
 
       soapMessage.getSOAPBody().addDocument(document);
-      SOAPEnvelope envelope = soapMessage.getSOAPPart().getEnvelope();
+      final SOAPEnvelope envelope = soapMessage.getSOAPPart().getEnvelope();
       envelope.addNamespaceDeclaration(NAMESPACE_PREFIX, messageNamespace);
       soapMessage.writeTo(outputStream);
 

@@ -12,8 +12,9 @@ public abstract class BaseGrpcTest {
 
   protected static final Config CFG = Config.getConfig();
 
-  protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceStub stub;
+  protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceStub asyncStub;
   protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub blockingStub;
+  protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceFutureStub futureAsyncStub;
   protected static final Channel channel;
 
   static {
@@ -23,7 +24,8 @@ public abstract class BaseGrpcTest {
         .usePlaintext()
         .build();
 
-    stub = NifflerCurrencyServiceGrpc.newStub(channel);
+    asyncStub = NifflerCurrencyServiceGrpc.newStub(channel);
     blockingStub = NifflerCurrencyServiceGrpc.newBlockingStub(channel);
+    futureAsyncStub = NifflerCurrencyServiceGrpc.newFutureStub(channel);
   }
 }
