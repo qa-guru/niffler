@@ -78,7 +78,7 @@ services:
 
   frontend.niffler.dc:
     container_name: frontend.niffler.dc
-    image: ${PREFIX}/${FRONT_IMAGE}-${PROFILE}:${FRONT_VER}
+    image: ${PREFIX}/niffler-ng-client-${PROFILE}:${FRONT_VER}
     pull_policy: always
     ports:
       - 8000:80

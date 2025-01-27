@@ -93,7 +93,6 @@ jobs:
           echo "SPEND_VER=${{ needs.collect-versions.outputs.spend-ver }}" >> $GITHUB_ENV
           echo "USERDATA_VER=${{ needs.collect-versions.outputs.userdata-ver }}" >> $GITHUB_ENV
           echo "FRONT_VER=${{ needs.collect-versions.outputs.front-ver }}" >> $GITHUB_ENV
-          echo "FRONT_IMAGE=niffler-ng-client" >> $GITHUB_ENV
 
       - name: Summary info
         run: |
@@ -102,7 +101,7 @@ jobs:
           echo "### niffler-gateway version will be used: ${{ env.PREFIX }}/niffler-gateway-${{ env.PROFILE }}:${{ env.GATEWAY_VER }}"
           echo "### niffler-spend version will be used: ${{ env.PREFIX }}/niffler-spend-${{ env.PROFILE }}:${{ env.SPEND_VER }}"
           echo "### niffler-userdata version will be used: ${{ env.PREFIX }}/niffler-userdata-${{ env.PROFILE }}:${{ env.USERDATA_VER }}"
-          echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
+          echo "### niffler-front version will be used: ${{ env.PREFIX }}/niffler-ng-client-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
           echo "### java version ###"
           java -version
 
@@ -188,7 +187,7 @@ jobs:
         working-directory: ./niffler-ng-client
         run: |
           pwd
-          IMAGE_TAG="${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}"
+          IMAGE_TAG="${{ env.PREFIX }}/niffler-ng-client-${{ env.PROFILE }}"
           docker build --build-arg NPM_COMMAND=build:staging --build-arg VERSION=${{ env.FRONT_VER }} -t ${IMAGE_TAG}:${{ env.FRONT_VER }} -t ${IMAGE_TAG}:latest .
           docker push ${IMAGE_TAG}:${{ env.FRONT_VER }}
           docker push ${IMAGE_TAG}:latest

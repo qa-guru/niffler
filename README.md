@@ -259,18 +259,10 @@ User-MacBook-Pro niffler % vi /etc/hosts
 User-MacBook-Pro niffler % cd niffler
 ```
 
-#### 6. Запустить все сервисы, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
-
-для REST:
+#### 6. Запустить все сервисы
 
 ```posh
 User-MacBook-Pro  niffler % bash docker-compose-dev.sh
-```
-
-для GraphQL **_(временно недоступно)_**:
-
-```posh
-User-MacBook-Pro  niffler % bash docker-compose-dev.sh gql
 ```
 
 Текущая версия `docker-compose-dev.sh` **удалит все запущенные Docker контейнеры в системе**, поэтому если у вас есть
@@ -308,7 +300,7 @@ Build to Docker daemon failed, perhaps you should make sure your credentials for
 ```
 
 Если вы не можете подключиться к БД в docker, указывая верные login и password, то возможно у вас поднята другая база на
-том же порту 5432 .
+том же порту 5432.
 Это известная проблема, что Postgres в docker может стартануть при зянятом порту 5432, надо убедиться что у вас не
 поднят никакой другой Postgres на этом порту.
 
@@ -332,7 +324,6 @@ chmod +x init-database.sh
 #### 1. Войти в свою УЗ на https://hub.docker.com/ и последовательно создать публичные репозитории
 
 - niffler-ng-client
-- niffler-ng-gql-client
 - niffler-userdata
 - niffler-spend
 - niffler-gateway
@@ -355,18 +346,12 @@ chmod +x init-database.sh
 User-MacBook-Pro niffler % cd niffler
 ```
 
-#### 5. Собрать все имеджи, запушить и запустить niffler одной командой, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
+#### 5. Собрать все имеджи, запушить и запустить niffler одной командой:
 
 для REST:
 
 ```posh
 User-MacBook-Pro  niffler % bash docker-compose-dev.sh push
-```
-
-для GraphQL **_(временно недоступно)_**:
-
-```posh
-User-MacBook-Pro  niffler % bash docker-compose-dev.sh gql push 
 ```
 
 # Запуск e-2-e тестов в Docker network изолированно Niffler в докере:
@@ -377,22 +362,16 @@ User-MacBook-Pro  niffler % bash docker-compose-dev.sh gql push
 User-MacBook-Pro niffler % cd niffler
 ```
 
-#### 2. Запустить все сервисы и тесты, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
-
-для REST:
+#### 2. Запустить все сервисы и тесты:
 
 ```posh
 User-MacBook-Pro  niffler % bash docker-compose-e2e.sh
 ```
 
-для GraphQL:
-
-```posh
-User-MacBook-Pro  niffler % bash docker-compose-e2e.sh gql
-```
-
 #### 3. Selenoid UI доступен по адресу: http://localhost:9090/
 
-#### 4. Allure доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
+#### 5. Allure-ui доступен по адресу: http://localhost:5252/
+
+#### 4. Allure report доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
 
 <img src="/niffler-ng-client/src/assets/images/niffler-with-a-coin.png" width="250">
