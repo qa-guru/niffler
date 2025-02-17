@@ -2,6 +2,7 @@ package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.model.gql.SpendGqlInput;
+import guru.qa.niffler.validation.UnixEpochOrLater;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +16,7 @@ public record SpendJson(
     UUID id,
     @JsonProperty("spendDate")
     @NotNull(message = "Spend date can not be null")
-    @PastOrPresent(message = "Spend date must not be future")
+    @UnixEpochOrLater(message = "Spend date must not be future or less than 01.01.1970")
     Date spendDate,
     @JsonProperty("category")
     @NotNull(message = "Category can not be null")
