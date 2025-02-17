@@ -248,7 +248,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                                 openPickerIcon: CalendarIcon,
                             }}
                             value={formData.spendDate.value}
-                            shouldDisableDate={day => day.isAfter(dayjs())}
+                            shouldDisableDate={day => day.isBefore(dayjs('1970-01-01')) || day.isAfter(dayjs())}
                             onChange={newDate => setFormData({
                                 ...formData,
                                 spendDate: {...formData.spendDate, value: dayjs(newDate)}

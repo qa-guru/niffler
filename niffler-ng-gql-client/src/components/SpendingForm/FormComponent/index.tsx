@@ -247,7 +247,7 @@ export const FormComponent: FC<FormComponentInterface> = ({
                                 openPickerIcon: CalendarIcon,
                             }}
                             value={dayjs(formData.spendDate.value)}
-                            shouldDisableDate={day => dayjs(day).isAfter(dayjs())}
+                            shouldDisableDate={day => day.isBefore(dayjs('1970-01-01')) || dayjs(day).isAfter(dayjs())}
                             onChange={newDate => setFormData({
                                 ...formData,
                                 spendDate: {...formData.spendDate, value: dayjs(newDate)}
