@@ -54,6 +54,7 @@
 Во-первых, и в-главных, необходимо использовать [bash terminal](https://www.geeksforgeeks.org/working-on-git-bash/), а
 не powershell.
 [Полезное и короткое видео о git bash](https://www.youtube.com/watch?v=zM9Mb-otqww)
+Обязательно добавьте bash терминал в [качестве терминала в вашей IDE (IDEA, PyCharm)](https://stackoverflow.com/questions/20573213/embed-git-bash-in-pycharm-as-external-tool-and-work-with-it-in-pycharm-window-w)
 Во-вторых, если у вас что-то не работает - пишите в TG чат группы - будем вместе дополнять README, т.к. изначально
 проект разработан под nix
 
@@ -144,7 +145,7 @@ server started
 /usr/local/bin/docker-entrypoint.sh: /docker-entrypoint-initdb.d/init-database.sh: /bin/bash^M: bad interpreter: No such file or directory
 ```
 
-То необходимо выполнить следующие команды в каталоге /postgres :
+То необходимо выполнить следующие команды в каталоге /postgres/script :
 
 ```
 sed -i -e 's/\r$//' init-database.sh
@@ -181,7 +182,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.1+12 (build 21.0.1+12-LTS, mixed mode)
 User-MacBook-Pro niffler % cd niffler-ng-client
 ```
 
-или для GraphQL **_(временно недоступно)_**:
+или для GraphQL
 
 ```posh
 User-MacBook-Pro niffler % cd niffler-ng-gql-client
@@ -212,6 +213,27 @@ User-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.active=
 
 Или просто перейдя к main-классу приложения NifflerAuthApplication выбрать run в IDEA (предварительно удостовериться что
 выполнен предыдущий пункт)
+
+Если сервис не стартует с ошибкой:
+```posh
+FATAL: database "niffler-auth" does not exist
+```
+то необходимо проверить, было ли сообщение об автоматическом создании баз данныхз в логе контейнера с Postgres (niffler-all):
+```posh
+docker logs -f niffler-all
+... 
+Multiple database creation requested: niffler-auth,niffler-currency,niffler-spend,niffler-userdata"
+...
+```
+Если сообщения нет, то необходимо создать базы данных вручную (при этом, мы создаем только пустые БД, без таблиц):
+- Установить одну из программ для визуальной работы с Postgres. Например, PgAdmin, DBeaver или Datagrip.
+- Подключиться к БД postgres (host: localhost, port: 5432, user: postgres, pass: secret, database name: postgres) из PgAdmin и создать пустые БД микросервисов
+```sql
+   create database "niffler-userdata" with owner postgres;
+   create database "niffler-spend" with owner postgres;
+   create database "niffler-currency" with owner postgres;
+   create database "niffler-auth" with owner postgres;
+```
 
 #### 5  Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
 
