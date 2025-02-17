@@ -64,10 +64,6 @@ public class KafkaConsumer implements Runnable {
     running.set(false);
   }
 
-  @Nonnull
-  public static Map<String, UserJson> getMessages() {
-    return MESSAGES.getAsMap();
-  }
 
   @Nullable
   public static UserJson getMessage(@Nonnull String username) {
@@ -76,7 +72,7 @@ public class KafkaConsumer implements Runnable {
 
   @Nullable
   public static UserJson getMessage(@Nonnull String username, long timeoutMs) {
-    return MESSAGES.wait(username, timeoutMs);
+    return MESSAGES.get(username, timeoutMs);
   }
 
   @Nonnull
@@ -118,7 +114,7 @@ public class KafkaConsumer implements Runnable {
       UserJson userJson = Objects.requireNonNull(
           OM.readValue(recordValue, UserJson.class)
       );
-      MESSAGES.provide(userJson.username(), userJson);
+      MESSAGES.put(userJson.username(), userJson);
     } catch (JsonProcessingException e) {
       LOG.error("### Parse message fail", e);
     }
