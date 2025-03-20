@@ -38,6 +38,6 @@ public class UserV2Controller {
                                  @PageableDefault Pageable pageable,
                                  @RequestParam(required = false) String searchQuery) {
     String username = principal.getClaim("sub");
-    return userDataClient.allUsers(username, pageable, searchQuery);
+    return userDataClient.allUsersV2(username, pageable, searchQuery);
   }
 }

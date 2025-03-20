@@ -1,6 +1,8 @@
 package guru.qa.niffler.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.niffler.service.UserDataClient;
+import guru.qa.niffler.service.api.RestUserDataClient;
 import guru.qa.niffler.service.soap.SoapUserDataClient;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -10,14 +12,21 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.hateoas.config.HypermediaRestTemplateConfigurer;
+import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+import static java.util.Collections.singletonList;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 
 @Configuration
 public class NifflerGatewayServiceConfig {
@@ -27,12 +36,20 @@ public class NifflerGatewayServiceConfig {
 
   private final String nifflerUserdataBaseUri;
   private final String nifflerGatewayBaseUri;
+  private final String userdataClient;
 
   @Autowired
   public NifflerGatewayServiceConfig(@Value("${niffler-userdata.base-uri}") String nifflerUserdataBaseUri,
-                                     @Value("${niffler-gateway.base-uri}") String nifflerGatewayBaseUri) {
+                                     @Value("${niffler-gateway.base-uri}") String nifflerGatewayBaseUri,
+                                     @Value("${niffler-userdata.client}") String userdataClient) {
     this.nifflerUserdataBaseUri = nifflerUserdataBaseUri;
     this.nifflerGatewayBaseUri = nifflerGatewayBaseUri;
+    this.userdataClient = userdataClient;
+  }
+
+  @Bean
+  public RestTemplate restTemplate(HypermediaRestTemplateConfigurer configurer) {
+    return configurer.registerHypermediaTypes(new RestTemplate());
   }
 
   @Bean
@@ -43,18 +60,20 @@ public class NifflerGatewayServiceConfig {
   }
 
   @Bean
-  @ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "soap")
-  public UserDataClient userDataClient(Jaxb2Marshaller marshaller) {
-    SoapUserDataClient client = new SoapUserDataClient();
-    client.setDefaultUri(nifflerUserdataBaseUri + "/ws");
-    client.setMarshaller(marshaller);
-    client.setUnmarshaller(marshaller);
-    return client;
-  }
-
-  @Bean
-  public RestTemplate restTemplate(RestTemplateBuilder builder) {
-    return builder.build();
+  public UserDataClient userDataClient(Jaxb2Marshaller marshaller,
+                                       RestTemplate restTemplate) {
+    if ("soap".equals(userdataClient)) {
+      SoapUserDataClient client = new SoapUserDataClient();
+      client.setDefaultUri(nifflerUserdataBaseUri + "/ws");
+      client.setMarshaller(marshaller);
+      client.setUnmarshaller(marshaller);
+      return client;
+    } else {
+      return new RestUserDataClient(
+          restTemplate,
+          nifflerUserdataBaseUri
+      );
+    }
   }
 
   @Bean

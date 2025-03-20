@@ -1,9 +1,8 @@
 package guru.qa.niffler.service.utils;
 
+import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import javax.annotation.Nonnull;
 
 public class HttpQueryPaginationAndSort {
   private final Pageable pageable;

@@ -2,6 +2,7 @@ package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import guru.qa.niffler.data.CurrencyValues;
 import guru.qa.niffler.data.projection.UserWithStatus;
 import jakarta.annotation.Nonnull;
@@ -12,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonRootName(value = "content")
 public record UserJsonBulk(
     @JsonProperty("id")
     UUID id,

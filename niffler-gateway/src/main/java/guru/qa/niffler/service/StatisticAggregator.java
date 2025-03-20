@@ -4,7 +4,6 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.StatisticJson;
 import guru.qa.niffler.model.StatisticV2Json;
-import guru.qa.niffler.service.api.RestSpendClient;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,13 @@ import java.util.List;
 @Component
 public class StatisticAggregator {
 
-  private final RestSpendClient restSpendClient;
+  private final SpendClient spendClient;
   private final UserDataClient userDataClient;
 
   @Autowired
-  public StatisticAggregator(RestSpendClient restSpendClient,
+  public StatisticAggregator(SpendClient spendClient,
                              UserDataClient userDataClient) {
-    this.restSpendClient = restSpendClient;
+    this.spendClient = spendClient;
     this.userDataClient = userDataClient;
   }
 
@@ -33,7 +32,7 @@ public class StatisticAggregator {
     userCurrency = userCurrency == null
         ? userDataClient.currentUser(username).currency()
         : userCurrency;
-    return restSpendClient.statistic(username, userCurrency, filterCurrency, filterPeriod);
+    return spendClient.statistic(username, userCurrency, filterCurrency, filterPeriod);
   }
 
   public @Nonnull
@@ -44,6 +43,6 @@ public class StatisticAggregator {
     statCurrency = statCurrency == null
         ? userDataClient.currentUser(username).currency()
         : statCurrency;
-    return restSpendClient.statisticV2(username, statCurrency, filterCurrency, filterPeriod);
+    return spendClient.statisticV2(username, statCurrency, filterCurrency, filterPeriod);
   }
 }

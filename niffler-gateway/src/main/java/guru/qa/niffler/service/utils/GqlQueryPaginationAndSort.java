@@ -1,11 +1,11 @@
 package guru.qa.niffler.service.utils;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class GqlQueryPaginationAndSort {
