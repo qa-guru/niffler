@@ -38,8 +38,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -128,7 +126,7 @@ public class NifflerAuthServiceConfig {
   }
 
   @Bean
-  public RegisteredClientRepository registeredClientRepository() throws URISyntaxException {
+  public RegisteredClientRepository registeredClientRepository() {
     return new InMemoryRegisteredClientRepository(
         registeredClient(
             webClientId,
@@ -136,7 +134,7 @@ public class NifflerAuthServiceConfig {
         ),
         registeredClient(
             mobileClientId,
-            mobileCustomScheme + new URI(nifflerAuthUri).getPath() + "/callback"
+            mobileCustomScheme + "ru.niffler_android" + "/callback"
         )
     );
   }
