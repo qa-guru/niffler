@@ -71,7 +71,7 @@ niffler-auth:
 oauth2:
   web-client-id: 'client'
   mobile-client-id: 'mobile-client'
-  mobile-custom-scheme: 'niffler:'
+  mobile-custom-scheme: 'app://'
 ---
 spring:
   config:
@@ -95,7 +95,7 @@ niffler-auth:
 oauth2:
   web-client-id: 'client'
   mobile-client-id: 'mobile-client'
-  mobile-custom-scheme: 'niffler:'
+  mobile-custom-scheme: 'app://'
 ---
 spring:
   config:

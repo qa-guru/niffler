@@ -38,6 +38,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.session.DisableEncodeUrlFilter;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -126,12 +128,16 @@ public class NifflerAuthServiceConfig {
   }
 
   @Bean
-  public RegisteredClientRepository registeredClientRepository() {
-    RegisteredClient webClient = getRegisteredClient(webClientId, nifflerFrontUri + "/authorized");
-    RegisteredClient mobileClient = getRegisteredClient(mobileClientId, mobileCustomScheme + "/callback");
+  public RegisteredClientRepository registeredClientRepository() throws URISyntaxException {
     return new InMemoryRegisteredClientRepository(
-        webClient,
-        mobileClient
+        registeredClient(
+            webClientId,
+            nifflerFrontUri + "/authorized"
+        ),
+        registeredClient(
+            mobileClientId,
+            mobileCustomScheme + new URI(nifflerAuthUri).getPath() + "/callback"
+        )
     );
   }
 
@@ -158,7 +164,7 @@ public class NifflerAuthServiceConfig {
     return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
   }
 
-  private RegisteredClient getRegisteredClient(String clientId, String redirectUri) {
+  private RegisteredClient registeredClient(String clientId, String redirectUri) {
     return RegisteredClient.withId(UUID.randomUUID().toString())
         .clientId(clientId)
         .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
