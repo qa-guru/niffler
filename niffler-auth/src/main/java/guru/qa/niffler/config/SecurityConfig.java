@@ -24,24 +24,15 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 public class SecurityConfig {
 
   private final CorsCustomizer corsCustomizer;
-  private final Environment environment;
 
   @Autowired
-  public SecurityConfig(CorsCustomizer corsCustomizer, Environment environment) {
+  public SecurityConfig(CorsCustomizer corsCustomizer) {
     this.corsCustomizer = corsCustomizer;
-    this.environment = environment;
   }
 
   @Bean
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     corsCustomizer.corsCustomizer(http);
-
-    if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
-      http.addFilterBefore(new SpecificRequestDumperFilter(
-          new RequestDumperFilter(),
-          "/login", "/oauth2/.*"
-      ), DisableEncodeUrlFilter.class);
-    }
 
     return http.authorizeHttpRequests(customizer -> customizer
             .requestMatchers(
