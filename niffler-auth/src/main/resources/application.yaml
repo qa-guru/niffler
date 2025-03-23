@@ -69,7 +69,9 @@ niffler-front:
 niffler-auth:
   base-uri: 'http://127.0.0.1:9000'
 oauth2:
-  client-id: 'client'
+  web-client-id: 'client'
+  mobile-client-id: 'mobile-client'
+  mobile-custom-scheme: 'app://'
 ---
 spring:
   config:
@@ -91,7 +93,9 @@ niffler-front:
 niffler-auth:
   base-uri: 'http://auth.niffler.dc:9000'
 oauth2:
-  client-id: 'client'
+  web-client-id: 'client'
+  mobile-client-id: 'mobile-client'
+  mobile-custom-scheme: 'app://'
 ---
 spring:
   config:
@@ -117,7 +121,9 @@ niffler-front:
 niffler-auth:
   base-uri: 'https://auth.niffler.qa.guru'
 oauth2:
-  client-id: ${client-id}
+  web-client-id: ${web-client-id}
+  mobile-client-id: ${mobile-client-id}
+  mobile-custom-scheme: ${mobile-custom-scheme}
 ---
 spring:
   config:
@@ -143,5 +149,7 @@ niffler-front:
 niffler-auth:
   base-uri: 'https://auth.niffler-stage.qa.guru'
 oauth2:
-  client-id: ${client-id}
+  web-client-id: ${web-client-id}
+  mobile-client-id: ${mobile-client-id}
+  mobile-custom-scheme: ${mobile-custom-scheme}
 ---
