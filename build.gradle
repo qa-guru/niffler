@@ -33,7 +33,7 @@ subprojects {
         flywayVersion = '11.4.1'
         springGrpcVersion = '3.1.0.RELEASE'
         springGraphqlDateTimeVersion = '6.0.0'
-        jakartaJaxbVersion = '4.0.5'
+        jakartaJaxbVersion = '4.0.2'
         wsdl4jVersion = '1.6.3'
         protobufVersion = '3.25.3'
         grpcVersion = '1.63.0'
