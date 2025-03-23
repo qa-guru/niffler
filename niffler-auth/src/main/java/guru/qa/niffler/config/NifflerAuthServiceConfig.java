@@ -16,6 +16,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -37,6 +38,7 @@ import org.springframework.security.web.PortResolverImpl;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.session.DisableEncodeUrlFilter;
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
@@ -81,9 +83,10 @@ public class NifflerAuthServiceConfig {
 
   @Bean
   @Order(Ordered.HIGHEST_PRECEDENCE)
-  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
-                                                                    LoginUrlAuthenticationEntryPoint entryPoint) throws Exception {
-    OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+    OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+        OAuth2AuthorizationServerConfigurer.authorizationServer();
+
     if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
       http.addFilterBefore(new SpecificRequestDumperFilter(
           new RequestDumperFilter(),
@@ -91,11 +94,21 @@ public class NifflerAuthServiceConfig {
       ), DisableEncodeUrlFilter.class);
     }
 
-    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-        .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
-
-    http.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(entryPoint))
-        .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
+    http
+        .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+        .with(authorizationServerConfigurer, (authorizationServer) ->
+            authorizationServer.oidc(Customizer.withDefaults())
+        )
+        .authorizeHttpRequests((authorize) ->
+            authorize
+                .anyRequest().authenticated()
+        )
+        .exceptionHandling((exceptions) -> exceptions
+            .defaultAuthenticationEntryPointFor(
+                new LoginUrlAuthenticationEntryPoint("/login"),
+                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+            )
+        ).oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
 
     corsCustomizer.corsCustomizer(http);
     return http.build();
