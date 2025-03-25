@@ -4,6 +4,9 @@ server:
     whitelabel:
       enabled: false
     path: /error
+  servlet:
+    session:
+      timeout: 60m
 
 spring:
   application:
@@ -24,6 +27,8 @@ spring:
     baseline-version: 0
     schemas: public
     locations: classpath:db/migration/niffler-auth
+  session:
+    store-type: jdbc
   jpa:
     hibernate:
       ddl-auto: none
@@ -42,11 +47,12 @@ logging:
     root: INFO
     org.springframework.kafka: INFO
     org.springframework.web: INFO
+    org.springframework.web.cors: INFO
+    org.springframework.security.web.csrf: INFO
+    org.springframework.security.web.authentication.logout: INFO
     org.springframework.security: INFO
     org.springframework.security.oauth2: INFO
     org.springframework.security.oauth2.server.authorization: INFO
-    org.springframework.security.web.authentication.logout: INFO
-    org.springframework.web.cors: INFO
     org.apache.catalina.filters.RequestDumperFilter: INFO
     org.springframework.boot.autoconfigure: INFO
 

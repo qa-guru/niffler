@@ -18,6 +18,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +26,11 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -40,6 +45,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.session.DisableEncodeUrlFilter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
@@ -48,6 +54,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Configuration
+@EnableJdbcHttpSession
 public class NifflerAuthServiceConfig {
 
   private final KeyManager keyManager;
@@ -151,19 +158,44 @@ public class NifflerAuthServiceConfig {
   }
 
   @Bean
-  public RegisteredClientRepository registeredClientRepository() {
-    return new InMemoryRegisteredClientRepository(
-        registeredClient(
-            webClientId,
-            nifflerFrontUri + "/authorized",
-            nifflerFrontUri + "/logout"
-        ),
-        registeredClient(
-            mobileClientId,
-            mobileCustomScheme + "ru.niffler_android" + "/callback",
-            mobileCustomScheme + "ru.niffler_android" + "/logout_callback"
-        )
+  public RegisteredClientRepository registeredClientRepository(JdbcOperations jdbcOperations) {
+    RegisteredClientRepository registeredClientRepository = new JdbcRegisteredClientRepository(jdbcOperations);
+    RegisteredClient webClient = registeredClientRepository.findByClientId(webClientId);
+    RegisteredClient mobileClient = registeredClientRepository.findByClientId(mobileClientId);
+    if (webClient == null) {
+      registeredClientRepository.save(
+          registeredClient(
+              webClientId,
+              nifflerFrontUri + "/authorized",
+              nifflerFrontUri + "/logout"
+          )
+      );
+    }
+    if (mobileClient == null) {
+      registeredClientRepository.save(
+          registeredClient(
+              mobileClientId,
+              mobileCustomScheme + "ru.niffler_android" + "/callback",
+              mobileCustomScheme + "ru.niffler_android" + "/logout_callback"
+          )
+      );
+    }
+    return registeredClientRepository;
+  }
+
+  @Bean
+  public OAuth2AuthorizationService jdbcOAuth2AuthorizationService(JdbcOperations jdbcOperations,
+                                                                   RegisteredClientRepository registeredClientRepository) {
+    return new JdbcOAuth2AuthorizationService(
+        jdbcOperations,
+        registeredClientRepository
     );
+  }
+
+  @Bean
+  public OAuth2AuthorizationConsentService authorizationConsentService(JdbcOperations jdbcOperations,
+                                                                       RegisteredClientRepository registeredClientRepository) {
+    return new JdbcOAuth2AuthorizationConsentService(jdbcOperations, registeredClientRepository);
   }
 
   @Bean
@@ -204,7 +236,7 @@ public class NifflerAuthServiceConfig {
         )
         .postLogoutRedirectUri(logoutRedirectUri)
         .tokenSettings(TokenSettings.builder()
-            .accessTokenTimeToLive(Duration.of(2, ChronoUnit.HOURS))
+            .accessTokenTimeToLive(Duration.of(1, ChronoUnit.HOURS))
             .authorizationCodeTimeToLive(Duration.of(10, ChronoUnit.SECONDS))
             .build())
         .build();
