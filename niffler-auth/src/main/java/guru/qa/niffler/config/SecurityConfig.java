@@ -5,10 +5,8 @@ import guru.qa.niffler.service.cors.CorsCustomizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
@@ -51,17 +49,6 @@ public class SecurityConfig {
         .formLogin(login -> login
             .loginPage("/login")
             .permitAll())
-        .logout(logout -> logout
-            .logoutRequestMatcher(antMatcher("/logout")) // https://github.com/spring-projects/spring-authorization-server/issues/266
-            .deleteCookies("JSESSIONID", "XSRF-TOKEN")
-            .invalidateHttpSession(true)
-            .clearAuthentication(true)
-            .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
-        )
-        .exceptionHandling(customizer -> customizer
-            .accessDeniedPage("/error")
-        )
-        .sessionManagement(sm -> sm.invalidSessionUrl("/login"))
         .build();
   }
 }

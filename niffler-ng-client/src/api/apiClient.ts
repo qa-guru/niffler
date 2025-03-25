@@ -1,4 +1,4 @@
-import {clearSession, initLocalStorageAndRedirectToAuth} from "./authUtils.ts";
+import {clearSession, codeChallengeFromLocalStorage, idTokenFromLocalStorage, initLocalStorage} from "./authUtils.ts";
 import {Category} from "../types/Category.ts";
 import {User} from "../types/User.ts";
 import {RequestHandler} from "../types/RequestHandler.ts";
@@ -8,6 +8,7 @@ import {Statistic} from "../types/Statistic.ts";
 import {ApiError, isApiError, isCommonError} from "../types/Error.ts";
 import {Session} from "../types/Session.ts";
 import {Void} from "../types/Void.ts";
+import {authorizeUrl} from "./url/auth.ts";
 
 const BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 const DEFAULT_ABORT_TIMEOUT = 5000;
@@ -243,7 +244,7 @@ async function makeRequest<T>(path: string, {onSuccess, onFailure}: RequestHandl
         signal,
     };
 
-    const token = localStorage.getItem("id_token");
+    const token = idTokenFromLocalStorage();
     if (token) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -258,7 +259,8 @@ async function makeRequest<T>(path: string, {onSuccess, onFailure}: RequestHandl
 
         if (response.status === 401) {
             clearSession();
-            initLocalStorageAndRedirectToAuth();
+            initLocalStorage();
+            window.location.replace(authorizeUrl(codeChallengeFromLocalStorage()));
         }
 
         if (response.status !== 204 && options?.method !== "DELETE") {

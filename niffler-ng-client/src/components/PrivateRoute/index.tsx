@@ -5,9 +5,10 @@ import {useEffect, useState} from "react";
 import {SessionContext, USER_INITIAL_STATE} from "../../context/SessionContext";
 import {Loader} from "../Loader";
 import {apiClient} from "../../api/apiClient.ts";
-import {initLocalStorageAndRedirectToAuth} from "../../api/authUtils.ts";
+import {codeChallengeFromLocalStorage, initLocalStorage} from "../../api/authUtils.ts";
 import {User} from "../../types/User.ts";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
+import {authorizeUrl} from "../../api/url/auth.ts";
 
 
 export const PrivateRoute = () => {
@@ -19,7 +20,8 @@ export const PrivateRoute = () => {
         apiClient.getSession({
             onSuccess: (res) => {
                 if (!res.username) {
-                    initLocalStorageAndRedirectToAuth();
+                    initLocalStorage();
+                    window.location.replace(authorizeUrl(codeChallengeFromLocalStorage()));
                 } else {
                     apiClient.getProfile({
                         onSuccess: (data) => {

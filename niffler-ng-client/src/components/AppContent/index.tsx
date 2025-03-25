@@ -7,11 +7,13 @@ import {PeoplePage} from "../../pages/PeoplePage";
 import {FC} from "react";
 import {SpendingPage} from "../../pages/SpendingPage";
 import {NotFoundPage} from "../../pages/NotFoundPage";
+import {LogoutPage} from "../../pages/Logout";
 
 export const AppContent: FC = () => {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/logout" element={<LogoutPage/>}/>
                 <Route path="/authorized" element={<AuthorizedPage/>}/>
                 <Route element={<PrivateRoute/>}>
                     <Route path="/" element={<MainPage/>}/>

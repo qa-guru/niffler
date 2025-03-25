@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 import {Loader} from "../../components/Loader"
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {getTokenFromUrlEncodedParams} from "../../api/authUtils";
+import {persistTokens, tokenFromUrlEncodedParams} from "../../api/authUtils";
 import {authClient} from "../../api/authClient";
 
 export const AuthorizedPage = () => {
@@ -9,9 +9,9 @@ export const AuthorizedPage = () => {
     const navigate = useNavigate();
 
     const getToken = async (data: URLSearchParams) => {
-        const res = await authClient.getToken("oauth2/token", data);
+        const res = await authClient.getToken(data);
         if (res?.id_token) {
-            localStorage.setItem("id_token", res.id_token);
+            persistTokens(res);
             setTimeout(async () => {
                 navigate("/main", {replace: true});
             }, 500);
@@ -25,7 +25,7 @@ export const AuthorizedPage = () => {
         const code = searchParams?.get("code");
         const verifier = localStorage.getItem("codeVerifier");
         if (code && verifier) {
-            const data = getTokenFromUrlEncodedParams(code, verifier);
+            const data = tokenFromUrlEncodedParams(code, verifier);
             getToken(data);
         } else {
             console.log("Can not login to Cabinet");

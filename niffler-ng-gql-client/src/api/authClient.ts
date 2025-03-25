@@ -1,8 +1,10 @@
-const BASE_URL = `${import.meta.env.VITE_AUTH_URL}`;
+import {accessTokenFromLocalStorage, revokeTokenFromUrlEncodedParams} from "./authUtils.ts";
+import {revokeAccessTokenUrl, tokenUrl} from "./url/auth.ts";
+import {JsonTokens} from "../types/JsonTokens.ts";
 
 export const authClient = {
-    getToken: async (url: string, data: URLSearchParams) => {
-        const response = await fetch(`${BASE_URL}/${url}`, {
+    getToken: async (data: URLSearchParams): Promise<JsonTokens> => {
+        const response = await fetch(tokenUrl(), {
             method: "POST",
             credentials: "include",
             headers: {
@@ -15,19 +17,22 @@ export const authClient = {
         }
         return response.json();
     },
-    logout: async ({onSuccess, onFailure}: { onSuccess: () => void, onFailure: (e: Error) => void }) => {
-        const response = await fetch(`${BASE_URL}/logout`, {
-            method: "GET",
+    revokeAccessToken: async ({onSuccess, onFailure}: { onSuccess: () => void, onFailure: (e: Error) => void }) => {
+        const accessToken = accessTokenFromLocalStorage();
+        const data = revokeTokenFromUrlEncodedParams(accessToken);
+        const logoutResponse = await fetch(revokeAccessTokenUrl(), {
+            method: "POST",
             credentials: "include",
             headers: {
-                "Content-type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("id_token")}`,
-            }
+                "Content-type": "application/x-www-form-urlencoded",
+            },
+            body: data.toString()
         });
-        if (!response.ok) {
-            onFailure(new Error("Failed logout"))
+
+        if (!logoutResponse.ok) {
+            onFailure(new Error("Failed revoke token"))
         } else {
             onSuccess();
         }
-    }
+    },
 }
