@@ -129,7 +129,7 @@ public class NifflerAuthServiceConfig {
   @Bean
   @Profile({"staging", "prod"})
   public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttps() {
-    LoginUrlAuthenticationEntryPoint entryPoint = loginUrlAuthenticationEntryPointHttp();
+    LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint("/login");
     PortMapperImpl portMapper = new PortMapperImpl();
     portMapper.setPortMappings(Map.of(
         serverPort, defaultHttpsPort,

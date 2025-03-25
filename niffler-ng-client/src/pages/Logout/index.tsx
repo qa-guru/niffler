@@ -6,7 +6,6 @@ import {authorizeUrl} from "../../api/url/auth.ts";
 export const LogoutPage = () => {
 
     useEffect(() => {
-        console.log("LogoutPage");
         clearSession();
         initLocalStorage();
         window.location.replace(authorizeUrl(codeChallengeFromLocalStorage()));

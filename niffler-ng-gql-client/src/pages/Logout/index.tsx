@@ -7,7 +7,6 @@ import graphqlClient from "../../api/graphqlClient.ts";
 export const LogoutPage = () => {
 
     useEffect(() => {
-        console.log("LogoutPage");
         clearSession();
         graphqlClient.cache.reset();
         initLocalStorage();
