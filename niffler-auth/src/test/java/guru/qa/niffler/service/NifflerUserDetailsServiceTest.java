@@ -15,7 +15,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -64,9 +66,9 @@ class NifflerUserDetailsServiceTest {
   void loadUserByUsername() {
     final UserDetails correct = nifflerUserDetailsService.loadUserByUsername("correct");
 
-    final List<SimpleGrantedAuthority> expectedAuthorities = authorityEntities.stream()
+    final Set<SimpleGrantedAuthority> expectedAuthorities = authorityEntities.stream()
         .map(a -> new SimpleGrantedAuthority(a.getAuthority().name()))
-        .toList();
+        .collect(Collectors.toSet());
 
     assertEquals(
         "correct",
