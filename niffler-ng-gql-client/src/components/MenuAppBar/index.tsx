@@ -12,10 +12,9 @@ import {MenuButton} from "./MenuButton";
 import {useMediaQuery, useTheme} from "@mui/material";
 import {MobileHeaderMenu} from "./MobileHeaderMenu";
 import {useDialog} from "../../context/DialogContext.tsx";
-import {authClient} from "../../api/authClient.ts";
-import {clearSession, initLocalStorageAndRedirectToAuth} from "../../api/authUtils.ts";
+import {idTokenFromLocalStorage} from "../../api/authUtils.ts";
 import {useCurrentUserQuery} from "../../generated/graphql.tsx";
-import graphqlClient from "../../api/graphqlClient.ts";
+import {logoutUrl} from "../../api/url/auth.ts";
 
 export const MenuAppBar: FC = () => {
     const theme = useTheme();
@@ -42,15 +41,8 @@ export const MenuAppBar: FC = () => {
             title: "Want to logout?",
             description: "If you are sure, submit your action.",
             onSubmit: () => {
-                authClient.logout({
-                    onSuccess: () => {
-                        clearSession();
-                        graphqlClient.cache.reset();
-                        initLocalStorageAndRedirectToAuth();
-                    },
-                    onFailure: () => {
-                    },
-                });
+                const token = idTokenFromLocalStorage();
+                window.location.replace(logoutUrl(token));
             },
             submitTitle: "Log out",
         });

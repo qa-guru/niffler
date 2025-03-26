@@ -6,18 +6,18 @@ import {FC, MouseEvent, useContext, useState} from 'react';
 import {Link} from 'react-router-dom';
 import logo from "../../assets/icons/coin.svg";
 import "./styles.css";
-import {SessionContext, USER_INITIAL_STATE} from "../../context/SessionContext.tsx";
+import {SessionContext} from "../../context/SessionContext.tsx";
 import {HeaderMenu} from "./HeaderMenu";
 import {NewSpendingButton} from "./NewSpendingButton";
 import {MenuButton} from "./MenuButton";
 import {useMediaQuery, useTheme} from "@mui/material";
 import {MobileHeaderMenu} from "./MobileHeaderMenu";
 import {useDialog} from "../../context/DialogContext.tsx";
-import {authClient} from "../../api/authClient.ts";
-import {clearSession, initLocalStorageAndRedirectToAuth} from "../../api/authUtils.ts";
+import {idTokenFromLocalStorage} from "../../api/authUtils.ts";
+import {logoutUrl} from "../../api/url/auth.ts";
 
 export const MenuAppBar: FC = () => {
-    const {user, updateUser} = useContext(SessionContext);
+    const {user} = useContext(SessionContext);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -41,15 +41,8 @@ export const MenuAppBar: FC = () => {
             title: "Want to logout?",
             description: "If you are sure, submit your action.",
             onSubmit: () => {
-                authClient.logout({
-                    onSuccess: () => {
-                        clearSession();
-                        updateUser(USER_INITIAL_STATE);
-                        initLocalStorageAndRedirectToAuth();
-                    },
-                    onFailure: () => {
-                    },
-                });
+                const token = idTokenFromLocalStorage();
+                window.location.replace(logoutUrl(token));
             },
             submitTitle: "Log out",
         });

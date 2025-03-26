@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import guru.qa.niffler.config.keys.KeyManager;
+import guru.qa.niffler.service.OidcCookiesLogoutAuthenticationSuccessHandler;
 import guru.qa.niffler.service.SpecificRequestDumperFilter;
 import guru.qa.niffler.service.cors.CorsCustomizer;
 import org.apache.catalina.filters.RequestDumperFilter;
@@ -17,7 +18,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +30,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.oidc.web.authentication.OidcLogoutAuthenticationSuccessHandler;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
@@ -83,32 +84,43 @@ public class NifflerAuthServiceConfig {
 
   @Bean
   @Order(Ordered.HIGHEST_PRECEDENCE)
-  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
+                                                                    LoginUrlAuthenticationEntryPoint loginEntryPoint) throws Exception {
     OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
         OAuth2AuthorizationServerConfigurer.authorizationServer();
 
     if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
       http.addFilterBefore(new SpecificRequestDumperFilter(
           new RequestDumperFilter(),
-          "/login", "/oauth2/.*"
+          "/login", "/connect/logout", "/oauth2/.*"
       ), DisableEncodeUrlFilter.class);
     }
 
     http
         .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-        .with(authorizationServerConfigurer, (authorizationServer) ->
-            authorizationServer.oidc(Customizer.withDefaults())
+        .with(authorizationServerConfigurer, authorizationServer ->
+            authorizationServer.oidc(oidc ->
+                oidc.logoutEndpoint(
+                    logout ->
+                        logout.logoutResponseHandler(
+                            new OidcCookiesLogoutAuthenticationSuccessHandler(
+                                new OidcLogoutAuthenticationSuccessHandler(),
+                                "JSESSIONID", "XSRF-TOKEN"
+                            )
+                        )
+                )
+            )
         )
-        .authorizeHttpRequests((authorize) ->
-            authorize
-                .anyRequest().authenticated()
+        .authorizeHttpRequests(authorize ->
+            authorize.anyRequest().authenticated()
         )
-        .exceptionHandling((exceptions) -> exceptions
+        .exceptionHandling(ex -> ex
+            .accessDeniedPage("/error")
             .defaultAuthenticationEntryPointFor(
-                new LoginUrlAuthenticationEntryPoint("/login"),
+                loginEntryPoint,
                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
             )
-        ).oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
+        ).sessionManagement(sm -> sm.invalidSessionUrl("/login"));
 
     corsCustomizer.corsCustomizer(http);
     return http.build();
@@ -133,7 +145,7 @@ public class NifflerAuthServiceConfig {
   }
 
   @Bean
-  @Profile({"local", "docker"})
+  @Profile({"local", "docker", "test"})
   public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttp() {
     return new LoginUrlAuthenticationEntryPoint("/login");
   }
@@ -143,11 +155,13 @@ public class NifflerAuthServiceConfig {
     return new InMemoryRegisteredClientRepository(
         registeredClient(
             webClientId,
-            nifflerFrontUri + "/authorized"
+            nifflerFrontUri + "/authorized",
+            nifflerFrontUri + "/logout"
         ),
         registeredClient(
             mobileClientId,
-            mobileCustomScheme + "ru.niffler_android" + "/callback"
+            mobileCustomScheme + "ru.niffler_android" + "/callback",
+            mobileCustomScheme + "ru.niffler_android" + "/logout_callback"
         )
     );
   }
@@ -175,7 +189,7 @@ public class NifflerAuthServiceConfig {
     return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
   }
 
-  private RegisteredClient registeredClient(String clientId, String redirectUri) {
+  private RegisteredClient registeredClient(String clientId, String redirectUri, String logoutRedirectUri) {
     return RegisteredClient.withId(UUID.randomUUID().toString())
         .clientId(clientId)
         .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
@@ -188,8 +202,10 @@ public class NifflerAuthServiceConfig {
             .requireProofKey(true)
             .build()
         )
+        .postLogoutRedirectUri(logoutRedirectUri)
         .tokenSettings(TokenSettings.builder()
             .accessTokenTimeToLive(Duration.of(2, ChronoUnit.HOURS))
+            .authorizationCodeTimeToLive(Duration.of(10, ChronoUnit.SECONDS))
             .build())
         .build();
   }

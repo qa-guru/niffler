@@ -2,9 +2,10 @@ import {Outlet} from "react-router-dom"
 import {MenuAppBar} from "../MenuAppBar"
 import {Box} from "@mui/material"
 import {Loader} from "../Loader";
-import {initLocalStorageAndRedirectToAuth} from "../../api/authUtils.ts";
+import {codeChallengeFromLocalStorage, initLocalStorage} from "../../api/authUtils.ts";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
 import {useSessionQuery} from "../../generated/graphql.tsx";
+import {authorizeUrl} from "../../api/url/auth.ts";
 
 
 export const PrivateRoute = () => {
@@ -13,11 +14,13 @@ export const PrivateRoute = () => {
         onError: (err) => {
             console.error(err);
             snackbar.showSnackBar("Can not load session", "error");
-            initLocalStorageAndRedirectToAuth();
+            initLocalStorage();
+            window.location.replace(authorizeUrl(codeChallengeFromLocalStorage()))
         },
         onCompleted: (data) => {
             if (!data?.session.username) {
-                initLocalStorageAndRedirectToAuth();
+                initLocalStorage();
+                window.location.replace(authorizeUrl(codeChallengeFromLocalStorage()))
             }
         },
         errorPolicy: "none",
