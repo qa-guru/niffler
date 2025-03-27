@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.ben-manes.versions' version '0.51.0'
+    id 'com.github.ben-manes.versions' version '0.52.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -28,9 +28,9 @@ subprojects {
         lombokVersion = '1.18.36'
         springKafkaVersion = '3.3.4'
         springVaultVersion = '4.2.1'
-        springOpenApiVersion = '2.8.5'
+        springOpenApiVersion = '2.8.6'
         postgresDriverVersion = '42.7.5'
-        flywayVersion = '11.4.1'
+        flywayVersion = '11.5.0'
         springGrpcVersion = '3.1.0.RELEASE'
         springGraphqlDateTimeVersion = '6.0.0'
         jakartaJaxbVersion = '4.0.2'
