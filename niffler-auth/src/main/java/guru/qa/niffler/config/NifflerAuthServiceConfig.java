@@ -10,6 +10,7 @@ import guru.qa.niffler.service.cors.CorsCustomizer;
 import org.apache.catalina.filters.RequestDumperFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.session.DefaultCookieSerializerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -208,6 +209,13 @@ public class NifflerAuthServiceConfig {
     return AuthorizationServerSettings.builder()
         .issuer(nifflerAuthUri)
         .build();
+  }
+
+  @Bean
+  public DefaultCookieSerializerCustomizer defaultCookieSerializerCustomizer() {
+    return cookieSerializer -> {
+      cookieSerializer.setUseBase64Encoding(false);
+    };
   }
 
   @Bean
