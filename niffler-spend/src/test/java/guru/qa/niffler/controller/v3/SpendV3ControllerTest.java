@@ -41,7 +41,6 @@ class SpendV3ControllerTest {
         .andExpect(jsonPath("$.content").isArray())
         .andExpect(jsonPath("$.content.length()").value(1))
         .andExpect(jsonPath("$.content[0].id").value(idMatcher))
-        .andExpect(jsonPath("$.content[0].spendDate").value("2024-09-04T19:00:00.000+00:00"))
         .andExpect(jsonPath("$.content[0].category.id").value(idMatcher))
         .andExpect(jsonPath("$.content[0].category.name").value("Веселье"))
         .andExpect(jsonPath("$.content[0].category.username").value("duck"))

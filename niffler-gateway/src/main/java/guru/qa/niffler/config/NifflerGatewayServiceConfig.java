@@ -1,6 +1,5 @@
 package guru.qa.niffler.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.niffler.service.UserDataClient;
 import guru.qa.niffler.service.api.RestUserDataClient;
 import guru.qa.niffler.service.soap.SoapUserDataClient;
@@ -15,18 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.hateoas.config.EnableHypermediaSupport;
-import org.springframework.hateoas.config.HypermediaRestTemplateConfigurer;
-import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-import static java.util.Collections.singletonList;
-import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 
 @Configuration
 public class NifflerGatewayServiceConfig {
@@ -48,15 +40,15 @@ public class NifflerGatewayServiceConfig {
   }
 
   @Bean
-  public RestTemplate restTemplate(HypermediaRestTemplateConfigurer configurer) {
-    return configurer.registerHypermediaTypes(new RestTemplate());
-  }
-
-  @Bean
   public Jaxb2Marshaller marshaller() {
     Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
     marshaller.setContextPath("jaxb.userdata");
     return marshaller;
+  }
+
+  @Bean
+  public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    return builder.build();
   }
 
   @Bean
