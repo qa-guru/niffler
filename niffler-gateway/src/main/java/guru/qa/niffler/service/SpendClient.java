@@ -1,6 +1,5 @@
 package guru.qa.niffler.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;

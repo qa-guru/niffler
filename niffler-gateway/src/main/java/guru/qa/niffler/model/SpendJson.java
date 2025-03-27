@@ -6,7 +6,6 @@ import guru.qa.niffler.validation.UnixEpochOrLater;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 
 import java.util.Date;
 import java.util.UUID;
