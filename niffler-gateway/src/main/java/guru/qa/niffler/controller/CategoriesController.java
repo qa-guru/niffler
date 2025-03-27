@@ -2,7 +2,7 @@ package guru.qa.niffler.controller;
 
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.service.api.RestSpendClient;
+import guru.qa.niffler.service.SpendClient;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +23,25 @@ import java.util.List;
 @SecurityRequirement(name = NifflerGatewayServiceConfig.OPEN_API_AUTH_SCHEME)
 public class CategoriesController {
 
-  private final RestSpendClient restSpendClient;
+  private final SpendClient spendClient;
 
   @Autowired
-  public CategoriesController(RestSpendClient restSpendClient) {
-    this.restSpendClient = restSpendClient;
+  public CategoriesController(SpendClient spendClient) {
+    this.spendClient = spendClient;
   }
 
   @GetMapping("/all")
   public List<CategoryJson> getCategories(@AuthenticationPrincipal Jwt principal,
                                           @RequestParam(required = false, defaultValue = "false") boolean excludeArchived) {
     String username = principal.getClaim("sub");
-    return restSpendClient.getCategories(username, excludeArchived);
+    return spendClient.getCategories(username, excludeArchived);
   }
 
   @PostMapping("/add")
   public CategoryJson addCategory(@AuthenticationPrincipal Jwt principal,
                                   @Valid @RequestBody CategoryJson category) {
     String username = principal.getClaim("sub");
-    return restSpendClient.addCategory(new CategoryJson(
+    return spendClient.addCategory(new CategoryJson(
         category.id(),
         category.name(),
         username,
@@ -53,7 +53,7 @@ public class CategoriesController {
   public CategoryJson updateCategory(@AuthenticationPrincipal Jwt principal,
                                      @RequestBody CategoryJson category) {
     String username = principal.getClaim("sub");
-    return restSpendClient.updateCategory(new CategoryJson(
+    return spendClient.updateCategory(new CategoryJson(
         category.id(),
         category.name(),
         username,

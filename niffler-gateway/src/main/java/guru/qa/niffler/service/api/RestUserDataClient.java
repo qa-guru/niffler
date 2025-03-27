@@ -2,6 +2,7 @@ package guru.qa.niffler.service.api;
 
 import guru.qa.niffler.ex.NoRestResponseException;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.page.PagedModelJson;
 import guru.qa.niffler.model.page.RestPage;
 import guru.qa.niffler.service.UserDataClient;
 import guru.qa.niffler.service.utils.HttpQueryPaginationAndSort;
@@ -9,10 +10,10 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "rest")
 public class RestUserDataClient implements UserDataClient {
 
   private final RestTemplate restTemplate;
@@ -75,10 +75,9 @@ public class RestUserDataClient implements UserDataClient {
     );
   }
 
-  @SuppressWarnings("unchecked")
   @Nonnull
   @Override
-  public Page<UserJson> allUsers(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
+  public Page<UserJson> allUsersV2(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
     ResponseEntity<RestPage<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v2/users/all?username={username}&searchQuery={searchQuery}"
         + new HttpQueryPaginationAndSort(pageable),
@@ -91,6 +90,23 @@ public class RestUserDataClient implements UserDataClient {
     );
     return Optional.ofNullable(response.getBody())
         .orElseThrow(() -> new NoRestResponseException("No REST Page<UserJson> response is given [/v2/users/all/ Route]"));
+  }
+
+  @Nonnull
+  @Override
+  public PagedModel<UserJson> allUsersV3(@javax.annotation.Nonnull String username, @javax.annotation.Nonnull Pageable pageable, @javax.annotation.Nullable String searchQuery) {
+    final ResponseEntity<PagedModelJson<UserJson>> response = restTemplate.exchange(
+        nifflerUserdataApiUri + "/v3/users/all?username={username}&searchQuery={searchQuery}"
+            + new HttpQueryPaginationAndSort(pageable),
+        HttpMethod.GET,
+        null,
+        new ParameterizedTypeReference<PagedModelJson<UserJson>>() {
+        },
+        username,
+        searchQuery
+    );
+    return Optional.ofNullable(response.getBody())
+        .orElseThrow(() -> new NoRestResponseException("No REST PagedModel<UserJson> response is given [/v3/users/all/ Route]"));
   }
 
   @Nonnull
@@ -108,10 +124,9 @@ public class RestUserDataClient implements UserDataClient {
     );
   }
 
-  @SuppressWarnings("unchecked")
   @Nonnull
   @Override
-  public Page<UserJson> friends(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
+  public Page<UserJson> friendsV2(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
     ResponseEntity<RestPage<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v2/friends/all?username={username}&searchQuery={searchQuery}"
         + new HttpQueryPaginationAndSort(pageable),
@@ -124,6 +139,23 @@ public class RestUserDataClient implements UserDataClient {
     );
     return Optional.ofNullable(response.getBody())
         .orElseThrow(() -> new NoRestResponseException("No REST Page<UserJson> response is given [/v2/friends/all/ Route]"));
+  }
+
+  @Nonnull
+  @Override
+  public PagedModel<UserJson> friendsV3(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
+    final ResponseEntity<PagedModelJson<UserJson>> response = restTemplate.exchange(
+        nifflerUserdataApiUri + "/v3/friends/all?username={username}&searchQuery={searchQuery}"
+            + new HttpQueryPaginationAndSort(pageable),
+        HttpMethod.GET,
+        null,
+        new ParameterizedTypeReference<PagedModelJson<UserJson>>() {
+        },
+        username,
+        searchQuery
+    );
+    return Optional.ofNullable(response.getBody())
+        .orElseThrow(() -> new NoRestResponseException("No REST PagedModel<UserJson> response is given [/v3/friends/all/ Route]"));
   }
 
   @Nonnull

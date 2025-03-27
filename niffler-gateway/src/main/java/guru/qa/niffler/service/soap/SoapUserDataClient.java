@@ -17,11 +17,11 @@ import jaxb.userdata.SendInvitationRequest;
 import jaxb.userdata.UpdateUserRequest;
 import jaxb.userdata.UserResponse;
 import jaxb.userdata.UsersResponse;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Component;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@ConditionalOnProperty(prefix = "niffler-userdata", name = "client", havingValue = "soap")
 public class SoapUserDataClient extends WebServiceGatewaySupport implements UserDataClient {
 
   @Override
@@ -68,7 +67,7 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
 
   @Nonnull
   @Override
-  public Page<UserJson> allUsers(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
+  public Page<UserJson> allUsersV2(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
     AllUsersPageRequest request = new AllUsersPageRequest();
     request.setUsername(username);
     request.setSearchQuery(searchQuery);
@@ -80,8 +79,19 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
 
     return new PageImpl<>(
         response.getUser().stream().map(UserJson::fromJaxb).toList(),
-        pageable,
+        PageRequest.of(
+            response.getNumber(),
+            response.getSize()
+        ),
         response.getTotalElements()
+    );
+  }
+
+  @Nonnull
+  @Override
+  public PagedModel<UserJson> allUsersV3(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
+    return new PagedModel<>(
+        allUsersV2(username, pageable, searchQuery)
     );
   }
 
@@ -99,7 +109,7 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
 
   @Nonnull
   @Override
-  public Page<UserJson> friends(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
+  public Page<UserJson> friendsV2(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
     FriendsPageRequest request = new FriendsPageRequest();
     request.setUsername(username);
     request.setSearchQuery(searchQuery);
@@ -111,8 +121,19 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
 
     return new PageImpl<>(
         response.getUser().stream().map(UserJson::fromJaxb).toList(),
-        PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+        PageRequest.of(
+            response.getNumber(),
+            response.getSize()
+        ),
         response.getTotalElements()
+    );
+  }
+
+  @Nonnull
+  @Override
+  public PagedModel<UserJson> friendsV3(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
+    return new PagedModel<>(
+        friendsV2(username, pageable, searchQuery)
     );
   }
 

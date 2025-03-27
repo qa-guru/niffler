@@ -5,6 +5,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 
 import java.util.List;
 
@@ -21,18 +22,28 @@ public interface UserDataClient {
                           @Nullable String searchQuery);
 
   @Nonnull
-  Page<UserJson> allUsers(@Nonnull String username,
-                          @Nonnull Pageable pageable,
-                          @Nullable String searchQuery);
+  Page<UserJson> allUsersV2(@Nonnull String username,
+                            @Nonnull Pageable pageable,
+                            @Nullable String searchQuery);
+
+  @Nonnull
+  PagedModel<UserJson> allUsersV3(@Nonnull String username,
+                                  @Nonnull Pageable pageable,
+                                  @Nullable String searchQuery);
 
   @Nonnull
   List<UserJson> friends(@Nonnull String username,
                          @Nullable String searchQuery);
 
   @Nonnull
-  Page<UserJson> friends(@Nonnull String username,
-                         @Nonnull Pageable pageable,
-                         @Nullable String searchQuery);
+  Page<UserJson> friendsV2(@Nonnull String username,
+                           @Nonnull Pageable pageable,
+                           @Nullable String searchQuery);
+
+  @Nonnull
+  PagedModel<UserJson> friendsV3(@Nonnull String username,
+                                 @Nonnull Pageable pageable,
+                                 @Nullable String searchQuery);
 
   @Nonnull
   UserJson sendInvitation(@Nonnull String username,
@@ -45,7 +56,6 @@ public interface UserDataClient {
   @Nonnull
   UserJson declineInvitation(@Nonnull String username,
                              @Nonnull String targetUsername);
-
 
   void removeFriend(@Nonnull String username,
                     @Nonnull String targetUsername);

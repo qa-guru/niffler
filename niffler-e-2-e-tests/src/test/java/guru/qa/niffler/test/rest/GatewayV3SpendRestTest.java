@@ -1,12 +1,12 @@
 package guru.qa.niffler.test.rest;
 
-import guru.qa.niffler.api.GatewayV2ApiClient;
+import guru.qa.niffler.api.GatewayV3ApiClient;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
 import guru.qa.niffler.jupiter.annotation.Token;
-import guru.qa.niffler.model.page.RestPage;
+import guru.qa.niffler.model.page.PagedModelJson;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.SpendJson;
 import io.qameta.allure.AllureId;
@@ -26,19 +26,19 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Epic("[REST][niffler-gateway]: Пагинация Spends V2")
-@DisplayName("[REST][niffler-gateway]: Пагинация Spends V2")
+@Epic("[REST][niffler-gateway]: Пагинация Spends V3")
+@DisplayName("[REST][niffler-gateway]: Пагинация Spends V3")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class GatewayV2SpendRestTest extends BaseRestTest {
+public class GatewayV3SpendRestTest extends BaseRestTest {
 
-  private static final GatewayV2ApiClient gatewayV2client = new GatewayV2ApiClient();
+  private static final GatewayV3ApiClient gatewayV3client = new GatewayV3ApiClient();
 
   @CsvSource({
       "description, ASC, Коктейль, Кофе",
       "description, DESC, Орешки, Кофе"
   })
   @ParameterizedTest
-  @AllureId("200001")
+  @AllureId("200025")
   @DisplayName("REST: Список spends получен в виде Page при передаче параметров page, size c учетом сортировки по полю description")
   @Tag("REST")
   @ApiLogin(user = @GenerateUser(
@@ -54,7 +54,7 @@ public class GatewayV2SpendRestTest extends BaseRestTest {
                                   String firstExpected,
                                   String secondExpected,
                                   @Token String bearerToken) throws Exception {
-    RestPage<SpendJson> firstPage = gatewayV2client.allSpendsPageable(
+    PagedModelJson<SpendJson> firstPage = gatewayV3client.allSpendsPageable(
         bearerToken,
         null,
         null,
@@ -66,10 +66,10 @@ public class GatewayV2SpendRestTest extends BaseRestTest {
         assertNotNull(firstPage)
     );
     step("Check total elements count", () ->
-        assertEquals(3L, firstPage.getTotalElements())
+        assertEquals(3L, firstPage.getMetadata().totalElements())
     );
     step("Check total pages", () ->
-        assertEquals(2, firstPage.getTotalPages())
+        assertEquals(2, firstPage.getMetadata().totalPages())
     );
     final List<SpendJson> firstPageContent = firstPage.getContent();
 
@@ -85,7 +85,7 @@ public class GatewayV2SpendRestTest extends BaseRestTest {
   }
 
   @Test
-  @AllureId("200002")
+  @AllureId("200026")
   @DisplayName("REST: Список spends получен в виде Page при передаче параметров page, size с фильтрацией по Currency")
   @Tag("REST")
   @ApiLogin(user = @GenerateUser(
@@ -97,7 +97,7 @@ public class GatewayV2SpendRestTest extends BaseRestTest {
       }
   ))
   void pageableSpendsTestWithCurrency(@Token String bearerToken) throws Exception {
-    RestPage<SpendJson> firstPage = gatewayV2client.allSpendsPageable(
+    PagedModelJson<SpendJson> firstPage = gatewayV3client.allSpendsPageable(
         bearerToken,
         CurrencyValues.RUB,
         null,
@@ -106,7 +106,7 @@ public class GatewayV2SpendRestTest extends BaseRestTest {
         List.of("description," + Sort.Direction.ASC)
     );
 
-    RestPage<SpendJson> second = gatewayV2client.allSpendsPageable(
+    PagedModelJson<SpendJson> second = gatewayV3client.allSpendsPageable(
         bearerToken,
         CurrencyValues.RUB,
         null,
@@ -118,10 +118,10 @@ public class GatewayV2SpendRestTest extends BaseRestTest {
         assertNotNull(firstPage)
     );
     step("Check total elements count", () ->
-        assertEquals(2L, firstPage.getTotalElements())
+        assertEquals(2L, firstPage.getMetadata().totalElements())
     );
     step("Check total pages", () ->
-        assertEquals(1, firstPage.getTotalPages())
+        assertEquals(1, firstPage.getMetadata().totalPages())
     );
     final List<SpendJson> firstPageContent = firstPage.getContent();
 

@@ -4,8 +4,8 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.model.gql.FriendshipGqlInput;
 import guru.qa.niffler.model.gql.UserGql;
 import guru.qa.niffler.model.gql.UserGqlInput;
+import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.UserDataClient;
-import guru.qa.niffler.service.api.RestSpendClient;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -20,12 +20,12 @@ import org.springframework.stereotype.Controller;
 public class UserMutationController {
 
   private final UserDataClient userDataClient;
-  private final RestSpendClient restSpendClient;
+  private final SpendClient spendClient;
 
   @Autowired
-  public UserMutationController(UserDataClient userDataClient, RestSpendClient restSpendClient) {
+  public UserMutationController(UserDataClient userDataClient, SpendClient spendClient) {
     this.userDataClient = userDataClient;
-    this.restSpendClient = restSpendClient;
+    this.spendClient = spendClient;
   }
 
   @MutationMapping

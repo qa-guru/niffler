@@ -4,8 +4,8 @@ import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.DataFilterValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.UserDataClient;
-import guru.qa.niffler.service.api.RestSpendClient;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +31,12 @@ import java.util.List;
 @SecurityRequirement(name = NifflerGatewayServiceConfig.OPEN_API_AUTH_SCHEME)
 public class SpendController {
 
-  private final RestSpendClient restSpendClient;
+  private final SpendClient spendClient;
   private final UserDataClient userDataClient;
 
   @Autowired
-  public SpendController(RestSpendClient restSpendClient, UserDataClient userDataClient) {
-    this.restSpendClient = restSpendClient;
+  public SpendController(SpendClient spendClient, UserDataClient userDataClient) {
+    this.spendClient = spendClient;
     this.userDataClient = userDataClient;
   }
 
@@ -44,7 +44,7 @@ public class SpendController {
   public SpendJson getSpend(@PathVariable("id") String id,
                             @AuthenticationPrincipal Jwt principal) {
     String username = principal.getClaim("sub");
-    return restSpendClient.getSpend(id, username);
+    return spendClient.getSpend(id, username);
   }
 
   @GetMapping("/all")
@@ -52,7 +52,7 @@ public class SpendController {
                                    @RequestParam(required = false) DataFilterValues filterPeriod,
                                    @RequestParam(required = false) CurrencyValues filterCurrency) {
     String username = principal.getClaim("sub");
-    return restSpendClient.getSpends(username, filterPeriod, filterCurrency);
+    return spendClient.getSpends(username, filterPeriod, filterCurrency);
   }
 
   @PostMapping("/add")
@@ -60,7 +60,7 @@ public class SpendController {
   public SpendJson addSpend(@Valid @RequestBody SpendJson spend,
                             @AuthenticationPrincipal Jwt principal) {
     String username = principal.getClaim("sub");
-    return restSpendClient.addSpend(spend.addUsername(username));
+    return spendClient.addSpend(spend.addUsername(username));
   }
 
   @PatchMapping("/edit")
@@ -70,13 +70,13 @@ public class SpendController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id should be present");
     }
     String username = principal.getClaim("sub");
-    return restSpendClient.editSpend(spend.addUsername(username));
+    return spendClient.editSpend(spend.addUsername(username));
   }
 
   @DeleteMapping("/remove")
   public void deleteSpends(@AuthenticationPrincipal Jwt principal,
                            @RequestParam List<String> ids) {
     String username = principal.getClaim("sub");
-    restSpendClient.deleteSpends(username, ids);
+    spendClient.deleteSpends(username, ids);
   }
 }

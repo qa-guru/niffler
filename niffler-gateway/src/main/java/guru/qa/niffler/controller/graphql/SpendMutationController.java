@@ -4,8 +4,8 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.gql.CategoryGqlInput;
 import guru.qa.niffler.model.gql.SpendGqlInput;
+import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.api.GrpcCurrencyClient;
-import guru.qa.niffler.service.api.RestSpendClient;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -21,11 +21,11 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 public class SpendMutationController {
 
-  private final RestSpendClient restSpendClient;
+  private final SpendClient spendClient;
 
   @Autowired
-  public SpendMutationController(RestSpendClient restSpendClient, GrpcCurrencyClient grpcCurrencyClient) {
-    this.restSpendClient = restSpendClient;
+  public SpendMutationController(SpendClient spendClient, GrpcCurrencyClient grpcCurrencyClient) {
+    this.spendClient = spendClient;
   }
 
   @MutationMapping
@@ -34,8 +34,8 @@ public class SpendMutationController {
     final String username = principal.getClaim("sub");
     final SpendJson spendJson = SpendJson.fromSpendInput(input, username);
     return input.id() == null
-        ? restSpendClient.addSpend(spendJson)
-        : restSpendClient.editSpend(spendJson);
+        ? spendClient.addSpend(spendJson)
+        : spendClient.editSpend(spendJson);
   }
 
   @MutationMapping
@@ -44,15 +44,15 @@ public class SpendMutationController {
     final String username = principal.getClaim("sub");
     final CategoryJson categoryJson = CategoryJson.fromCategoryInput(input, username);
     return input.id() == null
-        ? restSpendClient.addCategory(categoryJson)
-        : restSpendClient.updateCategory(categoryJson);
+        ? spendClient.addCategory(categoryJson)
+        : spendClient.updateCategory(categoryJson);
   }
 
   @MutationMapping
   public List<String> deleteSpend(@AuthenticationPrincipal Jwt principal,
                                   @Argument List<String> ids) {
     String username = principal.getClaim("sub");
-    restSpendClient.deleteSpends(username, ids);
+    spendClient.deleteSpends(username, ids);
     return ids;
   }
 }

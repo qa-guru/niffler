@@ -6,8 +6,8 @@ import guru.qa.niffler.ex.IllegalGqlFieldAccessException;
 import guru.qa.niffler.ex.TooManySubQueriesException;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.gql.UserGql;
+import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.UserDataClient;
-import guru.qa.niffler.service.api.RestSpendClient;
 import guru.qa.niffler.service.utils.GqlQueryPaginationAndSort;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -28,12 +28,12 @@ import java.util.List;
 public class UserQueryController {
 
   private final UserDataClient userDataClient;
-  private final RestSpendClient restSpendClient;
+  private final SpendClient spendClient;
 
   @Autowired
-  public UserQueryController(UserDataClient userDataClient, RestSpendClient restSpendClient) {
+  public UserQueryController(UserDataClient userDataClient, SpendClient spendClient) {
     this.userDataClient = userDataClient;
-    this.restSpendClient = restSpendClient;
+    this.spendClient = spendClient;
   }
 
   @SchemaMapping(typeName = "User", field = "friends")
@@ -42,7 +42,7 @@ public class UserQueryController {
                                 @Argument int size,
                                 @Argument @Nullable List<String> sort,
                                 @Argument @Nullable String searchQuery) {
-    return userDataClient.friends(
+    return userDataClient.friendsV2(
         user.username(),
         new GqlQueryPaginationAndSort(page, size, sort).pageable(),
         searchQuery
@@ -56,7 +56,7 @@ public class UserQueryController {
     if (!username.equals(user.username())) {
       throw new IllegalGqlFieldAccessException("Can`t query categories for another user");
     }
-    return restSpendClient.getCategories(username, false);
+    return spendClient.getCategories(username, false);
   }
 
   @QueryMapping
@@ -68,7 +68,7 @@ public class UserQueryController {
                                   @Nonnull DataFetchingEnvironment env) {
     checkSubQueries(env, 2, "friends");
     final String username = principal.getClaim("sub");
-    return userDataClient.allUsers(
+    return userDataClient.allUsersV2(
         username,
         new GqlQueryPaginationAndSort(page, size, sort).pageable(),
         searchQuery
