@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static guru.qa.niffler.model.FriendshipStatus.FRIEND;
 import static guru.qa.niffler.model.FriendshipStatus.INVITE_SENT;
@@ -161,9 +162,18 @@ public class UserService {
     }
     UserEntity currentUser = getRequiredUser(username);
     UserEntity targetUser = getRequiredUser(targetUsername);
-    currentUser.addFriends(FriendshipStatus.PENDING, targetUser);
+    final guru.qa.niffler.model.FriendshipStatus returnedStates;
+    Optional<FriendshipEntity> mayBeInvite = getFriendshipRequest(currentUser, targetUser);
+    if (mayBeInvite.isPresent()) {
+      mayBeInvite.get().setStatus(FriendshipStatus.ACCEPTED);
+      currentUser.addFriends(FriendshipStatus.ACCEPTED, targetUser);
+      returnedStates = FRIEND;
+    } else {
+      currentUser.addFriends(FriendshipStatus.PENDING, targetUser);
+      returnedStates = INVITE_SENT;
+    }
     userRepository.save(currentUser);
-    return UserJson.fromEntity(targetUser, INVITE_SENT);
+    return UserJson.fromEntity(targetUser, returnedStates);
   }
 
   @Transactional
@@ -175,10 +185,7 @@ public class UserService {
     UserEntity currentUser = getRequiredUser(username);
     UserEntity targetUser = getRequiredUser(targetUsername);
 
-    FriendshipEntity invite = currentUser.getFriendshipAddressees()
-        .stream()
-        .filter(fe -> fe.getRequester().equals(targetUser))
-        .findFirst()
+    FriendshipEntity invite = getFriendshipRequest(currentUser, targetUser)
         .orElseThrow(() -> new NotFoundException("Can`t find invitation from username: '" + targetUsername + "'"));
 
     invite.setStatus(FriendshipStatus.ACCEPTED);
@@ -230,5 +237,13 @@ public class UserService {
     return userRepository.findByUsername(username).orElseThrow(
         () -> new NotFoundException("Can`t find user by username: '" + username + "'")
     );
+  }
+
+  @Nonnull
+  private Optional<FriendshipEntity> getFriendshipRequest(@Nonnull UserEntity currentUser, @Nonnull UserEntity targetUser) {
+    return currentUser.getFriendshipAddressees()
+        .stream()
+        .filter(fe -> fe.getRequester().equals(targetUser))
+        .findFirst();
   }
 }
