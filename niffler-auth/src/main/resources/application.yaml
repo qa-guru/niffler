@@ -57,6 +57,7 @@ logging:
     org.springframework.security.oauth2.server.authorization: INFO
     org.apache.catalina.filters.RequestDumperFilter: INFO
     org.springframework.boot.autoconfigure: INFO
+    org.apache.coyote.http11.Http11Processor: INFO
 
 ---
 spring:

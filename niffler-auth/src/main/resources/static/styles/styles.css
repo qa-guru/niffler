@@ -233,6 +233,10 @@ body {
     border: 1px solid var(--color-grey);
 }
 
+.debug-info {
+    margin-top: auto;
+}
+
 @media screen and (max-width: 900px) {
     .content {
         display: flex;

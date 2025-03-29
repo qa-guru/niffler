@@ -1,7 +1,7 @@
 {
-  "name": "niffler-ng-client",
+  "name": "niffler-ng-gql-client",
   "private": true,
-  "version": "2.3.0",
+  "version": "2.3.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -52,6 +52,7 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
+    "vite-plugin-devtools-json": "^0.0.3",
     "vite-plugin-svgr": "^4.2.0"
   }
 }
