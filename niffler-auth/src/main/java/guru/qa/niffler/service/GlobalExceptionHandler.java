@@ -4,6 +4,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,12 +15,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.Arrays;
+import java.util.List;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
   public static final String ERROR_MESSAGE_PARAM = "errorMessage";
   public static final String ORIGINAL_CODE_PARAM = "originalCode";
   public static final String SESSION_ID_PARAM = "sessionId";
+  public static final String COOKIES_PARAM = "cookies";
 
   private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
@@ -52,13 +57,22 @@ public class GlobalExceptionHandler {
                               @Nonnull Exception ex,
                               @Nonnull HttpStatus status) {
     if (request != null) {
-      Cookie[] cookies = request.getCookies();
+      final Cookie[] cookies = request.getCookies();
       if (cookies != null) {
-        for (Cookie cookie : cookies) {
-          LOG.info("### Cookie: {} = {}", cookie.getName(), cookie.getValue());
-        }
+        List<String> cookieList = Arrays.stream(cookies)
+            .map(cookie -> {
+              LOG.info("### Cookie: {} = {}", cookie.getName(), cookie.getValue());
+              return cookie.getName() + " = " + cookie.getValue();
+            })
+            .toList();
+        redirectAttributes.addFlashAttribute(COOKIES_PARAM, cookieList);
+      } else {
+        redirectAttributes.addFlashAttribute(COOKIES_PARAM, List.of("No cookies found"));
       }
-      redirectAttributes.addFlashAttribute(SESSION_ID_PARAM, request.getSession().getId());
+      final HttpSession httpSession = request.getSession(false);
+      if (httpSession != null) {
+        redirectAttributes.addFlashAttribute(SESSION_ID_PARAM, httpSession.getId());
+      }
     }
     redirectAttributes.addFlashAttribute(ERROR_MESSAGE_PARAM, ex.getMessage());
     redirectAttributes.addFlashAttribute(ORIGINAL_CODE_PARAM, status.value());

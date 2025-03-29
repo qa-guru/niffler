@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import static guru.qa.niffler.service.GlobalExceptionHandler.COOKIES_PARAM;
 import static guru.qa.niffler.service.GlobalExceptionHandler.ERROR_MESSAGE_PARAM;
 import static guru.qa.niffler.service.GlobalExceptionHandler.ORIGINAL_CODE_PARAM;
 import static guru.qa.niffler.service.GlobalExceptionHandler.SESSION_ID_PARAM;
@@ -34,9 +35,19 @@ public class ErrorAuthController implements ErrorController {
     final Object originalError = model.getAttribute(ERROR_MESSAGE_PARAM);
 
     final String message;
-    final int status = originalCode != null  ? Integer.parseInt(originalCode.toString()) : response.getStatus();
+    int status;
 
-    Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
+    if (originalCode != null) {
+      try {
+        status = Integer.parseInt(originalCode.toString());
+      } catch (NumberFormatException e) {
+        status = response.getStatus();
+      }
+    } else {
+      status = response.getStatus();
+    }
+
+    final Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
     if (originalError != null) {
       message = originalError.toString();
     } else if (throwable != null) {
@@ -48,7 +59,6 @@ public class ErrorAuthController implements ErrorController {
     model.addAttribute("status", status);
     model.addAttribute("frontUri", nifflerFrontUri + "/main");
     model.addAttribute("error", message);
-    model.addAttribute("sessionId", model.getAttribute(SESSION_ID_PARAM));
     return ERROR_VIEW_NAME;
   }
 }

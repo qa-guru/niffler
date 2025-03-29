@@ -29,12 +29,13 @@
                     <p class="header__additional">
                         Let`s start from the <a class="form__link" th:href="@{|${frontUri}|}">Niffler main page</a>
                     </p>
-                    <div th:if="${sessionId}">
-                        <p class="header__additional">
-                            <div>DEBUG session_id: </div>
-                            <div th:text="${sessionId}"></div>
-                        </p>
-                    </div>
+                </div>
+                <div th:if="${sessionId} or ${not #lists.isEmpty(cookies)}" class="debug-info">
+                    <p class="header__additional">
+                    <div>DEBUG INFO: </div>
+                    <div th:text="'Session id = ' + ${sessionId}"></div>
+                    <li th:each="cookie : ${cookies}" th:text="${cookie}"></li>
+                    </p>
                 </div>
             </div>
         </section>

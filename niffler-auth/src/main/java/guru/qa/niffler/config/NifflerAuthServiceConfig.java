@@ -113,7 +113,7 @@ public class NifflerAuthServiceConfig {
                         logout.logoutResponseHandler(
                             new OidcCookiesLogoutAuthenticationSuccessHandler(
                                 new OidcLogoutAuthenticationSuccessHandler(),
-                                "JSESSIONID", "XSRF-TOKEN"
+                                "XSRF-TOKEN"
                             )
                         )
                 )
