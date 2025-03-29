@@ -29,6 +29,12 @@
                     <p class="header__additional">
                         Let`s start from the <a class="form__link" th:href="@{|${frontUri}|}">Niffler main page</a>
                     </p>
+                    <div th:if="${sessionId}">
+                        <p class="header__additional">
+                            <div>DEBUG session_id: </div>
+                            <div th:text="${sessionId}"></div>
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
