@@ -2,6 +2,7 @@ package guru.qa.niffler.config;
 
 import guru.qa.niffler.service.cors.CookieCsrfFilter;
 import guru.qa.niffler.service.cors.CorsCustomizer;
+import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     corsCustomizer.corsCustomizer(http);
 
     return http.authorizeHttpRequests(customizer -> customizer
+            .dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
             .requestMatchers(
                 antMatcher("/register"),
                 antMatcher("/error"),
