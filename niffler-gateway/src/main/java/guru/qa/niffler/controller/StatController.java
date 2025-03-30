@@ -33,7 +33,7 @@ public class StatController {
                                                @RequestParam(required = false) CurrencyValues statCurrency,
                                                @RequestParam(required = false) CurrencyValues filterCurrency,
                                                @RequestParam(required = false) DataFilterValues filterPeriod) {
-    String username = principal.getClaim("sub");
-    return statisticAggregator.enrichStatisticRequest(username, statCurrency, filterCurrency, filterPeriod);
+    final String principalUsername = principal.getClaim("sub");
+    return statisticAggregator.enrichStatisticRequest(principalUsername, statCurrency, filterCurrency, filterPeriod);
   }
 }

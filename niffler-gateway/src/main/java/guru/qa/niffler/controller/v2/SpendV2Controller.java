@@ -35,7 +35,7 @@ public class SpendV2Controller {
                                    @RequestParam(required = false) DataFilterValues filterPeriod,
                                    @RequestParam(required = false) CurrencyValues filterCurrency,
                                    @RequestParam(required = false) String searchQuery) {
-    String username = principal.getClaim("sub");
-    return spendClient.getSpendsV2(username, pageable, filterPeriod, filterCurrency, searchQuery);
+    final String principalUsername = principal.getClaim("sub");
+    return spendClient.getSpendsV2(principalUsername, pageable, filterPeriod, filterCurrency, searchQuery);
   }
 }

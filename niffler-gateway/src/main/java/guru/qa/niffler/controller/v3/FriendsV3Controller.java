@@ -37,7 +37,7 @@ public class FriendsV3Controller {
   public PagedModel<UserJson> friends(@AuthenticationPrincipal Jwt principal,
                                       @PageableDefault Pageable pageable,
                                       @RequestParam(required = false) String searchQuery) {
-    String username = principal.getClaim("sub");
-    return userDataClient.friendsV3(username, pageable, searchQuery);
+    final String principalUsername = principal.getClaim("sub");
+    return userDataClient.friendsV3(principalUsername, pageable, searchQuery);
   }
 }

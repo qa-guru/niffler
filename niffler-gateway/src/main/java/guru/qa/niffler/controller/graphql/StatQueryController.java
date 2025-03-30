@@ -28,9 +28,9 @@ public class StatQueryController {
                               @Argument CurrencyValues statCurrency,
                               @Argument CurrencyValues filterCurrency,
                               @Argument DataFilterValues filterPeriod) {
-    String username = principal.getClaim("sub");
+    final String principalUsername = principal.getClaim("sub");
     return statisticAggregator.enrichStatisticRequestV2(
-        username,
+        principalUsername,
         statCurrency,
         filterCurrency,
         filterPeriod

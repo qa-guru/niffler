@@ -37,7 +37,7 @@ public class UserV3Controller {
   public PagedModel<UserJson> allUsers(@AuthenticationPrincipal Jwt principal,
                                        @PageableDefault Pageable pageable,
                                        @RequestParam(required = false) String searchQuery) {
-    String username = principal.getClaim("sub");
-    return userDataClient.allUsersV3(username, pageable, searchQuery);
+    final String principalUsername = principal.getClaim("sub");
+    return userDataClient.allUsersV3(principalUsername, pageable, searchQuery);
   }
 }

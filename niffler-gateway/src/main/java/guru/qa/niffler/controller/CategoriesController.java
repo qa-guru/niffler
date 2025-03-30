@@ -33,30 +33,30 @@ public class CategoriesController {
   @GetMapping("/all")
   public List<CategoryJson> getCategories(@AuthenticationPrincipal Jwt principal,
                                           @RequestParam(required = false, defaultValue = "false") boolean excludeArchived) {
-    String username = principal.getClaim("sub");
-    return spendClient.getCategories(username, excludeArchived);
+    final String principalUsername = principal.getClaim("sub");
+    return spendClient.getCategories(principalUsername, excludeArchived);
   }
 
   @PostMapping("/add")
   public CategoryJson addCategory(@AuthenticationPrincipal Jwt principal,
                                   @Valid @RequestBody CategoryJson category) {
-    String username = principal.getClaim("sub");
+    final String principalUsername = principal.getClaim("sub");
     return spendClient.addCategory(new CategoryJson(
         category.id(),
         category.name(),
-        username,
+        principalUsername,
         category.archived()
     ));
   }
 
   @PatchMapping("/update")
   public CategoryJson updateCategory(@AuthenticationPrincipal Jwt principal,
-                                     @RequestBody CategoryJson category) {
-    String username = principal.getClaim("sub");
+                                     @Valid @RequestBody CategoryJson category) {
+    final String principalUsername = principal.getClaim("sub");
     return spendClient.updateCategory(new CategoryJson(
         category.id(),
         category.name(),
-        username,
+        principalUsername,
         category.archived()
     ));
   }

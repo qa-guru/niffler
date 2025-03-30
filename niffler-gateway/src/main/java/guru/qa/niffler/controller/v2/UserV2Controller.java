@@ -37,7 +37,7 @@ public class UserV2Controller {
   public Page<UserJson> allUsers(@AuthenticationPrincipal Jwt principal,
                                  @PageableDefault Pageable pageable,
                                  @RequestParam(required = false) String searchQuery) {
-    String username = principal.getClaim("sub");
-    return userDataClient.allUsersV2(username, pageable, searchQuery);
+    final String principalUsername = principal.getClaim("sub");
+    return userDataClient.allUsersV2(principalUsername, pageable, searchQuery);
   }
 }

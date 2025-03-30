@@ -8,11 +8,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = UnixEpochOrLaterValidator.class)
+@Constraint(validatedBy = PhotoStringValidator.class)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UnixEpochOrLater {
-  String message() default "The string is not a base64 image string";
+public @interface IsPhotoString {
+  String message() default "Photo must be a base64 string";
   Class<?>[] groups() default {};
   Class<? extends Payload>[] payload() default {};
 }

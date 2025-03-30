@@ -3,7 +3,9 @@ package guru.qa.niffler.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.model.gql.SpendGqlInput;
 import guru.qa.niffler.validation.UnixEpochOrLater;
+import guru.qa.niffler.validation.IsUuidString;
 import jakarta.annotation.Nonnull;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
@@ -19,7 +21,7 @@ public record SpendJson(
     Date spendDate,
     @JsonProperty("category")
     @NotNull(message = "Category can not be null")
-    CategoryJson category,
+    @Valid CategoryJson category,
     @JsonProperty("currency")
     @NotNull(message = "Currency can not be null")
     CurrencyValues currency,

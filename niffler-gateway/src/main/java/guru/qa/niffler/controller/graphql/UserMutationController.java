@@ -30,15 +30,15 @@ public class UserMutationController {
 
   @MutationMapping
   public UserGql friendship(@AuthenticationPrincipal Jwt principal,
-                            @Argument FriendshipGqlInput input) {
-    String username = principal.getClaim("sub");
+                            @Valid @Argument FriendshipGqlInput input) {
+    final String principalUsername = principal.getClaim("sub");
     return switch (input.action()) {
-      case ADD -> UserGql.fromUserJson(userDataClient.sendInvitation(username, input.username()));
-      case ACCEPT -> UserGql.fromUserJson(userDataClient.acceptInvitation(username, input.username()));
-      case REJECT -> UserGql.fromUserJson(userDataClient.declineInvitation(username, input.username()));
+      case ADD -> UserGql.fromUserJson(userDataClient.sendInvitation(principalUsername, input.username()));
+      case ACCEPT -> UserGql.fromUserJson(userDataClient.acceptInvitation(principalUsername, input.username()));
+      case REJECT -> UserGql.fromUserJson(userDataClient.declineInvitation(principalUsername, input.username()));
       case DELETE -> {
-        userDataClient.removeFriend(username, input.username());
-        yield UserGql.fromUserJson(userDataClient.currentUser(username));
+        userDataClient.removeFriend(principalUsername, input.username());
+        yield UserGql.fromUserJson(userDataClient.currentUser(principalUsername));
       }
     };
   }
@@ -46,10 +46,10 @@ public class UserMutationController {
   @MutationMapping
   public UserGql user(@AuthenticationPrincipal Jwt principal,
                       @Argument @Valid UserGqlInput input) {
-    String username = principal.getClaim("sub");
+    final String principalUsername = principal.getClaim("sub");
     return UserGql.fromUserJson(userDataClient.updateUserInfo(new UserJson(
         null,
-        username,
+        principalUsername,
         null,
         null,
         input.fullname(),

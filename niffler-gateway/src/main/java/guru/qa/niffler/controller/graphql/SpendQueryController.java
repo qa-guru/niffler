@@ -7,6 +7,7 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.api.GrpcCurrencyClient;
 import guru.qa.niffler.service.utils.GqlQueryPaginationAndSort;
+import guru.qa.niffler.validation.IsUuidString;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -51,11 +52,11 @@ public class SpendQueryController {
 
   @QueryMapping
   public SpendJson spend(@AuthenticationPrincipal Jwt principal,
-                         @Argument String id) {
-    final String username = principal.getClaim("sub");
+                         @Argument @IsUuidString String id) {
+    final String principalUsername = principal.getClaim("sub");
     return spendClient.getSpend(
         id,
-        username
+        principalUsername
     );
   }
 
