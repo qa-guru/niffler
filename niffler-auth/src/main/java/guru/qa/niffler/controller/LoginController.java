@@ -2,9 +2,11 @@ package guru.qa.niffler.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 public class LoginController {
@@ -21,10 +23,16 @@ public class LoginController {
 
   @GetMapping("/login")
   public String login(HttpSession session) {
-    DefaultSavedRequest savedRequest = (DefaultSavedRequest) session.getAttribute(PRE_REQ_ATTR);
+    final DefaultSavedRequest savedRequest = (DefaultSavedRequest) session.getAttribute(PRE_REQ_ATTR);
     if (savedRequest == null || !savedRequest.getRequestURI().equals(PRE_REQ_URI)) {
       return "redirect:" + nifflerFrontUri;
     }
     return LOGIN_VIEW_NAME;
+  }
+
+  @GetMapping("/")
+  @ResponseStatus(HttpStatus.FOUND)
+  public String root() {
+    return "redirect:/login";
   }
 }
