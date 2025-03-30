@@ -1,7 +1,6 @@
 import {Loader} from "../../components/Loader";
 import {useEffect} from "react";
-import {clearSession, codeChallengeFromLocalStorage, initLocalStorage} from "../../api/authUtils.ts";
-import {authorizeUrl} from "../../api/url/auth.ts";
+import {clearSession, initLocalStorageAndRedirectToAuth} from "../../api/authUtils.ts";
 import graphqlClient from "../../api/graphqlClient.ts";
 
 export const LogoutPage = () => {
@@ -9,8 +8,7 @@ export const LogoutPage = () => {
     useEffect(() => {
         clearSession();
         graphqlClient.cache.reset();
-        initLocalStorage();
-        window.location.replace(authorizeUrl(codeChallengeFromLocalStorage()));
+        initLocalStorageAndRedirectToAuth();
     }, []);
 
     return (

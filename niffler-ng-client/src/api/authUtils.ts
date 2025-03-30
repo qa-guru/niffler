@@ -2,6 +2,7 @@ import * as crypto from "crypto-js";
 import sha256 from "crypto-js/sha256";
 import Base64 from "crypto-js/enc-base64";
 import {JsonTokens} from "../types/JsonTokens.ts";
+import {authorizeUrl} from "./url/auth.ts";
 
 const base64Url = (str: string | crypto.lib.WordArray) => {
     return str.toString(Base64).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
@@ -49,11 +50,12 @@ const revokeTokenFromUrlEncodedParams = (token: string) => {
     });
 }
 
-const initLocalStorage = () => {
+const initLocalStorageAndRedirectToAuth = () => {
     const cv = codeVerifier();
     localStorage.setItem('codeVerifier', cv);
     const cc = codeChallenge(cv);
     localStorage.setItem('codeChallenge', cc);
+    window.location.replace(authorizeUrl(cc));
 }
 
 const persistTokens = (jsonTokenResponse: JsonTokens) => {
@@ -79,5 +81,5 @@ export {
     revokeTokenFromUrlEncodedParams,
     clearSession,
     persistTokens,
-    initLocalStorage
+    initLocalStorageAndRedirectToAuth
 };
