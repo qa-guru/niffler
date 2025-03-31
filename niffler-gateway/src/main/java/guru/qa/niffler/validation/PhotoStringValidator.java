@@ -2,6 +2,7 @@ package guru.qa.niffler.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Base64;
 import java.util.Set;
@@ -13,7 +14,7 @@ public class PhotoStringValidator implements ConstraintValidator<IsPhotoString, 
 
   @Override
   public boolean isValid(String string, ConstraintValidatorContext context) {
-    if (string == null) {
+    if (StringUtils.isEmpty(string)) {
       return true;
     }
     if (!string.startsWith("data:image/")) {
