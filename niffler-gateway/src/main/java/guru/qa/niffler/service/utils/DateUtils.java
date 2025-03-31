@@ -19,7 +19,7 @@ public class DateUtils {
   }
 
   public static @Nonnull
-  String dateFormat( Date date) {
+  String dateFormat(Date date) {
     return dateFormat(date, DEFAULT_DATE_FORMAT);
   }
 

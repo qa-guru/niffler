@@ -10,10 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import static guru.qa.niffler.service.GlobalExceptionHandler.COOKIES_PARAM;
 import static guru.qa.niffler.service.GlobalExceptionHandler.ERROR_MESSAGE_PARAM;
 import static guru.qa.niffler.service.GlobalExceptionHandler.ORIGINAL_CODE_PARAM;
-import static guru.qa.niffler.service.GlobalExceptionHandler.SESSION_ID_PARAM;
 
 @Controller
 public class ErrorAuthController implements ErrorController {

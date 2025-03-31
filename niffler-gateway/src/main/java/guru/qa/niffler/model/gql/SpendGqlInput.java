@@ -2,7 +2,6 @@ package guru.qa.niffler.model.gql;
 
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.validation.UnixEpochOrLater;
-import guru.qa.niffler.validation.IsUuidString;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;

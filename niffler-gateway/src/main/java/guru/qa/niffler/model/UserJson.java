@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.validation.IsPhotoString;
-import guru.qa.niffler.validation.IsUuidString;
 import guru.qa.niffler.validation.IsValidUsername;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Size;

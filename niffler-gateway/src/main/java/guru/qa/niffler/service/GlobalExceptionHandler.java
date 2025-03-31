@@ -9,7 +9,6 @@ import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -26,8 +25,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.springframework.ws.client.WebServiceIOException;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static guru.qa.niffler.service.utils.ValidationExceptionMessageResolver.resolveHandlerMethodValidationException;
 import static guru.qa.niffler.service.utils.ValidationExceptionMessageResolver.resolveMethodArgumentNotValidException;

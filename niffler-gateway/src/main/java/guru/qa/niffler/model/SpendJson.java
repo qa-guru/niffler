@@ -3,7 +3,6 @@ package guru.qa.niffler.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.model.gql.SpendGqlInput;
 import guru.qa.niffler.validation.UnixEpochOrLater;
-import guru.qa.niffler.validation.IsUuidString;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;

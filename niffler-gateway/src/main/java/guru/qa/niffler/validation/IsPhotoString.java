@@ -9,10 +9,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = PhotoStringValidator.class)
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface IsPhotoString {
-  String message() default "Photo must be a base64 string";
+  String message() default "Photo must be a base64 string in allowed formats: 'jpeg', 'jpg', 'png', 'bmp', 'wbmp', 'gif'";
+
   Class<?>[] groups() default {};
+
   Class<? extends Payload>[] payload() default {};
 }

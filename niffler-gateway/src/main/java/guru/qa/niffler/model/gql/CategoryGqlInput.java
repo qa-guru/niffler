@@ -1,6 +1,5 @@
 package guru.qa.niffler.model.gql;
 
-import guru.qa.niffler.validation.IsUuidString;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 

@@ -2,21 +2,17 @@ package guru.qa.niffler.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+@Constraint(validatedBy = NoWhitespaceValidator.class)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
-@Constraint(validatedBy = {})
 @Retention(RetentionPolicy.RUNTIME)
-@NotBlank()
-@Size(min = 3, max = 50)
-public @interface IsValidUsername {
-  String message() default "Allowed username length should be from 3 to 50 characters";
+public @interface NoWhitespace {
+  String message() default "String must not contain whitespace";
 
   Class<?>[] groups() default {};
 

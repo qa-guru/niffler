@@ -32,7 +32,7 @@
                 </div>
                 <div th:if="${sessionId} or ${not #lists.isEmpty(cookies)}" class="debug-info">
                     <p class="header__additional">
-                    <div>DEBUG INFO: </div>
+                    <div>DEBUG INFO:</div>
                     <div th:text="'Session id = ' + ${sessionId}"></div>
                     <li th:each="cookie : ${cookies}" th:text="${cookie}"></li>
                     </p>
