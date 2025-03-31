@@ -8,11 +8,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = UnixEpochOrLaterValidator.class)
+@Constraint(validatedBy = NoWhitespaceValidator.class)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UnixEpochOrLater {
-  String message() default "The string is not a base64 image string";
+public @interface NoWhitespace {
+  String message() default "String must not contain whitespace";
 
   Class<?>[] groups() default {};
 

@@ -4,10 +4,13 @@ import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class HttpQueryPaginationAndSort {
   private final Pageable pageable;
 
-  public HttpQueryPaginationAndSort(@Nonnull Pageable pageable) {
+  public HttpQueryPaginationAndSort(Pageable pageable) {
     this.pageable = pageable;
   }
 

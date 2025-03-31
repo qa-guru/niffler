@@ -4,6 +4,7 @@ package guru.qa.niffler.controller;
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
+import guru.qa.niffler.validation.IsValidUsername;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,14 +37,14 @@ public class FriendsController {
   @GetMapping("/all")
   public List<UserJson> friends(@AuthenticationPrincipal Jwt principal,
                                 @RequestParam(required = false) String searchQuery) {
-    String username = principal.getClaim("sub");
-    return userDataClient.friends(username, searchQuery);
+    final String principalUsername = principal.getClaim("sub");
+    return userDataClient.friends(principalUsername, searchQuery);
   }
 
   @DeleteMapping("/remove")
   public void removeFriend(@AuthenticationPrincipal Jwt principal,
-                           @RequestParam("username") String targetUsername) {
-    String username = principal.getClaim("sub");
-    userDataClient.removeFriend(username, targetUsername);
+                           @RequestParam("username") @IsValidUsername String username) {
+    final String principalUsername = principal.getClaim("sub");
+    userDataClient.removeFriend(principalUsername, username);
   }
 }

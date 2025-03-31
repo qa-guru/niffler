@@ -1,12 +1,10 @@
 package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import guru.qa.niffler.validation.IsValidUsername;
 
 public record FriendJson(
-    @NotBlank(message = "Username can not be blank")
-    @Size(max = 50, message = "Username can`t be longer than 50 characters")
+    @IsValidUsername
     @JsonProperty("username")
     String username) {
 

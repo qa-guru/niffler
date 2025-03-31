@@ -3,6 +3,8 @@ package guru.qa.niffler.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
+import guru.qa.niffler.validation.IsPhotoString;
+import guru.qa.niffler.validation.IsValidUsername;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Size;
 import jaxb.userdata.Currency;
@@ -14,6 +16,7 @@ import java.util.UUID;
 public record UserJson(
     @JsonProperty("id")
     UUID id,
+    @IsValidUsername
     @JsonProperty("username")
     String username,
     @JsonProperty("firstname")
@@ -28,8 +31,10 @@ public record UserJson(
     @JsonProperty("currency")
     CurrencyValues currency,
     @JsonProperty("photo")
+    @IsPhotoString
     @Size(max = NifflerGatewayServiceConfig.ONE_MB)
     String photo,
+    @IsPhotoString
     @JsonProperty("photoSmall")
     String photoSmall,
     @JsonProperty("friendshipStatus")

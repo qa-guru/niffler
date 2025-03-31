@@ -36,21 +36,21 @@ public class UserController {
 
   @GetMapping("/current")
   public UserJson currentUser(@AuthenticationPrincipal Jwt principal) {
-    String username = principal.getClaim("sub");
-    return userDataClient.currentUser(username);
+    final String principalUsername = principal.getClaim("sub");
+    return userDataClient.currentUser(principalUsername);
   }
 
   @GetMapping("/all")
   public List<UserJson> allUsers(@AuthenticationPrincipal Jwt principal,
                                  @RequestParam(required = false) String searchQuery) {
-    String username = principal.getClaim("sub");
-    return userDataClient.allUsers(username, searchQuery);
+    final String principalUsername = principal.getClaim("sub");
+    return userDataClient.allUsers(principalUsername, searchQuery);
   }
 
   @PostMapping("/update")
   public UserJson updateUserInfo(@AuthenticationPrincipal Jwt principal,
                                  @Valid @RequestBody UserJson user) {
-    String username = principal.getClaim("sub");
-    return userDataClient.updateUserInfo(user.addUsername(username));
+    final String principalUsername = principal.getClaim("sub");
+    return userDataClient.updateUserInfo(user.addUsername(principalUsername));
   }
 }

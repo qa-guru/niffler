@@ -80,7 +80,7 @@ public class RestUserDataClient implements UserDataClient {
   public Page<UserJson> allUsersV2(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
     ResponseEntity<RestPage<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v2/users/all?username={username}&searchQuery={searchQuery}"
-        + new HttpQueryPaginationAndSort(pageable),
+            + new HttpQueryPaginationAndSort(pageable),
         HttpMethod.GET,
         null,
         new ParameterizedTypeReference<RestPage<UserJson>>() {
@@ -129,7 +129,7 @@ public class RestUserDataClient implements UserDataClient {
   public Page<UserJson> friendsV2(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
     ResponseEntity<RestPage<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v2/friends/all?username={username}&searchQuery={searchQuery}"
-        + new HttpQueryPaginationAndSort(pageable),
+            + new HttpQueryPaginationAndSort(pageable),
         HttpMethod.GET,
         null,
         new ParameterizedTypeReference<RestPage<UserJson>>() {

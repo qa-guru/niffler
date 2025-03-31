@@ -52,11 +52,11 @@ public class UserQueryController {
   @SchemaMapping(typeName = "User", field = "categories")
   public List<CategoryJson> categories(@AuthenticationPrincipal Jwt principal,
                                        UserGql user) {
-    final String username = principal.getClaim("sub");
-    if (!username.equals(user.username())) {
+    final String principalUsername = principal.getClaim("sub");
+    if (!principalUsername.equals(user.username())) {
       throw new IllegalGqlFieldAccessException("Can`t query categories for another user");
     }
-    return spendClient.getCategories(username, false);
+    return spendClient.getCategories(principalUsername, false);
   }
 
   @QueryMapping
@@ -67,9 +67,9 @@ public class UserQueryController {
                                   @Argument @Nullable String searchQuery,
                                   @Nonnull DataFetchingEnvironment env) {
     checkSubQueries(env, 2, "friends");
-    final String username = principal.getClaim("sub");
+    final String principalUsername = principal.getClaim("sub");
     return userDataClient.allUsersV2(
-        username,
+        principalUsername,
         new GqlQueryPaginationAndSort(page, size, sort).pageable(),
         searchQuery
     ).map(UserGql::fromUserJson);
@@ -79,9 +79,9 @@ public class UserQueryController {
   public UserGql user(@AuthenticationPrincipal Jwt principal,
                       @Nonnull DataFetchingEnvironment env) {
     checkSubQueries(env, 2, "friends");
-    final String username = principal.getClaim("sub");
+    final String principalUsername = principal.getClaim("sub");
     return UserGql.fromUserJson(
-        userDataClient.currentUser(username)
+        userDataClient.currentUser(principalUsername)
     );
   }
 
