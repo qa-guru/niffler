@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
     flags = {Pattern.Flag.CASE_INSENSITIVE}
 )
 public @interface IsUuidString {
-  String message() default "ID mus be in UUID format";
+  String message() default "ID must be in UUID format";
 
   Class<?>[] groups() default {};
 
