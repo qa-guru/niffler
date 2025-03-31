@@ -32,9 +32,10 @@ import static java.util.Objects.requireNonNull;
 
 @RestControllerAdvice
 @ParametersAreNonnullByDefault
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(RestExceptionHandler.class);
+  private static final String ENTITY_VALIDATION_ERROR = "Entity validation error";
 
   @Value("${spring.application.name}")
   private String appName;
@@ -47,7 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity
         .status(status)
         .body(new ErrorJson(
-            appName + ": Entity validation error",
+            appName + ": " + ENTITY_VALIDATION_ERROR,
             HttpStatus.resolve(status.value()).getReasonPhrase(),
             status.value(),
             resolveMethodArgumentNotValidException(ex),
@@ -63,7 +64,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity
         .status(status)
         .body(new ErrorJson(
-            appName + ": Entity validation error",
+            appName + ": " + ENTITY_VALIDATION_ERROR,
             requireNonNull(HttpStatus.resolve(status.value())).getReasonPhrase(),
             status.value(),
             resolveHandlerMethodValidationException(ex),
@@ -109,7 +110,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   public @Nonnull ResponseEntity<ErrorJson> handleConstraintViolationException(RuntimeException ex,
                                                                                HttpServletRequest request) {
     LOG.warn("### Resolve Validation Exception in @RestControllerAdvice ", ex);
-    return withStatus("Failed to collect data", HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    return withStatus(ENTITY_VALIDATION_ERROR, HttpStatus.BAD_REQUEST, ex.getMessage(), request);
   }
 
   @ExceptionHandler(Exception.class)
