@@ -91,7 +91,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                 }
             };
             apiClient.addSpend(data, {
-                onSuccess: (_data) => {
+                onSuccess: () => {
                     snackbar.showSnackBar("New spending is successfully created", "success");
                     navigate("/main");
                     setSaveButtonLoading(false);
@@ -122,7 +122,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                 }
             };
             apiClient.editSpend(data, {
-                onSuccess: (_data) => {
+                onSuccess: () => {
                     snackbar.showSnackBar(`Spending is edited successfully`, "success");
                     setSaveButtonLoading(false);
                     navigate("/main");
@@ -253,6 +253,13 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                                 ...formData,
                                 spendDate: {...formData.spendDate, value: dayjs(newDate)}
                             })}
+                            slotProps={{
+                                textField: {
+                                    helperText: formData.spendDate.error
+                                        ? <span className="input__helper-text">{formData.spendDate.errorMessage}</span>
+                                        : null,
+                                },
+                            }}
                         />
                     </LocalizationProvider>
                 </Grid>

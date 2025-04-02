@@ -252,6 +252,13 @@ export const FormComponent: FC<FormComponentInterface> = ({
                                 ...formData,
                                 spendDate: {...formData.spendDate, value: dayjs(newDate)}
                             })}
+                            slotProps={{
+                                textField: {
+                                    helperText: formData.spendDate.error
+                                        ? <span className="input__helper-text">{formData.spendDate.errorMessage}</span>
+                                        : null,
+                                },
+                            }}
                         />
                     </LocalizationProvider>
                 </Grid>

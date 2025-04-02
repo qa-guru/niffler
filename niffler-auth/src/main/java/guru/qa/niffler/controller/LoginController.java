@@ -3,6 +3,7 @@ package guru.qa.niffler.controller;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,10 @@ public class LoginController {
 
   @GetMapping("/")
   @ResponseStatus(HttpStatus.FOUND)
-  public String root() {
-    return "redirect:/login";
+  public String root(Authentication authentication) {
+    if (authentication != null && authentication.isAuthenticated()) {
+      return "redirect:" + nifflerFrontUri;
+    }
+    return "redirect:/" + LOGIN_VIEW_NAME;
   }
 }

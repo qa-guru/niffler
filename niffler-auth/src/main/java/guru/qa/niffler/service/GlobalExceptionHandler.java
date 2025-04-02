@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
                               @Nonnull RedirectAttributes redirectAttributes,
                               @Nonnull Exception ex,
                               @Nonnull HttpStatus status) {
-    if (request != null) {
+    if (LOG.isDebugEnabled() && request != null) {
       final Cookie[] cookies = request.getCookies();
       if (cookies != null) {
         List<String> cookieList = Arrays.stream(cookies)
@@ -74,6 +74,7 @@ public class GlobalExceptionHandler {
         redirectAttributes.addFlashAttribute(SESSION_ID_PARAM, httpSession.getId());
       }
     }
+
     redirectAttributes.addFlashAttribute(ERROR_MESSAGE_PARAM, ex.getMessage());
     redirectAttributes.addFlashAttribute(ORIGINAL_CODE_PARAM, status.value());
   }
