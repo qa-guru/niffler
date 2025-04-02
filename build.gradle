@@ -25,7 +25,7 @@ subprojects {
     ext {
         dockerHubName = "qaguru"
 
-        lombokVersion = '1.18.36'
+        lombokVersion = '1.18.38'
         springKafkaVersion = '3.3.4'
         springVaultVersion = '4.2.1'
         springOpenApiVersion = '2.8.6'
