@@ -5,7 +5,7 @@ services:
     pull_policy: always
     environment:
       - VAULT_TOKEN=${VAULT_TOKEN}
-      - JAVA_TOOL_OPTIONS="-Xms512M -Xmx512M"
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=1024m -XX:MaxHeapSize=1024m
     ports:
       - 9000:9000
     healthcheck:
@@ -23,7 +23,7 @@ services:
     pull_policy: always
     environment:
       - VAULT_TOKEN=${VAULT_TOKEN}
-      - JAVA_TOOL_OPTIONS="-Xms384M -Xmx384M"
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
     ports:
       - 8091:8091
       - 8092:8092
@@ -37,7 +37,7 @@ services:
     pull_policy: always
     environment:
       - VAULT_TOKEN=${VAULT_TOKEN}
-      - JAVA_TOOL_OPTIONS="-Xms512M -Xmx512M"
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
     ports:
       - 8090:8090
     healthcheck:
@@ -58,7 +58,7 @@ services:
     pull_policy: always
     environment:
       - VAULT_TOKEN=${VAULT_TOKEN}
-      - JAVA_TOOL_OPTIONS="-Xms512M -Xmx512M"
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
     ports:
       - 8093:8093
     restart: always
@@ -71,7 +71,7 @@ services:
     pull_policy: always
     environment:
       - VAULT_TOKEN=${VAULT_TOKEN}
-      - JAVA_TOOL_OPTIONS="-Xms512M -Xmx512M"
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
     ports:
       - 8089:8089
     restart: always

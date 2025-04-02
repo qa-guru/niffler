@@ -55,7 +55,7 @@ services:
     ports:
       - 9000:9000
     environment:
-      - JAVA_TOOL_OPTIONS="-Xms384M -Xmx384M"
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=512m -XX:MaxHeapSize=768m
     healthcheck:
       test: "wget --spider http://localhost:9000/actuator/health || exit 1"
       interval: 5s
@@ -77,7 +77,7 @@ services:
       - 8091:8091
       - 8092:8092
     environment:
-      - JAVA_TOOL_OPTIONS="-Xms256M -Xmx256M"
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
     restart: always
     depends_on:
       niffler-all-db:
@@ -91,7 +91,7 @@ services:
     ports:
       - 8090:8090
     environment:
-      - JAVA_TOOL_OPTIONS="-Xms384M -Xmx384M"
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
     healthcheck:
       test: "wget --spider http://localhost:8090/actuator/health || exit 1"
       interval: 5s
@@ -110,7 +110,7 @@ services:
     ports:
       - 8093:8093
     environment:
-      - JAVA_TOOL_OPTIONS="-Xms384M -Xmx384M"
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
     restart: always
     depends_on:
       niffler-all-db:
@@ -124,7 +124,7 @@ services:
     ports:
       - 8089:8089
     environment:
-      - JAVA_TOOL_OPTIONS="-Xms384M -Xmx384M"
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
     restart: always
     depends_on:
       auth.niffler.dc:
