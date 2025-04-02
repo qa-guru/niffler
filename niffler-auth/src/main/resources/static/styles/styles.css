@@ -94,8 +94,16 @@ html, body {
     position: relative;
     width: 100%;
     height: 100%;
-    background: none;
-    overflow: hidden;
+    background: linear-gradient(
+            to bottom,
+            #000115,
+            #020423 20%,
+            #060E30 35%,
+            #0A1839 50%,
+            #121F53 65%,
+            #1C3E70 80%,
+            #21548F 95%
+    );
 }
 
 .main__hero::before {
@@ -105,12 +113,11 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url("./../images/forest-low.svg");
-    background-position: center;
-    background-size: cover;
+    background: url('./../images/forest-low.svg') center/cover no-repeat;
     filter: blur(5px);
     opacity: 1;
-    transition: opacity 1s ease-in-out;
+    z-index: 1;
+    transition: filter 1s ease-out, opacity 1s ease-out;
 }
 
 .main__hero::after {
@@ -120,19 +127,8 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: var(--new-bg, none);
-    background-position: center;
-    background-size: cover;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-}
-
-.main__hero.show-high-res::after {
-    opacity: 1;
-}
-
-.main__hero.hide-low-res::before {
-    opacity: 0;
+    background: url('./../images/forest.svg') center/cover no-repeat;
+    z-index: 2;
 }
 
 .form-section {
