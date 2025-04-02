@@ -51,7 +51,9 @@
                         <span class="loader hidden"></span>
                     </button>
                     <span class="divider"></span>
-                    <a class="form__register" th:href="@{/register}" href="/register">Create new account</a>
+                    <a class="form__register" id="register-button" th:href="@{/register}" href="/register">Create new account
+                        <span class="loader hidden"></span>
+                    </a>
                 </form>
             </div>
         </section>
@@ -60,6 +62,12 @@
 <script>
     const passwordButton = document.querySelector(".form__password-button");
     const passwordInput = document.querySelector("[name=password]");
+    const loginForm = document.getElementById("login-form");
+    const loginButton = document.getElementById("login-button");
+    const registerButton = document.getElementById("register-button");
+    const loginButtonText = loginButton.querySelector(".button-text");
+    const loginLoader = loginButton.querySelector(".loader");
+    const registerLoader = registerButton.querySelector(".loader");
 
     const togglePasswordInputType = (inputType) => {
         return inputType === "password" ? "text" : "password";
@@ -77,16 +85,25 @@
     passwordButton.addEventListener("click", handlePasswordButtonClick);
 
     document.addEventListener("DOMContentLoaded", function () {
-        const loginForm = document.getElementById("login-form");
-        const loginButton = document.getElementById("login-button");
-        const buttonText = loginButton.querySelector(".button-text");
-        const loader = loginButton.querySelector(".loader");
-
         loginForm.addEventListener("submit", function () {
             loginButton.classList.add("disabled");
-            buttonText.textContent = "Logging in...";
-            loader.classList.remove("hidden");
+            loginButtonText.textContent = "Logging in...";
+            loginLoader.classList.remove("hidden");
         });
+
+        registerButton.addEventListener("click", function () {
+            registerButton.classList.add("disabled");
+            registerLoader.classList.remove("hidden");
+        });
+    });
+
+    window.addEventListener("pageshow", (e) => {
+        loginButtonText.textContent = "Log in";
+
+        registerButton.classList.remove("disabled");
+        loginButton.classList.remove("disabled");
+        registerLoader.classList.add("hidden");
+        loginLoader.classList.add("hidden");
     });
 </script>
 </body>

@@ -103,22 +103,6 @@
             loader.classList.remove("hidden");
         });
     });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const hero = document.querySelector(".main__hero");
-
-        const highResImage = new Image();
-        highResImage.src = "./../images/forest.svg";
-
-        highResImage.onload = function () {
-            hero.style.setProperty("--new-bg", `url('${highResImage.src}')`);
-            hero.classList.add("show-high-res");
-            setTimeout(() => {
-                hero.classList.add("hide-low-res");
-            }, 1000);
-        };
-    });
-
 </script>
 </body>
 </html>
