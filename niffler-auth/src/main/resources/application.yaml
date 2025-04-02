@@ -43,6 +43,11 @@ spring:
     show-sql: false
     generate-ddl: true
     open-in-view: false
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 365d
 
 logging:
   level:
