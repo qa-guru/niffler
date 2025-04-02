@@ -50,8 +50,9 @@
                         <span class="form__error" th:if="${#fields.hasErrors('passwordSubmit')}"
                               th:errors="*{passwordSubmit}"></span>
                     </label>
-                    <button class="form__submit" type="submit">
-                        Sign Up
+                    <button class="form__submit" id="register-button" type="submit">
+                        <span class="button-text">Sign Up</span>
+                        <span class="loader hidden"></span>
                     </button>
                 </form>
                 <div class="form" th:unless="${username == null}">
@@ -89,6 +90,34 @@
 
     passwordButton.addEventListener("click", handlePasswordButtonClick);
     passwordSubmitButton.addEventListener("click", handleSubmitPasswordButtonClick);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const loginForm = document.getElementById("register-form");
+        const loginButton = document.getElementById("register-button");
+        const buttonText = loginButton.querySelector(".button-text");
+        const loader = loginButton.querySelector(".loader");
+
+        loginForm.addEventListener("submit", function () {
+            loginButton.classList.add("disabled");
+            buttonText.textContent = "Signing up...";
+            loader.classList.remove("hidden");
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const hero = document.querySelector(".main__hero");
+
+        const highResImage = new Image();
+        highResImage.src = "./../images/forest.svg";
+
+        highResImage.onload = function () {
+            hero.style.setProperty("--new-bg", `url('${highResImage.src}')`);
+            hero.classList.add("show-high-res");
+            setTimeout(() => {
+                hero.classList.add("hide-low-res");
+            }, 1000);
+        };
+    });
 
 </script>
 </body>

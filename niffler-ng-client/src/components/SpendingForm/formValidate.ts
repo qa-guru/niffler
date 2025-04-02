@@ -7,7 +7,7 @@ import {IStringIndex} from "../../types/IStringIndex.ts";
 const MIN_AMOUNT_ERROR = `Amount has to be not less then 0.01`;
 const MAX_DESCRIPTION_LENGTH = 100;
 const MAX_DESCRIPTION_ERROR = `Description length has to be not longer that ${MAX_DESCRIPTION_LENGTH} symbols`;
-const FUTURE_DATE_ERROR = "Date can not be in the future";
+const DATE_RANGE_ERROR = "Date must be between 01.01.1970 and today";
 const EMPTY_CATEGORY_ERROR = "Please choose category";
 
 export const SPENDING_INITIAL_STATE = {
@@ -80,8 +80,11 @@ export const spendingFormValidate = (formValues: SpendingFormData): SpendingForm
         },
         spendDate: {
             ...newFormValues.spendDate,
-            error: formValues.spendDate.value.isAfter(dayjs()),
-            errorMessage: formValues.spendDate.value.isAfter(dayjs()) ? FUTURE_DATE_ERROR : "",
+            error:
+                !formValues.spendDate.value.isValid() ||
+                formValues.spendDate.value.isBefore(dayjs('1970-01-01')) ||
+                formValues.spendDate.value.isAfter(dayjs()),
+            errorMessage: DATE_RANGE_ERROR,
         },
         category: {
             ...newFormValues.category,

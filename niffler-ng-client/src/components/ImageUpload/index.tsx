@@ -4,6 +4,7 @@ import PhotoCameraRoundedIcon from '@mui/icons-material/PhotoCameraRounded';
 import "./styles.css";
 import {SecondaryButton} from "../Button";
 import UploadIcon from "../../assets/icons/ic_upload.svg?react";
+import {useSnackBar} from "../../context/SnackBarContext.tsx";
 
 
 interface ImageUploadInterface {
@@ -15,6 +16,8 @@ interface ImageUploadInterface {
     isAvatar?: boolean
 }
 
+const ALLOWED_FORMATS = ["image/jpeg", "image/jpg", "image/png", "image/bmp", "image/wbmp", "image/gif"];
+
 export const ImageUpload: FC<ImageUploadInterface> = ({
                                                           onFileUpload,
                                                           buttonText,
@@ -25,10 +28,18 @@ export const ImageUpload: FC<ImageUploadInterface> = ({
                                                       }) => {
 
     const theme = useTheme();
+    const snackBar = useSnackBar();
 
     const handleUpload = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) {
+            return;
+        }
+        if (!ALLOWED_FORMATS.includes(file.type)) {
+            snackBar.showSnackBar(
+                "Invalid file type. Please upload a valid image: 'jpeg', 'jpg', 'png', 'bmp', 'wbmp', 'gif'",
+                "error"
+            );
             return;
         }
         const reader = new FileReader();

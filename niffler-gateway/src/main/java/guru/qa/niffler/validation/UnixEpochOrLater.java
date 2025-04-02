@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UnixEpochOrLater {
-  String message() default "The string is not a base64 image string";
+  String message() default "Date must be between 1970-01-01 and today";
 
   Class<?>[] groups() default {};
 
