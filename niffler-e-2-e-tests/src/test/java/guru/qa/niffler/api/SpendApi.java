@@ -9,6 +9,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -25,6 +26,9 @@ public interface SpendApi {
 
   @POST("internal/categories/add")
   Call<CategoryJson> addCategory(@Body CategoryJson category);
+
+  @PATCH("internal/categories/update")
+  Call<CategoryJson> updateCategory(@Body CategoryJson category);
 
   @GET("internal/categories/all")
   Call<List<CategoryJson>> allCategories(@Query("username") String username);

@@ -11,7 +11,7 @@ import dayjs from "dayjs";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {ChangeEvent, FC, FormEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {convertSpendingToFormData, spendingFormValidate} from "../formValidate.ts";
+import {convertSpendingToFormData, MIN_ACCEPTABLE_DATE, spendingFormValidate} from "../formValidate.ts";
 import {
     CategoriesDocument,
     Category,
@@ -247,7 +247,7 @@ export const FormComponent: FC<FormComponentInterface> = ({
                                 openPickerIcon: CalendarIcon,
                             }}
                             value={dayjs(formData.spendDate.value)}
-                            shouldDisableDate={day => day.isBefore(dayjs('1970-01-01')) || dayjs(day).isAfter(dayjs())}
+                            shouldDisableDate={day => day.isBefore(dayjs(MIN_ACCEPTABLE_DATE)) || dayjs(day).isAfter(dayjs())}
                             onChange={newDate => setFormData({
                                 ...formData,
                                 spendDate: {...formData.spendDate, value: dayjs(newDate)}

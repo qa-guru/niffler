@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 @DBTest
 public abstract class BaseWebTest {
 
-  protected static final Config CFG = Config.getConfig();
+  protected static final Config CFG = Config.getInstance();
 
   @BeforeEach
   void setup() {

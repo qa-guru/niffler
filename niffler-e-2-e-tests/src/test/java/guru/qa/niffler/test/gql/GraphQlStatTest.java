@@ -36,11 +36,11 @@ public class GraphQlStatTest extends BaseGraphQlTest {
   @Tag("GraphQL")
   @ApiLogin(
       user = @GenerateUser(
-          categories = {@GenerateCategory("Бар"), @GenerateCategory("Азс")},
+          categories = {@GenerateCategory(name = "Бар"), @GenerateCategory(name = "Азс")},
           spends = {
-              @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = RUB, addDaysToSpendDate = -2),
-              @GenerateSpend(spendName = "Кофе", spendCategory = "Бар", amount = 200, currency = RUB, addDaysToSpendDate = -1),
-              @GenerateSpend(spendName = "Бензин", spendCategory = "Азс", amount = 300, currency = RUB),
+              @GenerateSpend(name = "Коктейль", category = "Бар", amount = 650, currency = RUB, addDaysToSpendDate = -2),
+              @GenerateSpend(name = "Кофе", category = "Бар", amount = 200, currency = RUB, addDaysToSpendDate = -1),
+              @GenerateSpend(name = "Бензин", category = "Азс", amount = 300, currency = RUB),
           }
       )
   )

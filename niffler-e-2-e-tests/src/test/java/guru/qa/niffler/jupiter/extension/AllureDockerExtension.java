@@ -1,6 +1,7 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.AllureDockerApiClient;
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.allure.AllureResults;
 import guru.qa.niffler.model.allure.DecodedAllureFile;
 import lombok.SneakyThrows;
@@ -24,7 +25,7 @@ public class AllureDockerExtension implements SuiteExtension {
   private static final boolean inDocker = "docker".equals(System.getProperty("test.env"));
   private static final Base64.Encoder encoder = Base64.getEncoder();
   private static final Path allureResultsDirectory = Path.of("./niffler-e-2-e-tests/build/allure-results");
-  private static final String projectId = "niffler-ng";
+  private static final String projectId = Config.PROJECT_NAME;
 
   private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
 

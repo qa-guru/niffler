@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.api.service.RestClient;
 import io.qameta.allure.Step;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 
+@ParametersAreNonnullByDefault
 public class GhApiClient extends RestClient {
 
   private final GhApi ghApi;

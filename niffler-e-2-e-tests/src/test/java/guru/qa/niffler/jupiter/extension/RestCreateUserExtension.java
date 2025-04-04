@@ -16,16 +16,21 @@ import guru.qa.niffler.model.rest.TestData;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.utils.DateUtils;
 import io.qameta.allure.Step;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static guru.qa.niffler.utils.DataUtils.generateRandomPassword;
-import static guru.qa.niffler.utils.DataUtils.generateRandomUsername;
+import static guru.qa.niffler.utils.DataUtils.randomPassword;
+import static guru.qa.niffler.utils.DataUtils.randomUsername;
+import static java.util.Objects.requireNonNull;
 
+@ParametersAreNonnullByDefault
 public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
   private static final AuthApiClient authClient = new AuthApiClient();
@@ -35,8 +40,8 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
   @Step("Create user for test (REST)")
   @Override
   @Nonnull
-  protected UserJson createUser(@Nonnull String username,
-                                @Nonnull String password) throws Exception {
+  protected UserJson createUser(String username,
+                                String password) throws Exception {
     try {
       authClient.register(username, password);
     } finally {
@@ -48,11 +53,11 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
   @Step("Create income invitations for test user (REST)")
   @Override
-  protected void createIncomeInvitationsIfPresent(@Nonnull IncomeInvitations incomeInvitations,
-                                                  @Nonnull UserJson createdUser) throws Exception {
+  protected void createIncomeInvitationsIfPresent(IncomeInvitations incomeInvitations,
+                                                  UserJson createdUser) throws Exception {
     if (incomeInvitations.handleAnnotation() && incomeInvitations.count() > 0) {
       for (int i = 0; i < incomeInvitations.count(); i++) {
-        UserJson invitation = createUser(generateRandomUsername(), generateRandomPassword());
+        UserJson invitation = createUser(randomUsername(), randomPassword());
         userdataClient.sendInvitation(invitation.username(), createdUser.username());
         createdUser.testData().incomeInvitations().add(invitation);
       }
@@ -61,11 +66,11 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
   @Step("Create outcome invitations for test user (REST)")
   @Override
-  protected void createOutcomeInvitationsIfPresent(@Nonnull OutcomeInvitations outcomeInvitations,
-                                                   @Nonnull UserJson createdUser) throws Exception {
+  protected void createOutcomeInvitationsIfPresent(OutcomeInvitations outcomeInvitations,
+                                                   UserJson createdUser) throws Exception {
     if (outcomeInvitations.handleAnnotation() && outcomeInvitations.count() > 0) {
       for (int i = 0; i < outcomeInvitations.count(); i++) {
-        UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
+        UserJson friend = createUser(randomUsername(), randomPassword());
         userdataClient.sendInvitation(createdUser.username(), friend.username());
         createdUser.testData().outcomeInvitations().add(friend);
       }
@@ -74,11 +79,11 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
   @Step("Create friends for test user (REST)")
   @Override
-  protected void createFriendsIfPresent(@Nonnull Friends friends,
-                                        @Nonnull UserJson createdUser) throws Exception {
+  protected void createFriendsIfPresent(Friends friends,
+                                        UserJson createdUser) throws Exception {
     if (friends.handleAnnotation() && friends.count() > 0) {
       for (int i = 0; i < friends.count(); i++) {
-        UserJson friend = createUser(generateRandomUsername(), generateRandomPassword());
+        UserJson friend = createUser(randomUsername(), randomPassword());
         createCategoriesIfPresent(friends.categories(), friend);
         userdataClient.sendInvitation(createdUser.username(), friend.username());
         userdataClient.acceptInvitation(friend.username(), createdUser.username());
@@ -89,21 +94,26 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
   @Step("Create spends for test user (REST)")
   @Override
-  protected void createSpendsIfPresent(@Nullable GenerateSpend[] spends, @Nonnull UserJson createdUser) throws Exception {
-    if (spends != null) {
+  protected void createSpendsIfPresent(GenerateSpend[] spends, UserJson createdUser) throws Exception {
+    if (ArrayUtils.isNotEmpty(spends)) {
+      List<CategoryJson> userCategories = spendClient.allCategories(createdUser.username());
       for (GenerateSpend spend : spends) {
+        Optional<CategoryJson> existingCategory = userCategories.stream()
+            .filter(cat -> cat.name().equals(spend.category()))
+            .findFirst();
+
         SpendJson sj = new SpendJson(
             null,
             DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()),
             spend.amount(),
             spend.currency(),
-            new CategoryJson(
+            existingCategory.orElseGet(() -> new CategoryJson(
                 null,
-                spend.spendCategory(),
+                spend.category(),
                 createdUser.username(),
                 false
-            ),
-            spend.spendName(),
+            )),
+            spend.name(),
             createdUser.username()
         );
         createdUser.testData().spends().add(spendClient.createSpend(sj));
@@ -113,16 +123,27 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
   @Step("Create categories for test user (REST)")
   @Override
-  protected void createCategoriesIfPresent(@Nullable GenerateCategory[] categories, @Nonnull UserJson createdUser) throws Exception {
-    if (categories != null) {
+  protected void createCategoriesIfPresent(GenerateCategory[] categories, UserJson createdUser) throws Exception {
+    if (ArrayUtils.isNotEmpty(categories)) {
       for (GenerateCategory category : categories) {
-        CategoryJson cj = new CategoryJson(null, category.value(), createdUser.username(), category.archived());
-        createdUser.testData().categories().add(spendClient.createCategory(cj));
+        CategoryJson cj = new CategoryJson(null, category.name(), createdUser.username(), category.archived());
+        CategoryJson created = requireNonNull(spendClient.createCategory(cj));
+        if (category.archived()) {
+          created = spendClient.updateCategory(
+              new CategoryJson(
+                  created.id(),
+                  created.name(),
+                  created.username(),
+                  true
+              )
+          );
+        }
+        createdUser.testData().categories().add(created);
       }
     }
   }
 
-  private UserJson waitWhileUserToBeConsumed(@Nonnull String username, long maxWaitTime) throws Exception {
+  private UserJson waitWhileUserToBeConsumed(String username, long maxWaitTime) throws Exception {
     Stopwatch sw = Stopwatch.createStarted();
     while (sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
       UserJson userJson = userdataClient.getCurrentUser(username);

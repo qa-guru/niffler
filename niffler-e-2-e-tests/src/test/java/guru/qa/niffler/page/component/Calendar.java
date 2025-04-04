@@ -5,6 +5,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.time.Month;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -15,6 +16,7 @@ import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
+@ParametersAreNonnullByDefault
 public class Calendar extends BaseComponent<Calendar> {
 
   public Calendar(SelenideElement self) {

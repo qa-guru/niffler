@@ -14,13 +14,13 @@ public @interface GenerateSpend {
 
   boolean handleAnnotation() default true;
 
-  String spendName();
+  String name();
 
-  String spendCategory();
+  String category();
 
   int addDaysToSpendDate() default 0;
 
   double amount();
 
-  CurrencyValues currency() default CurrencyValues.USD;
+  CurrencyValues currency() default CurrencyValues.RUB;
 }

@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface Config {
 
-  String PROJECT_NAME = "niffler";
+  String PROJECT_NAME = "niffler-ng";
 
-  static Config getConfig() {
+  static Config getInstance() {
     if ("docker".equals(System.getProperty("test.env"))) {
       return DockerConfig.INSTANCE;
     } else if ("local".equals(System.getProperty("test.env"))) {
@@ -43,6 +43,8 @@ public interface Config {
   default List<String> kafkaTopics() {
     return List.of("users");
   }
+
+  String screenshotBaseDir();
 
   HttpLoggingInterceptor.Level restLoggingLevel();
 }

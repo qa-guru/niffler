@@ -1,16 +1,16 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.jupiter.extension.ScreenShotTestExtension;
+import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.awt.image.BufferedImage;
 
-import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.attributeMatching;
 import static com.codeborne.selenide.Condition.disabled;
 import static com.codeborne.selenide.Condition.text;
@@ -18,7 +18,9 @@ import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@ParametersAreNonnullByDefault
 public class ProfilePage extends BasePage<ProfilePage> {
 
   public static final String URL = CFG.frontUrl() + "profile";
@@ -30,7 +32,10 @@ public class ProfilePage extends BasePage<ProfilePage> {
   private final SelenideElement submitButton = $("button[type='submit']");
 
   private final SelenideElement categoryInput = $("input[name='category']");
-  private final ElementsCollection bubbles = $$(".MuiChip-filled");
+  private final SelenideElement archivedSwitcher = $(".MuiSwitch-input");
+
+  private final ElementsCollection bubbles = $$(".MuiChip-filled.MuiChip-colorPrimary");
+  private final ElementsCollection bubblesArchived = $$(".MuiChip-filled.MuiChip-colorDefault");
 
   @Step("Set name: {0}")
   public ProfilePage setName(String name) {
@@ -51,11 +56,6 @@ public class ProfilePage extends BasePage<ProfilePage> {
     return this;
   }
 
-  public ProfilePage checkCategoryExists(String category) {
-    bubbles.find(text(category)).shouldBe(visible);
-    return this;
-  }
-
   @Step("Check userName: {0}")
   public ProfilePage checkUsername(String username) {
     this.userName.should(value(username));
@@ -69,12 +69,14 @@ public class ProfilePage extends BasePage<ProfilePage> {
   }
 
   @Step("Check photo")
-  public ProfilePage checkPhoto(String path) throws IOException {
-    final byte[] photoContent;
-    try (InputStream is = new ClassPathResource(path).getInputStream()) {
-      photoContent = Base64.getEncoder().encode(is.readAllBytes());
-    }
-    avatar.should(attribute("src", new String(photoContent, StandardCharsets.UTF_8)));
+  public ProfilePage checkPhoto(BufferedImage expected) {
+    Selenide.sleep(1000);
+    assertFalse(
+        new ScreenDiffResult(
+            avatar.screenshotAsImage(), expected
+        ),
+        ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE
+    );
     return this;
   }
 
@@ -87,6 +89,21 @@ public class ProfilePage extends BasePage<ProfilePage> {
   @Step("Check that category input is disabled")
   public ProfilePage checkThatCategoryInputDisabled() {
     categoryInput.should(disabled);
+    return this;
+  }
+
+  @Step("Check category: '{0}'")
+  @Nonnull
+  public ProfilePage checkCategoryExists(String category) {
+    bubbles.find(text(category)).shouldBe(visible);
+    return this;
+  }
+
+  @Step("Check archived category: '{0}'")
+  @Nonnull
+  public ProfilePage checkArchivedCategoryExists(String category) {
+    archivedSwitcher.click();
+    bubblesArchived.find(text(category)).shouldBe(visible);
     return this;
   }
 

@@ -193,6 +193,8 @@ services:
       - BUILD_URL=${BUILD_URL}
       - HEAD_COMMIT_MESSAGE=${HEAD_COMMIT_MESSAGE}
       - EXECUTION_TYPE=${EXECUTION_TYPE}
+    volumes:
+      - ./niffler-e-2-e-tests/.screen-output/screenshots/selenoid:/niffler/niffler-e-2-e-tests/.screen-output/screenshots/selenoid
     depends_on:
       frontend.niffler.dc:
         condition: service_started

@@ -10,7 +10,7 @@ import io.grpc.ManagedChannelBuilder;
 @GrpcTest
 public abstract class BaseGrpcTest {
 
-  protected static final Config CFG = Config.getConfig();
+  protected static final Config CFG = Config.getInstance();
 
   protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceStub asyncStub;
   protected static final NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub blockingStub;

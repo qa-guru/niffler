@@ -18,20 +18,20 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static guru.qa.niffler.utils.DataUtils.generateRandomPassword;
-import static guru.qa.niffler.utils.DataUtils.generateRandomUsername;
+import static guru.qa.niffler.utils.DataUtils.randomPassword;
+import static guru.qa.niffler.utils.DataUtils.randomUsername;
 
+@ParametersAreNonnullByDefault
 public abstract class AbstractCreateUserExtension implements BeforeEachCallback, ParameterResolver {
 
-  protected static final Config CFG = Config.getConfig();
+  protected static final Config CFG = Config.getInstance();
 
   public static final ExtensionContext.Namespace
       NAMESPACE = ExtensionContext.Namespace.create(AbstractCreateUserExtension.class);
@@ -47,10 +47,10 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
         String username = user.username();
         String password = user.password();
         if ("".equals(username)) {
-          username = generateRandomUsername();
+          username = randomUsername();
         }
         if ("".equals(password)) {
-          password = generateRandomPassword();
+          password = randomPassword();
         }
         UserJson createdUser = createUser(username, password);
 
@@ -94,7 +94,7 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
         .get(selector);
   }
 
-  private Map<User.Selector, List<GenerateUser>> extractGenerateUserAnnotations(@Nonnull ExtensionContext context) {
+  private Map<User.Selector, List<GenerateUser>> extractGenerateUserAnnotations(ExtensionContext context) {
     Map<User.Selector, List<GenerateUser>> annotationsOnTest = new HashMap<>();
     GenerateUser singleUserAnnotation = context.getRequiredTestMethod().getAnnotation(GenerateUser.class);
     GenerateUsers multipleUserAnnotation = context.getRequiredTestMethod().getAnnotation(GenerateUsers.class);
@@ -110,21 +110,21 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
     return annotationsOnTest;
   }
 
-  protected abstract UserJson createUser(@Nonnull String username,
-                                         @Nonnull String password) throws Exception;
+  protected abstract UserJson createUser(String username,
+                                         String password) throws Exception;
 
-  protected abstract void createIncomeInvitationsIfPresent(@Nonnull IncomeInvitations incomeInvitations,
-                                                           @Nonnull UserJson createdUser) throws Exception;
+  protected abstract void createIncomeInvitationsIfPresent(IncomeInvitations incomeInvitations,
+                                                           UserJson createdUser) throws Exception;
 
-  protected abstract void createOutcomeInvitationsIfPresent(@Nonnull OutcomeInvitations outcomeInvitations,
-                                                            @Nonnull UserJson createdUser) throws Exception;
+  protected abstract void createOutcomeInvitationsIfPresent(OutcomeInvitations outcomeInvitations,
+                                                            UserJson createdUser) throws Exception;
 
-  protected abstract void createFriendsIfPresent(@Nonnull Friends friends,
-                                                 @Nonnull UserJson createdUser) throws Exception;
+  protected abstract void createFriendsIfPresent(Friends friends,
+                                                 UserJson createdUser) throws Exception;
 
-  protected abstract void createSpendsIfPresent(@Nullable GenerateSpend[] spends,
-                                                @Nonnull UserJson createdUser) throws Exception;
+  protected abstract void createSpendsIfPresent(GenerateSpend[] spends,
+                                                UserJson createdUser) throws Exception;
 
-  protected abstract void createCategoriesIfPresent(@Nullable GenerateCategory[] categories,
-                                                    @Nonnull UserJson createdUser) throws Exception;
+  protected abstract void createCategoriesIfPresent(GenerateCategory[] categories,
+                                                    UserJson createdUser) throws Exception;
 }

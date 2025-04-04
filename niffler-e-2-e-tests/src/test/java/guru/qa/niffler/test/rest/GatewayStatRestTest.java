@@ -42,11 +42,11 @@ public class GatewayStatRestTest extends BaseRestTest {
   @Tag("REST")
   @ApiLogin(
       user = @GenerateUser(
-          categories = {@GenerateCategory("Бар"), @GenerateCategory("Азс")},
+          categories = {@GenerateCategory(name = "Бар"), @GenerateCategory(name = "Азс")},
           spends = {
-              @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = RUB, addDaysToSpendDate = -2),
-              @GenerateSpend(spendName = "Кофе", spendCategory = "Бар", amount = 200, currency = RUB, addDaysToSpendDate = -1),
-              @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 300, currency = RUB),
+              @GenerateSpend(name = "Коктейль", category = "Бар", amount = 650, currency = RUB, addDaysToSpendDate = -2),
+              @GenerateSpend(name = "Кофе", category = "Бар", amount = 200, currency = RUB, addDaysToSpendDate = -1),
+              @GenerateSpend(name = "Орешки", category = "Бар", amount = 300, currency = RUB),
           }
       )
   )
@@ -210,11 +210,11 @@ public class GatewayStatRestTest extends BaseRestTest {
   @Tag("REST")
   @ApiLogin(
       user = @GenerateUser(
-          categories = @GenerateCategory("Бар"),
+          categories = @GenerateCategory(name = "Бар"),
           spends = {
-              @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = RUB),
-              @GenerateSpend(spendName = "Кофе", spendCategory = "Бар", amount = 200, currency = RUB),
-              @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 4, currency = USD, addDaysToSpendDate = -2),
+              @GenerateSpend(name = "Коктейль", category = "Бар", amount = 650, currency = RUB),
+              @GenerateSpend(name = "Кофе", category = "Бар", amount = 200, currency = RUB),
+              @GenerateSpend(name = "Орешки", category = "Бар", amount = 4, currency = USD, addDaysToSpendDate = -2),
           }
       )
   )
@@ -268,11 +268,11 @@ public class GatewayStatRestTest extends BaseRestTest {
   @Tag("REST")
   @ApiLogin(
       user = @GenerateUser(
-          categories = {@GenerateCategory("Бар"), @GenerateCategory("Азс")},
+          categories = {@GenerateCategory(name = "Бар"), @GenerateCategory(name = "Азс")},
           spends = {
-              @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = RUB, addDaysToSpendDate = -2),
-              @GenerateSpend(spendName = "Бензин", spendCategory = "Азс", amount = 2000, currency = RUB, addDaysToSpendDate = -3),
-              @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 300, currency = RUB, addDaysToSpendDate = -8),
+              @GenerateSpend(name = "Коктейль", category = "Бар", amount = 650, currency = RUB, addDaysToSpendDate = -2),
+              @GenerateSpend(name = "Бензин", category = "Азс", amount = 2000, currency = RUB, addDaysToSpendDate = -3),
+              @GenerateSpend(name = "Орешки", category = "Бар", amount = 300, currency = RUB, addDaysToSpendDate = -8),
           }
       )
   )

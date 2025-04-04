@@ -6,10 +6,12 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public class UserRepositoryResolver implements TestInstancePostProcessor {
 
   @Override

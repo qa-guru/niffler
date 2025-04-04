@@ -26,8 +26,8 @@ public class AuthRegistrationKafkaTest extends BaseKafkaTest {
   @DisplayName("KAFKA: Сообщение с пользователем публикуется в Kafka после успешной регистрации")
   @Tag("KAFKA")
   void messageShouldBeProducedToKafkaAfterSuccessfulRegistration() throws Exception {
-    final String username = DataUtils.generateRandomUsername();
-    final String password = DataUtils.generateRandomPassword();
+    final String username = DataUtils.randomUsername();
+    final String password = DataUtils.randomPassword();
 
     try {
       authClient.register(username, password);

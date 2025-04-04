@@ -8,6 +8,9 @@ import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class IssueExtension implements ExecutionCondition {
 
   private static final GhApiClient ghApiClient = new GhApiClient();

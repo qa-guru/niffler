@@ -10,6 +10,9 @@ public class UnixEpochOrLaterValidator implements ConstraintValidator<UnixEpochO
 
   @Override
   public boolean isValid(Date date, ConstraintValidatorContext context) {
+    if (date == null) {
+      return false;
+    }
     long time = date.getTime();
     long now = System.currentTimeMillis();
     return time >= UNIX_EPOCH_TIME && time <= now;

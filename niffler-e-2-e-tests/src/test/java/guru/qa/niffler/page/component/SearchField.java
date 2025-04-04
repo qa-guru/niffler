@@ -3,13 +3,15 @@ package guru.qa.niffler.page.component;
 import com.codeborne.selenide.SelenideElement;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.empty;
 import static com.codeborne.selenide.Condition.not;
 import static com.codeborne.selenide.Selenide.$;
 
+@ParametersAreNonnullByDefault
 public class SearchField extends BaseComponent<SearchField> {
-  public SearchField(@Nonnull SelenideElement self) {
+  public SearchField(SelenideElement self) {
     super(self);
   }
 
