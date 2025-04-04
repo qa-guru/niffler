@@ -30,16 +30,17 @@ subprojects {
         springVaultVersion = '4.2.1'
         springOpenApiVersion = '2.8.6'
         postgresDriverVersion = '42.7.5'
-        flywayVersion = '11.5.0'
+        flywayVersion = '11.6.0'
         springGrpcVersion = '3.1.0.RELEASE'
         springGraphqlDateTimeVersion = '6.0.0'
+        springSecurityTestVersion = '6.4.4'
         jakartaJaxbVersion = '4.0.2'
         wsdl4jVersion = '1.6.3'
-        protobufVersion = '3.25.3'
-        grpcVersion = '1.63.0'
+        protobufVersion = '4.30.2'
+        grpcVersion = '1.71.0'
         thumbnailatorVersion = '0.4.20'
         h2Version = '2.3.232'
-        mockitoVersion = '5.16.1'
+        mockitoVersion = '5.17.0'
 
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64v8/eclipse-temurin:21-jdk"
@@ -53,7 +54,7 @@ subprojects {
 dependencyUpdates {
     resolutionStrategy {
         componentSelection {
-            all { ComponentSelection selection ->
+            configureEach { ComponentSelection selection ->
                 boolean isUnstable = ['alpha', 'beta', 'rc', 'm', 'snapshot'].any { keyword ->
                     selection.candidate.version.toLowerCase().contains(keyword)
                 }

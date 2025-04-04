@@ -2,8 +2,8 @@ buildscript {
     ext {
         junitVersion = '5.12.1'
         allureVersion = '2.29.1'
-        selenideVersion = '7.8.0'
-        okhttp3Version = '4.11.0'
+        selenideVersion = '7.8.1'
+        okhttp3Version = '4.12.0'
         retrofitVersion = '2.11.0'
         apollographqlVersion = '0.0.2'
         logbackVersion = '1.4.11'
@@ -11,7 +11,7 @@ buildscript {
         springJdbcVersion = '6.2.5'
         springCryptoVersion = '6.4.4'
         p6spyVersion = '3.9.1'
-        hibernateVersion = '6.6.11.Final'
+        hibernateVersion = '6.6.12.Final'
         kafkaClientsVersion = '4.0.0'
         saajVersion = '3.0.4'
         springDataCommonsVersion = '3.4.4'
@@ -133,7 +133,7 @@ dependencies {
     // gRPC
     testImplementation "io.grpc:grpc-api:${project.ext.grpcVersion}"
     testImplementation "io.grpc:grpc-stub:${project.ext.grpcVersion}"
-    testImplementation "io.grpc:grpc-netty:${project.ext.grpcVersion}"
+    testImplementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
     testImplementation "com.google.protobuf:protobuf-java:${project.ext.protobufVersion}"
     testImplementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
     testImplementation project(':niffler-grpc-common')

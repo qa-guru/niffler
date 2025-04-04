@@ -22,14 +22,21 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
     implementation "com.tailrocks.graphql:graphql-datetime-spring-boot-starter:${project.ext.springGraphqlDateTimeVersion}"
-    implementation "net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}"
+    implementation("net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}") {
+        exclude group: 'io.grpc'
+        exclude group: 'com.google.protobuf'
+    }
+    implementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
+    implementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
+    implementation "io.grpc:grpc-services:${project.ext.grpcVersion}"
+    implementation "io.grpc:grpc-inprocess:${project.ext.grpcVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${project.ext.springOpenApiVersion}"
 
     xjc "org.glassfish.jaxb:jaxb-xjc:${project.ext.jakartaJaxbVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test:6.4.2'
+    testImplementation "org.springframework.security:spring-security-test:${project.ext.springSecurityTestVersion}"
 }
 
 xjcGeneration {
