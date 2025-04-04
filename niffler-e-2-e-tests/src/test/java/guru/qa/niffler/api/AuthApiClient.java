@@ -7,9 +7,10 @@ import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import io.qameta.allure.Step;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 
+@ParametersAreNonnullByDefault
 public class AuthApiClient extends RestClient {
 
   private final AuthApi authApi;
@@ -25,9 +26,9 @@ public class AuthApiClient extends RestClient {
 
 
   @Step("Perform API Oauth 2.0 authorization flow for user with username: {username}, password: {password}")
-  public void login(@Nonnull ExtensionContext context,
-                    @Nonnull String username,
-                    @Nonnull String password) throws IOException {
+  public void login(ExtensionContext context,
+                    String username,
+                    String password) throws IOException {
     authApi.authorize(
         "code",
         "client",
@@ -58,7 +59,7 @@ public class AuthApiClient extends RestClient {
   }
 
   @Step("Perform registration for user with username: {username}, password: {password}")
-  public void register(@Nonnull String username, @Nonnull String password) throws IOException {
+  public void register(String username, String password) throws IOException {
     authApi.requestRegisterForm().execute();
     authApi.register(
         username,

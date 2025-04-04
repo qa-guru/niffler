@@ -49,3 +49,19 @@ subprojects {
                 : "amd64"
     }
 }
+
+dependencyUpdates {
+    resolutionStrategy {
+        componentSelection {
+            all { ComponentSelection selection ->
+                boolean isUnstable = ['alpha', 'beta', 'rc', 'm', 'snapshot'].any { keyword ->
+                    selection.candidate.version.toLowerCase().contains(keyword)
+                }
+                if (isUnstable) {
+                    selection.reject("Unstable version: ${selection.candidate.version}")
+                }
+            }
+        }
+    }
+}
+

@@ -5,6 +5,8 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.SearchField;
 import io.qameta.allure.Step;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
@@ -12,6 +14,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
+@ParametersAreNonnullByDefault
 public class FriendsPage extends BasePage<FriendsPage> {
 
   public static final String URL = CFG.frontUrl() + "people/friends";

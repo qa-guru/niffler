@@ -36,7 +36,7 @@ public class GraphQlUsersTest extends BaseGraphQlTest {
   @AllureId("400001")
   @Tag("GraphQL")
   @ApiLogin(user = @GenerateUser(
-      categories = @GenerateCategory("Бар")
+      categories = @GenerateCategory(name = "Бар")
   ))
   void currentUserInfoShouldReceived(@User UserJson user,
                                      @Token String bearerToken) throws Exception {

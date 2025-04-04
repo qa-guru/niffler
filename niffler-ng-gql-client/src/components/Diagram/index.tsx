@@ -4,7 +4,7 @@ import {useMediaQuery, useTheme} from "@mui/material";
 import {Statistic} from "../../types/Statistic.ts";
 import {DoughnutOptions} from "../../types/DoughnutOptions.ts";
 import {ArcElement, Chart, Legend} from "chart.js";
-import {emptyCirclePlugin, htmlLegendPlugin, titlePlugin} from "../../utils/chart.ts";
+import {animationDuration, emptyCirclePlugin, htmlLegendPlugin, titlePlugin} from "../../utils/chart.ts";
 import {CurrencyValue, getCurrencyIcon} from "../../types/Currency.ts";
 
 interface DiagramInterface {
@@ -32,8 +32,8 @@ export const Diagram: FC<DiagramInterface> = ({stat}) => {
                 backgroundColor: [
                     theme.palette.yellow.main,
                     theme.palette.green.main,
-                    theme.palette.orange.main,
                     theme.palette.blue100.main,
+                    theme.palette.orange.main,
                     theme.palette.azure.main,
                     theme.palette.blue200.main,
                     theme.palette.red.main,
@@ -71,6 +71,9 @@ export const Diagram: FC<DiagramInterface> = ({stat}) => {
         tooltips: {
             enabled: false,
         },
+        animation: {
+            duration: animationDuration,
+        }
     }
 
     return (

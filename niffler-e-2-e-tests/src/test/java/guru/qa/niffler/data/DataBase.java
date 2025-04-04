@@ -14,7 +14,7 @@ public enum DataBase {
     this.url = url;
   }
 
-  private static final Config CFG = Config.getConfig();
+  private static final Config CFG = Config.getInstance();
 
   public String getUrl() {
     return String.format(url, CFG.databaseAddress());

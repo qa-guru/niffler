@@ -1,6 +1,6 @@
 package guru.qa.niffler.api.service;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.CookieStore;
@@ -8,6 +8,7 @@ import java.net.HttpCookie;
 import java.net.URI;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public enum ThreadLocalCookieStore implements CookieStore {
   INSTANCE;
 
@@ -49,7 +50,7 @@ public enum ThreadLocalCookieStore implements CookieStore {
     return store.get();
   }
 
-  public String cookieValue(@Nonnull String cookieName) {
+  public String cookieValue(String cookieName) {
     return getCookies().stream()
         .filter(c -> c.getName().equals(cookieName))
         .map(HttpCookie::getValue)

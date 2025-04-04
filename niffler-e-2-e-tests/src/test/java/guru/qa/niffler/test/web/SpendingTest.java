@@ -1,6 +1,5 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
@@ -18,13 +17,17 @@ import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static guru.qa.niffler.utils.DataUtils.generateRandomSentence;
+import static guru.qa.niffler.utils.DataUtils.randomAmount;
+import static guru.qa.niffler.utils.DataUtils.randomSentence;
 import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT;
 import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY;
+import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITH_INCORRECT_DATE;
 import static guru.qa.niffler.utils.SuccessMessage.SPENDING_ADDED;
 
 @Epic(" [WEB][niffler-ng-client]: Траты")
@@ -38,13 +41,13 @@ public class SpendingTest extends BaseWebTest {
   @ApiLogin(user = @GenerateUser)
   void shouldAddNewSpending(@User UserJson user) {
     String category = "Friends";
-    int amount = 100;
+    double amount = randomAmount();
     Date currentDate = new Date();
-    String description = generateRandomSentence(3);
+    String description = randomSentence(3);
     SpendJson spendingToCheck = new SpendJson(
         null,
         currentDate,
-        (double) amount,
+        amount,
         user.currency(),
         new CategoryJson(
             null,
@@ -56,12 +59,11 @@ public class SpendingTest extends BaseWebTest {
         null
     );
 
-    Selenide.open(MainPage.URL, MainPage.class)
-        .getHeader()
+    new MainPage().getHeader()
         .addSpendingPage()
         .setNewSpendingCategory(category)
         .setNewSpendingAmount(amount)
-        .setNewSpendingDate(currentDate)
+        .selectSpendingDateInCalendar(currentDate)
         .setNewSpendingDescription(description)
         .saveSpending()
         .checkAlertMessage(SPENDING_ADDED.content);
@@ -76,28 +78,44 @@ public class SpendingTest extends BaseWebTest {
   @Tag("WEB")
   @ApiLogin(user = @GenerateUser)
   void shouldNotAddSpendingWithEmptyCategory() {
-    Selenide.open(MainPage.URL, MainPage.class)
-        .getHeader()
+    new MainPage().getHeader()
         .addSpendingPage()
-        .setNewSpendingAmount(100)
-        .setNewSpendingDate(new Date())
+        .setNewSpendingAmount(randomAmount())
+        .selectSpendingDateInCalendar(new Date())
         .saveSpending()
         .checkFormErrorMessage(CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY.content);
   }
 
-  @Test
+  @ValueSource(doubles = {0, 0.001})
+  @ParameterizedTest(name = "Нельзя добавить трату со значением суммы: {0}")
   @AllureId("500014")
-  @DisplayName("WEB: Нельзя добавить трату с пустым значением суммы")
+  @DisplayName("WEB: Нельзя добавить трату с невалидным значением суммы")
   @Tag("WEB")
   @ApiLogin(user = @GenerateUser)
-  void shouldNotAddSpendingWithEmptyAmount() {
-    Selenide.open(MainPage.URL, MainPage.class)
-        .getHeader()
+  void shouldNotAddSpendingWithIncorrectAmount(double amount) {
+    new MainPage().getHeader()
         .addSpendingPage()
         .setNewSpendingCategory("Friends")
-        .setNewSpendingDate(new Date())
+        .selectSpendingDateInCalendar(new Date())
+        .setNewSpendingAmount(amount)
         .saveSpending()
         .checkFormErrorMessage(CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT.content);
+  }
+
+  @ValueSource(strings = {"31/12/1969", ""})
+  @ParameterizedTest(name = "Нельзя добавить трату со значением даты: {0}")
+  @AllureId("500023")
+  @DisplayName("WEB: Нельзя добавить трату с невалидным значением даты")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser)
+  void shouldNotAddSpendingWithIncorrectDate(String date) {
+    new MainPage().getHeader()
+        .addSpendingPage()
+        .setNewSpendingCategory("Friends")
+        .pasteSpendingDate(date)
+        .setNewSpendingAmount(randomAmount())
+        .saveSpending()
+        .checkFormErrorMessage(CAN_NOT_CREATE_SPENDING_WITH_INCORRECT_DATE.content);
   }
 
   @Test
@@ -106,8 +124,8 @@ public class SpendingTest extends BaseWebTest {
   @Tag("WEB")
   @ApiLogin(user = @GenerateUser(
       spends = @GenerateSpend(
-          spendName = "Fish",
-          spendCategory = "Food",
+          name = "Fish",
+          category = "Food",
           amount = 1050.0,
           currency = CurrencyValues.USD
       )
@@ -126,11 +144,11 @@ public class SpendingTest extends BaseWebTest {
             null,
             false
         ),
-        generateRandomSentence(3),
+        randomSentence(3),
         null
     );
 
-    SpendingTable spendingTable = Selenide.open(MainPage.URL, MainPage.class)
+    SpendingTable spendingTable = new MainPage()
         .getSpendingTable()
         .checkTableContains(testSpend);
 
@@ -148,22 +166,21 @@ public class SpendingTest extends BaseWebTest {
   @ApiLogin(user = @GenerateUser(
       spends = {
           @GenerateSpend(
-              spendName = "Коктейль 1",
-              spendCategory = "Бар",
+              name = "Коктейль 1",
+              category = "Бар",
               addDaysToSpendDate = -7,
               amount = 650.0
           ),
           @GenerateSpend(
-              spendName = "Коктейль 2",
-              spendCategory = "Бар",
+              name = "Коктейль 2",
+              category = "Бар",
               addDaysToSpendDate = -8,
               amount = 650.0
           ),
       }
   ))
   void checkLastWeekSpendingTest(@User UserJson user) {
-    Selenide.open(MainPage.URL, MainPage.class)
-        .getSpendingTable()
+    new MainPage().getSpendingTable()
         .selectPeriod(DataFilterValues.WEEK)
         .checkTableContains(user.testData().spends().getFirst());
   }
@@ -174,14 +191,13 @@ public class SpendingTest extends BaseWebTest {
   @Tag("WEB")
   @ApiLogin(user = @GenerateUser(
       spends = @GenerateSpend(
-          spendName = "Коктейль",
-          spendCategory = "Бар",
+          name = "Коктейль",
+          category = "Бар",
           amount = 650.0
       )
   ))
   void deleteSpendingTest() {
-    Selenide.open(MainPage.URL, MainPage.class)
-        .getSpendingTable()
+    new MainPage().getSpendingTable()
         .deleteSpending("Коктейль")
         .checkTableSize(0);
   }

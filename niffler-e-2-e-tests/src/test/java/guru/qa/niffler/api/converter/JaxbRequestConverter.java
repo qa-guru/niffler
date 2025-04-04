@@ -12,24 +12,26 @@ import org.w3c.dom.Document;
 import retrofit2.Converter;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+@ParametersAreNonnullByDefault
 final class JaxbRequestConverter<T> implements Converter<T, RequestBody> {
 
   public static final String NAMESPACE_PREFIX = "tns";
   private final @Nonnull String messageNamespace;
   private final @Nonnull JAXBContext context;
 
-  JaxbRequestConverter(@Nonnull String messageNamespace, @Nonnull JAXBContext context) {
+  JaxbRequestConverter(String messageNamespace, JAXBContext context) {
     this.messageNamespace = messageNamespace;
     this.context = context;
   }
 
   @Override
-  public @Nonnull RequestBody convert(@Nonnull final T value) throws IOException {
+  public @Nonnull RequestBody convert(final T value) throws IOException {
     try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
       final SOAPMessage soapMessage = MessageFactory.newInstance().createMessage();
       final Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();

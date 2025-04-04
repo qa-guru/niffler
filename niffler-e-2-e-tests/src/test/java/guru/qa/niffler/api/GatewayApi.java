@@ -36,7 +36,7 @@ public interface GatewayApi {
 
   @GET("api/friends/all")
   Call<List<UserJson>> allFriends(@Header("Authorization") String bearerToken,
-                                  @Query("searchQuery") @Nonnull String searchQuery);
+                                  @Query("searchQuery") @Nullable String searchQuery);
 
   @DELETE("api/friends/remove")
   Call<Void> removeFriend(@Header("Authorization") String bearerToken,

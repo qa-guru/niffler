@@ -1,6 +1,8 @@
 import {Chart, Plugin} from "chart.js";
 import {DoughnutOptions} from "../types/DoughnutOptions.ts";
 
+const ENV = import.meta.env.MODE;
+export const animationDuration = (ENV === "docker") ? 0 : 1500;
 
 export const emptyCirclePlugin: Plugin = {
     id: 'emptyCirclePlugin',

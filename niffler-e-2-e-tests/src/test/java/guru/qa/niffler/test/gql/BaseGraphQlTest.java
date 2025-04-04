@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 public abstract class BaseGraphQlTest {
 
   protected static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-  protected static final Config CFG = Config.getConfig();
+  protected static final Config CFG = Config.getInstance();
 
   @RegisterExtension
   protected static final ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();

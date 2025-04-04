@@ -42,11 +42,11 @@ public class GatewayV3SpendRestTest extends BaseRestTest {
   @DisplayName("REST: Список spends получен в виде Page при передаче параметров page, size c учетом сортировки по полю description")
   @Tag("REST")
   @ApiLogin(user = @GenerateUser(
-      categories = @GenerateCategory("Бар"),
+      categories = @GenerateCategory(name = "Бар"),
       spends = {
-          @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650),
-          @GenerateSpend(spendName = "Кофе", spendCategory = "Бар", amount = 200),
-          @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 300),
+          @GenerateSpend(name = "Коктейль", category = "Бар", amount = 650),
+          @GenerateSpend(name = "Кофе", category = "Бар", amount = 200),
+          @GenerateSpend(name = "Орешки", category = "Бар", amount = 300),
       }
   ))
   void pageableSpendsWithSortTest(String sortField,
@@ -89,11 +89,11 @@ public class GatewayV3SpendRestTest extends BaseRestTest {
   @DisplayName("REST: Список spends получен в виде Page при передаче параметров page, size с фильтрацией по Currency")
   @Tag("REST")
   @ApiLogin(user = @GenerateUser(
-      categories = @GenerateCategory("Бар"),
+      categories = @GenerateCategory(name = "Бар"),
       spends = {
-          @GenerateSpend(spendName = "Коктейль", spendCategory = "Бар", amount = 650, currency = CurrencyValues.RUB),
-          @GenerateSpend(spendName = "Кофе", spendCategory = "Бар", amount = 200, currency = CurrencyValues.RUB),
-          @GenerateSpend(spendName = "Орешки", spendCategory = "Бар", amount = 3, currency = CurrencyValues.USD),
+          @GenerateSpend(name = "Коктейль", category = "Бар", amount = 650, currency = CurrencyValues.RUB),
+          @GenerateSpend(name = "Кофе", category = "Бар", amount = 200, currency = CurrencyValues.RUB),
+          @GenerateSpend(name = "Орешки", category = "Бар", amount = 3, currency = CurrencyValues.USD),
       }
   ))
   void pageableSpendsTestWithCurrency(@Token String bearerToken) throws Exception {

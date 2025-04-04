@@ -12,10 +12,11 @@ import guru.qa.niffler.model.rest.StatisticJson;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public class GatewayApiClient extends RestClient {
 
   private final GatewayApi gatewayApi;
@@ -58,13 +59,13 @@ public class GatewayApiClient extends RestClient {
   }
 
   @Step("Send REST DELETE('/api/spends/remove') request to niffler-gateway")
-  public void removeSpends(String bearerToken, @Nonnull List<String> ids) throws Exception {
+  public void removeSpends(String bearerToken, List<String> ids) throws Exception {
     gatewayApi.removeSpends(bearerToken, ids).execute();
   }
 
   @Step("Send REST GET('/api/friends/all') request to niffler-gateway")
   @Nullable
-  public List<UserJson> allFriends(String bearerToken, @Nonnull String searchQuery) throws Exception {
+  public List<UserJson> allFriends(String bearerToken, @Nullable String searchQuery) throws Exception {
     return gatewayApi.allFriends(bearerToken, searchQuery)
         .execute()
         .body();
@@ -91,7 +92,7 @@ public class GatewayApiClient extends RestClient {
   }
 
   @Step("Send REST DELETE('/api/friends/remove') request to niffler-gateway")
-  public void removeFriend(String bearerToken, @Nullable String targetUsername) throws Exception {
+  public void removeFriend(String bearerToken, String targetUsername) throws Exception {
     gatewayApi.removeFriend(bearerToken, targetUsername)
         .execute();
   }

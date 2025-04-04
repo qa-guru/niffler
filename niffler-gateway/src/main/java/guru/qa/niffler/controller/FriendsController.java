@@ -4,8 +4,9 @@ package guru.qa.niffler.controller;
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
-import guru.qa.niffler.validation.IsValidUsername;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,9 @@ public class FriendsController {
 
   @DeleteMapping("/remove")
   public void removeFriend(@AuthenticationPrincipal Jwt principal,
-                           @RequestParam("username") @IsValidUsername String username) {
+                           @Size(min = 3, max = 50, message = "Allowed username length should be from 3 to 50 characters")
+                           @NotBlank(message = "Username can not be blank")
+                           @RequestParam("username") String username) {
     final String principalUsername = principal.getClaim("sub");
     userDataClient.removeFriend(principalUsername, username);
   }
