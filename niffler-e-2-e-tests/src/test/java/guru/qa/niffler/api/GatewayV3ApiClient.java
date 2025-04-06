@@ -8,10 +8,11 @@ import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public class GatewayV3ApiClient extends RestClient {
 
   private final GatewayV3Api gatewayV3Api;
@@ -23,7 +24,7 @@ public class GatewayV3ApiClient extends RestClient {
 
   @Step("Send REST GET('/api/v3/spends/all') request to niffler-gateway")
   @Nullable
-  public PagedModelJson<SpendJson> allSpendsPageable(@Nonnull String bearerToken,
+  public PagedModelJson<SpendJson> allSpendsPageable(String bearerToken,
                                                      @Nullable CurrencyValues currency,
                                                      @Nullable DataFilterValues filterPeriod,
                                                      @Nullable Integer page,
@@ -36,7 +37,7 @@ public class GatewayV3ApiClient extends RestClient {
 
   @Step("Send REST GET('/api/v3/users/all') request to niffler-gateway")
   @Nullable
-  public PagedModelJson<UserJson> allUsersPageable(@Nonnull String bearerToken,
+  public PagedModelJson<UserJson> allUsersPageable(String bearerToken,
                                                    @Nullable String searchQuery,
                                                    @Nullable Integer page,
                                                    @Nullable Integer size,
@@ -48,7 +49,7 @@ public class GatewayV3ApiClient extends RestClient {
 
   @Step("Send REST GET('/api/v3/friends/all') request to niffler-gateway")
   @Nullable
-  public PagedModelJson<UserJson> allFriendsPageable(@Nonnull String bearerToken,
+  public PagedModelJson<UserJson> allFriendsPageable(String bearerToken,
                                                      @Nullable String searchQuery,
                                                      @Nullable Integer page,
                                                      @Nullable Integer size,

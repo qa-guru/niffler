@@ -18,9 +18,14 @@ public class DockerConfig implements Config {
     Configuration.remote = "http://selenoid:4444/wd/hub";
     Configuration.timeout = 10000;
     Configuration.browser = "chrome";
-    Configuration.browserVersion = "127.0";
+    Configuration.browserVersion = "135.0";
     Configuration.pageLoadStrategy = "eager";
-    Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
+    Configuration.browserCapabilities = new ChromeOptions()
+        .addArguments("--enable-automation")
+        .addArguments("--no-sandbox")
+        .addArguments("--disable-extensions")
+        .addArguments("--disable-accelerated-2d-canvas")
+        .addArguments("--use-gl=angle");
   }
 
   @Override
@@ -69,6 +74,11 @@ public class DockerConfig implements Config {
     return isValidURL(allureDockerApi)
         ? allureDockerApi
         : "http://allure:5050/";
+  }
+
+  @Override
+  public String screenshotBaseDir() {
+    return "screenshots/selenoid/";
   }
 
   @Override

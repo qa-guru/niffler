@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class KafkaConsumer implements Runnable {
 
   private static final Logger LOG = LoggerFactory.getLogger(KafkaConsumer.class);
-  private static final Config CFG = Config.getConfig();
+  private static final Config CFG = Config.getInstance();
   private static final WaitForOne<String, UserJson> MESSAGES = new WaitForOne<>();
   private static final ObjectMapper OM = new ObjectMapper();
 

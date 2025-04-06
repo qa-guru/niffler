@@ -16,9 +16,10 @@ import jaxb.userdata.UpdateUserRequest;
 import jaxb.userdata.UserResponse;
 import jaxb.userdata.UsersResponse;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class UserdataWsClient extends RestClient {
 
   private final UserdataWsApi userdataWs;
@@ -35,7 +36,7 @@ public class UserdataWsClient extends RestClient {
 
   @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: currentUserRequest")
   @Nullable
-  public UserResponse currentUser(@Nonnull CurrentUserRequest currentUserRequest) throws Exception {
+  public UserResponse currentUser(CurrentUserRequest currentUserRequest) throws Exception {
     return userdataWs.currentUserRequest(currentUserRequest)
         .execute()
         .body();
@@ -43,7 +44,7 @@ public class UserdataWsClient extends RestClient {
 
   @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: updateUserRequest")
   @Nullable
-  public UserResponse updateUserInfo(@Nonnull UpdateUserRequest updateUserRequest) throws Exception {
+  public UserResponse updateUserInfo(UpdateUserRequest updateUserRequest) throws Exception {
     return userdataWs.updateUserRequest(updateUserRequest)
         .execute()
         .body();
@@ -51,7 +52,7 @@ public class UserdataWsClient extends RestClient {
 
   @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: allUsersRequest")
   @Nullable
-  public UsersResponse allUsersRequest(@Nonnull AllUsersRequest allUsersRequest) throws Exception {
+  public UsersResponse allUsersRequest(AllUsersRequest allUsersRequest) throws Exception {
     return userdataWs.allUsersRequest(allUsersRequest)
         .execute()
         .body();
@@ -59,7 +60,7 @@ public class UserdataWsClient extends RestClient {
 
   @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: allUsersPageRequest")
   @Nullable
-  public UsersResponse allUsersPageRequest(@Nonnull AllUsersPageRequest allUsersPageRequest) throws Exception {
+  public UsersResponse allUsersPageRequest(AllUsersPageRequest allUsersPageRequest) throws Exception {
     return userdataWs.allUsersPageRequest(allUsersPageRequest)
         .execute()
         .body();
@@ -67,7 +68,7 @@ public class UserdataWsClient extends RestClient {
 
   @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: friendsRequest")
   @Nullable
-  public UsersResponse friendsRequest(@Nonnull FriendsRequest friendsRequest) throws Exception {
+  public UsersResponse friendsRequest(FriendsRequest friendsRequest) throws Exception {
     return userdataWs.friendsRequest(friendsRequest)
         .execute()
         .body();
@@ -75,21 +76,21 @@ public class UserdataWsClient extends RestClient {
 
   @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: friendsPageRequest")
   @Nullable
-  public UsersResponse friendsPageRequest(@Nonnull FriendsPageRequest friendsPageRequest) throws Exception {
+  public UsersResponse friendsPageRequest(FriendsPageRequest friendsPageRequest) throws Exception {
     return userdataWs.friendsPageRequest(friendsPageRequest)
         .execute()
         .body();
   }
 
   @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: removeFriendRequest")
-  public void removeFriendRequest(@Nonnull RemoveFriendRequest removeFriendRequest) throws Exception {
+  public void removeFriendRequest(RemoveFriendRequest removeFriendRequest) throws Exception {
     userdataWs.removeFriendRequest(removeFriendRequest)
         .execute();
   }
 
   @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: acceptInvitationRequest")
   @Nullable
-  public UserResponse acceptInvitationRequest(@Nonnull AcceptInvitationRequest acceptInvitationRequest) throws Exception {
+  public UserResponse acceptInvitationRequest(AcceptInvitationRequest acceptInvitationRequest) throws Exception {
     return userdataWs.acceptInvitationRequest(acceptInvitationRequest)
         .execute()
         .body();
@@ -97,7 +98,7 @@ public class UserdataWsClient extends RestClient {
 
   @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: declineInvitationRequest")
   @Nullable
-  public UserResponse declineInvitationRequest(@Nonnull DeclineInvitationRequest declineInvitationRequest) throws Exception {
+  public UserResponse declineInvitationRequest(DeclineInvitationRequest declineInvitationRequest) throws Exception {
     return userdataWs.declineInvitationRequest(declineInvitationRequest)
         .execute()
         .body();
@@ -105,7 +106,7 @@ public class UserdataWsClient extends RestClient {
 
   @Step("Send SOAP POST('/ws') request to niffler-userdata, endpoint: sendInvitationRequest")
   @Nullable
-  public UserResponse sendInvitationRequest(@Nonnull SendInvitationRequest sendInvitationRequest) throws Exception {
+  public UserResponse sendInvitationRequest(SendInvitationRequest sendInvitationRequest) throws Exception {
     return userdataWs.sendInvitationRequest(sendInvitationRequest)
         .execute()
         .body();

@@ -80,7 +80,8 @@ export const MainPage = () => {
                     <Box sx={{
                         display: isMobile ? "flex" : "block",
                     }}>
-                        <Box sx={{
+                        <Box id={"chart"}
+                             sx={{
                             display: "flex",
                             alignItems: "center",
                             width: isMobile ? 150 : 220,

@@ -22,12 +22,14 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import org.openqa.selenium.Cookie;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static guru.qa.niffler.jupiter.annotation.User.Selector.NESTED;
 
+@ParametersAreNonnullByDefault
 public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver {
 
-  protected static final Config CFG = Config.getConfig();
+  protected static final Config CFG = Config.getInstance();
 
   private static final AuthApiClient authClient = new AuthApiClient();
   private final boolean setUpBrowser;
@@ -107,39 +109,39 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
         : getToken(extensionContext);
   }
 
-  public static void setCodeVerifier(@Nonnull ExtensionContext extensionContext, @Nonnull String codeVerifier) {
+  public static void setCodeVerifier(ExtensionContext extensionContext, String codeVerifier) {
     extensionContext.getStore(NAMESPACE).put("cv", codeVerifier);
   }
 
-  public static String getCodeVerifier(@Nonnull ExtensionContext extensionContext) {
+  public static String getCodeVerifier(ExtensionContext extensionContext) {
     return extensionContext.getStore(NAMESPACE).get("cv", String.class);
   }
 
-  public static void setCodeChallenge(@Nonnull ExtensionContext context, @Nonnull String codeChallenge) {
+  public static void setCodeChallenge(ExtensionContext context, String codeChallenge) {
     context.getStore(NAMESPACE).put("cc", codeChallenge);
   }
 
-  public static String getCodeChallenge(@Nonnull ExtensionContext context) {
+  public static String getCodeChallenge(ExtensionContext context) {
     return context.getStore(NAMESPACE).get("cc", String.class);
   }
 
-  public static void setCode(@Nonnull ExtensionContext context, @Nonnull String code) {
+  public static void setCode(@Nonnull ExtensionContext context, String code) {
     context.getStore(NAMESPACE).put("code", code);
   }
 
-  public static String getCode(@Nonnull ExtensionContext context) {
+  public static String getCode(ExtensionContext context) {
     return context.getStore(NAMESPACE).get("code", String.class);
   }
 
-  public static void setToken(@Nonnull ExtensionContext context, @Nonnull String token) {
+  public static void setToken(ExtensionContext context, String token) {
     context.getStore(NAMESPACE).put("token", token);
   }
 
-  public static String getToken(@Nonnull ExtensionContext context) {
+  public static String getToken(ExtensionContext context) {
     return context.getStore(NAMESPACE).get("token", String.class);
   }
 
-  public static String getBearerToken(@Nonnull ExtensionContext context) {
+  public static String getBearerToken(ExtensionContext context) {
     return "Bearer " + getToken(context);
   }
 

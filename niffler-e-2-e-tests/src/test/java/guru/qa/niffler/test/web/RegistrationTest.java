@@ -11,11 +11,18 @@ import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
-import static guru.qa.niffler.utils.DataUtils.generateRandomPassword;
-import static guru.qa.niffler.utils.DataUtils.generateRandomUsername;
+import static guru.qa.niffler.utils.DataUtils.randomPassword;
+import static guru.qa.niffler.utils.DataUtils.randomUsername;
 import static guru.qa.niffler.utils.ErrorMessage.PASSWORDS_SHOULD_BE_EQUAL;
+import static guru.qa.niffler.utils.ErrorMessage.PASSWORD_SHOULD_NOT_CONTAINS_WHITESPACES;
+import static guru.qa.niffler.utils.ErrorMessage.USERNAME_SHOULD_NOT_CONTAINS_WHITESPACES;
 
 @Epic(" [WEB][niffler-ng-client]: Регистрация")
 @DisplayName(" [WEB][niffler-ng-client]: Регистрация")
@@ -26,8 +33,8 @@ public class RegistrationTest extends BaseWebTest {
   @DisplayName("WEB: Пользователь может успешно зарегистрироваться в сиситеме")
   @Tag("WEB")
   void shouldRegisterNewUser() {
-    String newUsername = generateRandomUsername();
-    String password = generateRandomPassword();
+    String newUsername = randomUsername();
+    String password = randomPassword();
     Selenide.open(LoginPage.URL, LoginPage.class)
         .doRegister()
         .fillRegisterPage(newUsername, password, password)
@@ -44,7 +51,7 @@ public class RegistrationTest extends BaseWebTest {
   @GenerateUser
   void shouldNotRegisterUserWithExistingUsername(@User(selector = METHOD) UserJson existingUser) {
     String username = existingUser.username();
-    String password = generateRandomPassword();
+    String password = randomPassword();
     Selenide.open(LoginPage.URL, LoginPage.class)
         .doRegister()
         .fillRegisterPage(username, password, password)
@@ -57,14 +64,34 @@ public class RegistrationTest extends BaseWebTest {
   @DisplayName("WEB: При регистрации возникает ошибка, если введены разные пароль и подтверждение пароля")
   @Tag("WEB")
   void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
-    String username = generateRandomUsername();
-    String password = generateRandomPassword();
-    String submitPassword = generateRandomPassword();
+    String username = randomUsername();
+    String password = randomPassword();
+    String submitPassword = randomPassword();
 
     Selenide.open(LoginPage.URL, LoginPage.class)
         .doRegister()
         .fillRegisterPage(username, password, submitPassword)
         .errorSubmit()
         .checkAlertMessage(PASSWORDS_SHOULD_BE_EQUAL.content);
+  }
+
+  static Stream<Arguments> shouldShowErrorIfUsernameContainsWhiteSpace() {
+    return Stream.of(
+        Arguments.of(randomUsername() + " ", randomPassword(), USERNAME_SHOULD_NOT_CONTAINS_WHITESPACES.content),
+        Arguments.of(randomUsername(), randomPassword() + " ", PASSWORD_SHOULD_NOT_CONTAINS_WHITESPACES.content)
+    );
+  }
+
+  @MethodSource
+  @ParameterizedTest(name = "При регистрации возникает ошибка {2}, если введено имя пользователя или пароль, содержащее пробелы")
+  @AllureId("500024")
+  @DisplayName("WEB: При регистрации возникает ошибка, если введено имя пользователя или пароль, содержащее пробелы")
+  @Tag("WEB")
+  void shouldShowErrorIfUsernameContainsWhiteSpace(String username, String password, String expectedMessage) {
+    Selenide.open(LoginPage.URL, LoginPage.class)
+        .doRegister()
+        .fillRegisterPage(username, password, password)
+        .errorSubmit()
+        .checkAlertMessage(expectedMessage);
   }
 }

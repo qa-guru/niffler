@@ -6,8 +6,10 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class ContextHolderExtension implements BeforeEachCallback, AfterEachCallback {
+@ParametersAreNonnullByDefault
+public class TestMethodContextExtension implements BeforeEachCallback, AfterEachCallback {
 
   @Override
   public void beforeEach(ExtensionContext context) {

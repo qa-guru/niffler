@@ -136,8 +136,8 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
   @Tag("GraphQL")
   @ApiLogin(
       user = @GenerateUser(
-          categories = @GenerateCategory("Бар"),
-          friends = @Friends(count = 1, categories = @GenerateCategory("Магазин"))
+          categories = @GenerateCategory(name = "Бар"),
+          friends = @Friends(count = 1, categories = @GenerateCategory(name = "Магазин"))
       )
   )
   void errorShouldReceivedForOtherPeopleCategories(@Token String bearerToken) throws Exception {

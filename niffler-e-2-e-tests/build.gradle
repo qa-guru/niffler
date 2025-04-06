@@ -2,8 +2,8 @@ buildscript {
     ext {
         junitVersion = '5.12.1'
         allureVersion = '2.29.1'
-        selenideVersion = '7.7.3'
-        okhttp3Version = '4.11.0'
+        selenideVersion = '7.8.1'
+        okhttp3Version = '4.12.0'
         retrofitVersion = '2.11.0'
         apollographqlVersion = '0.0.2'
         logbackVersion = '1.4.11'
@@ -11,11 +11,12 @@ buildscript {
         springJdbcVersion = '6.2.5'
         springCryptoVersion = '6.4.4'
         p6spyVersion = '3.9.1'
-        hibernateVersion = '6.6.11.Final'
+        hibernateVersion = '6.6.12.Final'
         kafkaClientsVersion = '4.0.0'
         saajVersion = '3.0.4'
         springDataCommonsVersion = '3.4.4'
-        wiremockVersion = '3.0.1'
+        wiremockVersion = '3.12.1'
+        ashotVersion = '1.5.4'
         fakerVersion = '1.0.2'
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
                 ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
@@ -34,7 +35,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '2.1.0'
+version = '2.1.1'
 
 allure {
     version.set("${allureVersion}")
@@ -90,18 +91,19 @@ dependencies {
     // REST
     testImplementation "com.squareup.okhttp3:logging-interceptor:${okhttp3Version}"
     testImplementation "com.squareup.okhttp3:okhttp-urlconnection:${okhttp3Version}"
+    testImplementation "com.squareup.okhttp3:okhttp:${okhttp3Version}"
     testImplementation("com.squareup.retrofit2:retrofit:${retrofitVersion}") {
         exclude group: "com.squareup.okhttp3"
     }
     testImplementation("com.squareup.retrofit2:converter-jackson:${retrofitVersion}") {
         exclude group: "com.squareup.okhttp3"
     }
+    testImplementation "com.squareup.retrofit2:converter-scalars:${retrofitVersion}"
     testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
     // GraphQL
     testImplementation "com.apollographql.java:client:${apollographqlVersion}"
     testImplementation "com.apollographql.java:rx2:${apollographqlVersion}"
     testImplementation 'com.apollographql.adapters:apollo-adapters-core:0.0.4'
-    testImplementation 'com.apollographql.adapters:apollo-adapters-kotlinx-datetime:0.0.4'
     // DB
     testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
@@ -120,6 +122,7 @@ dependencies {
     testImplementation "io.qameta.allure:allure-grpc:${allureVersion}"
     // WEB
     testImplementation "com.codeborne:selenide:${selenideVersion}"
+    testImplementation "ru.yandex.qatools.ashot:ashot:${ashotVersion}"
     // Utils
     testImplementation("com.github.javafaker:javafaker:${fakerVersion}") {
         exclude group: 'org.yaml'
@@ -128,9 +131,9 @@ dependencies {
     testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
     testImplementation 'com.github.vertical-blank:sql-formatter:2.0.5'
     // gRPC
-    testImplementation "io.grpc:grpc-protobuf:${project.ext.grpcVersion}"
+    testImplementation "io.grpc:grpc-api:${project.ext.grpcVersion}"
     testImplementation "io.grpc:grpc-stub:${project.ext.grpcVersion}"
-    testImplementation "io.grpc:grpc-netty:${project.ext.grpcVersion}"
+    testImplementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
     testImplementation "com.google.protobuf:protobuf-java:${project.ext.protobufVersion}"
     testImplementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
     testImplementation project(':niffler-grpc-common')
@@ -142,8 +145,7 @@ dependencies {
     // Kafka
     testImplementation "org.apache.kafka:kafka-clients:${kafkaClientsVersion}"
     // Wiremock
-    testImplementation "com.github.tomakehurst:wiremock-jre8:${wiremockVersion}"
-    testImplementation "com.github.tomakehurst:wiremock-standalone:${wiremockVersion}"
+    testImplementation "org.wiremock:wiremock:${project.ext.wiremockVersion}"
     // Lombok
     testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"

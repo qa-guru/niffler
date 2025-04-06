@@ -1,0 +1,23 @@
+spring:
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+
+niffler-currency:
+  base-uri: 'http://127.0.0.1:8091'
+niffler-userdata:
+  base-uri: 'http://127.0.0.1:8089'
+niffler-spend:
+  base-uri: 'http://127.0.0.1:8093'
+niffler-front:
+  base-uri: 'http://127.0.0.1:3000'
+niffler-gateway:
+  base-uri: 'http://127.0.0.1:8090'
+
+grpc:
+  client:
+    grpcCurrencyClient:
+      address: 'static://localhost:8092'
+      negotiationType: PLAINTEXT

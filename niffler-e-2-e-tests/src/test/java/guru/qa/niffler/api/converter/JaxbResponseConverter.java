@@ -12,10 +12,12 @@ import org.w3c.dom.Document;
 import retrofit2.Converter;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
+@ParametersAreNonnullByDefault
 final class JaxbResponseConverter<T> implements Converter<ResponseBody, T> {
 
   private final JAXBContext context;
@@ -27,7 +29,7 @@ final class JaxbResponseConverter<T> implements Converter<ResponseBody, T> {
   }
 
   @Override
-  public @Nonnull T convert(@Nonnull final ResponseBody value) throws IOException {
+  public @Nonnull T convert(final ResponseBody value) throws IOException {
     try (value; InputStream is = value.byteStream()) {
       final MimeHeaders headers = new MimeHeaders();
       Optional.ofNullable(value.contentType())

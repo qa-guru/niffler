@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class NifflerCollectionCondition {
+public class TableConditions {
 
   @Nonnull
   public static WebElementsCondition spends(SpendJson... expectedSpends) {

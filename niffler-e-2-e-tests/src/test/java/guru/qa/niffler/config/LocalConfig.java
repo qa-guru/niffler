@@ -64,6 +64,11 @@ public class LocalConfig implements Config {
   }
 
   @Override
+  public String screenshotBaseDir() {
+    return "screenshots/local/";
+  }
+
+  @Override
   public HttpLoggingInterceptor.Level restLoggingLevel() {
     return HttpLoggingInterceptor.Level.BODY;
   }

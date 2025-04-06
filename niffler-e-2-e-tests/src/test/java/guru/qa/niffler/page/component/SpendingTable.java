@@ -8,6 +8,7 @@ import guru.qa.niffler.page.EditSpendingPage;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
@@ -15,8 +16,9 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static guru.qa.niffler.condition.NifflerCollectionCondition.spends;
+import static guru.qa.niffler.condition.TableConditions.spends;
 
+@ParametersAreNonnullByDefault
 public class SpendingTable extends BaseComponent<SpendingTable> {
 
   private final SearchField searchField = new SearchField();

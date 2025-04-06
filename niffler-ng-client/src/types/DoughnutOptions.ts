@@ -22,5 +22,8 @@ export interface DoughnutOptions {
     tooltips: {
         enabled: boolean,
     },
+    animation: {
+        duration: number,
+    },
     events: [],
 }

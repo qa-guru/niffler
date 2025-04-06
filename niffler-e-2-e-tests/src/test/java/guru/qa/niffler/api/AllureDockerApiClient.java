@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 
+@ParametersAreNonnullByDefault
 public class AllureDockerApiClient extends RestClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(AllureDockerApiClient.class);
