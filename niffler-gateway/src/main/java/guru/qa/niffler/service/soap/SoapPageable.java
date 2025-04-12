@@ -6,11 +6,13 @@ import jaxb.userdata.PageInfo;
 import jaxb.userdata.Sort;
 import org.springframework.data.domain.Pageable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@ParametersAreNonnullByDefault
 public class SoapPageable {
+
   private final Pageable pageable;
 
   public SoapPageable(Pageable pageable) {

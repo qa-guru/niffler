@@ -1,6 +1,5 @@
 package guru.qa.niffler.service.cors;
 
-import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,9 +7,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @Component
+@ParametersAreNonnullByDefault
 public class CorsCustomizer {
 
   private final String nifflerFrontUri;
@@ -20,7 +21,7 @@ public class CorsCustomizer {
     this.nifflerFrontUri = nifflerFrontUri;
   }
 
-  public void corsCustomizer(@Nonnull HttpSecurity http) throws Exception {
+  public void corsCustomizer(HttpSecurity http) throws Exception {
     http.cors(c -> {
       CorsConfigurationSource source = s -> {
         CorsConfiguration cc = new CorsConfiguration();

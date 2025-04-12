@@ -1,6 +1,5 @@
 package guru.qa.niffler.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -25,9 +24,6 @@ class FriendsControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
-
-  @Autowired
-  private ObjectMapper om;
 
   @Nested
   class FriendsControllerValidationTest {

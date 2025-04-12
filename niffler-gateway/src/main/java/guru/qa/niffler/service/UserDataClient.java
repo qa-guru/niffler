@@ -7,56 +7,58 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public interface UserDataClient {
 
   @Nonnull
-  UserJson currentUser(@Nonnull String username);
+  UserJson currentUser(String username);
 
   @Nonnull
   UserJson updateUserInfo(@Nonnull UserJson user);
 
   @Nonnull
-  List<UserJson> allUsers(@Nonnull String username,
+  List<UserJson> allUsers(String username,
                           @Nullable String searchQuery);
 
   @Nonnull
-  Page<UserJson> allUsersV2(@Nonnull String username,
-                            @Nonnull Pageable pageable,
+  Page<UserJson> allUsersV2(String username,
+                            Pageable pageable,
                             @Nullable String searchQuery);
 
   @Nonnull
-  PagedModel<UserJson> allUsersV3(@Nonnull String username,
-                                  @Nonnull Pageable pageable,
+  PagedModel<UserJson> allUsersV3(String username,
+                                  Pageable pageable,
                                   @Nullable String searchQuery);
 
   @Nonnull
-  List<UserJson> friends(@Nonnull String username,
+  List<UserJson> friends(String username,
                          @Nullable String searchQuery);
 
   @Nonnull
-  Page<UserJson> friendsV2(@Nonnull String username,
-                           @Nonnull Pageable pageable,
+  Page<UserJson> friendsV2(String username,
+                           Pageable pageable,
                            @Nullable String searchQuery);
 
   @Nonnull
-  PagedModel<UserJson> friendsV3(@Nonnull String username,
-                                 @Nonnull Pageable pageable,
+  PagedModel<UserJson> friendsV3(String username,
+                                 Pageable pageable,
                                  @Nullable String searchQuery);
 
   @Nonnull
-  UserJson sendInvitation(@Nonnull String username,
-                          @Nonnull String targetUsername);
+  UserJson sendInvitation(String username,
+                          String targetUsername);
 
   @Nonnull
-  UserJson acceptInvitation(@Nonnull String username,
-                            @Nonnull String targetUsername);
+  UserJson acceptInvitation(String username,
+                            String targetUsername);
 
   @Nonnull
-  UserJson declineInvitation(@Nonnull String username,
-                             @Nonnull String targetUsername);
+  UserJson declineInvitation(String username,
+                             String targetUsername);
 
-  void removeFriend(@Nonnull String username,
-                    @Nonnull String targetUsername);
+  void removeFriend(String username,
+                    String targetUsername);
 }

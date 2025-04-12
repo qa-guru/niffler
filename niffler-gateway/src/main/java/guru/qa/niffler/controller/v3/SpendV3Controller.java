@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,5 +40,17 @@ public class SpendV3Controller {
                                          @RequestParam(required = false) String searchQuery) {
     final String principalUsername = principal.getClaim("sub");
     return spendClient.getSpendsV3(principalUsername, pageable, filterPeriod, filterCurrency, searchQuery);
+  }
+
+  @GetMapping(value = "/export/csv", produces = "text/csv")
+  public ResponseEntity<byte[]> exportCsv(@AuthenticationPrincipal Jwt principal) {
+    final String principalUsername = principal.getClaim("sub");
+
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=spend-history.csv")
+        .contentType(MediaType.parseMediaType("text/csv"))
+        .body(
+            spendClient.exportToCsv(principalUsername)
+        );
   }
 }

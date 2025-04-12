@@ -2,7 +2,11 @@ package guru.qa.niffler.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.niffler.model.CategoryJson;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +20,7 @@ import java.util.UUID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,6 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class CategoriesControllerTest {
 
+  private static final String FIXTURE = "/guru/qa/niffler/controller/CategoriesControllerTest.sql";
+
+  private static final Matcher<String> idMatcher = Matchers.matchesPattern(
+      "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+  );
+
   @Autowired
   private MockMvc mockMvc;
 
@@ -32,7 +43,7 @@ class CategoriesControllerTest {
   private ObjectMapper om;
 
   @Test
-  @Sql("/categoriesListShouldBeReturnedForCurrentUser.sql")
+  @Sql(FIXTURE)
   void categoriesListShouldBeReturnedForCurrentUser() throws Exception {
     final String fixtureUser = "duck";
 
@@ -47,15 +58,37 @@ class CategoriesControllerTest {
         .andExpect(jsonPath("$[1].archived").value(true));
   }
 
+  @ValueSource(booleans = {true, false})
+  @ParameterizedTest
+  void shouldAddActiveCategoryForCurrentUser(boolean bodyArchivedState) throws Exception {
+    final String fixtureUser = "duck";
+    final String categoryName = "test category with initial state: " + bodyArchivedState;
+    final CategoryJson category = new CategoryJson(
+        null,
+        categoryName,
+        fixtureUser,
+        bodyArchivedState
+    );
+
+    mockMvc.perform(post("/internal/categories/add")
+            .contentType(APPLICATION_JSON)
+            .content(om.writeValueAsString(category)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(idMatcher))
+        .andExpect(jsonPath("$.name").value(categoryName))
+        .andExpect(jsonPath("$.username").value(fixtureUser))
+        .andExpect(jsonPath("$.archived").value(false));
+  }
+
   @Test
-  @Sql("/categoryNameAndArchivedStatusShouldBeUpdated.sql")
+  @Sql(FIXTURE)
   void categoryNameAndArchivedStatusShouldBeUpdated() throws Exception {
-    final String fixtureCategoryId = "06fe9c06-ae67-406e-a711-ba729e3d4775";
+    final String fixtureCategoryId = "68bcb6da-f690-41df-bef4-18c98de97d1a";
     final String fixtureUser = "duck";
 
     CategoryJson categoryJson = new CategoryJson(
         UUID.fromString(fixtureCategoryId),
-        "Бары",
+        "Веселье",
         fixtureUser,
         true
     );
@@ -65,7 +98,7 @@ class CategoriesControllerTest {
             .content(om.writeValueAsString(categoryJson)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(fixtureCategoryId))
-        .andExpect(jsonPath("$.name").value("Бары"))
+        .andExpect(jsonPath("$.name").value("Веселье"))
         .andExpect(jsonPath("$.username").value(fixtureUser))
         .andExpect(jsonPath("$.archived").value(true));
   }

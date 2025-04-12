@@ -39,6 +39,7 @@ subprojects {
         protobufVersion = '4.30.2'
         grpcVersion = '1.71.0'
         thumbnailatorVersion = '0.4.20'
+        apacheCsvVersion = '1.14.0'
         h2Version = '2.3.232'
         mockitoVersion = '5.17.0'
 

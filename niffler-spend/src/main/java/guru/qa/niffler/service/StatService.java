@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Component
+@ParametersAreNonnullByDefault
 public class StatService {
 
   private final SpendService spendService;
@@ -45,8 +47,8 @@ public class StatService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  StatisticV2Json getV2Statistic(@Nonnull String username,
-                                 @Nonnull CurrencyValues statCurrency,
+  StatisticV2Json getV2Statistic(String username,
+                                 CurrencyValues statCurrency,
                                  @Nullable CurrencyValues filterCurrency,
                                  @Nullable Date dateFrom,
                                  @Nullable Date dateTo) {
@@ -72,8 +74,8 @@ public class StatService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  List<StatisticJson> getStatistic(@Nonnull String username,
-                                   @Nonnull CurrencyValues statCurrency,
+  List<StatisticJson> getStatistic(String username,
+                                   CurrencyValues statCurrency,
                                    @Nullable CurrencyValues filterCurrency,
                                    @Nullable Date dateFrom,
                                    @Nullable Date dateTo) {
@@ -90,10 +92,10 @@ public class StatService {
   }
 
   @Nonnull
-  StatisticJson calculateStatistic(@Nonnull CurrencyValues statisticCurrency,
-                                   @Nonnull String username,
-                                   @Nonnull CurrencyValues userCurrency,
-                                   @Nonnull List<SpendEntity> spendEntities,
+  StatisticJson calculateStatistic(CurrencyValues statisticCurrency,
+                                   String username,
+                                   CurrencyValues userCurrency,
+                                   List<SpendEntity> spendEntities,
                                    @Nullable Date dateTo) {
     StatisticJson statistic = createDefaultStatisticJson(statisticCurrency, userCurrency, dateTo);
     List<SpendEntity> sortedSpends = spendEntities.stream()
@@ -141,7 +143,7 @@ public class StatService {
   }
 
   @Nonnull
-  Function<SpendEntity, StatisticJson> enrichStatisticDateFromByFirstStreamElement(@Nonnull StatisticJson statistic) {
+  Function<SpendEntity, StatisticJson> enrichStatisticDateFromByFirstStreamElement(StatisticJson statistic) {
     return se -> (statistic.dateFrom() == null)
         ?
         new StatisticJson(
@@ -158,7 +160,7 @@ public class StatService {
   }
 
   @Nonnull
-  Function<SpendEntity, StatisticJson> enrichStatisticTotalAmountByAllStreamElements(@Nonnull StatisticJson statistic) {
+  Function<SpendEntity, StatisticJson> enrichStatisticTotalAmountByAllStreamElements(StatisticJson statistic) {
     return se -> new StatisticJson(
         statistic.dateFrom(),
         statistic.dateTo(),
@@ -173,9 +175,9 @@ public class StatService {
   }
 
   @Nonnull
-  Function<SpendEntity, StatisticJson> enrichStatisticTotalInUserCurrencyByAllStreamElements(@Nonnull StatisticJson statistic,
-                                                                                             @Nonnull CurrencyValues statisticCurrency,
-                                                                                             @Nonnull CurrencyValues userCurrency) {
+  Function<SpendEntity, StatisticJson> enrichStatisticTotalInUserCurrencyByAllStreamElements(StatisticJson statistic,
+                                                                                             CurrencyValues statisticCurrency,
+                                                                                             CurrencyValues userCurrency) {
     return se -> new StatisticJson(
         statistic.dateFrom(),
         statistic.dateTo(),
@@ -195,7 +197,7 @@ public class StatService {
   }
 
   @Nonnull
-  Map<String, List<SpendJson>> bindSpendsToCategories(@Nonnull List<SpendEntity> sortedSpends) {
+  Map<String, List<SpendJson>> bindSpendsToCategories(List<SpendEntity> sortedSpends) {
     return sortedSpends.stream().map(SpendJson::fromEntity)
         .collect(Collectors.groupingBy(
             (SpendJson sj) -> {
@@ -210,10 +212,10 @@ public class StatService {
   }
 
   @Nonnull
-  StatisticJson calculateStatistic(@Nonnull StatisticJson statistic,
-                                   @Nonnull CurrencyValues statisticCurrency,
-                                   @Nonnull CurrencyValues userCurrency,
-                                   @Nonnull List<SpendEntity> sortedSpends) {
+  StatisticJson calculateStatistic(StatisticJson statistic,
+                                   CurrencyValues statisticCurrency,
+                                   CurrencyValues userCurrency,
+                                   List<SpendEntity> sortedSpends) {
     for (SpendEntity spend : sortedSpends) {
       statistic = enrichStatisticTotalInUserCurrencyByAllStreamElements(
           enrichStatisticTotalAmountByAllStreamElements(
@@ -227,8 +229,8 @@ public class StatService {
   }
 
   @Nonnull
-  StatisticJson createDefaultStatisticJson(@Nonnull CurrencyValues statisticCurrency,
-                                           @Nonnull CurrencyValues userCurrency,
+  StatisticJson createDefaultStatisticJson(CurrencyValues statisticCurrency,
+                                           CurrencyValues userCurrency,
                                            @Nullable Date dateTo) {
     return new StatisticJson(
         null,
@@ -258,8 +260,8 @@ public class StatService {
   }
 
   @Nonnull
-  SumByCategoryInfo mapToUserCurrency(@Nonnull CurrencyValues userCurrency,
-                                      @Nonnull SumByCategoryInfo sumByCategory) {
+  SumByCategoryInfo mapToUserCurrency(CurrencyValues userCurrency,
+                                      SumByCategoryInfo sumByCategory) {
     if (sumByCategory.currency() != userCurrency) {
       return new SumByCategoryInUserCurrency(
           sumByCategory,
@@ -275,7 +277,7 @@ public class StatService {
     }
   }
 
-  double getTotalSumm(@Nonnull List<SumByCategoryInfo> result) {
+  double getTotalSumm(List<SumByCategoryInfo> result) {
     return result.stream()
         .map(SumByCategoryInfo::sum)
         .map(BigDecimal::valueOf)

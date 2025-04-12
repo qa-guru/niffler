@@ -9,11 +9,13 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+@ParametersAreNonnullByDefault
 public class PropertiesLogger implements ApplicationListener<ApplicationPreparedEvent> {
 
   private static final Logger LOG = LoggerFactory.getLogger(PropertiesLogger.class);
@@ -22,7 +24,7 @@ public class PropertiesLogger implements ApplicationListener<ApplicationPrepared
   private boolean isFirstRun = true;
 
   @Override
-  public void onApplicationEvent(@Nonnull ApplicationPreparedEvent event) {
+  public void onApplicationEvent(ApplicationPreparedEvent event) {
     if (isFirstRun) {
       environment = event.getApplicationContext().getEnvironment();
       printProperties();

@@ -2,7 +2,6 @@ package guru.qa.niffler.controller.v3;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,6 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class UserV3ControllerTest {
 
+  private static final String FIXTURE = "/guru/qa/niffler/controller/v3/UserV3ControllerTest.sql";
+
   private static final Matcher<String> idMatcher = Matchers.matchesPattern(
       "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
   );
@@ -29,10 +30,9 @@ class UserV3ControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
-  @Disabled("BUG, income invitations should be removed from /users/all")
   @Test
-  @Sql("/usersFixture.sql")
-  void allUsersShouldBeReturnedInPagedModelStructure() throws Exception {
+  @Sql(FIXTURE)
+  void allUsersAndIncomeInvitationsShouldBeReturnedInPagedModelStructure() throws Exception {
     final String fixtureUser = "duck";
 
     mockMvc.perform(get("/internal/v3/users/all")
@@ -41,12 +41,14 @@ class UserV3ControllerTest {
             .param("size", "10"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content").isArray())
-        .andExpect(jsonPath("$.content.length()").value(1))
+        .andExpect(jsonPath("$.content.length()").value(2))
         .andExpect(jsonPath("$.content[0].id").value(idMatcher))
         .andExpect(jsonPath("$.content[0].username").value("barsik"))
+        .andExpect(jsonPath("$.content[1].id").value(idMatcher))
+        .andExpect(jsonPath("$.content[1].username").value("bee"))
         .andExpect(jsonPath("$.page.size").value(10))
         .andExpect(jsonPath("$.page.number").value(0))
-        .andExpect(jsonPath("$.page.totalElements").value(1))
+        .andExpect(jsonPath("$.page.totalElements").value(2))
         .andExpect(jsonPath("$.page.totalPages").value(1));
   }
 
