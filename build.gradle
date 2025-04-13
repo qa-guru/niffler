@@ -50,6 +50,13 @@ subprojects {
                 ? "arm64"
                 : "amd64"
     }
+
+    tasks.withType(Test).configureEach {
+        testLogging {
+            showStandardStreams = true
+            exceptionFormat = 'full'
+        }
+    }
 }
 
 dependencyUpdates {

@@ -30,6 +30,18 @@ jobs:
       - name: Build backends
         run: |
           ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
+      - name: Upload backends HTML test reports
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            niffler-auth/build/reports/tests/test
+            niffler-currency/build/reports/tests/test
+            niffler-gateway/build/reports/tests/test
+            niffler-spend/build/reports/tests/test
+            niffler-userdata/build/reports/tests/test
       - name: Pull browsers
         run: |
           docker pull twilio/selenoid:chrome_stable_135
