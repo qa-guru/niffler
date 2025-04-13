@@ -26,8 +26,8 @@ fi
 echo '### Java version ###'
 java --version
 bash ./gradlew clean
-bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
+bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
 
-docker pull selenoid/vnc_chrome:127.0
+docker pull twilio/selenoid:chrome_stable_135
 docker compose up -d
 docker ps -a

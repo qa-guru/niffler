@@ -52,6 +52,9 @@ subprojects {
     }
 
     tasks.withType(Test).configureEach {
+        options {
+            systemProperties(System.getProperties())
+        }
         testLogging {
             showStandardStreams = true
             exceptionFormat = 'full'

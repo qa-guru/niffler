@@ -167,8 +167,5 @@ tasks.named { it == "generateNifflerApolloSources" }.configureEach {
 
 test {
     dependsOn("generateNifflerApolloSources")
-    options {
-        systemProperties(System.getProperties())
-    }
     useJUnitPlatform()
 }

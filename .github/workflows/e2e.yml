@@ -29,7 +29,7 @@ jobs:
           distribution: 'temurin'
       - name: Build backends
         run: |
-          ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
+          ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
       - name: Upload backends HTML test reports
         if: always()
         continue-on-error: true
