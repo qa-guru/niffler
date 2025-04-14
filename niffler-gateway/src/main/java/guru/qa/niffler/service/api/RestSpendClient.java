@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,7 @@ import static guru.qa.niffler.service.utils.DateUtils.dateFormat;
 import static guru.qa.niffler.service.utils.DateUtils.filterDate;
 
 @Component
+@ParametersAreNonnullByDefault
 public class RestSpendClient implements SpendClient {
 
   private final RestTemplate restTemplate;
@@ -46,7 +48,7 @@ public class RestSpendClient implements SpendClient {
 
   @Nonnull
   @Override
-  public List<CategoryJson> getCategories(@Nonnull String username, boolean excludeArchived) {
+  public List<CategoryJson> getCategories(String username, boolean excludeArchived) {
     return List.of(Optional.ofNullable(
         restTemplate.getForObject(
             nifflerSpendApiUri + "/categories/all?username={username}&excludeArchived={excludeArchived}",
@@ -59,7 +61,7 @@ public class RestSpendClient implements SpendClient {
 
   @Nonnull
   @Override
-  public CategoryJson addCategory(@Nonnull CategoryJson category) {
+  public CategoryJson addCategory(CategoryJson category) {
     return Optional.ofNullable(
         restTemplate.postForObject(
             nifflerSpendApiUri + "/categories/add",
@@ -71,7 +73,7 @@ public class RestSpendClient implements SpendClient {
 
   @Nonnull
   @Override
-  public CategoryJson updateCategory(@Nonnull CategoryJson category) {
+  public CategoryJson updateCategory(CategoryJson category) {
     return Optional.ofNullable(
         restTemplate.patchForObject(
             nifflerSpendApiUri + "/categories/update",
@@ -83,8 +85,8 @@ public class RestSpendClient implements SpendClient {
 
   @Nonnull
   @Override
-  public SpendJson getSpend(@Nonnull String id,
-                            @Nonnull String username) {
+  public SpendJson getSpend(String id,
+                            String username) {
     return Optional.ofNullable(
         restTemplate.getForObject(
             nifflerSpendApiUri + "/spends/{id}?username={username}",
@@ -97,7 +99,7 @@ public class RestSpendClient implements SpendClient {
 
   @Nonnull
   @Override
-  public List<SpendJson> getSpends(@Nonnull String username,
+  public List<SpendJson> getSpends(String username,
                                    @Nullable DataFilterValues filterPeriod,
                                    @Nullable CurrencyValues filterCurrency) {
     return List.of(Optional.ofNullable(
@@ -115,8 +117,8 @@ public class RestSpendClient implements SpendClient {
   @SuppressWarnings("unchecked")
   @Nonnull
   @Override
-  public Page<SpendJson> getSpendsV2(@Nonnull String username,
-                                     @Nonnull Pageable pageable,
+  public Page<SpendJson> getSpendsV2(String username,
+                                     Pageable pageable,
                                      @Nullable DataFilterValues filterPeriod,
                                      @Nullable CurrencyValues filterCurrency,
                                      @Nullable String searchQuery) {
@@ -136,8 +138,8 @@ public class RestSpendClient implements SpendClient {
 
   @Nonnull
   @Override
-  public PagedModel<SpendJson> getSpendsV3(@Nonnull String username,
-                                           @Nonnull Pageable pageable,
+  public PagedModel<SpendJson> getSpendsV3(String username,
+                                           Pageable pageable,
                                            @Nullable DataFilterValues filterPeriod,
                                            @Nullable CurrencyValues filterCurrency,
                                            @Nullable String searchQuery) {
@@ -161,7 +163,7 @@ public class RestSpendClient implements SpendClient {
 
   @Nonnull
   @Override
-  public SpendJson addSpend(@Nonnull SpendJson spend) {
+  public SpendJson addSpend(SpendJson spend) {
     return Optional.ofNullable(
         restTemplate.postForObject(
             nifflerSpendApiUri + "/spends/add",
@@ -173,7 +175,7 @@ public class RestSpendClient implements SpendClient {
 
   @Nonnull
   @Override
-  public SpendJson editSpend(@Nonnull SpendJson spend) {
+  public SpendJson editSpend(SpendJson spend) {
     return Optional.ofNullable(
         restTemplate.patchForObject(
             nifflerSpendApiUri + "/spends/edit",
@@ -185,8 +187,8 @@ public class RestSpendClient implements SpendClient {
 
   @Nonnull
   @Override
-  public List<StatisticJson> statistic(@Nonnull String username,
-                                       @Nonnull CurrencyValues userCurrency,
+  public List<StatisticJson> statistic(String username,
+                                       CurrencyValues userCurrency,
                                        @Nullable CurrencyValues filterCurrency,
                                        @Nullable DataFilterValues filterPeriod) {
     return List.of(Optional.ofNullable(
@@ -204,8 +206,8 @@ public class RestSpendClient implements SpendClient {
 
   @Nonnull
   @Override
-  public StatisticV2Json statisticV2(@Nonnull String username,
-                                     @Nonnull CurrencyValues statCurrency,
+  public StatisticV2Json statisticV2(String username,
+                                     CurrencyValues statCurrency,
                                      @Nullable CurrencyValues filterCurrency,
                                      @Nullable DataFilterValues filterPeriod) {
     return Optional.ofNullable(
@@ -221,11 +223,25 @@ public class RestSpendClient implements SpendClient {
   }
 
   @Override
-  public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
+  public void deleteSpends(String username, List<String> ids) {
     restTemplate.delete(
         nifflerSpendApiUri + "/spends/remove?username={username}&ids={ids}",
         username,
         String.join(",", ids)
     );
+  }
+
+  @Override
+  public byte[] exportToCsv(String username) {
+    final ResponseEntity<byte[]> response = restTemplate.exchange(
+        nifflerSpendApiUri + "/v3/spends/export/csv?username={username}",
+        HttpMethod.GET,
+        null,
+        byte[].class,
+        username
+    );
+    return Optional.ofNullable(
+        response.getBody()
+    ).orElseThrow(() -> new NoRestResponseException("No REST byte[] response is given [/v3/spends/export/csv/ Route]"));
   }
 }

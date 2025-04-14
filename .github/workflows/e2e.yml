@@ -28,8 +28,33 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Build backends
+        id: build
         run: |
-          ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
+          ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
+      - name: Report test results
+        uses: dorny/test-reporter@v2
+        if: always() && steps.build.outcome != 'skipped'
+        with:
+          name: Unit & Integration tests
+          path: '**/build/test-results/test/TEST-*.xml'
+          reporter: java-junit
+          badge-title: 'unit & integration tests'
+      - name: Add comment to PR with link to unit tests results
+        if: always() && steps.build.outcome != 'skipped'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const buildStatus = '${{ steps.build.outcome }}'
+            const message = buildStatus === 'success'
+              ? `✅ UNIT & INTEGRATION TESTS PASSED`
+              : `🔴 UNIT & INTEGRATION TESTS FAILED`
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            })
       - name: Pull browsers
         run: |
           docker pull twilio/selenoid:chrome_stable_135
@@ -55,7 +80,7 @@ jobs:
             exit 1
           fi
       - name: Add comment to PR with link to allure
-        if: always()
+        if: always() && steps.e2e.outcome != 'skipped'
         uses: actions/github-script@v7
         with:
           script: |
@@ -63,8 +88,8 @@ jobs:
             const reportUrl = 'https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler-ng/reports/latest/index.html'
             const historyUrl = 'https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler-ng'
             const message = exitCode == '0' ?
-              `✅ TEST RUN PASSED ✅ There is the [report](${reportUrl})\n🕓 All reports [history](${historyUrl})` :
-              `🔴 TEST RUN FAILED 🔴 There is the [report](${reportUrl})\n🕓 All reports [history](${historyUrl})`
+              `✅ E2E TEST RUN PASSED\nThere is the [report](${reportUrl})\nAll reports [history](${historyUrl})` :
+              `🔴 E2E TEST RUN FAILED\nThere is the [report](${reportUrl})\nAll reports [history](${historyUrl})`
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

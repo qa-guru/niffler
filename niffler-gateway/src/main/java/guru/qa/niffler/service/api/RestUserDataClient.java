@@ -19,11 +19,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Component
+@ParametersAreNonnullByDefault
 public class RestUserDataClient implements UserDataClient {
 
   private final RestTemplate restTemplate;
@@ -38,7 +40,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public UserJson currentUser(@Nonnull String username) {
+  public UserJson currentUser(String username) {
     return Optional.ofNullable(
         restTemplate.getForObject(
             nifflerUserdataApiUri + "/users/current?username={username}",
@@ -50,7 +52,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public UserJson updateUserInfo(@Nonnull UserJson user) {
+  public UserJson updateUserInfo(UserJson user) {
     return Optional.ofNullable(
         restTemplate.postForObject(
             nifflerUserdataApiUri + "/users/update",
@@ -62,7 +64,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public List<UserJson> allUsers(@Nonnull String username, @Nullable String searchQuery) {
+  public List<UserJson> allUsers(String username, @Nullable String searchQuery) {
     return Arrays.asList(
         Optional.ofNullable(
             restTemplate.getForObject(
@@ -77,7 +79,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public Page<UserJson> allUsersV2(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
+  public Page<UserJson> allUsersV2(String username, Pageable pageable, @Nullable String searchQuery) {
     ResponseEntity<RestPage<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v2/users/all?username={username}&searchQuery={searchQuery}"
             + new HttpQueryPaginationAndSort(pageable),
@@ -94,7 +96,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public PagedModel<UserJson> allUsersV3(@javax.annotation.Nonnull String username, @javax.annotation.Nonnull Pageable pageable, @javax.annotation.Nullable String searchQuery) {
+  public PagedModel<UserJson> allUsersV3(String username, Pageable pageable, @javax.annotation.Nullable String searchQuery) {
     final ResponseEntity<PagedModelJson<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v3/users/all?username={username}&searchQuery={searchQuery}"
             + new HttpQueryPaginationAndSort(pageable),
@@ -111,7 +113,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public List<UserJson> friends(@Nonnull String username, @Nullable String searchQuery) {
+  public List<UserJson> friends(String username, @Nullable String searchQuery) {
     return Arrays.asList(
         Optional.ofNullable(
             restTemplate.getForObject(
@@ -126,7 +128,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public Page<UserJson> friendsV2(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
+  public Page<UserJson> friendsV2(String username, Pageable pageable, @Nullable String searchQuery) {
     ResponseEntity<RestPage<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v2/friends/all?username={username}&searchQuery={searchQuery}"
             + new HttpQueryPaginationAndSort(pageable),
@@ -143,7 +145,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public PagedModel<UserJson> friendsV3(@Nonnull String username, @Nonnull Pageable pageable, @Nullable String searchQuery) {
+  public PagedModel<UserJson> friendsV3(String username, Pageable pageable, @Nullable String searchQuery) {
     final ResponseEntity<PagedModelJson<UserJson>> response = restTemplate.exchange(
         nifflerUserdataApiUri + "/v3/friends/all?username={username}&searchQuery={searchQuery}"
             + new HttpQueryPaginationAndSort(pageable),
@@ -160,7 +162,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public UserJson sendInvitation(@Nonnull String username, @Nonnull String targetUsername) {
+  public UserJson sendInvitation(String username, String targetUsername) {
     return Optional.ofNullable(
         restTemplate.postForObject(
             nifflerUserdataApiUri + "/invitations/send?username={username}&targetUsername={targetUsername}",
@@ -174,7 +176,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public UserJson acceptInvitation(@Nonnull String username, @Nonnull String targetUsername) {
+  public UserJson acceptInvitation(String username, String targetUsername) {
     return Optional.ofNullable(
         restTemplate.postForObject(
             nifflerUserdataApiUri + "/invitations/accept?username={username}&targetUsername={targetUsername}",
@@ -188,7 +190,7 @@ public class RestUserDataClient implements UserDataClient {
 
   @Nonnull
   @Override
-  public UserJson declineInvitation(@Nonnull String username, @Nonnull String targetUsername) {
+  public UserJson declineInvitation(String username, String targetUsername) {
     return Optional.ofNullable(
         restTemplate.postForObject(
             nifflerUserdataApiUri + "/invitations/decline?username={username}&targetUsername={targetUsername}",
@@ -201,7 +203,7 @@ public class RestUserDataClient implements UserDataClient {
   }
 
   @Override
-  public void removeFriend(@Nonnull String username, @Nonnull String targetUsername) {
+  public void removeFriend(String username, String targetUsername) {
     restTemplate.delete(
         nifflerUserdataApiUri + "/friends/remove?username={username}&targetUsername={targetUsername}",
         username,

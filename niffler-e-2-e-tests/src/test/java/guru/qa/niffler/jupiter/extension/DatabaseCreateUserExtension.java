@@ -85,7 +85,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
   @Step("Create income invitations for test user (DB)")
   @Override
   protected void createIncomeInvitationsIfPresent(IncomeInvitations incomeInvitations,
-                                                  UserJson createdUser) throws Exception {
+                                                  UserJson createdUser) {
     if (incomeInvitations.handleAnnotation() && incomeInvitations.count() > 0) {
       UserEntity targetUser = userRepository.findByIdInUserdata(
           createdUser.id()
@@ -105,7 +105,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
   @Step("Create outcome invitations for test user (DB)")
   @Override
   protected void createOutcomeInvitationsIfPresent(OutcomeInvitations outcomeInvitations,
-                                                   UserJson createdUser) throws Exception {
+                                                   UserJson createdUser) {
     if (outcomeInvitations.handleAnnotation() && outcomeInvitations.count() > 0) {
       UserEntity targetUser = userRepository.findByIdInUserdata(
           createdUser.id()
@@ -125,7 +125,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
   @Step("Create friends for test user (DB)")
   @Override
   protected void createFriendsIfPresent(Friends friends,
-                                        UserJson createdUser) throws Exception {
+                                        UserJson createdUser) {
     if (friends.handleAnnotation() && friends.count() > 0) {
       UserEntity targetUser = userRepository.findByIdInUserdata(
           createdUser.id()
@@ -162,7 +162,7 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
             ).orElseGet(() -> {
                   CategoryEntity newCategory = new CategoryEntity();
                   newCategory.setUsername(createdUser.username());
-              newCategory.setName(spend.category());
+                  newCategory.setName(spend.category());
                   return newCategory;
                 }
             )

@@ -4,10 +4,14 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,5 +40,17 @@ public class SpendV3Controller {
     return new PagedModel<>(
         spendService.getSpendsForUser(username, pageable, filterCurrency, from, to, searchQuery)
     );
+  }
+
+  @GetMapping(value = "/export/csv", produces = "text/csv")
+  public ResponseEntity<InputStreamResource> exportCsv(@RequestParam String username) {
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=spend-history.csv")
+        .contentType(MediaType.parseMediaType("text/csv"))
+        .body(
+            new InputStreamResource(
+                spendService.exportSpendsToCsv(username)
+            )
+        );
   }
 }

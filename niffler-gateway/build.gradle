@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '2.2.4'
+version = '2.3.0'
 
 dependencies {
     implementation project(':niffler-grpc-common')
@@ -88,7 +88,6 @@ jib {
     }
 }
 
-tasks.jib.dependsOn test
 tasks.jibDockerBuild.dependsOn test
 
 tasks.named('bootJar') {
@@ -99,8 +98,4 @@ tasks.register('printVersion') {
     doLast {
         println project.version
     }
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }

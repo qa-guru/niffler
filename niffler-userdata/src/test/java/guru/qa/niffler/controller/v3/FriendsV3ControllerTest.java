@@ -21,6 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class FriendsV3ControllerTest {
 
+  private static final String FIXTURE = "/guru/qa/niffler/controller/v3/FriendsV3ControllerTest.sql";
+
   private static final Matcher<String> idMatcher = Matchers.matchesPattern(
       "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
   );
@@ -29,7 +31,7 @@ class FriendsV3ControllerTest {
   private MockMvc mockMvc;
 
   @Test
-  @Sql("/usersFixture.sql")
+  @Sql(FIXTURE)
   void friendsAndIncomeInvitationsShouldBeReturnedInPagedModelStructure() throws Exception {
     final String fixtureUser = "duck";
 

@@ -23,11 +23,11 @@ java --version
 bash ./gradlew clean
 if [ "$1" = "push" ]; then
   echo "### Build & push images ###"
-  bash ./gradlew jib -x :niffler-e-2-e-tests:test
+  bash ./gradlew jib -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
   docker compose push frontend.niffler.dc
 else
   echo "### Build images ###"
-  bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
+  bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
 fi
 
 docker compose up -d

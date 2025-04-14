@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @Component
+@ParametersAreNonnullByDefault
 public class CategoryService {
 
   public static final String ARCHIVED_CATEGORY_NAME = "Archived";
@@ -31,7 +33,7 @@ public class CategoryService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  List<CategoryJson> getAllCategories(@Nonnull String username, boolean excludeArchived) {
+  List<CategoryJson> getAllCategories(String username, boolean excludeArchived) {
     return categoryRepository.findAllByUsernameOrderByName(username)
         .stream()
         .filter(ce -> !excludeArchived || !ce.isArchived())
@@ -41,7 +43,7 @@ public class CategoryService {
 
   @Transactional
   public @Nonnull
-  CategoryJson update(@Nonnull CategoryJson category) {
+  CategoryJson update(CategoryJson category) {
     CategoryEntity categoryEntity = categoryRepository.findByUsernameAndId(category.username(), category.id())
         .orElseThrow(() -> new CategoryNotFoundException("Can`t find category by id: '" + category.id() + "'"));
 
@@ -66,26 +68,20 @@ public class CategoryService {
 
   @Transactional
   public @Nonnull
-  CategoryJson getOrAddCategory(@Nonnull CategoryJson category) {
-    return CategoryJson.fromEntity(getOrSave(category));
-  }
-
-  @Transactional
-  public @Nonnull
-  CategoryJson addCategory(@Nonnull CategoryJson category) {
+  CategoryJson addCategory(CategoryJson category) {
     return CategoryJson.fromEntity(this.save(category));
   }
 
   @Nonnull
   @Transactional
-  CategoryEntity getOrSave(@Nonnull CategoryJson category) {
+  CategoryEntity getOrSave(CategoryJson category) {
     return categoryRepository.findByUsernameAndName(category.username(), category.name())
         .orElseGet(() -> this.save(category));
   }
 
   @Nonnull
   @Transactional
-  CategoryEntity save(@Nonnull CategoryJson category) {
+  CategoryEntity save(CategoryJson category) {
     final String username = category.username();
     final String categoryName = category.name();
 

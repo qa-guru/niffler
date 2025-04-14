@@ -35,7 +35,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '2.1.1'
+version = '2.1.2'
 
 allure {
     version.set("${allureVersion}")
@@ -167,10 +167,4 @@ tasks.named { it == "generateNifflerApolloSources" }.configureEach {
 
 test {
     dependsOn("generateNifflerApolloSources")
-    options {
-        systemProperties(System.getProperties())
-    }
-    testLogging.showStandardStreams = true
-    testLogging.exceptionFormat = 'full'
-    useJUnitPlatform()
 }

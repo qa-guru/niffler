@@ -20,10 +20,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class UserControllerTest {
 
+  private static final String FIXTURE = "/guru/qa/niffler/controller/UserControllerTest.sql";
+
   @Autowired
   private MockMvc mockMvc;
 
-  @Sql(scripts = "/currentUserShouldBeReturned.sql")
+  @Sql(FIXTURE)
   @Test
   void currentUserShouldBeReturned() throws Exception {
     mockMvc.perform(get("/internal/users/current")

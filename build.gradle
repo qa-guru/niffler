@@ -39,6 +39,7 @@ subprojects {
         protobufVersion = '4.30.2'
         grpcVersion = '1.71.0'
         thumbnailatorVersion = '0.4.20'
+        apacheCsvVersion = '1.14.0'
         h2Version = '2.3.232'
         mockitoVersion = '5.17.0'
 
@@ -48,6 +49,17 @@ subprojects {
         dockerArch = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64"
                 : "amd64"
+    }
+
+    tasks.withType(Test).configureEach {
+        options {
+            systemProperties(System.getProperties())
+        }
+        testLogging {
+            showStandardStreams = true
+            exceptionFormat = 'full'
+        }
+        useJUnitPlatform()
     }
 }
 

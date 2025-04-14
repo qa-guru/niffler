@@ -9,9 +9,11 @@ import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @Component
+@ParametersAreNonnullByDefault
 public class StatisticAggregator {
 
   private final SpendClient spendClient;
@@ -25,7 +27,7 @@ public class StatisticAggregator {
   }
 
   public @Nonnull
-  List<StatisticJson> enrichStatisticRequest(@Nonnull String username,
+  List<StatisticJson> enrichStatisticRequest(String username,
                                              @Nullable CurrencyValues userCurrency,
                                              @Nullable CurrencyValues filterCurrency,
                                              @Nullable DataFilterValues filterPeriod) {
@@ -36,7 +38,7 @@ public class StatisticAggregator {
   }
 
   public @Nonnull
-  StatisticV2Json enrichStatisticRequestV2(@Nonnull String username,
+  StatisticV2Json enrichStatisticRequestV2(String username,
                                            @Nullable CurrencyValues statCurrency,
                                            @Nullable CurrencyValues filterCurrency,
                                            @Nullable DataFilterValues filterPeriod) {

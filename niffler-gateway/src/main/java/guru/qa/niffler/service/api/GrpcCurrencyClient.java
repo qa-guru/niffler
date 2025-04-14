@@ -13,9 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @Component
+@ParametersAreNonnullByDefault
 public class GrpcCurrencyClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(GrpcCurrencyClient.class);
