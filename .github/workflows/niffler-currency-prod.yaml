@@ -38,7 +38,7 @@ jobs:
           echo "### niffler-currency version will be used: ${{ env.CURRENCY_VER }} ###"
           echo "### java version ###"
           java -version
-          bash ./gradlew :niffler-currency:jib -x :niffler-e-2-e-tests:test || exit 1
+          bash ./gradlew :niffler-currency:jib -x :niffler-e-2-e-tests:test -Duser.timezone=UTC || exit 1
           docker compose -f docker-compose.ci.yml pull currency.niffler.dc
           docker compose -f docker-compose.ci.yml stop currency.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps currency.niffler.dc
           docker system prune -a -f

@@ -38,7 +38,7 @@ jobs:
           echo "### niffler-gateway version will be used: ${{ env.GATEWAY_VER }} ###"
           echo "### java version ###"
           java -version
-          bash ./gradlew :niffler-gateway:jib -x :niffler-e-2-e-tests:test || exit 1
+          bash ./gradlew :niffler-gateway:jib -x :niffler-e-2-e-tests:test -Duser.timezone=UTC || exit 1
           docker compose -f docker-compose.ci.yml pull gateway.niffler.dc
           docker compose -f docker-compose.ci.yml stop gateway.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps gateway.niffler.dc
           docker system prune -a -f
