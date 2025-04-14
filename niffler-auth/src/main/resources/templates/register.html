@@ -28,7 +28,7 @@
                         Sign up
                     </h1>
                     <p class="header__additional">
-                        Already have an account? <a class="form__link" th:href="@{|${frontUri}|}">Log in!</a>
+                        Already have an account? <a class="form__link" href="/login">Log in!</a>
                     </p>
                     <label class="form__label">Username
                         <input class="form__input" type="text" id="username" th:field="*{username}" name="username"
@@ -57,7 +57,7 @@
                 </form>
                 <div class="form" th:unless="${username == null}">
                     <p class="form__paragraph form__paragraph_success">Congratulations! You've registered!</p>
-                    <a class="form_sign-in" th:href="@{|${frontUri}|}">Sign in</a>
+                    <a class="form_sign-in" th:href="@{|${frontUri}|}" th:text="${finalStep} ?: 'Sign in'">Sign in</a>
                 </div>
             </div>
         </section>
@@ -66,9 +66,11 @@
 <script>
     const passwordButton = document.getElementById("passwordBtn");
     const passwordInput = document.getElementById("password");
-
     const passwordSubmitButton = document.getElementById("passwordSubmitBtn");
     const passwordSubmitInput = document.getElementById("passwordSubmit");
+    const signupForm = document.getElementById("register-form");
+    const signupButton = document.getElementById("register-button");
+    const signupLoader = signupButton.querySelector(".loader");
 
     const togglePasswordInputType = (inputType) => {
         return inputType === "password" ? "text" : "password";
@@ -92,16 +94,15 @@
     passwordSubmitButton.addEventListener("click", handleSubmitPasswordButtonClick);
 
     document.addEventListener("DOMContentLoaded", function () {
-        const loginForm = document.getElementById("register-form");
-        const loginButton = document.getElementById("register-button");
-        const buttonText = loginButton.querySelector(".button-text");
-        const loader = loginButton.querySelector(".loader");
-
-        loginForm.addEventListener("submit", function () {
-            loginButton.classList.add("disabled");
-            buttonText.textContent = "Signing up...";
-            loader.classList.remove("hidden");
+        signupForm.addEventListener("submit", function () {
+            signupButton.classList.add("disabled");
+            signupLoader.classList.remove("hidden");
         });
+    });
+
+    window.addEventListener("pageshow", (e) => {
+        signupButton.classList.remove("disabled");
+        signupLoader.classList.add("hidden");
     });
 </script>
 </body>

@@ -1,10 +1,10 @@
 package guru.qa.niffler.controller;
 
+import guru.qa.niffler.service.OauthSessionValidator;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,22 +13,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class LoginController {
 
   private static final String LOGIN_VIEW_NAME = "login";
-  private static final String PRE_REQ_ATTR = "SPRING_SECURITY_SAVED_REQUEST";
-  private static final String PRE_REQ_URI = "/oauth2/authorize";
 
   private final String nifflerFrontUri;
+  private final OauthSessionValidator sessionValidator;
 
-  public LoginController(@Value("${niffler-front.base-uri}") String nifflerFrontUri) {
+  public LoginController(@Value("${niffler-front.base-uri}") String nifflerFrontUri, OauthSessionValidator sessionValidator) {
     this.nifflerFrontUri = nifflerFrontUri;
+    this.sessionValidator = sessionValidator;
   }
 
   @GetMapping("/login")
   public String login(HttpSession session) {
-    final DefaultSavedRequest savedRequest = (DefaultSavedRequest) session.getAttribute(PRE_REQ_ATTR);
-    if (savedRequest == null || !savedRequest.getRequestURI().equals(PRE_REQ_URI)) {
-      return "redirect:" + nifflerFrontUri;
+    if (sessionValidator.isWebOauthSession(session) || sessionValidator.isAndroidOauthSession(session)) {
+      return LOGIN_VIEW_NAME;
     }
-    return LOGIN_VIEW_NAME;
+    return "redirect:" + nifflerFrontUri;
   }
 
   @GetMapping("/")

@@ -61,6 +61,7 @@ public class NifflerAuthServiceConfig {
   private final KeyManager keyManager;
   private final String nifflerFrontUri;
   private final String nifflerAuthUri;
+  private final String androidAppUri;
   private final String webClientId;
   private final String mobileClientId;
   private final String mobileCustomScheme;
@@ -73,6 +74,7 @@ public class NifflerAuthServiceConfig {
   public NifflerAuthServiceConfig(KeyManager keyManager,
                                   @Value("${niffler-front.base-uri}") String nifflerFrontUri,
                                   @Value("${niffler-auth.base-uri}") String nifflerAuthUri,
+                                  @Value("${oauth2.android-app-uri}") String androidAppUri,
                                   @Value("${oauth2.web-client-id}") String webClientId,
                                   @Value("${oauth2.mobile-client-id}") String mobileClientId,
                                   @Value("${oauth2.mobile-custom-scheme}") String mobileCustomScheme,
@@ -82,6 +84,7 @@ public class NifflerAuthServiceConfig {
     this.keyManager = keyManager;
     this.nifflerFrontUri = nifflerFrontUri;
     this.nifflerAuthUri = nifflerAuthUri;
+    this.androidAppUri = androidAppUri;
     this.webClientId = webClientId;
     this.mobileClientId = mobileClientId;
     this.mobileCustomScheme = mobileCustomScheme;
@@ -167,8 +170,8 @@ public class NifflerAuthServiceConfig {
       registeredClientRepository.save(
           registeredClient(
               webClientId,
-              nifflerFrontUri + "/authorized",
-              nifflerFrontUri + "/logout"
+              nifflerFrontUri + Callbacks.Web.login,
+              nifflerFrontUri + Callbacks.Web.logout
           )
       );
     }
@@ -176,8 +179,8 @@ public class NifflerAuthServiceConfig {
       registeredClientRepository.save(
           registeredClient(
               mobileClientId,
-              mobileCustomScheme + "ru.niffler_android" + "/callback",
-              mobileCustomScheme + "ru.niffler_android" + "/logout_callback"
+              mobileCustomScheme + androidAppUri + Callbacks.Android.login,
+              mobileCustomScheme + androidAppUri + Callbacks.Android.logout
           )
       );
     }
