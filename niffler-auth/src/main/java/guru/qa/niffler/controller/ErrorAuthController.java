@@ -17,6 +17,7 @@ import static guru.qa.niffler.service.GlobalExceptionHandler.ORIGINAL_CODE_PARAM
 public class ErrorAuthController implements ErrorController {
 
   private static final String ERROR_VIEW_NAME = "error";
+  private static final String REQUEST_EXCEPTION_ATTR = "javax.servlet.error.exception";
 
   private final String nifflerFrontUri;
 
@@ -45,7 +46,7 @@ public class ErrorAuthController implements ErrorController {
       status = response.getStatus();
     }
 
-    final Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
+    final Throwable throwable = (Throwable) request.getAttribute(REQUEST_EXCEPTION_ATTR);
     if (originalError != null) {
       message = originalError.toString();
     } else if (throwable != null) {

@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.validation;
 
 import guru.qa.niffler.model.EqualPasswords;
 import guru.qa.niffler.model.RegistrationModel;

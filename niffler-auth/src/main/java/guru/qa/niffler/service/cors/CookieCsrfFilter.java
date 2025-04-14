@@ -17,9 +17,6 @@ import java.io.IOException;
  */
 public class CookieCsrfFilter extends OncePerRequestFilter {
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                   FilterChain filterChain) throws ServletException, IOException {
