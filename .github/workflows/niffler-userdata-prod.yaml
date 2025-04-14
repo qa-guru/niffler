@@ -38,7 +38,7 @@ jobs:
           echo "### niffler-userdata version will be used: ${{ env.USERDATA_VER }} ###"
           echo "### java version ###"
           java -version
-          bash ./gradlew :niffler-userdata:jib -x :niffler-e-2-e-tests:test -Duser.timezone=UTC || exit 1
+          bash ./gradlew :niffler-userdata:jib -x :niffler-e-2-e-tests:test || exit 1
           docker compose -f docker-compose.ci.yml pull userdata.niffler.dc
           docker compose -f docker-compose.ci.yml stop userdata.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps userdata.niffler.dc
           docker system prune -a -f

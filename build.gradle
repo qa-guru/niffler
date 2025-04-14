@@ -59,6 +59,7 @@ subprojects {
             showStandardStreams = true
             exceptionFormat = 'full'
         }
+        useJUnitPlatform()
     }
 }
 

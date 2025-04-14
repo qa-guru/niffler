@@ -38,16 +38,16 @@ jobs:
           name: Unit & Integration tests
           path: '**/build/test-results/test/TEST-*.xml'
           reporter: java-junit
+          badge-title: 'unit & integration tests'
       - name: Add comment to PR with link to unit tests results
         if: always() && steps.build.outcome != 'skipped'
         uses: actions/github-script@v7
         with:
           script: |
             const buildStatus = '${{ steps.build.outcome }}'
-            const reportUrl = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
             const message = buildStatus === 'success'
-              ? `✅ UNIT & INTEGRATION TESTS PASSED ✅\nSee [tests JUnit report](${reportUrl})`
-              : `🔴 UNIT & INTEGRATION TESTS FAILED 🔴\nSee [tests JUnit report](${reportUrl})`
+              ? `✅ UNIT & INTEGRATION TESTS PASSED`
+              : `🔴 UNIT & INTEGRATION TESTS FAILED`
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -88,8 +88,8 @@ jobs:
             const reportUrl = 'https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler-ng/reports/latest/index.html'
             const historyUrl = 'https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler-ng'
             const message = exitCode == '0' ?
-              `✅ E2E TEST RUN PASSED ✅ There is the [report](${reportUrl})\n🕓 All reports [history](${historyUrl})` :
-              `🔴 E2E TEST RUN FAILED 🔴 There is the [report](${reportUrl})\n🕓 All reports [history](${historyUrl})`
+              `✅ E2E TEST RUN PASSED\nThere is the [report](${reportUrl})\nAll reports [history](${historyUrl})` :
+              `🔴 E2E TEST RUN FAILED\nThere is the [report](${reportUrl})\nAll reports [history](${historyUrl})`
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -157,7 +157,7 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          bash ./gradlew :niffler-auth:jib -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
+          bash ./gradlew :niffler-auth:jib -x :niffler-e-2-e-tests:test
           docker compose -f docker-compose.ci.yml pull auth.niffler.dc
           docker compose -f docker-compose.ci.yml stop auth.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps auth.niffler.dc
           docker system prune -a -f
@@ -168,7 +168,7 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          bash ./gradlew :niffler-currency:jib -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
+          bash ./gradlew :niffler-currency:jib -x :niffler-e-2-e-tests:test
           docker compose -f docker-compose.ci.yml pull currency.niffler.dc
           docker compose -f docker-compose.ci.yml stop currency.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps currency.niffler.dc
           docker system prune -a -f
@@ -179,7 +179,7 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          bash ./gradlew :niffler-gateway:jib -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
+          bash ./gradlew :niffler-gateway:jib -x :niffler-e-2-e-tests:test
           docker compose -f docker-compose.ci.yml pull gateway.niffler.dc
           docker compose -f docker-compose.ci.yml stop gateway.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps gateway.niffler.dc
           docker system prune -a -f
@@ -190,7 +190,7 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          bash ./gradlew :niffler-spend:jib -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
+          bash ./gradlew :niffler-spend:jib -x :niffler-e-2-e-tests:test
           docker compose -f docker-compose.ci.yml pull spend.niffler.dc
           docker compose -f docker-compose.ci.yml stop spend.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps spend.niffler.dc
           docker system prune -a -f
@@ -201,7 +201,7 @@ jobs:
         working-directory: ./
         run: |
           pwd
-          bash ./gradlew :niffler-userdata:jib -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
+          bash ./gradlew :niffler-userdata:jib -x :niffler-e-2-e-tests:test
           docker compose -f docker-compose.ci.yml pull userdata.niffler.dc
           docker compose -f docker-compose.ci.yml stop userdata.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps userdata.niffler.dc
           docker system prune -a -f

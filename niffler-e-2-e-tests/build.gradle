@@ -167,5 +167,4 @@ tasks.named { it == "generateNifflerApolloSources" }.configureEach {
 
 test {
     dependsOn("generateNifflerApolloSources")
-    useJUnitPlatform()
 }

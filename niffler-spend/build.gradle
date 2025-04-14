@@ -65,15 +65,10 @@ jib {
     }
 }
 
-tasks.jib.dependsOn test
 tasks.jibDockerBuild.dependsOn test
 
 tasks.register('printVersion') {
     doLast {
         println project.version
     }
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }
