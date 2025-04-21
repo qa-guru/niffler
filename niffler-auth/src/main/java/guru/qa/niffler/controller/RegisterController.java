@@ -87,7 +87,7 @@ public class RegisterController {
     }
 
     if (sessionValidator.isAndroidOauthSession(session)) {
-      model.addAttribute(MODEL_FRONT_URI_ATTR, mobileCustomScheme + androidAppUri + Callbacks.Android.init);
+      model.addAttribute(MODEL_FRONT_URI_ATTR, mobileCustomScheme + androidAppUri + Callbacks.Android.login);
       model.addAttribute(MODEL_FINAL_STEP_BTN_TEXT_ATTR, "Back to Application");
     } else {
       model.addAttribute(MODEL_FRONT_URI_ATTR, nifflerFrontUri + Callbacks.Web.init);
