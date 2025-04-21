@@ -26,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
@@ -40,6 +41,8 @@ import org.springframework.security.oauth2.server.authorization.oidc.web.authent
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.PortMapperImpl;
 import org.springframework.security.web.PortResolverImpl;
 import org.springframework.security.web.SecurityFilterChain;
@@ -50,12 +53,13 @@ import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHtt
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.UUID;
 
 @Configuration
-@EnableJdbcHttpSession
+@EnableJdbcHttpSession(maxInactiveIntervalInSeconds = 3600)
 public class NifflerAuthServiceConfig {
 
   private final KeyManager keyManager;
@@ -232,6 +236,15 @@ public class NifflerAuthServiceConfig {
     return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
   }
 
+  @Bean
+  public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
+    return context -> {
+      if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
+        context.getClaims().expiresAt(Instant.now().plus(60, ChronoUnit.MINUTES));
+      }
+    };
+  }
+
   private RegisteredClient registeredClient(String clientId, String redirectUri, String logoutRedirectUri) {
     return RegisteredClient.withId(UUID.randomUUID().toString())
         .clientId(clientId)
@@ -247,7 +260,7 @@ public class NifflerAuthServiceConfig {
         )
         .postLogoutRedirectUri(logoutRedirectUri)
         .tokenSettings(TokenSettings.builder()
-            .accessTokenTimeToLive(Duration.of(1, ChronoUnit.HOURS))
+            .accessTokenTimeToLive(Duration.of(60, ChronoUnit.MINUTES))
             .authorizationCodeTimeToLive(Duration.of(10, ChronoUnit.SECONDS))
             .build())
         .build();

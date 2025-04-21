@@ -1,17 +1,17 @@
 buildscript {
     ext {
-        junitVersion = '5.12.1'
+        junitVersion = '5.12.2'
         allureVersion = '2.29.1'
-        selenideVersion = '7.8.1'
+        selenideVersion = '7.9.0'
         okhttp3Version = '4.12.0'
         retrofitVersion = '2.11.0'
         apollographqlVersion = '0.0.2'
         logbackVersion = '1.4.11'
         slf4jVersion = '2.0.9'
-        springJdbcVersion = '6.2.5'
-        springCryptoVersion = '6.4.4'
+        springJdbcVersion = '6.2.6'
+        springCryptoVersion = '6.4.5'
         p6spyVersion = '3.9.1'
-        hibernateVersion = '6.6.12.Final'
+        hibernateVersion = '6.6.13.Final'
         kafkaClientsVersion = '4.0.0'
         saajVersion = '3.0.4'
         springDataCommonsVersion = '3.4.4'
@@ -127,7 +127,7 @@ dependencies {
     testImplementation("com.github.javafaker:javafaker:${fakerVersion}") {
         exclude group: 'org.yaml'
     }
-    testImplementation 'commons-io:commons-io:2.18.0'
+    testImplementation 'commons-io:commons-io:2.19.0'
     testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
     testImplementation 'com.github.vertical-blank:sql-formatter:2.0.5'
     // gRPC
