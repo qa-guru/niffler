@@ -15,6 +15,8 @@ export const PrivateRoute = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const snackbar = useSnackBar();
 
+    const isMobileApp = navigator.userAgent.includes("NifflerAndroid");
+
     useEffect(() => {
         apiClient.getSession({
             onSuccess: (res) => {
@@ -49,10 +51,10 @@ export const PrivateRoute = () => {
                 user,
                 updateUser: setUser,
             }}>
-                <MenuAppBar/>
+                {!isMobileApp && <MenuAppBar/>}
                 <Box component="main" sx={{
                     height: 100,
-                    marginTop: 6,
+                    marginTop: isMobileApp ? 1 : 6,
                     flexGrow: 1,
                     p: 3,
                 }}>

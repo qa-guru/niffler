@@ -5,7 +5,9 @@ import {CategorySection} from "../../components/CategorySection";
 export const ProfilePage = () => {
 
     return (
-        <Container>
+        <Container sx={{
+            p: 0,
+            }}>
             <ProfileForm/>
             <CategorySection/>
         </Container>
