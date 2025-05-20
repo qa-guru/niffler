@@ -19,6 +19,14 @@ interface RequestOptions {
     timeout?: number,
 }
 
+declare global {
+  interface Window {
+    AndroidInterface?: {
+      getToken: () => string;
+    };
+    _nifflerToken?: string;
+  }
+}
 
 export const apiClient = {
     getSession: async ({onSuccess, onFailure}: RequestHandler<Session>) => {
@@ -243,7 +251,8 @@ async function makeRequest<T>(path: string, {onSuccess, onFailure}: RequestHandl
         signal,
     };
 
-    const token = idTokenFromLocalStorage();
+    const isMobileApp = navigator.userAgent.includes("NifflerAndroid");
+    const token = isMobileApp ? window.AndroidInterface?.getToken?.() : idTokenFromLocalStorage();
     if (token) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

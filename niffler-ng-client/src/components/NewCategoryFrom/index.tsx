@@ -38,7 +38,10 @@ export const NewCategoryFrom: FC<NewCategoryFromProps> = ({refetchCategories, is
         <Grid item xs={12}
               component="form"
               onSubmit={onSubmit}
-              sx={{position: "relative"}}
+              sx={{
+                  position: "relative",
+                  marginTop: 2
+                 }}
         >
             <Input
                 id="category"

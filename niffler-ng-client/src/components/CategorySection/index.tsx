@@ -39,7 +39,7 @@ export const CategorySection = () => {
     return (
         <Grid
             container
-            spacing={2}
+            spacing={0}
             sx={{
                 maxWidth: "624px",
                 margin: "5px auto"
@@ -55,7 +55,7 @@ export const CategorySection = () => {
                     variant="h5"
                     component="h2"
                     sx={{
-                        marginRight: 2,
+                        marginRight: 1,
                     }}
                 >
                     Categories
@@ -83,6 +83,9 @@ export const CategorySection = () => {
                         (<Grid
                             item
                             xs={12}
+                            sx={{
+                                marginTop: 2,
+                            }}
                             key={category?.id}
                         >
                             <CategoryItem category={category} onUpdateCategory={fetchCategories}
@@ -91,7 +94,12 @@ export const CategorySection = () => {
                     ))
                     :
                     categories.map((category) => (!category.archived &&
-                        (<Grid item xs={12} key={category?.id}>
+                        (<Grid
+                            item xs={12}
+                            sx={{
+                              marginTop: 2,
+                            }}
+                            key={category?.id}>
                             <CategoryItem
                                 category={category}
                                 onUpdateCategory={fetchCategories}
