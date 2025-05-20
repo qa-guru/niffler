@@ -252,7 +252,13 @@ async function makeRequest<T>(path: string, {onSuccess, onFailure}: RequestHandl
     };
 
     const isMobileApp = navigator.userAgent.includes("NifflerAndroid");
-    const token = isMobileApp ? window.AndroidInterface?.getToken?.() : idTokenFromLocalStorage();
+    let token: string | null = null;
+
+    if (isMobileApp) {
+        token = await waitForAndroidToken();
+    } else {
+        token = idTokenFromLocalStorage();
+    }
     if (token) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -292,5 +298,14 @@ async function makeRequest<T>(path: string, {onSuccess, onFailure}: RequestHandl
         } else {
             onFailure(new Error("An unknown error occurred"));
         }
+    }
+
+    async function waitForAndroidToken(retries = 10, delayMs = 100): Promise<string | null> {
+        for (let i = 0; i < retries; i++) {
+            const token = window.AndroidInterface?.getToken?.();
+            if (token) return token;
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+        return null;
     }
 }
