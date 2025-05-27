@@ -4,6 +4,7 @@ server:
 grpc:
   server:
     port: 8092
+    max-inbound-message-size: 1MB
 
 spring:
   application:
