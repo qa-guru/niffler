@@ -28,19 +28,24 @@ public class AllureDockerExtension implements SuiteExtension {
   private static final String projectId = Config.PROJECT_NAME;
 
   private static final AllureDockerApiClient allureDockerApiClient = new AllureDockerApiClient();
+  private boolean allureBroken = false;
 
   @Override
-  @SneakyThrows
   public void beforeSuite(ExtensionContext context) {
     if (inDocker) {
-      allureDockerApiClient.createProjectIfNotExist(projectId);
-      allureDockerApiClient.clean(projectId);
+      try {
+        allureDockerApiClient.createProjectIfNotExist(projectId);
+        allureDockerApiClient.clean(projectId);
+      } catch (Throwable e) {
+        allureBroken = true;
+        // do nothing
+      }
     }
   }
 
   @Override
   public void afterSuite() {
-    if (inDocker) {
+    if (inDocker && !allureBroken) {
       try (Stream<Path> paths = Files.walk(allureResultsDirectory).filter(Files::isRegularFile)) {
         List<DecodedAllureFile> filesToSend = new ArrayList<>();
         for (Path allureResult : paths.toList()) {
@@ -65,8 +70,8 @@ public class AllureDockerExtension implements SuiteExtension {
             System.getenv("BUILD_URL"),
             System.getenv("EXECUTION_TYPE")
         );
-      } catch (IOException e) {
-        throw new RuntimeException(e);
+      } catch (Throwable e) {
+        // do nothing
       }
     }
   }

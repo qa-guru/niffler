@@ -51,10 +51,10 @@ export const ProfileForm: FC = () => {
             container
             component="form"
             onSubmit={onSubmit}
-            spacing={2}
+            spacing={0}
             sx={{
                 maxWidth: "624px",
-                margin: "40px auto"
+                margin: isMobile ? "0 auto 20px" : "40px auto"
             }}
         >
             <Grid item xs={12}>
@@ -83,6 +83,7 @@ export const ProfileForm: FC = () => {
                     container
                     spacing={3}
                     sx={{
+                        marginTop: isMobile ? 2 : 1,
                         alignItems: {xs: "center", sm: "flex-start"},
                         flexDirection: {xs: "column", sm: "row"}
                     }}

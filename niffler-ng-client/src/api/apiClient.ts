@@ -19,6 +19,14 @@ interface RequestOptions {
     timeout?: number,
 }
 
+declare global {
+  interface Window {
+    AndroidInterface?: {
+      getToken: () => string;
+    };
+    _nifflerToken?: string;
+  }
+}
 
 export const apiClient = {
     getSession: async ({onSuccess, onFailure}: RequestHandler<Session>) => {
@@ -243,7 +251,14 @@ async function makeRequest<T>(path: string, {onSuccess, onFailure}: RequestHandl
         signal,
     };
 
-    const token = idTokenFromLocalStorage();
+    const isMobileApp = navigator.userAgent.includes("NifflerAndroid");
+    let token: string | null = null;
+
+    if (isMobileApp) {
+        token = await waitForAndroidToken();
+    } else {
+        token = idTokenFromLocalStorage();
+    }
     if (token) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -283,5 +298,14 @@ async function makeRequest<T>(path: string, {onSuccess, onFailure}: RequestHandl
         } else {
             onFailure(new Error("An unknown error occurred"));
         }
+    }
+
+    async function waitForAndroidToken(retries = 10, delayMs = 100): Promise<string | null> {
+        for (let i = 0; i < retries; i++) {
+            const token = window.AndroidInterface?.getToken?.();
+            if (token) return token;
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+        return null;
     }
 }
