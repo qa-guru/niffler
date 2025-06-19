@@ -14,10 +14,10 @@ const DATE_RANGE_ERROR = "Date must be between 01.01.1970 and today";
 const EMPTY_CATEGORY_ERROR = "Please choose category";
 
 export const SPENDING_INITIAL_STATE: SpendingData = {
-    amount: 0,
-    description: "",
-    currency: CurrencyValues.Rub,
-    spendDate: new Date(),
+amount: 0,
+description: "",
+currency: CurrencyValues.Rub,
+spendDate: dayjs(new Date()),
     category: {
         name: "",
     },
@@ -55,8 +55,12 @@ export const convertSpendingToFormData = (spending: SpendingData): SpendingFormD
     return Object.keys(spending)
         .filter(key => key !== "__typename")
         .reduce((acc, key) => {
+            let value = spending[key as keyof Spending];
+            if (key === "spendDate") {
+                value = dayjs(value);
+            }
             acc[key] = {
-                value: spending[key as keyof Spending],
+                value,
                 error: false,
                 errorMessage: "",
             };
