@@ -352,7 +352,7 @@
     </wsdl:binding>
     <wsdl:service name="NifflerUserdataPortService">
         <wsdl:port binding="tns:NifflerUserdataPortSoap11" name="NifflerUserdataPortSoap11">
-            <soap:address location="http://127.0.0.1:8089/ws"/>
+            <soap:address location="http://localhost:8089/ws"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>

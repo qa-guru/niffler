@@ -13,8 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
@@ -35,16 +33,15 @@ public class SecurityConfigLocal {
     http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(customizer ->
             customizer.requestMatchers(
-                    antMatcher("/api/session/current"),
-                    antMatcher("/actuator/health"),
-                    antMatcher("/swagger-ui/**"),
-                    antMatcher("/v3/api-docs/**"),
-                    antMatcher("/graphiql/**"),
-                    antMatcher(HttpMethod.POST, "/graphql"))
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-        ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
+                    "/api/session/current",
+                    "/actuator/health",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/graphiql/**"
+                ).permitAll()
+                .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
+                .anyRequest().authenticated())
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
     return http.build();
   }
 }

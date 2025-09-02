@@ -18,6 +18,7 @@ import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static guru.qa.niffler.condition.ScreenshotConditions.image;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ParametersAreNonnullByDefault
@@ -70,13 +71,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
 
   @Step("Check photo")
   public ProfilePage checkPhoto(BufferedImage expected) {
-    Selenide.sleep(1000);
-    assertFalse(
-        new ScreenDiffResult(
-            avatar.screenshotAsImage(), expected
-        ),
-        ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE
-    );
+    avatar.shouldHave(image(expected));
     return this;
   }
 

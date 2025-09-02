@@ -12,8 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
@@ -32,14 +30,14 @@ public class SecurityConfigMain {
     corsCustomizer.corsCustomizer(http);
 
     http.authorizeHttpRequests(customizer ->
-        customizer.requestMatchers(
-                antMatcher("/api/session/current"),
-                antMatcher("/actuator/health"),
-                antMatcher(HttpMethod.POST, "/graphql"))
-            .permitAll()
-            .anyRequest()
-            .authenticated()
-    ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
+        customizer
+            .requestMatchers(
+                "/api/session/current",
+                "/actuator/health"
+            ).permitAll()
+            .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
+            .anyRequest().authenticated()
+    ).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
     return http.build();
   }
 }

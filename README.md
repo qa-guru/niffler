@@ -237,10 +237,10 @@ Multiple database creation requested: niffler-auth,niffler-currency,niffler-spen
 
 #### 5  Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
 
-Фронтенд Niffler при запуске локально будет работать для вас по адресу http://127.0.0.1:3000/,
-OpenAPI (Swagger) сервиса niffler-gateway доступен по адресу: http://127.0.0.1:8090/swagger-ui/index.html
-GraphiQL интерфейс сервиса niffler-gateway доступен по адресу: http://127.0.0.1:8090/graphiql
-WSDL сервиса niffler-userdata доступен по адресу: http://127.0.0.1:8089/ws/userdata.wsdl
+Фронтенд Niffler при запуске локально будет работать для вас по адресу http://localhost:3000/,
+OpenAPI (Swagger) сервиса niffler-gateway доступен по адресу: http://localhost:8090/swagger-ui/index.html
+GraphiQL интерфейс сервиса niffler-gateway доступен по адресу: http://localhost:8090/graphiql
+WSDL сервиса niffler-userdata доступен по адресу: http://localhost:8089/ws/userdata.wsdl
 
 # Запуск Niffler в докере:
 

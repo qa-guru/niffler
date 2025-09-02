@@ -4,7 +4,9 @@ server:
 spring:
   application:
     name: niffler-gateway
-
+  cloud:
+    compatibility-verifier:
+      enabled: false
 logging:
   level:
     root: INFO
@@ -31,7 +33,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: 'http://127.0.0.1:9000'
+          issuer-uri: 'http://localhost:9000'
   graphql:
     graphiql:
       enabled: true
@@ -43,15 +45,15 @@ grpc:
       negotiationType: PLAINTEXT
 
 niffler-currency:
-  base-uri: 'http://127.0.0.1:8091'
+  base-uri: 'http://localhost:8091'
 niffler-userdata:
-  base-uri: 'http://127.0.0.1:8089'
+  base-uri: 'http://localhost:8089'
 niffler-spend:
-  base-uri: 'http://127.0.0.1:8093'
+  base-uri: 'http://localhost:8093'
 niffler-front:
-  base-uri: 'http://127.0.0.1:3000'
+  base-uri: 'http://localhost:3000'
 niffler-gateway:
-  base-uri: 'http://127.0.0.1:8090'
+  base-uri: 'http://localhost:8090'
 ---
 spring:
   config:

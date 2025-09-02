@@ -1,8 +1,8 @@
 import * as crypto from "crypto-js";
 import sha256 from "crypto-js/sha256";
 import Base64 from "crypto-js/enc-base64";
-import {JsonTokens} from "../types/JsonTokens.ts";
-import {authorizeUrl} from "./url/auth.ts";
+import { JsonTokens } from "../types/JsonTokens.ts";
+import { authorizeUrl } from "./url/auth.ts";
 
 const base64Url = (str: string | crypto.lib.WordArray) => {
     return str.toString(Base64).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
@@ -70,6 +70,27 @@ const clearSession = () => {
     localStorage.removeItem('access_token');
 }
 
+const bearerToken = async () => {
+    const isMobileApp = navigator.userAgent.includes("NifflerAndroid");
+    let token: string | null = null;
+
+    if (isMobileApp) {
+        token = await waitForAndroidToken();
+    } else {
+        token = idTokenFromLocalStorage();
+    }
+    return `Bearer ${token}`
+}
+
+async function waitForAndroidToken(retries = 10, delayMs = 100): Promise<string | null> {
+    for (let i = 0; i < retries; i++) {
+        const token = window.AndroidInterface?.getToken?.();
+        if (token) return token;
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+    return null;
+}
+
 export {
     codeChallenge,
     codeChallengeFromLocalStorage,
@@ -80,6 +101,7 @@ export {
     tokenFromUrlEncodedParams,
     revokeTokenFromUrlEncodedParams,
     clearSession,
+    bearerToken,
     persistTokens,
     initLocalStorageAndRedirectToAuth
 };

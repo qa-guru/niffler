@@ -1,17 +1,26 @@
 package guru.qa.niffler.data.jpa;
 
+import jakarta.persistence.CacheRetrieveMode;
+import jakarta.persistence.CacheStoreMode;
+import jakarta.persistence.ConnectionConsumer;
+import jakarta.persistence.ConnectionFunction;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.FindOption;
 import jakarta.persistence.FlushModeType;
 import jakarta.persistence.LockModeType;
+import jakarta.persistence.LockOption;
 import jakarta.persistence.Query;
+import jakarta.persistence.RefreshOption;
 import jakarta.persistence.StoredProcedureQuery;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.TypedQueryReference;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaSelect;
 import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.metamodel.Metamodel;
 
@@ -89,8 +98,23 @@ public class TransactionalEntityManager implements EntityManager {
   }
 
   @Override
+  public <T> T find(Class<T> entityClass, Object primaryKey, FindOption... options) {
+    return delegate.find(entityClass, primaryKey, options);
+  }
+
+  @Override
+  public <T> T find(EntityGraph<T> entityGraph, Object primaryKey, FindOption... options) {
+    return delegate.find(entityGraph, primaryKey, options);
+  }
+
+  @Override
   public <T> T getReference(Class<T> entityClass, Object primaryKey) {
     return delegate.getReference(entityClass, primaryKey);
+  }
+
+  @Override
+  public <T> T getReference(T entity) {
+    return delegate.getReference(entity);
   }
 
   @Override
@@ -119,6 +143,11 @@ public class TransactionalEntityManager implements EntityManager {
   }
 
   @Override
+  public void lock(Object entity, LockModeType lockMode, LockOption... options) {
+    delegate.lock(entity, lockMode, options);
+  }
+
+  @Override
   public void refresh(Object entity) {
     delegate.refresh(entity);
   }
@@ -136,6 +165,11 @@ public class TransactionalEntityManager implements EntityManager {
   @Override
   public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
     delegate.refresh(entity, lockMode, properties);
+  }
+
+  @Override
+  public void refresh(Object entity, RefreshOption... options) {
+    delegate.refresh(entity, options);
   }
 
   @Override
@@ -159,6 +193,26 @@ public class TransactionalEntityManager implements EntityManager {
   }
 
   @Override
+  public void setCacheRetrieveMode(CacheRetrieveMode cacheRetrieveMode) {
+    delegate.setCacheRetrieveMode(cacheRetrieveMode);
+  }
+
+  @Override
+  public void setCacheStoreMode(CacheStoreMode cacheStoreMode) {
+    delegate.setCacheStoreMode(cacheStoreMode);
+  }
+
+  @Override
+  public CacheRetrieveMode getCacheRetrieveMode() {
+    return delegate.getCacheRetrieveMode();
+  }
+
+  @Override
+  public CacheStoreMode getCacheStoreMode() {
+    return delegate.getCacheStoreMode();
+  }
+
+  @Override
   public void setProperty(String propertyName, Object value) {
     delegate.setProperty(propertyName, value);
   }
@@ -176,6 +230,11 @@ public class TransactionalEntityManager implements EntityManager {
   @Override
   public <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
     return delegate.createQuery(criteriaQuery);
+  }
+
+  @Override
+  public <T> TypedQuery<T> createQuery(CriteriaSelect<T> selectQuery) {
+    return delegate.createQuery(selectQuery);
   }
 
   @Override
@@ -204,12 +263,17 @@ public class TransactionalEntityManager implements EntityManager {
   }
 
   @Override
+  public <T> TypedQuery<T> createQuery(TypedQueryReference<T> reference) {
+    return delegate.createQuery(reference);
+  }
+
+  @Override
   public Query createNativeQuery(String sqlString) {
     return delegate.createNativeQuery(sqlString);
   }
 
   @Override
-  public Query createNativeQuery(String sqlString, Class resultClass) {
+  public <T> Query createNativeQuery(String sqlString, Class<T> resultClass) {
     return delegate.createNativeQuery(sqlString, resultClass);
   }
 
@@ -306,5 +370,15 @@ public class TransactionalEntityManager implements EntityManager {
   @Override
   public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass) {
     return delegate.getEntityGraphs(entityClass);
+  }
+
+  @Override
+  public <C> void runWithConnection(ConnectionConsumer<C> action) {
+    delegate.runWithConnection(action);
+  }
+
+  @Override
+  public <C, T> T callWithConnection(ConnectionFunction<C, T> function) {
+    return delegate.callWithConnection(function);
   }
 }

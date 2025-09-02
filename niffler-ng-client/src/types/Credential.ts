@@ -1,0 +1,9 @@
+import {AuthenticatorAttestationResponse} from "./AuthenticatorAttestationResponse.ts";
+
+export interface Credential {
+  id: string;
+  rawId: string;
+  type: string;
+  response: AuthenticatorAttestationResponse;
+  clientExtensionResults: Record<string, unknown>;
+}

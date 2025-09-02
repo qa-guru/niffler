@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static guru.qa.niffler.service.GlobalExceptionHandler.ERROR_MESSAGE_PARAM;
@@ -23,6 +24,14 @@ public class ErrorAuthController implements ErrorController {
 
   public ErrorAuthController(@Value("${niffler-front.base-uri}") String nifflerFrontUri) {
     this.nifflerFrontUri = nifflerFrontUri;
+  }
+
+  @PostMapping("/error")
+  @ResponseStatus(HttpStatus.OK)
+  public String errorPost(HttpServletRequest request,
+                          HttpServletResponse response,
+                          Model model) {
+    return error(request, response, model);
   }
 
   @GetMapping("/error")

@@ -4,6 +4,7 @@ import guru.qa.niffler.service.cors.CookieCsrfFilter;
 import guru.qa.niffler.service.cors.CorsCustomizer;
 import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,45 +13,58 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+import java.net.URI;
+
+import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 public class SecurityConfig {
 
   private final CorsCustomizer corsCustomizer;
+  private final String nifflerAuthUri;
 
   @Autowired
-  public SecurityConfig(CorsCustomizer corsCustomizer) {
+  public SecurityConfig(CorsCustomizer corsCustomizer,
+                        @Value("${niffler-auth.base-uri}") String nifflerAuthUri) {
     this.corsCustomizer = corsCustomizer;
+    this.nifflerAuthUri = nifflerAuthUri;
   }
 
   @Bean
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-    corsCustomizer.corsCustomizer(http);
+    final String authRpHost = new URI(nifflerAuthUri).getHost();
+    final CsrfTokenRequestAttributeHandler csrfRequestHandler = new CsrfTokenRequestAttributeHandler();
+    csrfRequestHandler.setCsrfRequestAttributeName(null);
 
-    return http.authorizeHttpRequests(customizer -> customizer
+    corsCustomizer.corsCustomizer(http);
+    http.authorizeHttpRequests(customizer -> customizer
             .dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
             .requestMatchers(
-                antMatcher("/register"),
-                antMatcher("/error"),
-                antMatcher("/images/**"),
-                antMatcher("/styles/**"),
-                antMatcher("/fonts/**"),
-                antMatcher("/.well-known/**"),
-                antMatcher("/actuator/health")
+                "/register",
+                "/error",
+                "/images/**",
+                "/styles/**",
+                "/fonts/**",
+                "/.well-known/**",
+                "/actuator/health"
             ).permitAll()
-            .anyRequest()
-            .authenticated()
+            .requestMatchers(POST, "/webauthn/authenticate/options").permitAll()
+            .requestMatchers(POST, "/login/webauthn").permitAll()
+            .anyRequest().authenticated()
         )
         .csrf(csrf -> csrf
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             // https://stackoverflow.com/a/74521360/65681
-            .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+            .csrfTokenRequestHandler(csrfRequestHandler)
         )
         .addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
         .formLogin(login -> login
             .loginPage("/login")
             .permitAll())
-        .build();
+        .webAuthn(webauth ->
+            webauth.rpName("Niffler Relying Party")
+                .rpId(authRpHost)
+                .allowedOrigins(corsCustomizer.allowedOrigins()));
+    return http.build();
   }
 }

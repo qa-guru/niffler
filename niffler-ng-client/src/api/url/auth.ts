@@ -18,10 +18,19 @@ const revokeAccessTokenUrl = () => {
     return `${AUTH_URL}/oauth2/revoke`;
 }
 
+const registerPasskeyOptionsUrl = () => {
+    return `${AUTH_URL}/webauthn/register/options`;
+}
+
+const registerPasskeyUrl = () => {
+    return `${AUTH_URL}/webauthn/register`;
+}
+
 export {
     authorizeUrl,
     logoutUrl,
     tokenUrl,
     revokeAccessTokenUrl,
+    registerPasskeyOptionsUrl,
+    registerPasskeyUrl,
 };
-

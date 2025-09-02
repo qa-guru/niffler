@@ -1,5 +1,6 @@
 package guru.qa.niffler.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
@@ -7,7 +8,10 @@ import guru.qa.niffler.config.keys.KeyManager;
 import guru.qa.niffler.service.OidcCookiesLogoutAuthenticationSuccessHandler;
 import guru.qa.niffler.service.SpecificRequestDumperFilter;
 import guru.qa.niffler.service.cors.CorsCustomizer;
+import guru.qa.niffler.service.serialization.JdbcSessionObjectMapperConfigurer;
+import jakarta.annotation.Nonnull;
 import org.apache.catalina.filters.RequestDumperFilter;
+import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.session.DefaultCookieSerializerCustomizer;
@@ -44,12 +48,12 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.PortMapperImpl;
-import org.springframework.security.web.PortResolverImpl;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.session.DisableEncodeUrlFilter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
-import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
+import org.springframework.security.web.webauthn.management.JdbcPublicKeyCredentialUserEntityRepository;
+import org.springframework.security.web.webauthn.management.JdbcUserCredentialRepository;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
@@ -59,8 +63,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Configuration
-@EnableJdbcHttpSession(maxInactiveIntervalInSeconds = 3600)
-public class NifflerAuthServiceConfig {
+public class NifflerAuthServiceConfig implements BeanClassLoaderAware {
 
   private final KeyManager keyManager;
   private final String nifflerFrontUri;
@@ -73,6 +76,12 @@ public class NifflerAuthServiceConfig {
   private final String serverPort;
   private final String defaultHttpsPort = "443";
   private final Environment environment;
+
+  /**
+   * For ObjectMapper configuration
+   * @see guru.qa.niffler.config.NifflerAuthServiceConfig#jdbcOAuth2AuthorizationService(JdbcOperations, RegisteredClientRepository, ObjectMapper)
+   */
+  private ClassLoader classLoader;
 
   @Autowired
   public NifflerAuthServiceConfig(KeyManager keyManager,
@@ -95,6 +104,11 @@ public class NifflerAuthServiceConfig {
     this.serverPort = serverPort;
     this.corsCustomizer = corsCustomizer;
     this.environment = environment;
+  }
+
+  @Override
+  public void setBeanClassLoader(@Nonnull ClassLoader classLoader) {
+    this.classLoader = classLoader;
   }
 
   @Bean
@@ -151,11 +165,8 @@ public class NifflerAuthServiceConfig {
         "80", defaultHttpsPort,
         "8080", "8443"
     ));
-    PortResolverImpl portResolver = new PortResolverImpl();
-    portResolver.setPortMapper(portMapper);
     entryPoint.setForceHttps(true);
     entryPoint.setPortMapper(portMapper);
-    entryPoint.setPortResolver(portResolver);
     return entryPoint;
   }
 
@@ -191,19 +202,43 @@ public class NifflerAuthServiceConfig {
     return registeredClientRepository;
   }
 
+  /**
+   * Do not use @Primary ObjectMapper directly!
+   * Only configured via JdbcSessionObjectMapperConfigure:
+   * @see JdbcSessionObjectMapperConfigurer
+   */
   @Bean
-  public OAuth2AuthorizationService jdbcOAuth2AuthorizationService(JdbcOperations jdbcOperations,
-                                                                   RegisteredClientRepository registeredClientRepository) {
-    return new JdbcOAuth2AuthorizationService(
-        jdbcOperations,
+  public OAuth2AuthorizationService jdbcOAuth2AuthorizationService(JdbcOperations jdbc,
+                                                                   RegisteredClientRepository registeredClientRepository,
+                                                                   ObjectMapper objectMapper) {
+    final ObjectMapper configuredOm = JdbcSessionObjectMapperConfigurer.apply(this.classLoader, objectMapper);
+    var jdbcOAuth2AuthorizationService = new JdbcOAuth2AuthorizationService(
+        jdbc,
         registeredClientRepository
     );
+    final var oAuth2AuthorizationRowMapper = new JdbcOAuth2AuthorizationService.OAuth2AuthorizationRowMapper(registeredClientRepository);
+    final var oAuth2AuthorizationParametersMapper = new JdbcOAuth2AuthorizationService.OAuth2AuthorizationParametersMapper();
+    oAuth2AuthorizationRowMapper.setObjectMapper(configuredOm);
+    oAuth2AuthorizationParametersMapper.setObjectMapper(configuredOm);
+    jdbcOAuth2AuthorizationService.setAuthorizationRowMapper(oAuth2AuthorizationRowMapper);
+    jdbcOAuth2AuthorizationService.setAuthorizationParametersMapper(oAuth2AuthorizationParametersMapper);
+    return jdbcOAuth2AuthorizationService;
   }
 
   @Bean
-  public OAuth2AuthorizationConsentService authorizationConsentService(JdbcOperations jdbcOperations,
+  public OAuth2AuthorizationConsentService authorizationConsentService(JdbcOperations jdbc,
                                                                        RegisteredClientRepository registeredClientRepository) {
-    return new JdbcOAuth2AuthorizationConsentService(jdbcOperations, registeredClientRepository);
+    return new JdbcOAuth2AuthorizationConsentService(jdbc, registeredClientRepository);
+  }
+
+  @Bean
+  public JdbcPublicKeyCredentialUserEntityRepository jdbcPublicKeyCredentialRepository(JdbcOperations jdbc) {
+    return new JdbcPublicKeyCredentialUserEntityRepository(jdbc);
+  }
+
+  @Bean
+  public JdbcUserCredentialRepository jdbcUserCredentialRepository(JdbcOperations jdbc) {
+    return new JdbcUserCredentialRepository(jdbc);
   }
 
   @Bean
@@ -220,9 +255,7 @@ public class NifflerAuthServiceConfig {
 
   @Bean
   public DefaultCookieSerializerCustomizer defaultCookieSerializerCustomizer() {
-    return cookieSerializer -> {
-      cookieSerializer.setUseBase64Encoding(false);
-    };
+    return cookieSerializer -> cookieSerializer.setUseBase64Encoding(false);
   }
 
   @Bean
