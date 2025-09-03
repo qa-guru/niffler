@@ -90,6 +90,7 @@ niffler-front:
   base-uri: 'http://localhost:3000'
 niffler-auth:
   base-uri: 'http://localhost:9000'
+  xsrf-cookie-domain: 'localhost'
 oauth2:
   web-client-id: 'client'
   mobile-client-id: 'mobile-client'
@@ -115,6 +116,7 @@ niffler-front:
   base-uri: 'http://frontend.niffler.dc'
 niffler-auth:
   base-uri: 'http://auth.niffler.dc:9000'
+  xsrf-cookie-domain: '.niffler.dc'
 oauth2:
   web-client-id: 'client'
   mobile-client-id: 'mobile-client'
@@ -144,6 +146,7 @@ niffler-front:
   base-uri: 'https://niffler.qa.guru'
 niffler-auth:
   base-uri: 'https://auth.niffler.qa.guru'
+  xsrf-cookie-domain: '.niffler.qa.guru'
 oauth2:
   web-client-id: ${web-client-id}
   mobile-client-id: ${mobile-client-id}
@@ -173,6 +176,7 @@ niffler-front:
   base-uri: 'https://niffler-stage.qa.guru'
 niffler-auth:
   base-uri: 'https://auth.niffler-stage.qa.guru'
+  xsrf-cookie-domain: '.niffler.qa.guru'
 oauth2:
   web-client-id: ${web-client-id}
   mobile-client-id: ${mobile-client-id}

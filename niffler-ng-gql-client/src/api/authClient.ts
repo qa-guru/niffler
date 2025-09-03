@@ -32,7 +32,7 @@ export const authClient = {
                 "Authorization": token
             },
         });
-        if (!response.ok) {
+        if (!response.ok || response.headers.get("content-type")?.includes("text/html")) {
             onFailure(new ApiError("Failed to request webauth options", response.status));
         }
         return onSuccess(response.json());
@@ -50,7 +50,7 @@ export const authClient = {
             },
             body: JSON.stringify(payload)
         });
-        if (!response.ok) {
+        if (!response.ok || response.headers.get("content-type")?.includes("text/html")) {
             onFailure(new ApiError("Failed to request webauth options", response.status));
         }
         return onSuccess(response.json());
