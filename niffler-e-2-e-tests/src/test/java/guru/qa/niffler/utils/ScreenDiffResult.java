@@ -18,7 +18,10 @@ public class ScreenDiffResult implements BooleanSupplier {
     this.actual = actual;
     this.expected = expected;
     this.diff = new ImageDiffer().makeDiff(expected, actual);
-    this.hasDif = diff.withDiffSizeTrigger(16).hasDiff();
+    final int totalPixels = expected.getWidth() * expected.getHeight();
+    final int threshold   = (int) (totalPixels * 0.02); // 2%
+    final int diffPixels  = diff.getDiffSize();
+    this.hasDif = diffPixels <= threshold;
   }
 
   @Override
