@@ -57,7 +57,7 @@ jobs:
             })
       - name: Pull browsers
         run: |
-          docker pull twilio/selenoid:chrome_stable_135
+          docker pull twilio/selenoid:chrome_stable_140
       - name: Get the last commit message
         run: |
           echo "HEAD_COMMIT_MESSAGE=$(git show -s --format=%s)" >> $GITHUB_ENV
