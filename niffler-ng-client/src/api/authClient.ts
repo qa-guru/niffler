@@ -1,9 +1,10 @@
 import { accessTokenFromLocalStorage, bearerToken, revokeTokenFromUrlEncodedParams } from "./authUtils.ts";
-import { registerPasskeyOptionsUrl, registerPasskeyUrl, revokeAccessTokenUrl, tokenUrl } from "./url/auth.ts";
+import { csrfTokenUrl, registerPasskeyOptionsUrl, registerPasskeyUrl, revokeAccessTokenUrl, tokenUrl } from "./url/auth.ts";
 import { JsonTokens } from "../types/JsonTokens.ts";
 import { RegisterPasskeyPayload } from "../types/RegisterPasskeyPayload.ts";
 import { RequestHandler } from "../types/RequestHandler.ts";
 import { ApiError } from "../types/Error.ts";
+import { CsrfToken } from "../types/CsrfToken.ts";
 
 export const authClient = {
 
@@ -18,6 +19,22 @@ export const authClient = {
         });
         if (!response.ok) {
             throw new Error("Failed loading data");
+        }
+        return response.json();
+    },
+
+    getCsrfToken: async (): Promise<CsrfToken> => {
+        const token: string = await bearerToken();
+        const response = await fetch(csrfTokenUrl(), {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": token
+            }
+        });
+        if (!response.ok) {
+            throw new Error("Failed loading csrf token");
         }
         return response.json();
     },

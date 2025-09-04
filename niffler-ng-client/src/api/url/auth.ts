@@ -26,6 +26,10 @@ const registerPasskeyUrl = () => {
     return `${AUTH_URL}/webauthn/register`;
 }
 
+const csrfTokenUrl = () => {
+    return `${AUTH_URL}/csrf/generate`;
+}
+
 export {
     authorizeUrl,
     logoutUrl,
@@ -33,4 +37,5 @@ export {
     revokeAccessTokenUrl,
     registerPasskeyOptionsUrl,
     registerPasskeyUrl,
+    csrfTokenUrl,
 };

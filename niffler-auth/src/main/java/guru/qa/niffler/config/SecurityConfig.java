@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 import java.net.URI;
@@ -22,20 +23,17 @@ public class SecurityConfig {
 
   private final CorsCustomizer corsCustomizer;
   private final String nifflerAuthUri;
-  private final String xsrfCookieDomain;
 
   @Autowired
   public SecurityConfig(CorsCustomizer corsCustomizer,
-                        @Value("${niffler-auth.base-uri}") String nifflerAuthUri,
-                        @Value("${niffler-auth.xsrf-cookie-domain}") String xsrfCookieDomain) {
+                        @Value("${niffler-auth.base-uri}") String nifflerAuthUri) {
     this.corsCustomizer = corsCustomizer;
     this.nifflerAuthUri = nifflerAuthUri;
-    this.xsrfCookieDomain = xsrfCookieDomain;
   }
 
   @Bean
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
-                                                        CookieCsrfTokenRepository cookieCsrfTokenRepository) throws Exception {
+                                                        CsrfTokenRepository csrfTokenRepository) throws Exception {
     final String authRpHost = new URI(nifflerAuthUri).getHost();
     final CsrfTokenRequestAttributeHandler csrfRequestHandler = new CsrfTokenRequestAttributeHandler();
     csrfRequestHandler.setCsrfRequestAttributeName(null);
@@ -57,7 +55,7 @@ public class SecurityConfig {
             .anyRequest().authenticated()
         )
         .csrf(csrf -> csrf
-            .csrfTokenRepository(cookieCsrfTokenRepository)
+            .csrfTokenRepository(csrfTokenRepository)
             // https://stackoverflow.com/a/74521360/65681
             .csrfTokenRequestHandler(csrfRequestHandler)
         )
@@ -73,13 +71,7 @@ public class SecurityConfig {
   }
 
   @Bean
-  public CookieCsrfTokenRepository cokieCsrfTokenRepository() {
-    var cookieCsrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-    cookieCsrfTokenRepository.setCookieCustomizer(
-        cookieCustomzr ->
-            cookieCustomzr.secure(true)
-                .sameSite("None")
-                .domain(xsrfCookieDomain));
-    return cookieCsrfTokenRepository;
+  public CsrfTokenRepository cokieCsrfTokenRepository() {
+    return CookieCsrfTokenRepository.withHttpOnlyFalse();
   }
 }

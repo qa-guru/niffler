@@ -1,11 +1,13 @@
 import { accessTokenFromLocalStorage, bearerToken, revokeTokenFromUrlEncodedParams } from "./authUtils.ts";
-import { registerPasskeyOptionsUrl, registerPasskeyUrl, revokeAccessTokenUrl, tokenUrl } from "./url/auth.ts";
+import { csrfTokenUrl, registerPasskeyOptionsUrl, registerPasskeyUrl, revokeAccessTokenUrl, tokenUrl } from "./url/auth.ts";
 import { JsonTokens } from "../types/JsonTokens.ts";
 import { RequestHandler } from "../types/RequestHandler.ts";
 import { ApiError } from "../types/Error.ts";
 import { RegisterPasskeyPayload } from "../types/RegisterPasskeyPayload.ts";
+import { CsrfToken } from "../types/CsrfToken.ts";
 
 export const authClient = {
+
     getToken: async (data: URLSearchParams): Promise<JsonTokens> => {
         const response = await fetch(tokenUrl(), {
             method: "POST",
@@ -20,6 +22,22 @@ export const authClient = {
         }
         return response.json();
     },
+
+        getCsrfToken: async (): Promise<CsrfToken> => {
+            const token: string = await bearerToken();
+            const response = await fetch(csrfTokenUrl(), {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": token
+                }
+            });
+            if (!response.ok) {
+                throw new Error("Failed loading csrf token");
+            }
+            return response.json();
+        },
 
     registerPasskeyOptions: async (csrf: string, { onSuccess, onFailure }: RequestHandler<any>): Promise<any> => {
         const token: string = await bearerToken();

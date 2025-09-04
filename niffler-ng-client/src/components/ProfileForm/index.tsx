@@ -10,24 +10,7 @@ import { formHasErrors } from "../../utils/form.ts";
 import { Input } from "../Input";
 import { RegisterPasskeyPayload } from "../../types/RegisterPasskeyPayload.ts";
 import { authClient } from "../../api/authClient.ts";
-
-function getCsrfFromCookie(): string {
-    const m = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
-    return m ? decodeURIComponent(m[1]) : "";
-}
-
-function b64urlToBuf(b64: string): ArrayBuffer {
-    const pad = "=".repeat((4 - (b64.length % 4)) % 4);
-    const bin = atob(b64.replace(/-/g, "+").replace(/_/g, "/") + pad);
-    const buf = new ArrayBuffer(bin.length);
-    const view = new Uint8Array(buf);
-    for (let i = 0; i < bin.length; i++) view[i] = bin.charCodeAt(i);
-    return buf;
-}
-function bufToB64url(buf: ArrayBuffer): string {
-    const b = String.fromCharCode(...new Uint8Array(buf));
-    return btoa(b).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
+import { b64urlToBuf, bufToB64url } from "../../utils/passkey.ts";
 
 export const ProfileForm: FC = () => {
     const theme = useTheme();
@@ -70,7 +53,7 @@ export const ProfileForm: FC = () => {
     const registerPasskey = async () => {
         try {
             setPasskeyLoading(true);
-            const csrf = getCsrfFromCookie();
+            const csrf = (await authClient.getCsrfToken()).token;
 
             const pubKey = await authClient.registerPasskeyOptions(csrf, {
                 onSuccess: (data) => {
