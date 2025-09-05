@@ -33,7 +33,7 @@ public class StatisticTest extends BaseWebTest {
           )}
       )
   )
-  @ScreenShotTest(expected = "expected-stat.png", rewriteExpected = true)
+  @ScreenShotTest(expected = "expected-stat.png")
   void checkStatComponentTest(BufferedImage expected) throws Exception {
     new MainPage().getStatComponent()
         .checkStatisticBubblesContains("Веселье 129500 ₽", "Обучение 79990 ₽")
