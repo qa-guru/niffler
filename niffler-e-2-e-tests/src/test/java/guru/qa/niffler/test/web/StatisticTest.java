@@ -75,7 +75,7 @@ public class StatisticTest extends BaseWebTest {
           }
       )
   )
-  @ScreenShotTest(expected = "expected-stat-archived.png", rewriteExpected = true)
+  @ScreenShotTest(expected = "expected-stat-archived.png")
   void statComponentShouldDisplayArchivedCategories(BufferedImage expected) throws Exception {
     new MainPage().getStatComponent()
         .checkStatisticBubblesContains("Поездки 9500 ₽", "Бары 8000 ₽", "Archived 13000 ₽")
