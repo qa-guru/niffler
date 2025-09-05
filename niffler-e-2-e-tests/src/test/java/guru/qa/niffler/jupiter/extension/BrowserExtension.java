@@ -40,7 +40,13 @@ public class BrowserExtension implements
   @Override
   public void afterEach(ExtensionContext context) {
     if (WebDriverRunner.hasWebDriverStarted()) {
-      Selenide.closeWebDriver();
+      try {
+        if (context.getExecutionException().isPresent()) {
+          doScreen();
+        }
+      } finally {
+        Selenide.closeWebDriver();
+      }
     }
   }
 

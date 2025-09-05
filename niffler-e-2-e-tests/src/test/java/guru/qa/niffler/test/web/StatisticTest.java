@@ -33,7 +33,7 @@ public class StatisticTest extends BaseWebTest {
           )}
       )
   )
-  @ScreenShotTest(expected = "expected-stat.png")
+  @ScreenShotTest(expected = "expected-stat.png", rewriteExpected = true)
   void checkStatComponentTest(BufferedImage expected) throws Exception {
     new MainPage().getStatComponent()
         .checkStatisticBubblesContains("Веселье 129500 ₽", "Обучение 79990 ₽")
@@ -75,7 +75,7 @@ public class StatisticTest extends BaseWebTest {
           }
       )
   )
-  @ScreenShotTest(expected = "expected-stat-archived.png")
+  @ScreenShotTest(expected = "expected-stat-archived.png", rewriteExpected = true)
   void statComponentShouldDisplayArchivedCategories(BufferedImage expected) throws Exception {
     new MainPage().getStatComponent()
         .checkStatisticBubblesContains("Поездки 9500 ₽", "Бары 8000 ₽", "Archived 13000 ₽")

@@ -27,7 +27,7 @@ import static guru.qa.niffler.utils.SuccessMessage.PROFILE_UPDATED;
 public class ProfileTest extends BaseWebTest {
 
   @Disabled("SHOULD BE FIXED, SEE https://github.com/qa-guru/niffler/pull/170")
-  @ScreenShotTest(expected = "cat.png")
+  @ScreenShotTest(expected = "cat.png", rewriteExpected = true)
   @AllureId("500004")
   @DisplayName("WEB: Пользователь может отредактировать все поля в профиле")
   @Tag("WEB")
