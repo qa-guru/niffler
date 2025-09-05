@@ -26,22 +26,23 @@ subprojects {
         dockerHubName = "qaguru"
 
         lombokVersion = '1.18.38'
-        springKafkaVersion = '3.3.4'
-        springVaultVersion = '4.2.1'
-        springOpenApiVersion = '2.8.6'
-        postgresDriverVersion = '42.7.5'
-        flywayVersion = '11.7.2'
+        springKafkaVersion = '3.3.9'
+        springVaultVersion = '4.3.0'
+        springOpenApiVersion = '2.8.12'
+        webauthn4jVersion = '0.29.6.RELEASE'
+        postgresDriverVersion = '42.7.7'
+        flywayVersion = '11.11.2'
         springGrpcVersion = '3.1.0.RELEASE'
         springGraphqlDateTimeVersion = '6.0.0'
-        springSecurityTestVersion = '6.4.5'
+        springSecurityTestVersion = '6.5.3'
         jakartaJaxbVersion = '4.0.2'
         wsdl4jVersion = '1.6.3'
-        protobufVersion = '4.30.2'
-        grpcVersion = '1.72.0'
+        protobufVersion = '4.32.0'
+        grpcVersion = '1.75.0'
         thumbnailatorVersion = '0.4.20'
-        apacheCsvVersion = '1.14.0'
+        apacheCsvVersion = '1.14.1'
         h2Version = '2.3.232'
-        mockitoVersion = '5.17.0'
+        mockitoVersion = '5.19.0'
 
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64v8/eclipse-temurin:21-jdk"

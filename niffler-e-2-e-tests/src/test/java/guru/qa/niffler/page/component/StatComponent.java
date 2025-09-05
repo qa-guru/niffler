@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static guru.qa.niffler.condition.ScreenshotConditions.image;
 import static guru.qa.niffler.condition.StatConditions.color;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -39,14 +40,7 @@ public class StatComponent extends BaseComponent<StatComponent> {
   @Step("Check that statistic image matches the expected image")
   @Nonnull
   public StatComponent checkStatisticImage(BufferedImage expectedImage) {
-    Selenide.sleep(3000);
-    assertFalse(
-        new ScreenDiffResult(
-            chart.screenshotAsImage(),
-            expectedImage
-        ),
-        ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE
-    );
+    chart.shouldHave(image(expectedImage));
     return this;
   }
 

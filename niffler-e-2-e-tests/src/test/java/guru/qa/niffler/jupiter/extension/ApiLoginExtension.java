@@ -1,9 +1,13 @@
 package guru.qa.niffler.jupiter.extension;
 
+import com.codeborne.selenide.Conditional;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.WebDriverConditions;
 import com.codeborne.selenide.WebDriverRunner;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.niffler.api.AuthApiClient;
 import guru.qa.niffler.api.service.ThreadLocalCookieStore;
+import guru.qa.niffler.condition.LocalStorageCondition;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
@@ -20,10 +24,15 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.codeborne.selenide.Selenide.webdriver;
+import static com.codeborne.selenide.WebDriverConditions.cookie;
+import static com.codeborne.selenide.WebDriverConditions.urlContaining;
+import static guru.qa.niffler.condition.LocalStorageCondition.localStorageItem;
 import static guru.qa.niffler.jupiter.annotation.User.Selector.NESTED;
 
 @ParametersAreNonnullByDefault
@@ -84,9 +93,16 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
         authClient.login(context, userToLogin.username(), userToLogin.testData().password());
         if (setUpBrowser) {
           Selenide.open(CFG.frontUrl());
+          final Conditional<WebDriver> webdriver = webdriver();
+          // Wait for redirect: frontend -> auth
+          webdriver.shouldHave(urlContaining(CFG.authUrl()));
+
+          webdriver.driver().getWebDriver().manage().addCookie(getJsessionIdCookie());
           Selenide.localStorage().setItem("id_token", getToken(context));
-          WebDriverRunner.getWebDriver().manage().addCookie(getJsessionIdCookie());
-          Selenide.refresh();
+
+          webdriver.shouldHave(cookie("JSESSIONID"));
+          webdriver.shouldHave(localStorageItem("id_token"));
+
           Selenide.open(MainPage.URL, MainPage.class)
               .waitForPageLoaded();
         }

@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class CorsCustomizer {
@@ -25,6 +27,10 @@ public class CorsCustomizer {
     this.nifflerAuthUri = nifflerAuthUri;
   }
 
+  public Set<String> allowedOrigins() {
+    return Set.of(nifflerFrontUri, nifflerAuthUri);
+  }
+
   public void corsCustomizer(@Nonnull HttpSecurity http) throws Exception {
     http.cors(customizer());
   }
@@ -37,7 +43,7 @@ public class CorsCustomizer {
     return request -> {
       CorsConfiguration cc = new CorsConfiguration();
       cc.setAllowCredentials(true);
-      cc.setAllowedOrigins(List.of(nifflerFrontUri, nifflerAuthUri));
+      cc.setAllowedOrigins(new ArrayList<>(allowedOrigins()));
       cc.setAllowedHeaders(List.of("*"));
       cc.setAllowedMethods(List.of("*"));
       return cc;

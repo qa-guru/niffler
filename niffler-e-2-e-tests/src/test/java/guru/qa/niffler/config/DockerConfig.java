@@ -4,6 +4,8 @@ import com.codeborne.selenide.Configuration;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.util.Map;
+
 import static guru.qa.niffler.utils.UrlUtils.isValidURL;
 
 public class DockerConfig implements Config {
@@ -18,14 +20,19 @@ public class DockerConfig implements Config {
     Configuration.remote = "http://selenoid:4444/wd/hub";
     Configuration.timeout = 10000;
     Configuration.browser = "chrome";
-    Configuration.browserVersion = "135.0";
+    Configuration.browserVersion = "140.0";
     Configuration.pageLoadStrategy = "eager";
     Configuration.browserCapabilities = new ChromeOptions()
         .addArguments("--enable-automation")
         .addArguments("--no-sandbox")
         .addArguments("--disable-extensions")
         .addArguments("--disable-accelerated-2d-canvas")
-        .addArguments("--use-gl=angle");
+        .addArguments("--use-gl=angle")
+        .addArguments("--lang=en")
+        .setExperimentalOption("prefs", Map.of(
+            "intl.accept_languages", "en",
+            "intl.selected_languages", "en"
+        ));
   }
 
   @Override

@@ -4,16 +4,20 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '1.0.3'
+version = '1.1.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "io.grpc:grpc-protobuf:${project.ext.grpcVersion}"
-    implementation "io.grpc:grpc-stub:${project.ext.grpcVersion}"
-    implementation "com.google.protobuf:protobuf-java:${project.ext.protobufVersion}"
+    implementation("io.grpc:grpc-protobuf:${project.ext.grpcVersion}") {
+        exclude group: 'com.google.protobuf'
+    }
+    implementation("io.grpc:grpc-stub:${project.ext.grpcVersion}") {
+        exclude group: 'com.google.protobuf'
+    }
+    implementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
     compileOnly 'jakarta.annotation:jakarta.annotation-api:1.3.5' // Java 9+ compatibility - Do NOT update to 2.0.0
 }
 

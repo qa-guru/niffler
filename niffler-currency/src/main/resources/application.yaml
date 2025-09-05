@@ -35,7 +35,9 @@ spring:
     show-sql: false
     generate-ddl: true
     open-in-view: false
-
+  cloud:
+    compatibility-verifier:
+      enabled: false
 logging:
   level:
     root: INFO

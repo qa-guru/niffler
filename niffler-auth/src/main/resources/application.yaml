@@ -50,7 +50,9 @@ spring:
       cache:
         cachecontrol:
           max-age: 365d
-
+  cloud:
+    compatibility-verifier:
+      enabled: false
 logging:
   level:
     root: INFO
@@ -60,6 +62,8 @@ logging:
     org.springframework.security.web.csrf: INFO
     org.springframework.security.web.authentication.logout: INFO
     org.springframework.security: INFO
+    org.springframework.web.servlet.handler: INFO
+    org.springframework.web.servlet.DispatcherServlet: INFO
     org.springframework.security.oauth2: INFO
     org.springframework.security.oauth2.server.authorization: INFO
     org.apache.catalina.filters.RequestDumperFilter: INFO
@@ -83,9 +87,10 @@ spring:
     username: postgres
     password: secret
 niffler-front:
-  base-uri: 'http://127.0.0.1:3000'
+  base-uri: 'http://localhost:3000'
 niffler-auth:
-  base-uri: 'http://127.0.0.1:9000'
+  base-uri: 'http://localhost:9000'
+  rp-id: 'localhost'
 oauth2:
   web-client-id: 'client'
   mobile-client-id: 'mobile-client'
@@ -111,6 +116,7 @@ niffler-front:
   base-uri: 'http://frontend.niffler.dc'
 niffler-auth:
   base-uri: 'http://auth.niffler.dc:9000'
+  rp-id: 'http host not supported'
 oauth2:
   web-client-id: 'client'
   mobile-client-id: 'mobile-client'
@@ -140,6 +146,7 @@ niffler-front:
   base-uri: 'https://niffler.qa.guru'
 niffler-auth:
   base-uri: 'https://auth.niffler.qa.guru'
+  rp-id: 'niffler.qa.guru'
 oauth2:
   web-client-id: ${web-client-id}
   mobile-client-id: ${mobile-client-id}
@@ -169,6 +176,7 @@ niffler-front:
   base-uri: 'https://niffler-stage.qa.guru'
 niffler-auth:
   base-uri: 'https://auth.niffler-stage.qa.guru'
+  rp-id: 'niffler-stage.qa.guru'
 oauth2:
   web-client-id: ${web-client-id}
   mobile-client-id: ${mobile-client-id}

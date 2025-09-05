@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.LifecycleMethodExecutionExceptionHandler;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
+import org.junit.jupiter.api.extension.TestWatcher;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
@@ -15,14 +16,13 @@ import java.io.ByteArrayInputStream;
 
 @ParametersAreNonnullByDefault
 public class BrowserExtension implements
-    TestExecutionExceptionHandler,
     LifecycleMethodExecutionExceptionHandler,
+    TestWatcher,
     AfterEachCallback {
 
   @Override
-  public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+  public void testFailed(ExtensionContext context, Throwable cause) {
     doScreen();
-    throw throwable;
   }
 
   @Override
@@ -40,7 +40,13 @@ public class BrowserExtension implements
   @Override
   public void afterEach(ExtensionContext context) {
     if (WebDriverRunner.hasWebDriverStarted()) {
-      Selenide.closeWebDriver();
+      try {
+        if (context.getExecutionException().isPresent()) {
+          doScreen();
+        }
+      } finally {
+        Selenide.closeWebDriver();
+      }
     }
   }
 

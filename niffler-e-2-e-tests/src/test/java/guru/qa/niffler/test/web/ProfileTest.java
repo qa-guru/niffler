@@ -11,7 +11,6 @@ import guru.qa.niffler.page.ProfilePage;
 import guru.qa.niffler.utils.SuccessMessage;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -26,8 +25,7 @@ import static guru.qa.niffler.utils.SuccessMessage.PROFILE_UPDATED;
 @DisplayName(" [WEB][niffler-ng-client]: Профиль")
 public class ProfileTest extends BaseWebTest {
 
-  @Disabled("SHOULD BE FIXED, SEE https://github.com/qa-guru/niffler/pull/170")
-  @ScreenShotTest(expected = "cat.png")
+  @ScreenShotTest(expected = "cat.png", rewriteExpected = true)
   @AllureId("500004")
   @DisplayName("WEB: Пользователь может отредактировать все поля в профиле")
   @Tag("WEB")

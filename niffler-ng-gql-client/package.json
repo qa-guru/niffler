@@ -1,7 +1,7 @@
 {
   "name": "niffler-ng-gql-client",
   "private": true,
-  "version": "2.3.5",
+  "version": "2.5.1",
   "type": "module",
   "scripts": {
     "dev": "vite",

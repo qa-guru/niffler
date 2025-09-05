@@ -5,6 +5,7 @@ import guru.qa.niffler.api.interceptor.CodeInterceptor;
 import guru.qa.niffler.api.service.RestClient;
 import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import io.qameta.allure.Step;
+import io.qameta.allure.okhttp3.AllureOkHttp3;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,11 +20,11 @@ public class AuthApiClient extends RestClient {
     super(
         CFG.authUrl(),
         true,
-        new CodeInterceptor()
+        new CodeInterceptor(),
+        new AllureOkHttp3()
     );
     this.authApi = retrofit.create(AuthApi.class);
   }
-
 
   @Step("Perform API Oauth 2.0 authorization flow for user with username: {username}, password: {password}")
   public void login(ExtensionContext context,
