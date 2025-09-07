@@ -1,4 +1,5 @@
 scalar Date
+scalar Void
 
 type Query {
     session: Session!
@@ -16,6 +17,7 @@ type Mutation {
     spend(input: SpendInput!): Spend!
     deleteSpend(ids: [ID!]!): [ID!]!
     friendship(input: FriendshipInput!): User!
+    fcmToken(input: FcmTokenInput!): Void
 }
 
 type Session {
@@ -43,6 +45,11 @@ input UserInput {
 input FriendshipInput {
     username: String!
     action: FriendshipAction!
+}
+
+input FcmTokenInput {
+    token: String
+    userAgent: String
 }
 
 enum FriendshipAction {

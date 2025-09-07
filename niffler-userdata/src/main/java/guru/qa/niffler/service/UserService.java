@@ -38,10 +38,12 @@ public class UserService {
 
   public static final CurrencyValues DEFAULT_USER_CURRENCY = CurrencyValues.RUB;
   private final UserRepository userRepository;
+  private final FcmService fcmService;
 
   @Autowired
-  public UserService(UserRepository userRepository) {
+  public UserService(UserRepository userRepository, FcmService fcmService) {
     this.userRepository = userRepository;
+    this.fcmService = fcmService;
   }
 
   @Transactional
@@ -173,6 +175,14 @@ public class UserService {
       returnedStates = INVITE_SENT;
     }
     userRepository.save(currentUser);
+    fcmService.notifyUser(
+        targetUsername,
+        "New friendship request",
+        "User " + username + " send friendship request to you!",
+        null,
+        null,
+        null
+    );
     return UserJson.fromEntity(targetUser, returnedStates);
   }
 

@@ -1,5 +1,6 @@
 package guru.qa.niffler.service;
 
+import guru.qa.niffler.model.FcmTokenJson;
 import guru.qa.niffler.model.UserJson;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -61,4 +62,6 @@ public interface UserDataClient {
 
   void removeFriend(String username,
                     String targetUsername);
+
+  void registerToken(FcmTokenJson fcmTokenJson);
 }

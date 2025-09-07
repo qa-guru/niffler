@@ -25,6 +25,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static jakarta.persistence.FetchType.EAGER;
+
 @Getter
 @Setter
 @Entity
@@ -62,6 +64,9 @@ public class UserEntity implements Serializable {
 
   @OneToMany(mappedBy = "addressee", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<FriendshipEntity> friendshipAddressees = new ArrayList<>();
+
+  @OneToMany(fetch = EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+  private List<PushTokenEntity> pushTokens = new ArrayList<>();
 
   public void addFriends(FriendshipStatus status, UserEntity... friends) {
     List<FriendshipEntity> friendsEntities = Stream.of(friends)

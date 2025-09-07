@@ -3,6 +3,7 @@ package guru.qa.niffler.config;
 import guru.qa.niffler.service.UserDataClient;
 import guru.qa.niffler.service.api.RestUserDataClient;
 import guru.qa.niffler.service.soap.SoapUserDataClient;
+import guru.qa.niffler.service.utils.GqlVoidScalar;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.client.RestTemplate;
 
@@ -85,5 +87,10 @@ public class NifflerGatewayServiceConfig {
                 .type(SecurityScheme.Type.HTTP)
                 .scheme("bearer")
                 .bearerFormat("JWT")));
+  }
+
+  @Bean
+  public RuntimeWiringConfigurer runtimeWiringConfigurer() {
+    return wiringBuilder -> wiringBuilder.scalar(GqlVoidScalar.Void);
   }
 }

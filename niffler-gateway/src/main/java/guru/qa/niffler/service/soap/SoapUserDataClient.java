@@ -1,6 +1,7 @@
 package guru.qa.niffler.service.soap;
 
 import guru.qa.niffler.ex.NoSoapResponseException;
+import guru.qa.niffler.model.FcmTokenJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
 import jakarta.annotation.Nonnull;
@@ -12,6 +13,7 @@ import jaxb.userdata.CurrentUserRequest;
 import jaxb.userdata.DeclineInvitationRequest;
 import jaxb.userdata.FriendsPageRequest;
 import jaxb.userdata.FriendsRequest;
+import jaxb.userdata.RegisterPushTokenRequest;
 import jaxb.userdata.RemoveFriendRequest;
 import jaxb.userdata.SendInvitationRequest;
 import jaxb.userdata.UpdateUserRequest;
@@ -181,6 +183,19 @@ public class SoapUserDataClient extends WebServiceGatewaySupport implements User
     RemoveFriendRequest request = new RemoveFriendRequest();
     request.setUsername(username);
     request.setFriendToBeRemoved(targetUsername);
+
+    getWebServiceTemplate().marshalSendAndReceive(
+        getDefaultUri(),
+        request
+    );
+  }
+
+  @Override
+  public void registerToken(FcmTokenJson fcmTokenJson) {
+    RegisterPushTokenRequest request = new RegisterPushTokenRequest();
+    request.setUsername(fcmTokenJson.username());
+    request.setToken(fcmTokenJson.token());
+    request.setUserAgent(fcmTokenJson.userAgent());
 
     getWebServiceTemplate().marshalSendAndReceive(
         getDefaultUri(),

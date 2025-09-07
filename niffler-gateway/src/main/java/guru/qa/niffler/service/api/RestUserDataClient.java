@@ -1,6 +1,7 @@
 package guru.qa.niffler.service.api;
 
 import guru.qa.niffler.ex.NoRestResponseException;
+import guru.qa.niffler.model.FcmTokenJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.model.page.PagedModelJson;
 import guru.qa.niffler.model.page.RestPage;
@@ -208,6 +209,14 @@ public class RestUserDataClient implements UserDataClient {
         nifflerUserdataApiUri + "/friends/remove?username={username}&targetUsername={targetUsername}",
         username,
         targetUsername
+    );
+  }
+
+  @Override
+  public void registerToken(FcmTokenJson fcmTokenJson) {
+    restTemplate.postForLocation(
+        nifflerUserdataApiUri + "/push/token",
+        fcmTokenJson
     );
   }
 }

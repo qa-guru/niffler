@@ -1,0 +1,35 @@
+importScripts('https://www.gstatic.com/firebasejs/12.2.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/12.2.1/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+    apiKey: "AIzaSyDEtu5oECQq5s8PU--l22YZbt8ck-fB9sI",
+    authDomain: "niffler-ea54f.firebaseapp.com",
+    projectId: "niffler-ea54f",
+    storageBucket: "niffler-ea54f.firebasestorage.app",
+    messagingSenderId: "641444169058",
+    appId: "1:641444169058:web:045b5f13587012db84983b"
+});
+
+const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage((payload) => {
+  const { title, body, icon, click_action } = payload.notification ?? {};
+  self.registration.showNotification(title || 'Notification', {
+    body: body || '',
+    icon: icon || '/icon.png',
+    data: { click_action: click_action || '/' }
+  });
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification?.data?.click_action || '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ('focus' in client && client.url.includes(self.origin)) return client.focus();
+      }
+      return clients.openWindow(url);
+    })
+  );
+});
