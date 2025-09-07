@@ -111,14 +111,14 @@ export const ImageUpload: FC<ImageUploadInterface> = ({
                         }
                     </Box>
                 )}
-                <Box>
+                <Box sx={{width: "100%"}}>
                     <label htmlFor="image__input" className="image__input-label">
                         <SecondaryButton
                             variant="contained"
                             color="secondary"
                             component="span"
                             startIcon={<UploadIcon/>}
-                            sx={{marginTop: 1, width: "100%"}}>
+                            sx={{ width: "100%"}}>
                             {buttonText}
                         </SecondaryButton>
                     </label>
@@ -129,7 +129,7 @@ export const ImageUpload: FC<ImageUploadInterface> = ({
                         variant="contained"
                         color="secondary"
                         component="span"
-                        sx={{marginTop: 1, width: "100%"}}
+                        sx={{marginTop: 2, width: "100%"}}
                         onClick={() => setAvatarCaptureVisible(true)}
                     >
                         Take camera photo

@@ -52,6 +52,14 @@ export const MobileHeaderMenu: FC<MobileHeaderMenuInterface> = ({open, handleClo
                             All People
                         </Link>
                     </ListItem>
+                    <ListItem key={"invite"} onClick={handleClose}>
+                        <Link to={"/people/invite"} className={"link nav-link"}>
+                            <ListItemIcon sx={{padding: "8px 12px"}}>
+                                <Icon type="userIcon"/>
+                            </ListItemIcon>
+                            Invite to Niffler
+                        </Link>
+                    </ListItem>
                     <Divider/>
                     <ListItem onClick={handleLogout}>
                         <ListItemIcon sx={{padding: "8px 12px"}}>
