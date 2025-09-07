@@ -96,6 +96,8 @@ oauth2:
   mobile-client-id: 'mobile-client'
   mobile-custom-scheme: 'app://'
   android-app-uri: 'ru.niffler_android'
+webauth:
+  enabled: true
 ---
 spring:
   config:
@@ -122,6 +124,8 @@ oauth2:
   mobile-client-id: 'mobile-client'
   mobile-custom-scheme: 'app://'
   android-app-uri: 'ru.niffler_android'
+webauth:
+  enabled: false
 ---
 spring:
   config:
@@ -152,6 +156,8 @@ oauth2:
   mobile-client-id: ${mobile-client-id}
   mobile-custom-scheme: ${mobile-custom-scheme}
   android-app-uri: ${android-app-uri}
+webauth:
+  enabled: true
 ---
 spring:
   config:
@@ -182,4 +188,6 @@ oauth2:
   mobile-client-id: ${mobile-client-id}
   mobile-custom-scheme: ${mobile-custom-scheme}
   android-app-uri: ${android-app-uri}
+webauth:
+  enabled: true
 ---

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Nullable;
@@ -22,7 +23,8 @@ import java.util.Map;
 
 @ParametersAreNonnullByDefault
 @Service
-public class FcmService {
+@ConditionalOnProperty(name = "firebase.enabled", havingValue = "true")
+public class FcmService implements IFcmService {
   private static final Logger LOG = LoggerFactory.getLogger(FcmService.class);
 
   private final FirebaseMessaging fcm;
@@ -37,6 +39,7 @@ public class FcmService {
   /**
    * Send Web push for user
    */
+  @Override
   public void notifyUser(String username,
                          @Nullable String title,
                          @Nullable String body,
@@ -79,6 +82,7 @@ public class FcmService {
   /**
    * Data-only push
    */
+  @Override
   public void notifyUserDataOnly(String username,
                                  @Nullable Map<String, String> data,
                                  @Nullable String topicHint) {

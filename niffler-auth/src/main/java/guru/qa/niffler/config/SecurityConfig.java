@@ -6,6 +6,7 @@ import guru.qa.niffler.service.cors.CorsCustomizer;
 import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -33,6 +34,7 @@ public class SecurityConfig {
 
   @Bean
   @Profile("!docker")
+  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                         CsrfTokenRepository csrfTokenRepository) throws Exception {
     commonSecurityConfiguration(http, csrfTokenRepository)
@@ -48,6 +50,7 @@ public class SecurityConfig {
    */
   @Bean
   @Profile("docker")
+  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "false")
   public SecurityFilterChain dockerSecurityFilterChain(HttpSecurity http,
                                                         CsrfTokenRepository csrfTokenRepository) throws Exception {
     return commonSecurityConfiguration(http, csrfTokenRepository).build();

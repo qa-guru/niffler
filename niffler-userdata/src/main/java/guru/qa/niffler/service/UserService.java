@@ -38,10 +38,10 @@ public class UserService {
 
   public static final CurrencyValues DEFAULT_USER_CURRENCY = CurrencyValues.RUB;
   private final UserRepository userRepository;
-  private final FcmService fcmService;
+  private final IFcmService fcmService;
 
   @Autowired
-  public UserService(UserRepository userRepository, FcmService fcmService) {
+  public UserService(UserRepository userRepository, IFcmService fcmService) {
     this.userRepository = userRepository;
     this.fcmService = fcmService;
   }
