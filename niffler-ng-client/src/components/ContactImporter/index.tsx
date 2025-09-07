@@ -15,13 +15,15 @@ export const ContactImporter: FC = ({}) => {
             try {
                 const props = ["name", "email", "tel"];
                 const opts = {multiple: true};
-                const selected = (await navigator as any).contacts.select(props, opts);
+                const selected = await (navigator as any).contacts.select(props, opts);
 
                 const mapped: Contact[] = selected.map((c: any) => ({
                     name: c.name?.[0] ?? "Unknown",
                     phone: c.tel?.[0],
                     email: c.email?.[0],
                 }));
+
+                console.log(mapped);
 
                 setContacts(mapped);
             } catch (err) {
@@ -36,9 +38,9 @@ export const ContactImporter: FC = ({}) => {
                 {
                     contacts.map((c, idx) => (
                             <li key={idx}>
-                                <strong>c.name</strong>
-                                <span>{c.phone}</span>
-                                <span>{c.email}</span>
+                                <strong>c?.name</strong>
+                                <span>{c?.phone}</span>
+                                <span>{c?.email}</span>
                             </li>
                         )
                     )
