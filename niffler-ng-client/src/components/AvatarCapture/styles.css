@@ -1,0 +1,8 @@
+.avatar-capture__canvas {
+    display: none;
+}
+
+.avatar-capture__video {
+    border-radius: 16px;
+    overflow: hidden;
+}
