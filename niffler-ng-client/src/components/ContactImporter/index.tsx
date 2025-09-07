@@ -27,12 +27,12 @@ export const ContactImporter: FC = ({}) => {
                 const opts = {multiple: true};
                 const selected = await (navigator as any).contacts.select(props, opts);
 
+                console.log(selected);
+
                 const mapped: Contact[] = selected.map((c: any) => ({
                     name: c.name?.[0] ?? "Unknown",
                     phone: c.tel?.[0],
                 }));
-
-                console.log(mapped);
                 setContacts([...contacts, ...mapped]);
             } catch (err) {
                 console.error("Contact Picker error:", err);
