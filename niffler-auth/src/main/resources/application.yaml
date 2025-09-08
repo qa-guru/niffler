@@ -61,6 +61,7 @@ logging:
     org.springframework.web.cors: INFO
     org.springframework.security.web.csrf: INFO
     org.springframework.security.web.authentication.logout: INFO
+    org.springframework.security.web.webauthn: TRACE
     org.springframework.security: INFO
     org.springframework.web.servlet.handler: INFO
     org.springframework.web.servlet.DispatcherServlet: INFO

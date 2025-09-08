@@ -1,5 +1,5 @@
-import {PublicKeyCredential} from "./PublicKeyCredential.ts";
+import { PasskeyCredential } from "./PasskeyCredential";
 
 export interface RegisterPasskeyPayload {
-  publicKey: PublicKeyCredential;
+  publicKey: PasskeyCredential;
 }

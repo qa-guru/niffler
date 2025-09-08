@@ -84,19 +84,6 @@
         return m ? decodeURIComponent(m[1]) : null;
     }
 
-    function b64urlToBuf(b64) {
-        const pad = '='.repeat((4 - (b64.length % 4)) % 4);
-        const b = atob(b64.replace(/-/g, '+').replace(/_/g, '/') + pad);
-        const buf = new ArrayBuffer(b.length); const u8 = new Uint8Array(buf);
-        for (let i = 0; i < b.length; i++) u8[i] = b.charCodeAt(i);
-        return buf;
-    }
-
-    function bufToB64url(buf) {
-        const b = String.fromCharCode(...new Uint8Array(buf));
-        return btoa(b).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    }
-
     function renderError(message) {
         document.querySelectorAll('.js-error').forEach(el => el.remove());
 
@@ -164,34 +151,13 @@
         e.preventDefault();
         try {
             const optRes = await postJson('/webauthn/authenticate/options');
-            if (!optRes.ok) {
-                throw new Error('Failed to get WebAuthn options');
-            }
-            const opts = await optRes.json();
-            opts.challenge = b64urlToBuf(opts.challenge);
-            if (Array.isArray(opts.allowCredentials)) {
-                opts.allowCredentials = opts.allowCredentials.map(c => ({ ...c, id: b64urlToBuf(c.id) }));
-            }
-
-            const assertion = await navigator.credentials.get({ publicKey: opts });
-            if (!assertion) {
-                renderError('No credential assertion returned');
-            }
-
-            const payload = {
-                id: assertion.id,
-                rawId: bufToB64url(assertion.rawId),
-                type: assertion.type,
-                response: {
-                    clientDataJSON: bufToB64url(assertion.response.clientDataJSON),
-                    authenticatorData: bufToB64url(assertion.response.authenticatorData),
-                    signature: bufToB64url(assertion.response.signature),
-                    userHandle: assertion.response.userHandle ? bufToB64url(assertion.response.userHandle) : null
-                },
-                clientExtensionResults: (assertion.getClientExtensionResults ? assertion.getClientExtensionResults() : {})
-            };
-
-            const authRes = await postJson('/login/webauthn', payload);
+            if (!optRes.ok) throw new Error('Failed to get WebAuthn options');
+            const requestOptionsJSON = await optRes.json();
+            const publicKey = PublicKeyCredential.parseRequestOptionsFromJSON(requestOptionsJSON);
+            const cred = await navigator.credentials.get({ publicKey });
+            if (!cred) throw new Error('No credential assertion returned');
+            const assertionJSON = cred.toJSON();
+            const authRes = await postJson('/login/webauthn', assertionJSON);
             if (authRes.ok) {
                 window.location.replace(FRONT_BASE);
             } else {

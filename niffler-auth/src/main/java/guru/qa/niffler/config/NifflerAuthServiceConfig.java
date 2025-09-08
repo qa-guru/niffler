@@ -120,13 +120,6 @@ public class NifflerAuthServiceConfig implements BeanClassLoaderAware {
     OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
         OAuth2AuthorizationServerConfigurer.authorizationServer();
 
-    if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
-      http.addFilterBefore(new SpecificRequestDumperFilter(
-          new RequestDumperFilter(),
-          "/login", "/connect/logout", "/oauth2/.*"
-      ), DisableEncodeUrlFilter.class);
-    }
-
     http
         .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
         .with(authorizationServerConfigurer, authorizationServer ->
