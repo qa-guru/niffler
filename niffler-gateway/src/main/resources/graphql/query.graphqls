@@ -48,8 +48,8 @@ input FriendshipInput {
 }
 
 input FcmTokenInput {
-    token: String
-    userAgent: String
+    token: String!
+    userAgent: String!
 }
 
 enum FriendshipAction {

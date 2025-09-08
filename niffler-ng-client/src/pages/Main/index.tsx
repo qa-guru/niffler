@@ -71,7 +71,9 @@ export const MainPage = () => {
                 const swReg = await ensureServiceWorkerReady();
                 const perm = await requestNotificationPermission();
                 if (perm !== 'granted') {
-                    if (perm === 'denied') snackbar.showSnackBar("Уведомления отключены в браузере", "info");
+                    if (perm === 'denied') {
+                        snackbar.showSnackBar("Notifications are disabled in your browser", "info");
+                    }
                     return;
                 }
 
@@ -80,10 +82,12 @@ export const MainPage = () => {
                         await apiClient.registerFirebaseToken(
                             { token, userAgent: navigator.userAgent },
                             {
-                                onSuccess: () => { },
+                                onSuccess: () => {
+                                    snackbar.showSnackBar("Push token registered", "success");
+                                },
                                 onFailure: (e) => {
                                     console.error(e.message);
-                                    snackbar.showSnackBar("Ошибка регистрации push-токена", "error");
+                                    snackbar.showSnackBar("Push token registration error", "error");
                                 },
                             }
                         );
@@ -106,7 +110,7 @@ export const MainPage = () => {
 
             } catch (e: any) {
                 console.error(e);
-                snackbar.showSnackBar(e?.message || "Ошибка инициализации пушей", "error");
+                snackbar.showSnackBar(e?.message || "Error while initializing push messages", "error");
             }
         })();
 

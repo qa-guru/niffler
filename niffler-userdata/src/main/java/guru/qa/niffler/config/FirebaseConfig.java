@@ -27,11 +27,11 @@ public class FirebaseConfig {
 
   @Bean
   public FirebaseApp firebaseApp(GoogleCredentials credentials) {
-    FirebaseOptions options = FirebaseOptions.builder()
-        .setCredentials(credentials)
-        .build();
-
-    return FirebaseApp.initializeApp(options);
+    return FirebaseApp.initializeApp(
+        FirebaseOptions.builder()
+            .setCredentials(credentials)
+            .build()
+    );
   }
 
   @Profile({"local"})

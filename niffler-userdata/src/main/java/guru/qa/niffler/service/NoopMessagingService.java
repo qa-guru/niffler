@@ -12,8 +12,8 @@ import java.util.Map;
 @Service
 @ConditionalOnProperty(name = "firebase.enabled", havingValue = "false", matchIfMissing = true)
 @ParametersAreNonnullByDefault
-public class NoopFcmService implements IFcmService {
-  private static final Logger LOG = LoggerFactory.getLogger(NoopFcmService.class);
+public class NoopMessagingService implements MessagingService {
+  private static final Logger LOG = LoggerFactory.getLogger(NoopMessagingService.class);
 
   @Override
   public void notifyUser(String username, @Nullable String title, @Nullable String body, @Nullable Map<String, String> data, @Nullable String deeplink, @Nullable String iconUrl) {

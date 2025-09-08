@@ -5,14 +5,16 @@ import guru.qa.niffler.data.UserEntity;
 import guru.qa.niffler.data.repository.PushTokenRepository;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.ex.NotFoundException;
+import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Date;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 @Service
 public class PushTokenService {
 
@@ -59,7 +61,7 @@ public class PushTokenService {
   }
 
   @Nonnull
-  UserEntity getRequiredUser(@Nonnull String username) {
+  UserEntity getRequiredUser(String username) {
     return userRepository.findByUsername(username).orElseThrow(
         () -> new NotFoundException("Can`t find user by username: '" + username + "'")
     );

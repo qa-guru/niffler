@@ -35,7 +35,7 @@ public class NifflerUserdataConsumerConfiguration {
 
   @Bean
   public ConcurrentKafkaListenerContainerFactory<String, UserJson> kafkaListenerContainerFactory(SslBundles sslBundles) {
-    ConcurrentKafkaListenerContainerFactory<String, UserJson> concurrentKafkaListenerContainerFactory
+    final ConcurrentKafkaListenerContainerFactory<String, UserJson> concurrentKafkaListenerContainerFactory
         = new ConcurrentKafkaListenerContainerFactory<>();
     concurrentKafkaListenerContainerFactory.setConsumerFactory(consumerFactory(sslBundles));
     return concurrentKafkaListenerContainerFactory;

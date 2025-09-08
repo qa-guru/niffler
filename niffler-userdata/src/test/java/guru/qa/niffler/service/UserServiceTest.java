@@ -92,14 +92,14 @@ class UserServiceTest {
   @ParameterizedTest
   void userShouldBeUpdated(String photo,
                            @Mock UserRepository userRepository,
-                           @Mock FcmService fcmService) {
+                           @Mock MessagingService messagingService) {
     when(userRepository.findByUsername(eq(mainTestUserName)))
         .thenReturn(Optional.of(mainTestUser));
 
     when(userRepository.save(any(UserEntity.class)))
         .thenAnswer(answer -> answer.getArguments()[0]);
 
-    userService = new UserService(userRepository, fcmService);
+    userService = new UserService(userRepository, messagingService);
 
     final String photoForTest = photo.isEmpty() ? null : photo;
 
@@ -125,11 +125,11 @@ class UserServiceTest {
 
   @Test
   void getRequiredUserShouldThrowNotFoundExceptionIfUserNotFound(@Mock UserRepository userRepository,
-                                                                 @Mock FcmService fcmService) {
+                                                                 @Mock MessagingService messagingService) {
     when(userRepository.findByUsername(eq(notExistingUser)))
         .thenReturn(Optional.empty());
 
-    userService = new UserService(userRepository, fcmService);
+    userService = new UserService(userRepository, messagingService);
 
     final NotFoundException exception = assertThrows(NotFoundException.class,
         () -> userService.getRequiredUser(notExistingUser));
@@ -141,11 +141,11 @@ class UserServiceTest {
 
   @Test
   void allUsersShouldReturnCorrectUsersList(@Mock UserRepository userRepository,
-                                            @Mock FcmService fcmService) {
+                                            @Mock MessagingService messagingService) {
     when(userRepository.findByUsernameNot(eq(mainTestUserName)))
         .thenReturn(getMockUsersMappingFromDb());
 
-    userService = new UserService(userRepository, fcmService);
+    userService = new UserService(userRepository, messagingService);
 
     final List<UserJsonBulk> users = userService.allUsers(mainTestUserName, null);
     assertEquals(2, users.size());
