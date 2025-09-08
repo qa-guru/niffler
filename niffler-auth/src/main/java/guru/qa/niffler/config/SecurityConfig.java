@@ -92,8 +92,8 @@ public class SecurityConfig {
         builder -> builder.authenticatorSelection(
                 AuthenticatorSelectionCriteria.builder()
                     .authenticatorAttachment(AuthenticatorAttachment.PLATFORM) // authenticatorAttachment
-                    .residentKey(null) // rk
-                    .userVerification(null)//uv
+                    .residentKey(ResidentKeyRequirement.DISCOURAGED) // rk
+                    .userVerification(UserVerificationRequirement.REQUIRED) //uv
                     .build()
             )
             .excludeCredentials(null)
