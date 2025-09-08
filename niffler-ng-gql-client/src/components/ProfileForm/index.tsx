@@ -93,7 +93,6 @@ export const ProfileForm: FC<ProfileFormInterface> = ({ user }) => {
                                 : ["internal"],
                         },
                     },
-                    label: "device-passkey",
                 },
             };
 

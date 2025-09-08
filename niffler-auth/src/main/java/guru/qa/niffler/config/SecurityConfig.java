@@ -21,6 +21,7 @@ import org.springframework.security.web.webauthn.api.AuthenticatorSelectionCrite
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialCreationOptions;
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialRequestOptions;
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialRpEntity;
+import org.springframework.security.web.webauthn.api.ResidentKeyRequirement;
 import org.springframework.security.web.webauthn.api.UserVerificationRequirement;
 import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
 import org.springframework.security.web.webauthn.management.UserCredentialRepository;
@@ -91,8 +92,8 @@ public class SecurityConfig {
         builder -> builder.authenticatorSelection(
                 AuthenticatorSelectionCriteria.builder()
                     .authenticatorAttachment(AuthenticatorAttachment.PLATFORM) // authenticatorAttachment
-                    .residentKey(null) // rk
-                    .userVerification(null)//uv
+                    .residentKey(ResidentKeyRequirement.REQUIRED)// rk
+                    .userVerification(UserVerificationRequirement.REQUIRED)//uv
                     .build()
             )
             .excludeCredentials(null)
@@ -101,8 +102,7 @@ public class SecurityConfig {
 
     Consumer<PublicKeyCredentialRequestOptions.PublicKeyCredentialRequestOptionsBuilder> requestCustomizer =
         builder -> builder
-            .userVerification(UserVerificationRequirement.REQUIRED)
-            .extensions(null);
+            .userVerification(UserVerificationRequirement.REQUIRED);
 
     nifflerRelyingParty.setCustomizeCreationOptions(creationCustomizer);
     nifflerRelyingParty.setCustomizeRequestOptions(requestCustomizer);
