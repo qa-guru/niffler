@@ -21,10 +21,9 @@ import org.springframework.security.web.webauthn.api.AuthenticatorSelectionCrite
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialCreationOptions;
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialRequestOptions;
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialRpEntity;
-import org.springframework.security.web.webauthn.api.ResidentKeyRequirement;
 import org.springframework.security.web.webauthn.api.UserVerificationRequirement;
-import org.springframework.security.web.webauthn.management.MapPublicKeyCredentialUserEntityRepository;
-import org.springframework.security.web.webauthn.management.MapUserCredentialRepository;
+import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
+import org.springframework.security.web.webauthn.management.UserCredentialRepository;
 import org.springframework.security.web.webauthn.management.WebAuthnRelyingPartyOperations;
 import org.springframework.security.web.webauthn.management.Webauthn4JRelyingPartyOperations;
 
@@ -73,14 +72,18 @@ public class SecurityConfig {
   /**
    * Android support
    * @link <a href="https://github.com/kanidm/webauthn-rs/issues/365">gh issue</a>
+   * Configuration parameters from demo project
+   * @link <a href="https://github.com/DannyMoerkerke/webauthn-demo">demo</a>
    */
   @Bean
   @Profile("!docker")
   @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
-  public WebAuthnRelyingPartyOperations webAuthnRelyingPartyOperations(PublicKeyCredentialRpEntity publicKeyCredentialRpEntity) {
+  public WebAuthnRelyingPartyOperations webAuthnRelyingPartyOperations(PublicKeyCredentialRpEntity publicKeyCredentialRpEntity,
+                                                                       PublicKeyCredentialUserEntityRepository jdbcPublicKeyCredentialRepository,
+                                                                       UserCredentialRepository jdbcUserCredentialRepository) {
     Webauthn4JRelyingPartyOperations nifflerRelyingParty = new Webauthn4JRelyingPartyOperations(
-        new MapPublicKeyCredentialUserEntityRepository(),
-        new MapUserCredentialRepository(),
+        jdbcPublicKeyCredentialRepository,
+        jdbcUserCredentialRepository,
         publicKeyCredentialRpEntity,
         corsCustomizer.allowedOrigins()
     );
@@ -88,16 +91,18 @@ public class SecurityConfig {
         builder -> builder.authenticatorSelection(
                 AuthenticatorSelectionCriteria.builder()
                     .authenticatorAttachment(AuthenticatorAttachment.PLATFORM) // authenticatorAttachment
-                    .residentKey(ResidentKeyRequirement.REQUIRED) // rk
-                    .userVerification(UserVerificationRequirement.REQUIRED) //uv
+                    .residentKey(null) // rk
+                    .userVerification(null)//uv
                     .build()
             )
+            .excludeCredentials(null)
+            .extensions(null)
             .attestation(AttestationConveyancePreference.NONE);
 
-    // --- Настраиваем параметры ЗАПРОСА (аутентификации) ---
     Consumer<PublicKeyCredentialRequestOptions.PublicKeyCredentialRequestOptionsBuilder> requestCustomizer =
         builder -> builder
-            .userVerification(UserVerificationRequirement.REQUIRED);
+            .userVerification(UserVerificationRequirement.REQUIRED)
+            .extensions(null);
 
     nifflerRelyingParty.setCustomizeCreationOptions(creationCustomizer);
     nifflerRelyingParty.setCustomizeRequestOptions(requestCustomizer);

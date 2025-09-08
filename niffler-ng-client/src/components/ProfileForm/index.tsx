@@ -91,10 +91,6 @@ export const ProfileForm: FC = () => {
                                 ? (cred.response as any).getTransports()
                                 : ["internal"],
                         },
-                        clientExtensionResults:
-                            (cred as any).getClientExtensionResults
-                                ? (cred as any).getClientExtensionResults()
-                                : {},
                     },
                     label: "device-passkey",
                 },

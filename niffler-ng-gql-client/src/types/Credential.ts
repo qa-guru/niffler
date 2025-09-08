@@ -5,5 +5,4 @@ export interface Credential {
   rawId: string;
   type: string;
   response: AuthenticatorAttestationResponse;
-  clientExtensionResults: Record<string, unknown>;
 }
