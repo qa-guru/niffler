@@ -1,7 +1,7 @@
 {
   "name": "niffler-ng-client",
   "private": true,
-  "version": "2.5.1",
+  "version": "2.6.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -26,6 +26,7 @@
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.12",
     "dotenv": "^16.4.5",
+    "firebase": "^12.2.1",
     "install": "^0.13.0",
     "npm": "^10.8.2",
     "react": "^18.2.0",

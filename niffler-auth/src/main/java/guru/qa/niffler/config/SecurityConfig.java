@@ -1,11 +1,11 @@
 package guru.qa.niffler.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.niffler.service.cors.CookieCsrfFilter;
 import guru.qa.niffler.service.cors.CorsCustomizer;
 import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -15,6 +15,21 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.webauthn.api.AttestationConveyancePreference;
+import org.springframework.security.web.webauthn.api.AuthenticatorAttachment;
+import org.springframework.security.web.webauthn.api.AuthenticatorSelectionCriteria;
+import org.springframework.security.web.webauthn.api.PublicKeyCredentialCreationOptions;
+import org.springframework.security.web.webauthn.api.PublicKeyCredentialRequestOptions;
+import org.springframework.security.web.webauthn.api.PublicKeyCredentialRpEntity;
+import org.springframework.security.web.webauthn.api.ResidentKeyRequirement;
+import org.springframework.security.web.webauthn.api.UserVerificationRequirement;
+import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
+import org.springframework.security.web.webauthn.management.UserCredentialRepository;
+import org.springframework.security.web.webauthn.management.WebAuthnRelyingPartyOperations;
+import org.springframework.security.web.webauthn.management.Webauthn4JRelyingPartyOperations;
+
+
+import java.util.function.Consumer;
 
 import static org.springframework.http.HttpMethod.POST;
 
@@ -33,14 +48,65 @@ public class SecurityConfig {
 
   @Bean
   @Profile("!docker")
+  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
-                                                        CsrfTokenRepository csrfTokenRepository) throws Exception {
+                                                        CsrfTokenRepository csrfTokenRepository,
+                                                        PublicKeyCredentialRpEntity publicKeyCredentialRpEntity) throws Exception {
     commonSecurityConfiguration(http, csrfTokenRepository)
         .webAuthn(webauth ->
-            webauth.rpName("Niffler Relying Party")
-                .rpId(nifflerAuthRpId)
+            webauth.rpId(publicKeyCredentialRpEntity.getId())
+                .rpName(publicKeyCredentialRpEntity.getName())
                 .allowedOrigins(corsCustomizer.allowedOrigins()));
     return http.build();
+  }
+
+  @Bean
+  @Profile("!docker")
+  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
+  public PublicKeyCredentialRpEntity publicKeyCredentialRpEntity() {
+    return PublicKeyCredentialRpEntity.builder()
+        .id(nifflerAuthRpId)
+        .name("Niffler Relying Party")
+        .build();
+  }
+
+  /**
+   * Android support
+   * @link <a href="https://github.com/kanidm/webauthn-rs/issues/365">gh issue</a>
+   * Configuration parameters from demo project
+   * @link <a href="https://github.com/DannyMoerkerke/webauthn-demo">demo</a>
+   */
+  @Bean
+  @Profile("!docker")
+  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
+  public WebAuthnRelyingPartyOperations webAuthnRelyingPartyOperations(PublicKeyCredentialRpEntity publicKeyCredentialRpEntity,
+                                                                       PublicKeyCredentialUserEntityRepository jdbcPublicKeyCredentialRepository,
+                                                                       UserCredentialRepository jdbcUserCredentialRepository) {
+    Webauthn4JRelyingPartyOperations nifflerRelyingParty = new Webauthn4JRelyingPartyOperations(
+        jdbcPublicKeyCredentialRepository,
+        jdbcUserCredentialRepository,
+        publicKeyCredentialRpEntity,
+        corsCustomizer.allowedOrigins()
+    );
+    Consumer<PublicKeyCredentialCreationOptions.PublicKeyCredentialCreationOptionsBuilder> creationCustomizer =
+        builder -> builder.authenticatorSelection(
+                AuthenticatorSelectionCriteria.builder()
+                    .authenticatorAttachment(AuthenticatorAttachment.PLATFORM) // authenticatorAttachment
+                    .residentKey(null) // rk
+                    .userVerification(null)//uv
+                    .build()
+            )
+            .excludeCredentials(null)
+            .extensions(null)
+            .attestation(AttestationConveyancePreference.NONE);
+
+    Consumer<PublicKeyCredentialRequestOptions.PublicKeyCredentialRequestOptionsBuilder> requestCustomizer =
+        builder -> builder
+            .userVerification(UserVerificationRequirement.REQUIRED);
+
+    nifflerRelyingParty.setCustomizeCreationOptions(creationCustomizer);
+    nifflerRelyingParty.setCustomizeRequestOptions(requestCustomizer);
+    return nifflerRelyingParty;
   }
 
   /**
@@ -48,6 +114,7 @@ public class SecurityConfig {
    */
   @Bean
   @Profile("docker")
+  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "false")
   public SecurityFilterChain dockerSecurityFilterChain(HttpSecurity http,
                                                         CsrfTokenRepository csrfTokenRepository) throws Exception {
     return commonSecurityConfiguration(http, csrfTokenRepository).build();

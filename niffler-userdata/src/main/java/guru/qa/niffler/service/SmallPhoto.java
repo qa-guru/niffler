@@ -6,6 +6,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 
+@ParametersAreNonnullByDefault
 public class SmallPhoto {
 
   private static final Logger LOG = LoggerFactory.getLogger(SmallPhoto.class);
@@ -29,11 +31,11 @@ public class SmallPhoto {
     this(height, width, 1.0, "png", photo);
   }
 
-  public SmallPhoto(int height, int width, @Nonnull String outputFormat, @Nullable String photo) {
+  public SmallPhoto(int height, int width, String outputFormat, @Nullable String photo) {
     this(height, width, 1.0, outputFormat, photo);
   }
 
-  public SmallPhoto(int height, int width, double quality, @Nonnull String outputFormat, @Nullable String photo) {
+  public SmallPhoto(int height, int width, double quality, String outputFormat, @Nullable String photo) {
     this.height = height;
     this.width = width;
     this.quality = quality;
@@ -69,7 +71,7 @@ public class SmallPhoto {
     return null;
   }
 
-  private @Nonnull byte[] concatArrays(@Nonnull byte[] first, @Nonnull byte[] second) {
+  private @Nonnull byte[] concatArrays(byte[] first, byte[] second) {
     byte[] result = Arrays.copyOf(first, first.length + second.length);
     System.arraycopy(second, 0, result, first.length, second.length);
     return result;

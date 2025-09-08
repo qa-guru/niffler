@@ -8,6 +8,7 @@ import { Statistic } from "../types/Statistic.ts";
 import { ApiError, isApiError, isCommonError } from "../types/Error.ts";
 import { Session } from "../types/Session.ts";
 import { Void } from "../types/Void.ts";
+import { FcmToken } from "../types/FcmToken.ts";
 
 const BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 const DEFAULT_ABORT_TIMEOUT = 5000;
@@ -228,6 +229,16 @@ export const apiClient = {
             {
                 method: "DELETE",
             });
+    },
+
+    registerFirebaseToken: async (fcmToken: FcmToken, { onSuccess, onFailure }: RequestHandler<FcmToken>) => {
+        await makeRequest("/push/token", {
+            onSuccess,
+            onFailure,
+        }, {
+            method: "POST",
+            body: JSON.stringify(fcmToken),
+        });
     },
 }
 

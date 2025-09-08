@@ -54,6 +54,8 @@ import org.springframework.security.web.session.DisableEncodeUrlFilter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.webauthn.management.JdbcPublicKeyCredentialUserEntityRepository;
 import org.springframework.security.web.webauthn.management.JdbcUserCredentialRepository;
+import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
+import org.springframework.security.web.webauthn.management.UserCredentialRepository;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
@@ -117,13 +119,6 @@ public class NifflerAuthServiceConfig implements BeanClassLoaderAware {
                                                                     LoginUrlAuthenticationEntryPoint loginEntryPoint) throws Exception {
     OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
         OAuth2AuthorizationServerConfigurer.authorizationServer();
-
-    if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
-      http.addFilterBefore(new SpecificRequestDumperFilter(
-          new RequestDumperFilter(),
-          "/login", "/connect/logout", "/oauth2/.*"
-      ), DisableEncodeUrlFilter.class);
-    }
 
     http
         .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
@@ -232,12 +227,12 @@ public class NifflerAuthServiceConfig implements BeanClassLoaderAware {
   }
 
   @Bean
-  public JdbcPublicKeyCredentialUserEntityRepository jdbcPublicKeyCredentialRepository(JdbcOperations jdbc) {
+  public PublicKeyCredentialUserEntityRepository jdbcPublicKeyCredentialRepository(JdbcOperations jdbc) {
     return new JdbcPublicKeyCredentialUserEntityRepository(jdbc);
   }
 
   @Bean
-  public JdbcUserCredentialRepository jdbcUserCredentialRepository(JdbcOperations jdbc) {
+  public UserCredentialRepository jdbcUserCredentialRepository(JdbcOperations jdbc) {
     return new JdbcUserCredentialRepository(jdbc);
   }
 
