@@ -92,7 +92,7 @@ public class SecurityConfig {
         builder -> builder.authenticatorSelection(
                 AuthenticatorSelectionCriteria.builder()
                     .authenticatorAttachment(AuthenticatorAttachment.PLATFORM) // authenticatorAttachment
-                    .residentKey(ResidentKeyRequirement.PREFERRED) // rk
+                    .residentKey(ResidentKeyRequirement.REQUIRED) // rk
                     .userVerification(UserVerificationRequirement.REQUIRED) //uv
                     .build()
             )
