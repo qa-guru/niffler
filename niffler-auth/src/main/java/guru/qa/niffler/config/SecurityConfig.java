@@ -91,7 +91,7 @@ public class SecurityConfig {
     Consumer<PublicKeyCredentialCreationOptions.PublicKeyCredentialCreationOptionsBuilder> creationCustomizer =
         builder -> builder.authenticatorSelection(
                 AuthenticatorSelectionCriteria.builder()
-                    .authenticatorAttachment(AuthenticatorAttachment.PLATFORM) // authenticatorAttachment
+                    .authenticatorAttachment(AuthenticatorAttachment.CROSS_PLATFORM) // authenticatorAttachment
                     .residentKey(ResidentKeyRequirement.REQUIRED) // rk
                     .userVerification(UserVerificationRequirement.REQUIRED) //uv
                     .build()
