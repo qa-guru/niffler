@@ -126,7 +126,7 @@ public class SecurityConfig {
         builder -> builder.authenticatorSelection(
                 AuthenticatorSelectionCriteria.builder()
                     .authenticatorAttachment(AuthenticatorAttachment.PLATFORM) // authenticatorAttachment
-                    .residentKey(ResidentKeyRequirement.REQUIRED)
+                    .residentKey(ResidentKeyRequirement.DISCOURAGED)
                     .userVerification(UserVerificationRequirement.REQUIRED) //uv
                     .build()
             )

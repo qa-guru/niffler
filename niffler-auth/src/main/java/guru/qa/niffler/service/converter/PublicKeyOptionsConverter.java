@@ -28,7 +28,7 @@ public class PublicKeyOptionsConverter extends MappingJackson2HttpMessageConvert
     if (object instanceof PublicKeyCredentialCreationOptions) {
       ObjectNode root = defaultObjectMapper.valueToTree(object);
       ObjectNode sel = (ObjectNode) root.get("authenticatorSelection");
-      sel.put("requireResidentKey", true);
+      sel.put("requireResidentKey", false);
       super.writeInternal(root, type, outputMessage);
     } else if (object instanceof PublicKeyCredentialRequestOptions) {
       ObjectNode root = defaultObjectMapper.valueToTree(object);
