@@ -1,5 +1,6 @@
 package guru.qa.niffler.config;
 
+import guru.qa.niffler.service.converter.PublicKeyOptionsConverter;
 import guru.qa.niffler.service.cors.CookieCsrfFilter;
 import guru.qa.niffler.service.cors.CorsCustomizer;
 import jakarta.servlet.DispatcherType;
@@ -21,7 +22,6 @@ import org.springframework.security.web.webauthn.api.AuthenticatorSelectionCrite
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialCreationOptions;
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialRequestOptions;
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialRpEntity;
-import org.springframework.security.web.webauthn.api.ResidentKeyRequirement;
 import org.springframework.security.web.webauthn.api.UserVerificationRequirement;
 import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
 import org.springframework.security.web.webauthn.management.UserCredentialRepository;
@@ -56,7 +56,10 @@ public class SecurityConfig {
         .webAuthn(webauth ->
             webauth.rpId(publicKeyCredentialRpEntity.getId())
                 .rpName(publicKeyCredentialRpEntity.getName())
-                .allowedOrigins(corsCustomizer.allowedOrigins()));
+                .allowedOrigins(corsCustomizer.allowedOrigins())
+                .disableDefaultRegistrationPage(true)
+                .messageConverter(new PublicKeyOptionsConverter())
+        );
     return http.build();
   }
 
@@ -92,8 +95,7 @@ public class SecurityConfig {
         builder -> builder.authenticatorSelection(
                 AuthenticatorSelectionCriteria.builder()
                     .authenticatorAttachment(AuthenticatorAttachment.PLATFORM) // authenticatorAttachment
-//                    .residentKey(ResidentKeyRequirement.REQUIRED) // rk
-//                    .userVerification(UserVerificationRequirement.REQUIRED) //uv
+                    .userVerification(UserVerificationRequirement.REQUIRED) //uv
                     .build()
             )
             .excludeCredentials(null)
