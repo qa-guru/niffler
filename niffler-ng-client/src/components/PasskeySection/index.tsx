@@ -1,10 +1,10 @@
 import {FC, useState} from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {authClient} from "../../api/authClient.ts";
-import {b64urlToBuf, bufToB64url} from "../../utils/passkey.ts";
 import {RegisterPasskeyPayload} from "../../types/RegisterPasskeyPayload.ts";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
 import {Grid, Typography, useMediaQuery, useTheme} from "@mui/material";
+import {normalizePasskeyRegistrationError} from "../../utils/passkey.ts";
 
 export const PasskeySection: FC = () => {
 
@@ -18,69 +18,40 @@ export const PasskeySection: FC = () => {
             setPasskeyLoading(true);
             const csrf = (await authClient.getCsrfToken()).token;
 
-            const pubKey = await authClient.registerPasskeyOptions(csrf, {
-                onSuccess: (data) => {
-                    setPasskeyLoading(false);
-                    return data;
-                },
-                onFailure: (e) => {
-                    snackbar.showSnackBar(`Error while updating profile: ${e.message}`, "error");
-                    setPasskeyLoading(false);
-                },
+            const creationOptionsJSON = await authClient.registerPasskeyOptions(csrf, {
+                onSuccess: (data) => data,
+                onFailure: (e) => { throw new Error(e.message); },
             });
 
-            pubKey.user.id = b64urlToBuf(pubKey.user.id);
-            pubKey.challenge = b64urlToBuf(pubKey.challenge);
-            if (Array.isArray(pubKey.excludeCredentials)) {
-                pubKey.excludeCredentials = pubKey.excludeCredentials.map((c: any) => ({
-                    ...c, id: b64urlToBuf(c.id)
-                }));
-            }
-            console.log(pubKey);
+            const { parseCreationOptionsFromJSON } = (PublicKeyCredential as any);
+            const publicKey: PublicKeyCredentialCreationOptions =
+                parseCreationOptionsFromJSON(creationOptionsJSON);
 
-            const cred = (await navigator.credentials.create({publicKey: pubKey})) as PublicKeyCredential;
+            const cred = (await navigator.credentials.create({ publicKey })) as PublicKeyCredential | null;
+            if (!cred) throw new Error('Registration was canceled');
 
             const payload: RegisterPasskeyPayload = {
                 publicKey: {
-                    credential: {
-                        id: cred.id,
-                        rawId: bufToB64url(cred.rawId),
-                        type: cred.type,
-                        response: {
-                            attestationObject: bufToB64url(
-                                (cred.response as AuthenticatorAttestationResponse).attestationObject
-                            ),
-                            clientDataJSON: bufToB64url(cred.response.clientDataJSON),
-                            transports: (cred.response as any).getTransports
-                                ? (cred.response as any).getTransports()
-                                : ["internal"],
-                        },
-                        clientExtensionResults:
-                            (cred as any).getClientExtensionResults
-                                ? (cred as any).getClientExtensionResults()
-                                : {},
-                    },
-                    label: "device-passkey",
+                    credential: (cred as PublicKeyCredential).toJSON(),
+                    label: 'device-passkey',
                 },
             };
 
             await authClient.registerPasskey(payload, csrf, {
-                onSuccess: (data) => {
-                    setPasskeyLoading(false);
-                    snackbar.showSnackBar("Passkey registered", "success");
-                    return data;
+                onSuccess: () => {
+                    snackbar.showSnackBar('Passkey registered', 'success');
                 },
-                onFailure: (e) => {
-                    snackbar.showSnackBar(`Registration failed: ${e.message}`, "error");
-                    setPasskeyLoading(false);
-                },
+                onFailure: (e) => { throw new Error(e.message); },
             });
-        } catch (e: any) {
-            snackbar.showSnackBar(e?.message ?? "Registration error", "error");
+
+            return;
+        } catch (e) {
+            snackbar.showSnackBar(`Registration failed: ${normalizePasskeyRegistrationError(e)}`, 'error');
         } finally {
             setPasskeyLoading(false);
         }
     };
+
 
     return (
         <Grid
