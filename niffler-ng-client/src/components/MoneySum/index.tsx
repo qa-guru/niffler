@@ -8,9 +8,12 @@ interface MoneySumInterface {
 export const MoneySum: FC<MoneySumInterface> = ({sum}) => {
     const [visible, setVisible] = useState<boolean>(true);
 
-    const SHAKE_THRESHOLD = 15;
-    const SHAKE_COOLDOWN = 3000;
+    const SHAKE_THRESHOLD = 25;
+    const SHAKE_COOLDOWN = 1500;
+    const REQUIRED_SHAKE_COUNT = 3;
+
     let lastShakeTime = 0;
+    let shakeCount = 0;
 
     useEffect(() => {
         let lastX = 0, lastY = 0, lastZ = 0;
@@ -30,17 +33,21 @@ export const MoneySum: FC<MoneySumInterface> = ({sum}) => {
 
                const speed = (Math.abs(x + y + z - lastX - lastY - lastZ) / deltaTime) * 10000;
 
+               lastX = x;
+               lastY = y;
+               lastZ = z;
+
                if(speed > SHAKE_THRESHOLD){
-                   if(currentTime - lastShakeTime > SHAKE_COOLDOWN) {
+                   shakeCount++;
+                   if(shakeCount>= REQUIRED_SHAKE_COUNT && currentTime - lastShakeTime > SHAKE_COOLDOWN) {
                        lastShakeTime = currentTime;
+                       shakeCount = 0;
                        console.log(speed);
                        setVisible((prev) => !prev);
                    }
                }
 
-               lastX = x;
-               lastY = y;
-               lastZ = z;
+
            }
        }
 

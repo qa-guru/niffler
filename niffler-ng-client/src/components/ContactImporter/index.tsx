@@ -21,14 +21,11 @@ export const ContactImporter: FC = ({}) => {
     });
 
     const handleGetContacts = async () => {
-        if ("contacts" in navigator && "select" in (navigator as any).contacts) {
+        if ("contacts" in navigator && "ContactsManager" in window) {
             try {
                 const props = ["name", "tel"];
                 const opts = {multiple: true};
                 const selected = await (navigator as any).contacts.select(props, opts);
-
-                console.log(selected);
-
                 const mapped: Contact[] = selected.map((c: any) => ({
                     name: c.name?.[0] ?? "Unknown",
                     phone: c.tel?.[0],
@@ -52,10 +49,16 @@ export const ContactImporter: FC = ({}) => {
     return (
         <>
             {"contacts" in navigator ?
-                <SecondaryButton sx={{width: "100%",
+                <SecondaryButton
+                    sx={{width: "100%",
                     maxWidth: "500px",
                     margin: "0 auto",
-                    display: "block"}} onClick={handleGetContacts}>Show contacts</SecondaryButton>
+                    display: "block"}}
+                    onClick={handleGetContacts}
+                    data-testid={"show-contacts-button"}
+                >
+                    Show contacts
+                </SecondaryButton>
                 : <><Grid component="form"
                           onSubmit={onSubmitContact}
                           spacing={0}

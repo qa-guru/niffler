@@ -36,6 +36,7 @@ export const PasskeySection: FC = () => {
                     ...c, id: b64urlToBuf(c.id)
                 }));
             }
+            console.log(pubKey);
 
             const cred = (await navigator.credentials.create({publicKey: pubKey})) as PublicKeyCredential;
 
@@ -104,6 +105,7 @@ export const PasskeySection: FC = () => {
                     variant="contained"
                     color="primary"
                     loading={isPasskeyLoading}
+                    data-testid={"register-passkey-btn"}
                     size={"large"}
                     sx={{
                         width: "100%",

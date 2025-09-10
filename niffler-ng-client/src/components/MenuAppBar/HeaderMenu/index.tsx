@@ -58,7 +58,7 @@ export const HeaderMenu: FC<HeaderMenuInterface> = ({handleClose, anchorElement,
                 </Link>
             </MenuItem>
             <Divider/>
-            <MenuItem onClick={handleLogout} sx={{padding: 0}}>
+            <MenuItem onClick={handleLogout} sx={{padding: 0}} data-testid={"sign-out-btn"}>
                 <ListItemIcon sx={{padding: "8px 12px"}}>
                     <Icon type="signOutIcon"/>
                 </ListItemIcon>

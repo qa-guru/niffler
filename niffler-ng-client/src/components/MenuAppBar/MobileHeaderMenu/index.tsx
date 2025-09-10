@@ -61,7 +61,7 @@ export const MobileHeaderMenu: FC<MobileHeaderMenuInterface> = ({open, handleClo
                         </Link>
                     </ListItem>
                     <Divider/>
-                    <ListItem onClick={handleLogout}>
+                    <ListItem onClick={handleLogout} data-testid={"sign-out-btn"}>
                         <ListItemIcon sx={{padding: "8px 12px"}}>
                             <Icon type="signOutIcon"/>
                         </ListItemIcon>

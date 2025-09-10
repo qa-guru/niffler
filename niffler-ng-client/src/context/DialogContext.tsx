@@ -79,6 +79,7 @@ const DialogProvider: FC<DialogContextProps> = ({children}) => {
                         onClick={handleSubmit}
                         color={"primary"}
                         variant={"contained"}
+                        data-testid={"dialog-submit-btn"}
                         startIcon={dialogData?.submitButtonIcon}>
                         {dialogData?.submitTitle ?? "Submit"}
                     </Button>
