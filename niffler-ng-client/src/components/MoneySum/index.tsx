@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from "react";
+import {FC, useEffect, useRef, useState} from "react";
 
 
 interface MoneySumInterface {
@@ -12,8 +12,8 @@ export const MoneySum: FC<MoneySumInterface> = ({sum}) => {
     const SHAKE_COOLDOWN = 1500;
     const REQUIRED_SHAKE_COUNT = 3;
 
-    let lastShakeTime = 0;
-    let shakeCount = 0;
+    let lastShakeTime = useRef(0);
+    let shakeCount =useRef(0);
 
     useEffect(() => {
         let lastX = 0, lastY = 0, lastZ = 0;
@@ -38,10 +38,10 @@ export const MoneySum: FC<MoneySumInterface> = ({sum}) => {
                lastZ = z;
 
                if(speed > SHAKE_THRESHOLD){
-                   shakeCount++;
-                   if(shakeCount>= REQUIRED_SHAKE_COUNT && currentTime - lastShakeTime > SHAKE_COOLDOWN) {
-                       lastShakeTime = currentTime;
-                       shakeCount = 0;
+                   shakeCount.current++;
+                   if(shakeCount.current>= REQUIRED_SHAKE_COUNT && currentTime - lastShakeTime.current > SHAKE_COOLDOWN) {
+                       lastShakeTime.current = currentTime;
+                       shakeCount.current = 0;
                        speed = 0;
                        console.log(speed);
                        setVisible((prev) => !prev);
