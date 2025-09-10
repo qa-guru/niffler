@@ -31,7 +31,7 @@ export const MoneySum: FC<MoneySumInterface> = ({sum}) => {
                const y = acceleration.y ?? 0;
                const z = acceleration.z ?? 0;
 
-               const speed = (Math.abs(x + y + z - lastX - lastY - lastZ) / deltaTime) * 10000;
+               let speed = (Math.abs(x + y + z - lastX - lastY - lastZ) / deltaTime) * 10000;
 
                lastX = x;
                lastY = y;
@@ -42,6 +42,7 @@ export const MoneySum: FC<MoneySumInterface> = ({sum}) => {
                    if(shakeCount>= REQUIRED_SHAKE_COUNT && currentTime - lastShakeTime > SHAKE_COOLDOWN) {
                        lastShakeTime = currentTime;
                        shakeCount = 0;
+                       speed = 0;
                        console.log(speed);
                        setVisible((prev) => !prev);
                    }
