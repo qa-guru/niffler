@@ -1,7 +1,7 @@
 {
     "name": "Niffler. The coin keeper",
     "description": "The coin keeper App. Pet project",
-    "start_url": ".",
+    "start_url": "/main",
     "scope": "/",
     "display": "standalone",
     "id": "/",
@@ -37,7 +37,12 @@
       "src": "/pwa/launchericon-512-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/pwa/launchericon-512-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
-
   ]
-  }
+}

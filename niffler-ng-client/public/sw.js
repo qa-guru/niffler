@@ -4,7 +4,7 @@ self.addEventListener("push", function (event) {
 
     const options = {
         body: message,
-        icon: '/src/assets/icons/pwa/launchericon-512x512.png',
+        icon: '/pwa/launchericon-512x512.png',
         vibrate: [100, 50, 100],
         data: {
             dateOfArrival: Date.now()
