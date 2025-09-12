@@ -136,6 +136,7 @@ public class SecurityConfig {
                 "/error",
                 "/images/**",
                 "/styles/**",
+                "/scripts/**",
                 "/fonts/**",
                 "/.well-known/**",
                 "/actuator/health"
