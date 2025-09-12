@@ -1,6 +1,9 @@
 importScripts('https://www.gstatic.com/firebasejs/12.2.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/12.2.1/firebase-messaging-compat.js');
 
+const CASHE_NAME = "pwa-cache-v1";
+const OFFLINE_URL = "/offline.html";
+
 firebase.initializeApp({
     apiKey: "AIzaSyDEtu5oECQq5s8PU--l22YZbt8ck-fB9sI",
     authDomain: "niffler-ea54f.firebaseapp.com",
@@ -32,4 +35,51 @@ self.addEventListener('notificationclick', (event) => {
       return clients.openWindow(url);
     })
   );
+});
+
+self.addEventListener("install", event => {
+    event.waitUntil(
+        cashes.open(CASHE_NAME).then(cache => {
+            return cache.addAll([OFFLINE_URL]);
+        })
+    )
+});
+
+self.addEventListener("fetch", event => {
+    if(event.request.mode === "navigate"){
+        event.respondWith(
+            fetch(event.request).catch(() => {
+                return caches.open(CASHE_NAME).then(cache => cache.match(OFFLINE_URL));
+            })
+        )
+    }
+})
+
+self.addEventListener("push", function (event) {
+    const data = event.data.json();
+    const {title, message, interaction} = data;
+
+    const options = {
+        body: message,
+        icon: '/pwa/launchericon-512x512.png',
+        vibrate: [100, 50, 100],
+        data: {
+            dateOfArrival: Date.now()
+        },
+        actions: [
+            {
+                action: 'confirm',
+                title: 'OK'
+            },
+            {
+                action: 'close',
+                title: 'Close notification'
+            },
+        ],
+        requireInteraction: interaction
+    };
+
+    event.waitUntil(
+        self.registration.showNotification(title, options)
+    );
 });

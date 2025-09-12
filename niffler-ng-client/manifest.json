@@ -1,5 +1,6 @@
 {
     "name": "Niffler. The coin keeper",
+    "short_name": "Niffler",
     "description": "The coin keeper App. Pet project",
     "start_url": "/main",
     "scope": "/",
