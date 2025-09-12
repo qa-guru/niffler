@@ -30,14 +30,16 @@ public class SecurityConfigMain {
     corsCustomizer.corsCustomizer(http);
 
     http.authorizeHttpRequests(customizer ->
-        customizer
-            .requestMatchers(
-                "/api/session/current",
-                "/actuator/health"
-            ).permitAll()
-            .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
-            .anyRequest().authenticated()
-    ).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+            customizer
+                .requestMatchers(
+                    "/api/session/current",
+                    "/actuator/health"
+                ).permitAll()
+                .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
+                .anyRequest().authenticated()
+        )
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+        .redirectToHttps(Customizer.withDefaults());
     return http.build();
   }
 }

@@ -53,42 +53,19 @@ public class SecurityConfig {
     this.nifflerAuthRpId = nifflerAuthRpId;
   }
 
-
-  @Bean
-  public SmartInitializingSingleton customizeWebAuthnFilters(
-      FilterChainProxy filterChainProxy,
-      PublicKeyOptionsConverter publicKeyOptionsConverter
-  ) {
-    return () -> {
-      for (SecurityFilterChain chain : filterChainProxy.getFilterChains()) {
-        for (Filter f : chain.getFilters()) {
-          if (f instanceof PublicKeyCredentialRequestOptionsFilter req) {
-            req.setConverter(publicKeyOptionsConverter);
-          }
-        }
-      }
-    };
-  }
-
-  @Bean
-  public PublicKeyOptionsConverter publicKeyOptionsConverter() {
-    return new PublicKeyOptionsConverter();
-  }
-
   @Bean
   @Profile("!docker")
   @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                         CsrfTokenRepository csrfTokenRepository,
-                                                        PublicKeyCredentialRpEntity publicKeyCredentialRpEntity,
-                                                        PublicKeyOptionsConverter publicKeyOptionsConverter) throws Exception {
+                                                        PublicKeyCredentialRpEntity publicKeyCredentialRpEntity) throws Exception {
     commonSecurityConfiguration(http, csrfTokenRepository)
         .webAuthn(webauth ->
             webauth.rpId(publicKeyCredentialRpEntity.getId())
                 .rpName(publicKeyCredentialRpEntity.getName())
                 .allowedOrigins(corsCustomizer.allowedOrigins())
                 .disableDefaultRegistrationPage(true)
-                .messageConverter(publicKeyOptionsConverter)
+                .messageConverter(new PublicKeyOptionsConverter())
         );
     return http.build();
   }
@@ -131,12 +108,11 @@ public class SecurityConfig {
                     .build()
             )
             .excludeCredentials(null)
-            .extensions(null)
             .attestation(AttestationConveyancePreference.NONE);
 
     Consumer<PublicKeyCredentialRequestOptions.PublicKeyCredentialRequestOptionsBuilder> requestCustomizer =
         builder -> builder
-            .userVerification(UserVerificationRequirement.REQUIRED);
+            .userVerification(UserVerificationRequirement.PREFERRED);
 
     nifflerRelyingParty.setCustomizeCreationOptions(creationCustomizer);
     nifflerRelyingParty.setCustomizeRequestOptions(requestCustomizer);

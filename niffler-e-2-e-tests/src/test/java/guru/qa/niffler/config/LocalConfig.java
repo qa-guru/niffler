@@ -28,12 +28,12 @@ public class LocalConfig implements Config {
 
   @Override
   public String frontUrl() {
-    return "http://localhost:3000/";
+    return "https://niffler-stage.qa.guru/";
   }
 
   @Override
   public String gatewayUrl() {
-    return "http://localhost:8090/";
+    return "https://api.niffler-stage.qa.guru/";
   }
 
   @Override
@@ -53,7 +53,7 @@ public class LocalConfig implements Config {
 
   @Override
   public String authUrl() {
-    return "http://localhost:9000/";
+    return "https://auth.niffler-stage.qa.guru/";
   }
 
   @Override

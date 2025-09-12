@@ -112,6 +112,12 @@ grpc:
       address: ${niffler-currency.grpc.url}
       negotiationType: PLAINTEXT
 
+server:
+  tomcat:
+    remoteip:
+      port-header: 'x-forwarded-for'
+      protocol-header: 'x-forwarded-proto'
+
 niffler-currency:
   base-uri: ${niffler-currency.url}
 niffler-userdata:
@@ -147,6 +153,12 @@ grpc:
     grpcCurrencyClient:
       address: ${niffler-currency.grpc.url}
       negotiationType: PLAINTEXT
+
+server:
+  tomcat:
+    remoteip:
+      port-header: 'x-forwarded-for'
+      protocol-header: 'x-forwarded-proto'
 
 niffler-currency:
   base-uri: ${niffler-currency.url}

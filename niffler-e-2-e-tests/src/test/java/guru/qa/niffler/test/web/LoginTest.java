@@ -1,7 +1,9 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
+import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
@@ -42,5 +44,11 @@ public class LoginTest extends BaseWebTest {
 
     loginPage.submit(loginPage)
         .checkError(BAD_CREDENTIALS.content);
+  }
+
+  @Test
+  @ApiLogin(username = "stage", password = "12345")
+  void apiLogin(@Token String token) {
+    System.out.println(token);
   }
 }

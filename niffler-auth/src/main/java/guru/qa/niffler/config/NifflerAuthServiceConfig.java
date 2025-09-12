@@ -24,6 +24,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -81,6 +82,7 @@ public class NifflerAuthServiceConfig implements BeanClassLoaderAware {
 
   /**
    * For ObjectMapper configuration
+   *
    * @see guru.qa.niffler.config.NifflerAuthServiceConfig#jdbcOAuth2AuthorizationService(JdbcOperations, RegisteredClientRepository, ObjectMapper)
    */
   private ClassLoader classLoader;
@@ -115,8 +117,7 @@ public class NifflerAuthServiceConfig implements BeanClassLoaderAware {
 
   @Bean
   @Order(Ordered.HIGHEST_PRECEDENCE)
-  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
-                                                                    LoginUrlAuthenticationEntryPoint loginEntryPoint) throws Exception {
+  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
     OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
         OAuth2AuthorizationServerConfigurer.authorizationServer();
 
@@ -141,34 +142,15 @@ public class NifflerAuthServiceConfig implements BeanClassLoaderAware {
         .exceptionHandling(ex -> ex
             .accessDeniedPage("/error")
             .defaultAuthenticationEntryPointFor(
-                loginEntryPoint,
+                new LoginUrlAuthenticationEntryPoint("/login"),
                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
             )
-        ).sessionManagement(sm -> sm.invalidSessionUrl("/login"));
+        )
+        .sessionManagement(sm -> sm.invalidSessionUrl("/login"))
+        .redirectToHttps(Customizer.withDefaults());
 
     corsCustomizer.corsCustomizer(http);
     return http.build();
-  }
-
-  @Bean
-  @Profile({"staging", "prod"})
-  public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttps() {
-    LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint("/login");
-    PortMapperImpl portMapper = new PortMapperImpl();
-    portMapper.setPortMappings(Map.of(
-        serverPort, defaultHttpsPort,
-        "80", defaultHttpsPort,
-        "8080", "8443"
-    ));
-    entryPoint.setForceHttps(true);
-    entryPoint.setPortMapper(portMapper);
-    return entryPoint;
-  }
-
-  @Bean
-  @Profile({"local", "docker", "test"})
-  public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttp() {
-    return new LoginUrlAuthenticationEntryPoint("/login");
   }
 
   @Bean
@@ -200,6 +182,7 @@ public class NifflerAuthServiceConfig implements BeanClassLoaderAware {
   /**
    * Do not use @Primary ObjectMapper directly!
    * Only configured via JdbcSessionObjectMapperConfigure:
+   *
    * @see JdbcSessionObjectMapperConfigurer
    */
   @Bean

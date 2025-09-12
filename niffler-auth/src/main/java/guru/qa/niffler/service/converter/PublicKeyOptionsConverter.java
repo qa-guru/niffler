@@ -7,7 +7,6 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.lang.Nullable;
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialCreationOptions;
-import org.springframework.security.web.webauthn.api.PublicKeyCredentialRequestOptions;
 import org.springframework.security.web.webauthn.jackson.WebauthnJackson2Module;
 
 import java.io.IOException;
@@ -29,11 +28,6 @@ public class PublicKeyOptionsConverter extends MappingJackson2HttpMessageConvert
       ObjectNode root = defaultObjectMapper.valueToTree(object);
       ObjectNode sel = (ObjectNode) root.get("authenticatorSelection");
       sel.put("requireResidentKey", true);
-      super.writeInternal(root, type, outputMessage);
-    } else if (object instanceof PublicKeyCredentialRequestOptions) {
-      ObjectNode root = defaultObjectMapper.valueToTree(object);
-      root.remove("allowCredentials");
-      root.remove("extensions");
       super.writeInternal(root, type, outputMessage);
     } else {
       super.writeInternal(object, type, outputMessage);

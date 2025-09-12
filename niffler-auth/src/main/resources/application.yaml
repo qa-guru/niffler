@@ -147,6 +147,13 @@ spring:
     url: ${db.url}
     username: ${db.username}
     password: ${db.password}
+
+server:
+  tomcat:
+    remoteip:
+      port-header: 'x-forwarded-for'
+      protocol-header: 'x-forwarded-proto'
+
 niffler-front:
   base-uri: 'https://niffler.qa.guru'
 niffler-auth:
@@ -179,6 +186,13 @@ spring:
     url: ${db.url}
     username: ${db.username}
     password: ${db.password}
+
+server:
+  tomcat:
+    remoteip:
+      port-header: 'x-forwarded-for'
+      protocol-header: 'x-forwarded-proto'
+
 niffler-front:
   base-uri: 'https://niffler-stage.qa.guru'
 niffler-auth:
