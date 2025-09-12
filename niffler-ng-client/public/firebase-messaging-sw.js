@@ -39,7 +39,7 @@ self.addEventListener('notificationclick', (event) => {
 
 self.addEventListener("install", event => {
     event.waitUntil(
-        cashes.open(CASHE_NAME).then(cache => {
+        caches.open(CASHE_NAME).then(cache => {
             return cache.addAll([OFFLINE_URL]);
         })
     )
