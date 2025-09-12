@@ -2,6 +2,7 @@ package guru.qa.niffler.service.converter;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.annotation.Nonnull;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -22,7 +23,7 @@ public class PublicKeyOptionsConverter extends MappingJackson2HttpMessageConvert
   }
 
   @Override
-  protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage)
+  protected void writeInternal(@Nonnull Object object, @Nullable Type type, @Nonnull HttpOutputMessage outputMessage)
       throws IOException, HttpMessageNotWritableException {
     if (object instanceof PublicKeyCredentialCreationOptions) {
       ObjectNode root = defaultObjectMapper.valueToTree(object);

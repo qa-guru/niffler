@@ -5,7 +5,6 @@ import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementCondition;
 import com.codeborne.selenide.WebElementsCondition;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
 
 import javax.annotation.Nonnull;
@@ -23,7 +22,7 @@ public class StatConditions {
   @Nonnull
   public static WebElementCondition color(Color expectedColor) {
     return new WebElementCondition("color " + expectedColor.rgb) {
-      @NotNull
+      @Nonnull
       @Override
       public CheckResult check(Driver driver, WebElement element) {
         final String rgba = element.getCssValue("background-color");
@@ -41,7 +40,7 @@ public class StatConditions {
 
       private final String expectedRgba = Arrays.stream(expectedColors).map(c -> c.rgb).toList().toString();
 
-      @NotNull
+      @Nonnull
       @Override
       public CheckResult check(Driver driver, List<WebElement> elements) {
         if (ArrayUtils.isEmpty(expectedColors)) {
@@ -75,6 +74,7 @@ public class StatConditions {
       }
 
       @Override
+      @Nonnull
       public String toString() {
         return expectedRgba;
       }

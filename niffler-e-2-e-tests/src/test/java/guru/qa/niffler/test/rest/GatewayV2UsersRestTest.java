@@ -76,7 +76,7 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         assertEquals(5, firstPageContent.size())
     );
     step("Check 0 element with INVITE_RECEIVED state on first page", () ->
-        assertEquals(userInvitation.get(0).username(), firstPageContent.get(0).username())
+        assertEquals(userInvitation.getFirst().username(), firstPageContent.getFirst().username())
     );
     step("Check 1 element with INVITE_RECEIVED state on first page", () ->
         assertEquals(userInvitation.get(1).username(), firstPageContent.get(1).username())
@@ -85,7 +85,7 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         assertEquals(userInvitation.get(2).username(), firstPageContent.get(2).username())
     );
     step("Check first element with FRIEND state on first page", () ->
-        assertEquals(userFriends.get(0).username(), firstPageContent.get(3).username())
+        assertEquals(userFriends.getFirst().username(), firstPageContent.get(3).username())
     );
   }
 
@@ -134,7 +134,7 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         assertEquals(userInvitation.getFirst().username(), firstPageContent.getFirst().username())
     );
     step("Check first element of first page", () ->
-        assertEquals(userFriends.get(0).username(), firstPageContent.get(1).username())
+        assertEquals(userFriends.getFirst().username(), firstPageContent.get(1).username())
     );
     step("Check second element of first page", () ->
         assertEquals(userFriends.get(1).username(), firstPageContent.get(2).username())

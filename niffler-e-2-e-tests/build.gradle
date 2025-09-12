@@ -8,13 +8,13 @@ buildscript {
         apollographqlVersion = '0.0.2'
         logbackVersion = '1.5.18'
         slf4jVersion = '2.0.17'
-        springJdbcVersion = '6.2.10'
+        springJdbcVersion = '6.2.11'
         springCryptoVersion = '6.5.3'
         p6spyVersion = '3.9.1'
         hibernateVersion = '7.1.0.Final'
         kafkaClientsVersion = '4.1.0'
         saajVersion = '3.0.4'
-        springDataCommonsVersion = '3.5.3'
+        springDataCommonsVersion = '3.5.4'
         wiremockVersion = '3.13.1'
         ashotVersion = '1.5.4'
         fakerVersion = '1.0.2'
@@ -35,7 +35,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '2.1.3'
+version = '2.1.4'
 
 allure {
     version.set("${allureVersion}")

@@ -4,18 +4,13 @@ import guru.qa.niffler.service.converter.PublicKeyOptionsConverter;
 import guru.qa.niffler.service.cors.CookieCsrfFilter;
 import guru.qa.niffler.service.cors.CorsCustomizer;
 import jakarta.servlet.DispatcherType;
-import jakarta.servlet.Filter;
-import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.config.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -29,7 +24,6 @@ import org.springframework.security.web.webauthn.api.PublicKeyCredentialRequestO
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialRpEntity;
 import org.springframework.security.web.webauthn.api.ResidentKeyRequirement;
 import org.springframework.security.web.webauthn.api.UserVerificationRequirement;
-import org.springframework.security.web.webauthn.authentication.PublicKeyCredentialRequestOptionsFilter;
 import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
 import org.springframework.security.web.webauthn.management.UserCredentialRepository;
 import org.springframework.security.web.webauthn.management.WebAuthnRelyingPartyOperations;
@@ -55,13 +49,13 @@ public class SecurityConfig {
 
   @Bean
   @Profile("!docker")
-  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
+  @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "true")
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                         CsrfTokenRepository csrfTokenRepository,
                                                         PublicKeyCredentialRpEntity publicKeyCredentialRpEntity) throws Exception {
     commonSecurityConfiguration(http, csrfTokenRepository)
-        .webAuthn(webauth ->
-            webauth.rpId(publicKeyCredentialRpEntity.getId())
+        .webAuthn(webauthn ->
+            webauthn.rpId(publicKeyCredentialRpEntity.getId())
                 .rpName(publicKeyCredentialRpEntity.getName())
                 .allowedOrigins(corsCustomizer.allowedOrigins())
                 .disableDefaultRegistrationPage(true)
@@ -72,7 +66,7 @@ public class SecurityConfig {
 
   @Bean
   @Profile("!docker")
-  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
+  @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "true")
   public PublicKeyCredentialRpEntity publicKeyCredentialRpEntity() {
     return PublicKeyCredentialRpEntity.builder()
         .id(nifflerAuthRpId)
@@ -89,7 +83,7 @@ public class SecurityConfig {
    */
   @Bean
   @Profile("!docker")
-  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
+  @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "true")
   public WebAuthnRelyingPartyOperations webAuthnRelyingPartyOperations(PublicKeyCredentialRpEntity publicKeyCredentialRpEntity,
                                                                        PublicKeyCredentialUserEntityRepository jdbcPublicKeyCredentialRepository,
                                                                        UserCredentialRepository jdbcUserCredentialRepository) {
@@ -102,9 +96,9 @@ public class SecurityConfig {
     Consumer<PublicKeyCredentialCreationOptions.PublicKeyCredentialCreationOptionsBuilder> creationCustomizer =
         builder -> builder.authenticatorSelection(
                 AuthenticatorSelectionCriteria.builder()
-                    .authenticatorAttachment(AuthenticatorAttachment.PLATFORM) // authenticatorAttachment
-                    .residentKey(ResidentKeyRequirement.REQUIRED) // rk
-                    .userVerification(UserVerificationRequirement.PREFERRED) //uv
+                    .authenticatorAttachment(AuthenticatorAttachment.PLATFORM)
+                    .residentKey(ResidentKeyRequirement.REQUIRED)
+                    .userVerification(UserVerificationRequirement.PREFERRED)
                     .build()
             )
             .excludeCredentials(null)
@@ -124,7 +118,7 @@ public class SecurityConfig {
    */
   @Bean
   @Profile("docker")
-  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "false")
+  @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "false")
   public SecurityFilterChain dockerSecurityFilterChain(HttpSecurity http,
                                                        CsrfTokenRepository csrfTokenRepository) throws Exception {
     return commonSecurityConfiguration(http, csrfTokenRepository).build();
