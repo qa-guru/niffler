@@ -97,7 +97,7 @@ oauth2:
   mobile-client-id: 'mobile-client'
   mobile-custom-scheme: 'app://'
   android-app-uri: 'ru.niffler_android'
-webauth:
+webauthn:
   enabled: true
 ---
 spring:
@@ -125,7 +125,7 @@ oauth2:
   mobile-client-id: 'mobile-client'
   mobile-custom-scheme: 'app://'
   android-app-uri: 'ru.niffler_android'
-webauth:
+webauthn:
   enabled: false
 ---
 spring:
@@ -147,6 +147,13 @@ spring:
     url: ${db.url}
     username: ${db.username}
     password: ${db.password}
+
+server:
+  tomcat:
+    remoteip:
+      port-header: 'x-forwarded-for'
+      protocol-header: 'x-forwarded-proto'
+
 niffler-front:
   base-uri: 'https://niffler.qa.guru'
 niffler-auth:
@@ -157,7 +164,7 @@ oauth2:
   mobile-client-id: ${mobile-client-id}
   mobile-custom-scheme: ${mobile-custom-scheme}
   android-app-uri: ${android-app-uri}
-webauth:
+webauthn:
   enabled: true
 ---
 spring:
@@ -179,6 +186,13 @@ spring:
     url: ${db.url}
     username: ${db.username}
     password: ${db.password}
+
+server:
+  tomcat:
+    remoteip:
+      port-header: 'x-forwarded-for'
+      protocol-header: 'x-forwarded-proto'
+
 niffler-front:
   base-uri: 'https://niffler-stage.qa.guru'
 niffler-auth:
@@ -189,6 +203,6 @@ oauth2:
   mobile-client-id: ${mobile-client-id}
   mobile-custom-scheme: ${mobile-custom-scheme}
   android-app-uri: ${android-app-uri}
-webauth:
+webauthn:
   enabled: true
 ---

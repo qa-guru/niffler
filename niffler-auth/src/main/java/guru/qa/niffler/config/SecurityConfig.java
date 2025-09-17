@@ -1,5 +1,6 @@
 package guru.qa.niffler.config;
 
+import guru.qa.niffler.service.converter.PublicKeyOptionsConverter;
 import guru.qa.niffler.service.cors.CookieCsrfFilter;
 import guru.qa.niffler.service.cors.CorsCustomizer;
 import jakarta.servlet.DispatcherType;
@@ -48,21 +49,24 @@ public class SecurityConfig {
 
   @Bean
   @Profile("!docker")
-  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
+  @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "true")
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                         CsrfTokenRepository csrfTokenRepository,
                                                         PublicKeyCredentialRpEntity publicKeyCredentialRpEntity) throws Exception {
     commonSecurityConfiguration(http, csrfTokenRepository)
-        .webAuthn(webauth ->
-            webauth.rpId(publicKeyCredentialRpEntity.getId())
+        .webAuthn(webauthn ->
+            webauthn.rpId(publicKeyCredentialRpEntity.getId())
                 .rpName(publicKeyCredentialRpEntity.getName())
-                .allowedOrigins(corsCustomizer.allowedOrigins()));
+                .allowedOrigins(corsCustomizer.allowedOrigins())
+                .disableDefaultRegistrationPage(true)
+                .messageConverter(new PublicKeyOptionsConverter())
+        );
     return http.build();
   }
 
   @Bean
   @Profile("!docker")
-  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
+  @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "true")
   public PublicKeyCredentialRpEntity publicKeyCredentialRpEntity() {
     return PublicKeyCredentialRpEntity.builder()
         .id(nifflerAuthRpId)
@@ -72,13 +76,14 @@ public class SecurityConfig {
 
   /**
    * Android support
+   *
    * @link <a href="https://github.com/kanidm/webauthn-rs/issues/365">gh issue</a>
    * Configuration parameters from demo project
    * @link <a href="https://github.com/DannyMoerkerke/webauthn-demo">demo</a>
    */
   @Bean
   @Profile("!docker")
-  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "true")
+  @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "true")
   public WebAuthnRelyingPartyOperations webAuthnRelyingPartyOperations(PublicKeyCredentialRpEntity publicKeyCredentialRpEntity,
                                                                        PublicKeyCredentialUserEntityRepository jdbcPublicKeyCredentialRepository,
                                                                        UserCredentialRepository jdbcUserCredentialRepository) {
@@ -91,18 +96,17 @@ public class SecurityConfig {
     Consumer<PublicKeyCredentialCreationOptions.PublicKeyCredentialCreationOptionsBuilder> creationCustomizer =
         builder -> builder.authenticatorSelection(
                 AuthenticatorSelectionCriteria.builder()
-                    .authenticatorAttachment(AuthenticatorAttachment.PLATFORM) // authenticatorAttachment
-                    .residentKey(null) // rk
-                    .userVerification(null)//uv
+                    .authenticatorAttachment(AuthenticatorAttachment.PLATFORM)
+                    .residentKey(ResidentKeyRequirement.REQUIRED)
+                    .userVerification(UserVerificationRequirement.PREFERRED)
                     .build()
             )
             .excludeCredentials(null)
-            .extensions(null)
             .attestation(AttestationConveyancePreference.NONE);
 
     Consumer<PublicKeyCredentialRequestOptions.PublicKeyCredentialRequestOptionsBuilder> requestCustomizer =
         builder -> builder
-            .userVerification(UserVerificationRequirement.REQUIRED);
+            .userVerification(UserVerificationRequirement.PREFERRED);
 
     nifflerRelyingParty.setCustomizeCreationOptions(creationCustomizer);
     nifflerRelyingParty.setCustomizeRequestOptions(requestCustomizer);
@@ -114,9 +118,9 @@ public class SecurityConfig {
    */
   @Bean
   @Profile("docker")
-  @ConditionalOnProperty(name = "webauth.enabled", havingValue = "false")
+  @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "false")
   public SecurityFilterChain dockerSecurityFilterChain(HttpSecurity http,
-                                                        CsrfTokenRepository csrfTokenRepository) throws Exception {
+                                                       CsrfTokenRepository csrfTokenRepository) throws Exception {
     return commonSecurityConfiguration(http, csrfTokenRepository).build();
   }
 
@@ -132,6 +136,7 @@ public class SecurityConfig {
                 "/error",
                 "/images/**",
                 "/styles/**",
+                "/scripts/**",
                 "/fonts/**",
                 "/.well-known/**",
                 "/actuator/health"

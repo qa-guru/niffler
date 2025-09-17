@@ -108,7 +108,7 @@ jobs:
               repo: context.repo.repo,
               body: message
             })
-  
+
   collect-versions:
     needs: e2e-tests
     uses: ./.github/workflows/versions.yml

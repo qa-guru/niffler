@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 
+import static java.util.Objects.requireNonNull;
+
 @ParametersAreNonnullByDefault
 public class AuthApiClient extends RestClient {
 
@@ -55,7 +57,7 @@ public class AuthApiClient extends RestClient {
 
     ApiLoginExtension.setToken(
         context,
-        response.get("id_token").asText()
+        requireNonNull(response).get("id_token").asText()
     );
   }
 

@@ -7,6 +7,8 @@ import io.qameta.allure.Step;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 
+import static java.util.Objects.requireNonNull;
+
 @ParametersAreNonnullByDefault
 public class GhApiClient extends RestClient {
 
@@ -23,6 +25,6 @@ public class GhApiClient extends RestClient {
         "Bearer " + System.getenv("GITHUB_TOKEN"),
         issueNumber
     ).execute().body();
-    return responseBody.get("state").asText();
+    return requireNonNull(responseBody).get("state").asText();
   }
 }

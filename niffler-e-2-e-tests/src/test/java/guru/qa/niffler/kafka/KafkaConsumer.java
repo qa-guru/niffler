@@ -120,11 +120,13 @@ public class KafkaConsumer implements Runnable {
   }
 
   private void logRecord(@Nonnull ConsumerRecord<String, String> record) {
-    LOG.debug(String.format("topic = %s, \npartition = %d, \noffset = %d, \nkey = %s, \nvalue = %s\n\n",
+    LOG.debug(
+        "topic = {}, \npartition = {}, \noffset = {}, \nkey = {}, \nvalue = {}\n\n",
         record.topic(),
         record.partition(),
         record.offset(),
         record.key(),
-        record.value()));
+        record.value()
+    );
   }
 }
