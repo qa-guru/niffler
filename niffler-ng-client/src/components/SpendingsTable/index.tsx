@@ -29,7 +29,6 @@ import {Loader} from "../Loader";
 import {usePrevious} from "../../hooks/usePrevious.ts";
 import {Toolbar} from "./Toolbar";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
-import {MoneySum} from "../MoneySum";
 
 const headCells: readonly HeadCell[] = [
     {
@@ -266,7 +265,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                                 <TableCell align="right" padding={"normal"}
                                                                            sx={{minWidth: 110}}>
                                                                     <Typography component="span" variant={"body1"}>
-                                                                        <Stack><MoneySum sum={row.amount}/></Stack>
+                                                                        <Stack>{row.amount}</Stack>
                                                                         <Stack
                                                                             sx={{color: theme.palette.gray_600.main}}>{row.spendDate}</Stack>
                                                                     </Typography>
