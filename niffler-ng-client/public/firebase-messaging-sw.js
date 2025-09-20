@@ -53,12 +53,11 @@ self.addEventListener("install", event => {
 self.addEventListener("fetch", (event) => {
     if (event.request.mode === "navigate") {
         event.respondWith((async () => {
-            try {
-                return await fetch(event.request);
-            } catch (err) {
+            if (!navigator.onLine) {
                 const cache = await caches.open("pwa-cache-v1");
                 return cache.match("/offline.html");
             }
+            return fetch(event.request);
         })());
     }
 });
