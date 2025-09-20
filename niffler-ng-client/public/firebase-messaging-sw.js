@@ -3,6 +3,7 @@ importScripts('https://www.gstatic.com/firebasejs/12.2.1/firebase-messaging-comp
 
 const CASHE_NAME = "pwa-cache-v1";
 const OFFLINE_URL = "/offline.html";
+const NIFFLER_IMAGE = "/pwa/launchericon-512-512.png";
 
 self.skipWaiting();
 self.addEventListener("activate", event => {
@@ -54,8 +55,8 @@ self.addEventListener("fetch", (event) => {
     if (event.request.mode === "navigate") {
         event.respondWith((async () => {
             if (!navigator.onLine) {
-                const cache = await caches.open("pwa-cache-v1");
-                return cache.match("/offline.html");
+                const cache = await caches.open(CASHE_NAME);
+                return cache.match(OFFLINE_URL);
             }
             return fetch(event.request);
         })());
