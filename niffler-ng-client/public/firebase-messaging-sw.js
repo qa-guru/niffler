@@ -4,6 +4,11 @@ importScripts('https://www.gstatic.com/firebasejs/12.2.1/firebase-messaging-comp
 const CASHE_NAME = "pwa-cache-v1";
 const OFFLINE_URL = "/offline.html";
 
+self.skipWaiting();
+self.addEventListener("activate", event => {
+    event.waitUntil(clients.claim());
+});
+
 firebase.initializeApp({
     apiKey: "AIzaSyDEtu5oECQq5s8PU--l22YZbt8ck-fB9sI",
     authDomain: "niffler-ea54f.firebaseapp.com",
