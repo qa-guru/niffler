@@ -46,7 +46,7 @@ self.addEventListener('notificationclick', (event) => {
 self.addEventListener("install", event => {
     event.waitUntil(
         caches.open(CASHE_NAME).then(cache => {
-            return cache.addAll([OFFLINE_URL]);
+            return cache.addAll([OFFLINE_URL, NIFFLER_IMAGE]);
         })
     )
 });
