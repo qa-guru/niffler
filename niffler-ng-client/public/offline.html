@@ -2,8 +2,41 @@
     <head>
         <meta charset="UTF-8"/>
         <title>Niffler.Offline</title>
+        <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+            }
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                font-family: Arial, sans-serif;
+                background-color: #f5f5f5;
+            }
+
+            main {
+                max-width: 90%;
+            }
+
+            h1 {
+                font-size: 2em;
+                margin: 0.5em 0;
+            }
+
+            p {
+                font-size: 1em;
+                color: #555;
+            }
+        </style>
     </head>
     <body>
-        <h1 data-testid="offline-title">You're currently offline</h1>
+        <main>
+            <h1 data-testid="offline-title">You're currently offline</h1>
+            <img alt="Niffler image" src="/pwa/launchericon-512-512.png" width="200" height="200"/>.
+            <p>Try to reload a little bit later</p>
+        </main>
     </body>
 </html>
