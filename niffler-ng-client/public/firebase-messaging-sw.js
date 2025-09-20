@@ -49,7 +49,7 @@ self.addEventListener("fetch", (event) => {
     if (event.request.mode === "navigate") {
         event.respondWith(
             fetch(event.request).catch(() =>
-                caches.open("v1").then((cache) => cache.match("/offline.html"))
+                caches.open("pwa-cache-v1").then((cache) => cache.match("/offline.html"))
             )
         );
     }
