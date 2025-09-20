@@ -52,11 +52,14 @@ self.addEventListener("install", event => {
 
 self.addEventListener("fetch", (event) => {
     if (event.request.mode === "navigate") {
-        event.respondWith(
-            fetch(event.request).catch(() =>
-                caches.open("pwa-cache-v1").then((cache) => cache.match("/offline.html"))
-            )
-        );
+        event.respondWith((async () => {
+            try {
+                return await fetch(event.request);
+            } catch (err) {
+                const cache = await caches.open("pwa-cache-v1");
+                return cache.match("/offline.html");
+            }
+        })());
     }
 });
 
