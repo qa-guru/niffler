@@ -45,15 +45,15 @@ self.addEventListener("install", event => {
     )
 });
 
-self.addEventListener("fetch", event => {
-    if(event.request.mode === "navigate"){
+self.addEventListener("fetch", (event) => {
+    if (event.request.mode === "navigate") {
         event.respondWith(
-            fetch(event.request).catch(() => {
-                return caches.open(CASHE_NAME).then(cache => cache.match(OFFLINE_URL));
-            })
-        )
+            fetch(event.request).catch(() =>
+                caches.open("v1").then((cache) => cache.match("/offline.html"))
+            )
+        );
     }
-})
+});
 
 self.addEventListener("push", function (event) {
     const data = event.data.json();
