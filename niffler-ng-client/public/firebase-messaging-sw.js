@@ -61,33 +61,14 @@ self.addEventListener("fetch", (event) => {
             return fetch(event.request);
         })());
     }
-});
 
-self.addEventListener("push", function (event) {
-    const data = event.data.json();
-    const {title, message, interaction} = data;
+    if (event.request.destination === "image") {
+        event.respondWith((async () => {
+            const cache = await caches.open(CASHE_NAME);
+            const cachedResponse = await cache.match(event.request);
+            if (cachedResponse) return cachedResponse;
 
-    const options = {
-        body: message,
-        icon: '/pwa/launchericon-512x512.png',
-        vibrate: [100, 50, 100],
-        data: {
-            dateOfArrival: Date.now()
-        },
-        actions: [
-            {
-                action: 'confirm',
-                title: 'OK'
-            },
-            {
-                action: 'close',
-                title: 'Close notification'
-            },
-        ],
-        requireInteraction: interaction
-    };
-
-    event.waitUntil(
-        self.registration.showNotification(title, options)
-    );
+            return await fetch(event.request);
+        })());
+    }
 });
