@@ -79,10 +79,10 @@ self.addEventListener("push", function (event) {
     console.log("push handler");
     const data = event.data.json();
     console.log(data);
-    const {title, message, interaction} = data;
+    const {title, body, interaction} = data;
 
     const options = {
-        body: message,
+        body: body || '',
         icon: '/pwa/launchericon-512x512.png',
         vibrate: [100, 50, 100],
         data: {
