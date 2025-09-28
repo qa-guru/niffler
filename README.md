@@ -17,13 +17,13 @@
 - [Jakarta Bean Validation](https://beanvalidation.org/)
 - [Jakarta JAXB](https://eclipse-ee4j.github.io/jaxb-ri/)
 - [JUnit 5 (Extensions, Resolvers, etc)](https://junit.org/junit5/docs/current/user-guide/)
-- [Retrofit 2](https://square.github.io/retrofit/)
+- [Retrofit 3](https://square.github.io/retrofit/)
 - [Allure](https://docs.qameta.io/allure/)
 - [Selenide](https://selenide.org/)
 - [Selenoid & Selenoid-UI](https://aerokube.com/selenoid/latest/)
 - [Allure-docker-service](https://github.com/fescobar/allure-docker-service)
 - [Java 21](https://adoptium.net/en-GB/temurin/releases/)
-- [Gradle 8.6](https://docs.gradle.org/8.6/release-notes.html)
+- [Gradle 9.1](https://docs.gradle.org/9.1.0/release-notes.html)
 - [GHA](https://docs.github.com/en/actions)
 - И многие другие
 

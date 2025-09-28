@@ -2,12 +2,8 @@ package guru.qa.niffler.jupiter.extension;
 
 import com.codeborne.selenide.Conditional;
 import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.WebDriverConditions;
-import com.codeborne.selenide.WebDriverRunner;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.qa.niffler.api.AuthApiClient;
 import guru.qa.niffler.api.service.ThreadLocalCookieStore;
-import guru.qa.niffler.condition.LocalStorageCondition;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;

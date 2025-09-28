@@ -27,7 +27,13 @@ const headerLink = setContext((_request, previousContext) => ({
 
 const client = new ApolloClient({
     link: headerLink.concat(apolloHttpLink),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+        typePolicies: {
+            User: {
+                keyFields: ["username"],
+            },
+        },
+    }),
 });
 
 export default client;

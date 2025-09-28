@@ -157,7 +157,7 @@ public class ThreadSafeEntityManager implements EntityManager {
   public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
     emForThread().refresh(entity, lockMode, properties);
   }
-  
+
   @Override
   public void refresh(Object entity, RefreshOption... options) {
     emForThread().refresh(entity, options);
