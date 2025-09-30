@@ -49,19 +49,19 @@
   "screenshots": [
     {
       "form_factor": "narrow",
-      "sizes": "712×1498",
+      "sizes": "712x1498",
       "src": "/pwa/stats-narrow.png",
       "type": "image/png"
     },
     {
       "form_factor": "narrow",
-      "sizes": "712×1498",
+      "sizes": "712x1498",
       "src": "/pwa/profile-narrow.png",
       "type": "image/png"
     },
     {
       "form_factor": "wide",
-      "sizes": "2924×1712",
+      "sizes": "2924x1712",
       "src": "/pwa/stats-wide.png",
       "type": "image/png"
     }
