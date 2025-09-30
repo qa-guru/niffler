@@ -79,7 +79,7 @@ self.addEventListener("push", function (event) {
     console.log("push handler");
     const data = event.data.json();
     console.log(data);
-    const {title, body, interaction} = data;
+    const {title, body, interaction} = data.notification  ?? {};
 
     const options = {
         body: body || '',
