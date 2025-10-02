@@ -128,7 +128,7 @@ export const ImageUpload: FC<ImageUploadInterface> = ({
                     <SecondaryButton
                         variant="contained"
                         color="secondary"
-                        component="span"
+                        data-testid={"take-photo-button"}
                         sx={{marginTop: 2, width: "100%"}}
                         onClick={() => setAvatarCaptureVisible(true)}
                     >
