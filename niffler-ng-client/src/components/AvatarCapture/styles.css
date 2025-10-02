@@ -3,7 +3,7 @@
 }
 
 .avatar-capture__video {
-    background: #63B5E2;
+    background: linear-gradient(135deg, #d0eaff, #a0d8ff);
     border: 2px solid #2941CC;
     padding: 10px;
     border-radius: 16px;
