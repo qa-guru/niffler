@@ -52,7 +52,7 @@ export const ContactImporter: FC = ({}) => {
                 <SecondaryButton
                     sx={{width: "100%",
                     maxWidth: "500px",
-                    margin: "0 auto",
+                    margin: "10px auto",
                     display: "block"}}
                     onClick={handleGetContacts}
                     data-testid={"show-contacts-button"}
@@ -136,13 +136,16 @@ export const ContactImporter: FC = ({}) => {
             }}>
                 {
                     contacts.map((c, idx) => (
-                            <ListItem key={idx} sx={{
+                            <ListItem key={idx}
+                                      data-testId={"contact-item"}
+                                      sx={{
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "space-between",
                             }}>
-                                <strong>{c?.name}</strong>
+                                <strong data-testid={"contact-item-name"}>{c?.name}</strong>
                                 <Typography component="span"
+                                            data-testid={"contatc-item-phone"}
                                             variant={"body1"}>{c?.phone}</Typography>
                             </ListItem>
 
