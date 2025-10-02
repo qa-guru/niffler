@@ -3,6 +3,9 @@
 }
 
 .avatar-capture__video {
+    background: #63B5E2;
+    border: 2px solid #2941CC;
+    padding: 10px;
     border-radius: 16px;
     overflow: hidden;
 }
