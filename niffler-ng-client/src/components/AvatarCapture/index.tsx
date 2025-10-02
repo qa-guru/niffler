@@ -105,6 +105,7 @@ export const AvatarCapture: FC<AvatarCaptureInterface> = ({inputRef, isOpen, onC
                     }}
                     >
                     <video
+                        data-testid={"avatar-capture-video"}
                         className={"avatar-capture__video"}
                         ref={videoRef}
                         autoPlay
@@ -118,8 +119,13 @@ export const AvatarCapture: FC<AvatarCaptureInterface> = ({inputRef, isOpen, onC
                         bottom: 0,
                         margin: 2,
                     }}>
-                        <PrimaryButton sx={{marginRight: 2}} onClick={handleCapture}>Capture Avatar</PrimaryButton>
-                        <SecondaryButton onClick={() => {
+                        <PrimaryButton
+                            data-testid={"capture-avatar-button"}
+                            sx={{marginRight: 2}}
+                            onClick={handleCapture}>Capture Avatar</PrimaryButton>
+                        <SecondaryButton
+                            data-testid={"dismiss-photo-button"}
+                            onClick={() => {
                             closeCamera();
                             if(onClose) {
                                 onClose();
