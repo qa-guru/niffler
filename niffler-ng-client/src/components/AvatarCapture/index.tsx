@@ -100,7 +100,7 @@ export const AvatarCapture: FC<AvatarCaptureInterface> = ({inputRef, isOpen, onC
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        margin: "20px auto",
+                        margin: "50px auto",
                         position: "relative",
                     }}
                     >
