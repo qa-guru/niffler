@@ -41,7 +41,6 @@
 - [Designing a friendships database structure: Should I use a multivalued column?](https://dba.stackexchange.com/questions/135941/designing-a-friendships-database-structure-should-i-use-a-multivalued-column)
 - [Гонсалвес Э.: Изучаем Java EE 7, глава "Глава 4. Java.Persistence.API"](https://www.litres.ru/book/entoni-gonsalves/izuchaem-java-ee-7-8480934/otzivi/)
 - [(Hopefully) the final article about equals and hashCode for JPA entities with DB-generated IDs](https://jpa-buddy.com/blog/hopefully-the-final-article-about-equals-and-hashcode-for-jpa-entities-with-db-generated-ids/)
--
 
 **Схема проекта Niffler 2.0**
 
@@ -172,7 +171,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.1+12 (build 21.0.1+12-LTS, mixed mode)
 [Инструкция](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 Рекомендованная версия Node.js - 22.6.0
 
-# Запуск Niffler локальное в IDE:
+# Запуск Niffler локально в IDE:
 
 #### 1. Выбрать какой фронтенд предполагается запускать - REST или GraphQL, и перейти в соответсвующий каталог
 
