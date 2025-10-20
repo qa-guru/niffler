@@ -169,7 +169,13 @@ OpenJDK 64-Bit Server VM Temurin-21.0.1+12 (build 21.0.1+12-LTS, mixed mode)
 #### 6. Установить пакетый менеджер для сборки front-end npm
 
 [Инструкция](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
-Рекомендованная версия Node.js - 22.6.0
+Рекомендованная версия Node.js - 22.6.0, npm - 10.8.2
+
+```posh
+User-MacBook-Pro ~ % node -v && npm --version
+v20.18.0
+10.8.2
+```
 
 # Запуск Niffler локально в IDE:
 
