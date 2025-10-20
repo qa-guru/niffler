@@ -397,8 +397,8 @@ User-MacBook-Pro  niffler % bash docker-compose-e2e.sh
 
 #### 3. Selenoid UI доступен по адресу: http://localhost:9090/
 
-#### 5. Allure-ui доступен по адресу: http://localhost:5252/
+#### 4. Allure UI доступен по адресу: http://localhost:5252/
 
-#### 4. Allure report доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
+#### 5. Allure report доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
 
-<img src="/niffler-ng-client/src/assets/images/niffler-with-a-coin.png" width="250">
+<img src="./niffler-ng-client/src/assets/images/niffler-with-a-coin.png" width="250">
