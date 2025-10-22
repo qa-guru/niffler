@@ -8,9 +8,6 @@ import { Input } from "../Input";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { User } from "../../types/User.ts";
 import { useUpdateUserMutation } from "../../generated/graphql.tsx";
-import { RegisterPasskeyPayload } from "../../types/RegisterPasskeyPayload.ts";
-import { authClient } from "../../api/authClient.ts";
-import { normalizePasskeyRegistrationError } from "../../utils/passkey.ts";
 
 interface ProfileFormInterface {
     user: User;
@@ -23,7 +20,6 @@ export const ProfileForm: FC<ProfileFormInterface> = ({ user }) => {
     const [formData, setFormData] = useState<UserFormData>(convertUserToFormData(user));
     const [updateUser, { loading }] = useUpdateUserMutation();
     const snackbar = useSnackBar();
-    const [isPasskeyLoading, setPasskeyLoading] = useState(false);
 
     useEffect(() => {
         setFormData(convertUserToFormData(user));
@@ -51,45 +47,6 @@ export const ProfileForm: FC<ProfileFormInterface> = ({ user }) => {
         }
     };
 
-    const registerPasskey = async () => {
-        try {
-            setPasskeyLoading(true);
-            const csrf = (await authClient.getCsrfToken()).token;
-
-            const creationOptionsJSON = await authClient.registerPasskeyOptions(csrf, {
-                onSuccess: (data) => data,
-                onFailure: (e) => { throw new Error(e.message); },
-            });
-
-            const { parseCreationOptionsFromJSON } = (PublicKeyCredential as any);
-            const publicKey: PublicKeyCredentialCreationOptions =
-                parseCreationOptionsFromJSON(creationOptionsJSON);
-
-            const cred = (await navigator.credentials.create({ publicKey })) as PublicKeyCredential | null;
-            if (!cred) throw new Error('Registration was canceled');
-
-            const payload: RegisterPasskeyPayload = {
-                publicKey: {
-                    credential: (cred as PublicKeyCredential).toJSON(),
-                    label: 'device-passkey',
-                },
-            };
-
-            await authClient.registerPasskey(payload, csrf, {
-                onSuccess: () => {
-                    snackbar.showSnackBar('Passkey registered', 'success');
-                },
-                onFailure: (e) => { throw new Error(e.message); },
-            });
-
-            return;
-        } catch (e) {
-            snackbar.showSnackBar(`Registration failed: ${normalizePasskeyRegistrationError(e)}`, 'error');
-        } finally {
-            setPasskeyLoading(false);
-        }
-    };
-
     return (
         <Grid
             container
@@ -109,7 +66,7 @@ export const ProfileForm: FC<ProfileFormInterface> = ({ user }) => {
                     Profile
                 </Typography>
             </Grid>
-            <Grid item xs={isMobile ? 10 : 8}>
+            <Grid item xs={isMobile ? 12 : 8}>
                 <ImageUpload
                     buttonText="Upload new picture"
                     file={formData.photo?.value ?? ""}
@@ -120,19 +77,6 @@ export const ProfileForm: FC<ProfileFormInterface> = ({ user }) => {
                         setFormData({ ...formData, photo: { ...formData.photo, value: file ?? "" } })
                     }
                 />
-                <LoadingButton
-                    onClick={registerPasskey}
-                    variant="contained"
-                    color="primary"
-                    loading={isPasskeyLoading}
-                    sx={{
-                        minWidth: 220,
-                        height: 40,
-                        whiteSpace: "nowrap",
-                    }}
-                >
-                    Register Passkey
-                </LoadingButton>
             </Grid>
             <Grid item xs={12}>
                 <Grid

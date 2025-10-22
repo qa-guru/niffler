@@ -23,21 +23,21 @@ export const authClient = {
         return response.json();
     },
 
-        getCsrfToken: async (): Promise<CsrfToken> => {
-            const token: string = await bearerToken();
-            const response = await fetch(csrfTokenUrl(), {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                    "Content-type": "application/json",
-                    "Authorization": token
-                }
-            });
-            if (!response.ok) {
-                throw new Error("Failed loading csrf token");
+    getCsrfToken: async (): Promise<CsrfToken> => {
+        const token: string = await bearerToken();
+        const response = await fetch(csrfTokenUrl(), {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": token
             }
-            return response.json();
-        },
+        });
+        if (!response.ok) {
+            throw new Error("Failed loading csrf token");
+        }
+        return response.json();
+    },
 
     registerPasskeyOptions: async (csrf: string, { onSuccess, onFailure }: RequestHandler<any>): Promise<any> => {
         const token: string = await bearerToken();
