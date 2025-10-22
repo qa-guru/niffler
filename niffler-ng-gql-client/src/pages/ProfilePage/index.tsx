@@ -4,6 +4,7 @@ import {CategorySection} from "../../components/CategorySection";
 import {useCurrentUserQuery} from "../../generated/graphql.tsx";
 import {Loader} from "../../components/Loader";
 import {CommonError} from "../../components/CommonError";
+import {PasskeySection} from "../../components/PasskeySection";
 
 export const ProfilePage = () => {
     const {data, loading} = useCurrentUserQuery({
@@ -25,6 +26,7 @@ export const ProfilePage = () => {
                     data?.user ?
                         <>
                             <ProfileForm user={data.user}/>
+                            <PasskeySection/>
                             <CategorySection categories={data.user.categories}/>
                         </>
                         :

@@ -1,4 +1,4 @@
-import { Grid, InputLabel, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Grid, InputLabel, Typography, useMediaQuery, useTheme} from "@mui/material";
 import { FC, FormEvent, useContext, useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { ImageUpload } from "../ImageUpload";
@@ -8,9 +8,6 @@ import { SessionContext } from "../../context/SessionContext.tsx";
 import { convertUserToFormData, profileFormValidate, UserFormData } from "./formValidate.ts";
 import { formHasErrors } from "../../utils/form.ts";
 import { Input } from "../Input";
-import { RegisterPasskeyPayload } from "../../types/RegisterPasskeyPayload.ts";
-import { authClient } from "../../api/authClient.ts";
-import { normalizePasskeyRegistrationError } from "../../utils/passkey.ts";
 
 export const ProfileForm: FC = () => {
     const theme = useTheme();
@@ -18,7 +15,6 @@ export const ProfileForm: FC = () => {
     const { user, updateUser } = useContext(SessionContext);
     const [formData, setFormData] = useState<UserFormData>(convertUserToFormData(user));
     const [isSaveButtonLoading, setSaveButtonLoading] = useState(false);
-    const [isPasskeyLoading, setPasskeyLoading] = useState(false);
     const snackbar = useSnackBar();
 
     useEffect(() => {
@@ -50,45 +46,6 @@ export const ProfileForm: FC = () => {
         }
     };
 
-    const registerPasskey = async () => {
-        try {
-            setPasskeyLoading(true);
-            const csrf = (await authClient.getCsrfToken()).token;
-
-            const creationOptionsJSON = await authClient.registerPasskeyOptions(csrf, {
-                onSuccess: (data) => data,
-                onFailure: (e) => { throw new Error(e.message); },
-            });
-
-            const { parseCreationOptionsFromJSON } = (PublicKeyCredential as any);
-            const publicKey: PublicKeyCredentialCreationOptions =
-                parseCreationOptionsFromJSON(creationOptionsJSON);
-
-            const cred = (await navigator.credentials.create({ publicKey })) as PublicKeyCredential | null;
-            if (!cred) throw new Error('Registration was canceled');
-
-            const payload: RegisterPasskeyPayload = {
-                publicKey: {
-                    credential: (cred as PublicKeyCredential).toJSON(),
-                    label: 'device-passkey',
-                },
-            };
-
-            await authClient.registerPasskey(payload, csrf, {
-                onSuccess: () => {
-                    snackbar.showSnackBar('Passkey registered', 'success');
-                },
-                onFailure: (e) => { throw new Error(e.message); },
-            });
-
-            return;
-        } catch (e) {
-            snackbar.showSnackBar(`Registration failed: ${normalizePasskeyRegistrationError(e)}`, 'error');
-        } finally {
-            setPasskeyLoading(false);
-        }
-    };
-
     return (
         <Grid
             container
@@ -108,7 +65,7 @@ export const ProfileForm: FC = () => {
                     Profile
                 </Typography>
             </Grid>
-            <Grid item xs={isMobile ? 10 : 8}>
+            <Grid item xs={isMobile ? 12 : 8}>
                 <ImageUpload
                     buttonText="Upload new picture"
                     file={formData.photo?.value ?? ""}
@@ -119,19 +76,6 @@ export const ProfileForm: FC = () => {
                         setFormData({ ...formData, photo: { ...formData.photo, value: file ?? "" } })
                     }
                 />
-                <LoadingButton
-                    onClick={registerPasskey}
-                    variant="contained"
-                    color="primary"
-                    loading={isPasskeyLoading}
-                    sx={{
-                        minWidth: 220,
-                        height: 40,
-                        whiteSpace: "nowrap",
-                    }}
-                >
-                    Register Passkey
-                </LoadingButton>
             </Grid>
             <Grid item xs={12}>
                 <Grid

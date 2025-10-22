@@ -94,6 +94,7 @@ export const MenuAppBar: FC = () => {
                                     <NewSpendingButton/>
                                     <MenuButton onMenuClick={onAvatarClick}
                                                 isMenuOpened={open}
+                                                data-testid={"menu-btn"}
                                                 photo={user?.photoSmall}/>
                                 </Box>
                             </>
