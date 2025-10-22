@@ -67,16 +67,6 @@ const DialogProvider: FC<DialogContextProps> = ({children}) => {
             >
                 <DialogTitle>{dialogData?.title}</DialogTitle>
                 <DialogContent sx={{display: "flex", alignItems: "center"}}>
-                    {/*<Box*/}
-                    {/*    component="img"*/}
-                    {/*    sx={{*/}
-                    {/*        height: 60,*/}
-                    {/*        width: 60,*/}
-                    {/*        marginRight: 4,*/}
-                    {/*    }}*/}
-                    {/*    alt="Coin"*/}
-                    {/*    src={coin}*/}
-                    {/*/>*/}
                     <DialogContentText id="alert-dialog-slide-description">
                         {dialogData?.description}
                     </DialogContentText>
@@ -89,6 +79,7 @@ const DialogProvider: FC<DialogContextProps> = ({children}) => {
                         onClick={handleSubmit}
                         color={"primary"}
                         variant={"contained"}
+                        data-testid={"dialog-submit-btn"}
                         startIcon={dialogData?.submitButtonIcon}>
                         {dialogData?.submitTitle ?? "Submit"}
                     </Button>

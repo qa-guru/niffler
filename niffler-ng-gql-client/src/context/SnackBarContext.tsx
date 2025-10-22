@@ -34,7 +34,11 @@ const SnackBarProvider: FC<SnackBarContextProviderProps> = ({children}) => {
                 anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                 onClose={handleClose}>
                 <Alert onClose={handleClose} severity={typeColor}>
-                    <Typography variant="body1" component="div">{message}</Typography>
+                    <Typography variant="body1" component="div">
+                        <span data-testid={"snackbar-message"}>
+                        {message}
+                        </span>
+                    </Typography>
                 </Alert>
             </Snackbar>
             {children}

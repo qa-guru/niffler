@@ -4,9 +4,10 @@ import {TabPanel} from "../../components/TabPanel";
 import {AllTable} from "../../components/PeopleTable/AllTable";
 import {FriendsTable} from "../../components/PeopleTable/FriendsTable";
 import {Link, useNavigate} from "react-router-dom";
+import {ContactImporter} from "../../components/ContactImporter";
 
 interface PeoplePageInterface {
-    activeTab: "friends" | "all",
+    activeTab: "friends" | "all" | "invite",
 }
 
 export const PeoplePage: FC<PeoplePageInterface> = ({activeTab}) => {
@@ -14,9 +15,11 @@ export const PeoplePage: FC<PeoplePageInterface> = ({activeTab}) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const handleChangeTab = (_event: SyntheticEvent<Element, Event>, value: "friends" | "all") => {
+    const handleChangeTab = (_event: SyntheticEvent<Element, Event>, value: "friends" | "all" | "invite") => {
         if (value === "friends") {
             navigate("/people/friends")
+        } else if(value === "invite") {
+            navigate("/people/invite")
         } else {
             navigate("/people/all");
         }
@@ -40,6 +43,12 @@ export const PeoplePage: FC<PeoplePageInterface> = ({activeTab}) => {
                             <FriendsTable/>
                         </TabPanel>
                 );
+            case "invite":
+                return (
+                    isMobile
+                    ? <ContactImporter/>
+                        : <TabPanel value="invite"><ContactImporter/></TabPanel>
+                )
         }
     }
 
@@ -66,11 +75,17 @@ export const PeoplePage: FC<PeoplePageInterface> = ({activeTab}) => {
                                 value="all"
                                 sx={{fontSize: 36, textTransform: "initial", fontWeight: 700}}
                                 to={"/people/all"}/>
+                            <Tab
+                                component={Link}
+                                label={<Typography variant="h5" component="h2">Invite to Niffler</Typography>}
+                                value="invite"
+                                sx={{fontSize: 36, textTransform: "initial", fontWeight: 700}}
+                                to={"/people/invite"}/>
                         </Tabs>
                     </Box>
                 ) :
                 <Typography variant="h5" component="h2">
-                    {activeTab === "friends" ? "Friends" : "All people"}
+                    {activeTab === "friends" ? "Friends" : activeTab === "all" ? "All people" : "Invite to Niffler"}
                 </Typography>}
             {
                 resolveTab()
