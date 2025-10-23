@@ -344,7 +344,7 @@ export type CurrentUserQuery = { __typename?: 'Query', user: { __typename?: 'Use
 export type CategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CategoriesQuery = { __typename?: 'Query', user: { __typename?: 'User', categories: Array<{ __typename?: 'Category', id: string, name: string, archived: boolean }> } };
+export type CategoriesQuery = { __typename?: 'Query', user: { __typename?: 'User', username: string, categories: Array<{ __typename?: 'Category', id: string, name: string, archived: boolean }> } };
 
 export type FriendsQueryVariables = Exact<{
   page: Scalars['Int']['input'];
@@ -354,7 +354,7 @@ export type FriendsQueryVariables = Exact<{
 }>;
 
 
-export type FriendsQuery = { __typename?: 'Query', user: { __typename?: 'User', friends?: { __typename?: 'UserConnection', edges: Array<{ __typename?: 'UserEdge', node: { __typename?: 'User', id: string, username: string, photoSmall?: string | null, fullname?: string | null, friendshipStatus?: FriendshipStatus | null } } | null>, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean } } | null } };
+export type FriendsQuery = { __typename?: 'Query', user: { __typename?: 'User', username: string, friends?: { __typename?: 'UserConnection', edges: Array<{ __typename?: 'UserEdge', node: { __typename?: 'User', id: string, username: string, photoSmall?: string | null, fullname?: string | null, friendshipStatus?: FriendshipStatus | null } } | null>, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean } } | null } };
 
 export type AllPeopleQueryVariables = Exact<{
   page: Scalars['Int']['input'];
@@ -875,6 +875,7 @@ export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, Curren
 export const CategoriesDocument = gql`
     query Categories {
   user {
+    username
     categories {
       id
       name
@@ -918,6 +919,7 @@ export type CategoriesQueryResult = Apollo.QueryResult<CategoriesQuery, Categori
 export const FriendsDocument = gql`
     query Friends($page: Int!, $size: Int!, $sort: [String!], $searchQuery: String) {
   user {
+    username
     friends(page: $page, size: $size, sort: $sort, searchQuery: $searchQuery) {
       edges {
         node {

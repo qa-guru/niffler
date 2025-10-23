@@ -28,12 +28,12 @@ public class FirebaseCloudMessagingService implements MessagingService {
   private static final Logger LOG = LoggerFactory.getLogger(FirebaseCloudMessagingService.class);
 
   private final FirebaseMessaging fcm;
-  private final PushTokenService tokens;
+  private final PushTokenService pushTokenService;
 
   @Autowired
-  public FirebaseCloudMessagingService(FirebaseMessaging fcm, PushTokenService tokens) {
+  public FirebaseCloudMessagingService(FirebaseMessaging fcm, PushTokenService pushTokenService) {
     this.fcm = fcm;
-    this.tokens = tokens;
+    this.pushTokenService = pushTokenService;
   }
 
   /**
@@ -46,7 +46,7 @@ public class FirebaseCloudMessagingService implements MessagingService {
                          @Nullable Map<String, String> data,
                          @Nullable String deeplink,
                          @Nullable String iconUrl) {
-    final List<String> regTokens = tokens.tokensForUser(username);
+    final List<String> regTokens = pushTokenService.tokensForUser(username);
     if (regTokens.isEmpty()) {
       LOG.info("No active tokens for user={}", username);
       return;
@@ -86,7 +86,7 @@ public class FirebaseCloudMessagingService implements MessagingService {
   public void notifyUserDataOnly(String username,
                                  @Nullable Map<String, String> data,
                                  @Nullable String topicHint) {
-    final List<String> regTokens = tokens.tokensForUser(username);
+    final List<String> regTokens = pushTokenService.tokensForUser(username);
     if (regTokens.isEmpty()) {
       LOG.info("No active tokens for user={}", username);
       return;
@@ -159,7 +159,7 @@ public class FirebaseCloudMessagingService implements MessagingService {
         final FirebaseMessagingException ex = sendResponse.getException();
         final String badToken = tokensList.get(i);
         if (isUnregistered(ex)) {
-          tokens.deactivate(badToken);
+          pushTokenService.deactivate(badToken);
           LOG.info("Deactivated dead token {}", badToken);
         } else {
           LOG.warn("FCM send error for token {}: {}", badToken,

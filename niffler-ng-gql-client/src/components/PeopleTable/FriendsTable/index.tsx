@@ -23,18 +23,6 @@ export const FriendsTable = () => {
         },
         errorPolicy: "none",
         fetchPolicy: "cache-and-network",
-        onCompleted: (data) => {
-            setFriends(data.user.friends?.edges
-                    .filter(edge => edge !== null)
-                    .filter(user => user.node.friendshipStatus === FriendshipStatus.Friend)
-                    .map(user => user.node)
-                ?? []);
-            setInvitations(data.user.friends?.edges
-                    .filter(edge => edge !== null)
-                    .filter(user => user.node.friendshipStatus === FriendshipStatus.InviteReceived)
-                    .map(user => user.node)
-                ?? []);
-        },
         onError: (err) => {
             console.error(err);
             snackbar.showSnackBar("Error while loading friends data", "error");
@@ -53,6 +41,20 @@ export const FriendsTable = () => {
         loadFriends();
     }, [loadFriends]);
 
+    useEffect(() => {
+        const edges = data?.user.friends?.edges ?? [];
+        const safeEdges = edges.filter((edge): edge is NonNullable<typeof edge> => edge !== null);
+        setFriends(
+            safeEdges
+                .filter(user => user.node.friendshipStatus === FriendshipStatus.Friend)
+                .map(user => user.node)
+        );
+        setInvitations(
+            safeEdges
+                .filter(user => user.node.friendshipStatus === FriendshipStatus.InviteReceived)
+                .map(user => user.node)
+        );
+    }, [data]);
 
     const handleInputSearch = (value: string) => {
         setSearch(value);
