@@ -239,39 +239,3 @@ jobs:
           docker compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
           docker system prune -a -f
           echo "Deploy frontend to staging done!"
-
-      - name: Generate deployment summary
-        if: always()
-        run: |
-          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Service | Status | Version |" >> $GITHUB_STEP_SUMMARY
-          echo "|---------|--------|---------|" >> $GITHUB_STEP_SUMMARY
-          
-          # Function to add service status to summary
-          add_service_status() {
-            local service_name=$1
-            local changes_output=$2
-            local deploy_step=$3
-            local version_var=$4
-            
-            if [[ "$changes_output" == "true" ]]; then
-              if [[ "${{ steps.$deploy_step.outcome }}" == "success" ]]; then
-                echo "| $service_name | ✅ Passed | $version_var |" >> $GITHUB_STEP_SUMMARY
-              else
-                echo "| $service_name | 🔴 Failed | $version_var |" >> $GITHUB_STEP_SUMMARY
-              fi
-            else
-              echo "| $service_name | Skipped | - |" >> $GITHUB_STEP_SUMMARY
-            fi
-          }
-          
-          # Add each service status to the summary
-          add_service_status "Auth" "${{ steps.changes.outputs.auth }}" "deploy_auth" "${{ env.AUTH_VER }}"
-          add_service_status "Currency" "${{ steps.changes.outputs.currency }}" "deploy_currency" "${{ env.CURRENCY_VER }}"
-          add_service_status "Gateway" "${{ steps.changes.outputs.gateway }}" "deploy_gateway" "${{ env.GATEWAY_VER }}"
-          add_service_status "Spend" "${{ steps.changes.outputs.spend }}" "deploy_spend" "${{ env.SPEND_VER }}"
-          add_service_status "Userdata" "${{ steps.changes.outputs.userdata }}" "deploy_userdata" "${{ env.USERDATA_VER }}"
-          add_service_status "Frontend" "${{ steps.changes.outputs.frontend }}" "deploy_frontend" "${{ env.FRONT_VER }}"
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
