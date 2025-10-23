@@ -65,6 +65,24 @@ subprojects {
     }
 }
 
+tasks.register("printAllVersions") {
+    doLast {
+        def out = System.getenv("GITHUB_OUTPUT")
+        def lines = [
+                "auth=${project(':niffler-auth').version}",
+                "currency=${project(':niffler-currency').version}",
+                "gateway=${project(':niffler-gateway').version}",
+                "spend=${project(':niffler-spend').version}",
+                "userdata=${project(':niffler-userdata').version}"
+        ]
+        if (out) {
+            new File(out).withWriterAppend { w -> lines.each { w.println(it) } }
+        } else {
+            lines.each { println it }
+        }
+    }
+}
+
 dependencyUpdates {
     resolutionStrategy {
         componentSelection {
