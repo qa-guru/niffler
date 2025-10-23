@@ -20,7 +20,7 @@ public interface SuiteExtension extends BeforeAllCallback {
         getOrComputeIfAbsent(this.getClass(),
             k -> {
               beforeSuite(context);
-              return (ExtensionContext.Store.CloseableResource) this::afterSuite;
+              return (AutoCloseable) this::afterSuite;
             }
         );
   }

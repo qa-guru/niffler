@@ -10,4 +10,4 @@ COPY ./build.gradle ./
 COPY ./settings.gradle ./
 COPY ./gradle.properties ./
 
-CMD ./gradlew test -Dtest.env=docker -Drepository=jpa -Duser.timezone=Europe/Moscow
+CMD ./gradlew :niffler-e-2-e-tests:test -Dtest.env=docker -Drepository=jpa -Duser.timezone=Europe/Moscow
