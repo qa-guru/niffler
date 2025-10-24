@@ -17,13 +17,13 @@
 - [Jakarta Bean Validation](https://beanvalidation.org/)
 - [Jakarta JAXB](https://eclipse-ee4j.github.io/jaxb-ri/)
 - [JUnit 5 (Extensions, Resolvers, etc)](https://junit.org/junit5/docs/current/user-guide/)
-- [Retrofit 2](https://square.github.io/retrofit/)
+- [Retrofit 3](https://square.github.io/retrofit/)
 - [Allure](https://docs.qameta.io/allure/)
 - [Selenide](https://selenide.org/)
 - [Selenoid & Selenoid-UI](https://aerokube.com/selenoid/latest/)
 - [Allure-docker-service](https://github.com/fescobar/allure-docker-service)
 - [Java 21](https://adoptium.net/en-GB/temurin/releases/)
-- [Gradle 8.6](https://docs.gradle.org/8.6/release-notes.html)
+- [Gradle 9.1](https://docs.gradle.org/9.1.0/release-notes.html)
 - [GHA](https://docs.github.com/en/actions)
 - И многие другие
 
@@ -41,7 +41,6 @@
 - [Designing a friendships database structure: Should I use a multivalued column?](https://dba.stackexchange.com/questions/135941/designing-a-friendships-database-structure-should-i-use-a-multivalued-column)
 - [Гонсалвес Э.: Изучаем Java EE 7, глава "Глава 4. Java.Persistence.API"](https://www.litres.ru/book/entoni-gonsalves/izuchaem-java-ee-7-8480934/otzivi/)
 - [(Hopefully) the final article about equals and hashCode for JPA entities with DB-generated IDs](https://jpa-buddy.com/blog/hopefully-the-final-article-about-equals-and-hashcode-for-jpa-entities-with-db-generated-ids/)
--
 
 **Схема проекта Niffler 2.0**
 
@@ -170,9 +169,15 @@ OpenJDK 64-Bit Server VM Temurin-21.0.1+12 (build 21.0.1+12-LTS, mixed mode)
 #### 6. Установить пакетый менеджер для сборки front-end npm
 
 [Инструкция](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
-Рекомендованная версия Node.js - 22.6.0
+Рекомендованная версия Node.js - 22.6.0, npm - 10.8.2
 
-# Запуск Niffler локальное в IDE:
+```posh
+User-MacBook-Pro ~ % node -v && npm --version
+v20.18.0
+10.8.2
+```
+
+# Запуск Niffler локально в IDE:
 
 #### 1. Выбрать какой фронтенд предполагается запускать - REST или GraphQL, и перейти в соответсвующий каталог
 
@@ -392,8 +397,8 @@ User-MacBook-Pro  niffler % bash docker-compose-e2e.sh
 
 #### 3. Selenoid UI доступен по адресу: http://localhost:9090/
 
-#### 5. Allure-ui доступен по адресу: http://localhost:5252/
+#### 4. Allure UI доступен по адресу: http://localhost:5252/
 
-#### 4. Allure report доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
+#### 5. Allure report доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
 
-<img src="/niffler-ng-client/src/assets/images/niffler-with-a-coin.png" width="250">
+<img src="./niffler-ng-client/src/assets/images/niffler-with-a-coin.png" width="250">

@@ -1,11 +1,11 @@
 plugins {
-    id 'org.springframework.boot' version '3.5.5'
+    id 'org.springframework.boot' version '3.5.6'
     id 'com.google.cloud.tools.jib' version '3.4.1'
     id 'com.github.edeandrea.xjc-generation' version '1.6'
 }
 
 group = 'guru.qa'
-version = '2.4.1'
+version = '2.4.2'
 
 dependencies {
     implementation project(':niffler-grpc-common')

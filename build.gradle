@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.ben-manes.versions' version '0.52.0'
+    id 'com.github.ben-manes.versions' version '0.53.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -25,25 +25,25 @@ subprojects {
     ext {
         dockerHubName = "qaguru"
 
-        lombokVersion = '1.18.40'
-        springKafkaVersion = '3.3.9'
+        lombokVersion = '1.18.42'
+        springKafkaVersion = '3.3.10'
         springVaultVersion = '4.3.0'
         springOpenApiVersion = '2.8.13'
-        webauthn4jVersion = '0.29.6.RELEASE'
-        postgresDriverVersion = '42.7.7'
-        flywayVersion = '11.12.0'
+        webauthn4jVersion = '0.29.7.RELEASE'
+        postgresDriverVersion = '42.7.8'
+        flywayVersion = '11.14.1'
         springGrpcVersion = '3.1.0.RELEASE'
         springGraphqlDateTimeVersion = '6.0.0'
-        springSecurityTestVersion = '6.5.3'
-        firebaseVersion = '9.5.0'
+        springSecurityTestVersion = '6.5.6'
+        firebaseVersion = '9.7.0'
         jakartaJaxbVersion = '4.0.2'
         wsdl4jVersion = '1.6.3'
         protobufVersion = '4.32.0'
         grpcVersion = '1.75.0'
-        thumbnailatorVersion = '0.4.20'
+        thumbnailatorVersion = '0.4.21'
         apacheCsvVersion = '1.14.1'
-        h2Version = '2.3.232'
-        mockitoVersion = '5.19.0'
+        h2Version = '2.4.240'
+        mockitoVersion = '5.20.0'
 
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64v8/eclipse-temurin:21-jdk"
@@ -62,6 +62,24 @@ subprojects {
             exceptionFormat = 'full'
         }
         useJUnitPlatform()
+    }
+}
+
+tasks.register("printAllVersions") {
+    doLast {
+        def out = System.getenv("GITHUB_OUTPUT")
+        def lines = [
+                "auth=${project(':niffler-auth').version}",
+                "currency=${project(':niffler-currency').version}",
+                "gateway=${project(':niffler-gateway').version}",
+                "spend=${project(':niffler-spend').version}",
+                "userdata=${project(':niffler-userdata').version}"
+        ]
+        if (out) {
+            new File(out).withWriterAppend { w -> lines.each { w.println(it) } }
+        } else {
+            lines.each { println it }
+        }
     }
 }
 

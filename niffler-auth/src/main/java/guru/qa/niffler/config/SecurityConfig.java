@@ -29,7 +29,6 @@ import org.springframework.security.web.webauthn.management.UserCredentialReposi
 import org.springframework.security.web.webauthn.management.WebAuthnRelyingPartyOperations;
 import org.springframework.security.web.webauthn.management.Webauthn4JRelyingPartyOperations;
 
-
 import java.util.function.Consumer;
 
 import static org.springframework.http.HttpMethod.POST;

@@ -1,0 +1,11 @@
+.avatar-capture__canvas {
+    display: none;
+}
+
+.avatar-capture__video {
+    background: linear-gradient(135deg, #d0eaff, #a0d8ff);
+    border: 2px solid #2941CC;
+    padding: 10px;
+    border-radius: 16px;
+    overflow: hidden;
+}

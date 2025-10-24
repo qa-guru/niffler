@@ -49,8 +49,16 @@ export const HeaderMenu: FC<HeaderMenuInterface> = ({handleClose, anchorElement,
                     All People
                 </Link>
             </MenuItem>
+            <MenuItem onClick={handleClose} sx={{padding: 0}}>
+                <Link to={"/people/invite"} className={"link nav-link"}>
+                    <ListItemIcon sx={{padding: "8px 12px"}}>
+                        <Icon type="userIcon"/>
+                    </ListItemIcon>
+                    Invite to Niffler
+                </Link>
+            </MenuItem>
             <Divider/>
-            <MenuItem onClick={handleLogout} sx={{padding: 0}}>
+            <MenuItem onClick={handleLogout} sx={{padding: 0}} data-testid={"sign-out-btn"}>
                 <ListItemIcon sx={{padding: "8px 12px"}}>
                     <Icon type="signOutIcon"/>
                 </ListItemIcon>

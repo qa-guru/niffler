@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.util.ObjectUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -37,6 +38,9 @@ public class FirebaseConfig {
   @Profile({"local"})
   @Bean
   public GoogleCredentials googleCredentialsLocal(@Value("${firebase.path}") String path) throws IOException {
+    if (ObjectUtils.isEmpty(path)) {
+      throw new IllegalStateException("GOOGLE_APPLICATION_CREDENTIALS ENV should be present for firebase.enabled=true");
+    }
     try (InputStream serviceAccount = new FileInputStream(path)) {
       return GoogleCredentials.fromStream(serviceAccount);
     }
@@ -45,6 +49,9 @@ public class FirebaseConfig {
   @Profile({"staging", "prod"})
   @Bean
   public GoogleCredentials googleCredentialsProd(@Value("${firebase.config}") String config) throws IOException {
+    if (ObjectUtils.isEmpty(config)) {
+      throw new IllegalStateException("firebase config should be present for firebase.enabled=true");
+    }
     try (InputStream serviceAccount = new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8))) {
       return GoogleCredentials.fromStream(serviceAccount);
     }

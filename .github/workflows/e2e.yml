@@ -100,8 +100,8 @@ jobs:
             const reportUrl = 'https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler-ng/reports/latest/index.html'
             const historyUrl = 'https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler-ng'
             const message = exitCode == '0' ?
-              `✅ E2E TEST RUN PASSED\nThere is the [report](${reportUrl})\nAll reports [history](${historyUrl})` :
-              `🔴 E2E TEST RUN FAILED\nThere is the [report](${reportUrl})\nAll reports [history](${historyUrl})`
+              `✅ E2E TESTS PASSED\nThere is the [report](${reportUrl})\nAll reports [history](${historyUrl})` :
+              `🔴 E2E TESTS FAILED\nThere is the [report](${reportUrl})\nAll reports [history](${historyUrl})`
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -165,6 +165,7 @@ jobs:
           docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
 
       - name: build auth & deploy to staging
+        id: deploy_auth
         if: steps.changes.outputs.auth == 'true'
         working-directory: ./
         run: |
@@ -176,6 +177,7 @@ jobs:
           echo "Deploy auth to staging done!"
 
       - name: build currency & deploy to staging
+        id: deploy_currency
         if: steps.changes.outputs.currency == 'true'
         working-directory: ./
         run: |
@@ -187,6 +189,7 @@ jobs:
           echo "Deploy currency to staging done!"
 
       - name: build gateway & deploy to staging
+        id: deploy_gateway
         if: steps.changes.outputs.gateway == 'true'
         working-directory: ./
         run: |
@@ -198,6 +201,7 @@ jobs:
           echo "Deploy gateway to staging done!"
 
       - name: build spend & deploy to staging
+        id: deploy_spend
         if: steps.changes.outputs.spend == 'true'
         working-directory: ./
         run: |
@@ -209,6 +213,7 @@ jobs:
           echo "Deploy spend to staging done!"
 
       - name: build userdata & deploy to staging
+        id: deploy_userdata
         if: steps.changes.outputs.userdata == 'true'
         working-directory: ./
         run: |
@@ -220,6 +225,7 @@ jobs:
           echo "Deploy userdata to staging done!"
 
       - name: build frontend & deploy to staging
+        id: deploy_frontend
         if: steps.changes.outputs.frontend == 'true'
         working-directory: ./niffler-ng-client
         run: |

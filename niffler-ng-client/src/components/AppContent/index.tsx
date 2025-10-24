@@ -26,6 +26,7 @@ export const AppContent: FC = () => {
                     <Route path="/people">
                         <Route path="/people/all" element={<PeoplePage activeTab={"all"}/>}/>
                         <Route path="/people/friends" element={<PeoplePage activeTab={"friends"}/>}/>
+                        <Route path="/people/invite" element={<PeoplePage activeTab={"invite"}/>}/>
                     </Route>
                     <Route path="*" element={<NotFoundPage/>}/>
                 </Route>

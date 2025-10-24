@@ -4,12 +4,10 @@ import guru.qa.niffler.api.AllureDockerApiClient;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.allure.AllureResults;
 import guru.qa.niffler.model.allure.DecodedAllureFile;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
