@@ -9,7 +9,11 @@
 ```
 Frontend (niffler-ng-client)
     ↓
-    → http://localhost:8094/api/ai/parse-spending
+    → http://localhost:8090/api/ai/parse-spending (Gateway)
+    ↓
+Gateway (niffler-gateway)
+    ↓
+    → http://localhost:8094/api/ai/parse-spending (AI Service)
     ↓
 AI Service (niffler-ai)
     ↓
@@ -17,6 +21,8 @@ AI Service (niffler-ai)
     ↓
 Ollama API (openchat:latest)
 ```
+
+**Важно:** Все запросы к AI сервису идут через Gateway (порт 8090).
 
 ## 🚀 Что было сделано
 
@@ -78,10 +84,10 @@ AI service is running
 
 ### 3. Обновлен фронтенд
 
-Файл `niffler-ng-client/src/api/aiService.ts` теперь обращается к микросервису вместо прямого запроса к Ollama:
+Файл `niffler-ng-client/src/api/aiService.ts` теперь обращается к Gateway вместо прямого запроса к AI сервису:
 
 ```typescript
-const AI_SERVICE_URL = 'http://localhost:8093/api/ai';
+const AI_SERVICE_URL = 'http://localhost:8090/api/ai';
 
 export const aiService = {
     parseSpending: async (userInput: string): Promise<SpendingFromAI> => {
@@ -99,7 +105,33 @@ export const aiService = {
 };
 ```
 
-### 4. Добавлен в Docker Compose
+### 4. Добавлена интеграция в Gateway
+
+**Структура в Gateway:**
+```
+niffler-gateway/
+├── src/main/java/guru/qa/niffler/
+│   ├── controller/
+│   │   └── AiController.java            # Контроллер для AI endpoints
+│   ├── service/
+│   │   ├── AiClient.java               # Интерфейс AI клиента
+│   │   └── api/
+│   │       └── RestAiClient.java       # REST клиент для AI сервиса
+│   └── model/
+│       ├── ParseSpendingRequest.java
+│       └── ParseSpendingResponse.java
+└── src/main/resources/
+    └── application.yaml                 # Добавлена конфигурация niffler-ai
+```
+
+**Конфигурация в application.yaml:**
+```yaml
+niffler-ai:
+  base-uri: 'http://localhost:8094'      # local
+  base-uri: 'http://ai.niffler.dc:8094'  # docker
+```
+
+### 5. Добавлен в Docker Compose
 
 ```yaml
 ai.niffler.dc:
@@ -133,13 +165,22 @@ java -jar niffler-ai/build/libs/niffler-ai-2.0.5.jar
 ./gradlew :niffler-ai:bootRun
 ```
 
-3. Проверить работу:
+3. Проверить работу напрямую (для тестирования):
 ```bash
 curl -X GET http://localhost:8094/api/ai/health
 # Ответ: AI service is running
 
 curl -X POST http://localhost:8094/api/ai/parse-spending \
   -H "Content-Type: application/json" \
+  -d '{"userInput":"Купил кофе за 300 рублей"}'
+```
+
+4. **Рекомендуется:** Проверить работу через Gateway:
+```bash
+# Нужна авторизация через OAuth2 токен
+curl -X POST http://localhost:8090/api/ai/parse-spending \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{"userInput":"Купил кофе за 300 рублей"}'
 ```
 

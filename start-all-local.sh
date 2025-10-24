@@ -15,9 +15,9 @@ echo "📦 Starting base services..."
 nohup ./gradlew :niffler-auth:bootRun --args='--spring.profiles.active=local' > /tmp/niffler-auth.log 2>&1 &
 echo "  ✓ Auth starting on port 9000"
 
-# Start Currency service (port 8091, 8092)
+# Start Currency service (gRPC port 8092)
 nohup ./gradlew :niffler-currency:bootRun --args='--spring.profiles.active=local' > /tmp/niffler-currency.log 2>&1 &
-echo "  ✓ Currency starting on port 8091/8092"
+echo "  ✓ Currency starting on port 8092 (gRPC)"
 
 # Start Userdata service (port 8089)
 nohup ./gradlew :niffler-userdata:bootRun --args='--spring.profiles.active=local' > /tmp/niffler-userdata.log 2>&1 &
@@ -37,8 +37,10 @@ echo "  ✓ Gateway starting on port 8090"
 
 # Start AI service (port 8094)
 echo "🤖 Starting AI service..."
-# Set Ollama API token (required)
-export OLLAMA_API_TOKEN=${OLLAMA_API_TOKEN:-sk-xxx}
+# Load environment variables from .env file
+if [ -f .env ]; then
+    export $(cat .env | grep -v '^#' | grep OLLAMA | xargs)
+fi
 nohup java -jar -Dspring.profiles.active=local niffler-ai/build/libs/niffler-ai-2.0.5.jar > /tmp/niffler-ai.log 2>&1 &
 echo "  ✓ AI service starting on port 8094"
 
@@ -62,7 +64,7 @@ check_service() {
 
 check_service 9000 "Auth"
 check_service 8089 "Userdata"
-check_service 8091 "Currency"
+check_service 8092 "Currency (gRPC)"
 check_service 8093 "Spend"
 check_service 8090 "Gateway"
 check_service 8094 "AI"
@@ -83,4 +85,5 @@ echo "   - Gateway API: http://localhost:8090"
 echo "   - AI Service: http://localhost:8094/api/ai/health"
 echo ""
 echo "🛑 To stop all services: pkill -9 -f 'niffler.*bootRun'; pkill -9 -f 'niffler-ai.*jar'"
+
 

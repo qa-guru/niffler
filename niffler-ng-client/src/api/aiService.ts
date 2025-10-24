@@ -1,4 +1,6 @@
-const AI_SERVICE_URL = 'http://localhost:8094/api/ai';
+import { bearerToken } from './authUtils.ts';
+
+const AI_SERVICE_URL = 'http://localhost:8090/api/ai';
 
 export interface SpendingFromAI {
     amount: number;
@@ -10,10 +12,12 @@ export interface SpendingFromAI {
 
 export const aiService = {
     parseSpending: async (userInput: string): Promise<SpendingFromAI> => {
+        const token = await bearerToken();
         const response = await fetch(`${AI_SERVICE_URL}/parse-spending`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': token,
             },
             body: JSON.stringify({
                 userInput: userInput,
@@ -42,11 +46,15 @@ export const aiService = {
     },
 
     transcribeAudio: async (audioBlob: Blob): Promise<string> => {
+        const token = await bearerToken();
         const formData = new FormData();
         formData.append('audio', audioBlob, 'recording.webm');
 
         const response = await fetch(`${AI_SERVICE_URL}/transcribe-audio`, {
             method: 'POST',
+            headers: {
+                'Authorization': token,
+            },
             body: formData,
         });
 
@@ -65,11 +73,15 @@ export const aiService = {
     },
 
     parseSpendingFromAudio: async (audioBlob: Blob): Promise<SpendingFromAI> => {
+        const token = await bearerToken();
         const formData = new FormData();
         formData.append('audio', audioBlob, 'recording.webm');
 
         const response = await fetch(`${AI_SERVICE_URL}/parse-spending-from-audio`, {
             method: 'POST',
+            headers: {
+                'Authorization': token,
+            },
             body: formData,
         });
 

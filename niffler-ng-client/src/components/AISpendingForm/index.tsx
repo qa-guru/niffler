@@ -1,4 +1,4 @@
-import { Button, Grid, TextField, Typography, useTheme, Alert, Box, Tabs, Tab, Divider } from "@mui/material";
+import { Button, Grid, TextField, Typography, useTheme, Alert, Box, Tabs, Tab } from "@mui/material";
 import { FC, FormEvent, useState } from "react";
 import { aiService, SpendingFromAI } from "../../api/aiService.ts";
 import { apiClient } from "../../api/apiClient.ts";

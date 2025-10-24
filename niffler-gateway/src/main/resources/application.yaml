@@ -50,6 +50,8 @@ niffler-userdata:
   base-uri: 'http://localhost:8089'
 niffler-spend:
   base-uri: 'http://localhost:8093'
+niffler-ai:
+  base-uri: 'http://localhost:8094'
 niffler-front:
   base-uri: 'http://localhost:3000'
 niffler-gateway:
@@ -82,6 +84,8 @@ niffler-userdata:
   base-uri: 'http://userdata.niffler.dc:8089'
 niffler-spend:
   base-uri: 'http://spend.niffler.dc:8093'
+niffler-ai:
+  base-uri: 'http://ai.niffler.dc:8094'
 niffler-front:
   base-uri: 'http://frontend.niffler.dc'
 niffler-gateway:
@@ -124,6 +128,8 @@ niffler-userdata:
   base-uri: ${niffler-userdata.url}
 niffler-spend:
   base-uri: ${niffler-spend.url}
+niffler-ai:
+  base-uri: ${niffler-ai.url}
 niffler-front:
   base-uri: 'https://niffler.qa.guru'
 niffler-gateway:
@@ -166,6 +172,8 @@ niffler-userdata:
   base-uri: ${niffler-userdata.url}
 niffler-spend:
   base-uri: ${niffler-spend.url}
+niffler-ai:
+  base-uri: ${niffler-ai.url}
 niffler-front:
   base-uri: 'https://niffler-stage.qa.guru'
 niffler-gateway:
