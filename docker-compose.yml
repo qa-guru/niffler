@@ -85,6 +85,20 @@ services:
     networks:
       - niffler-network
 
+  ai.niffler.dc:
+    container_name: ai.niffler.dc
+    image: ${PREFIX}/niffler-ai-docker:latest
+    ports:
+      - 8094:8094
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=256m -XX:MaxHeapSize=384m
+      - OLLAMA_API_TOKEN=${OLLAMA_API_TOKEN}
+      - OLLAMA_API_URL=${OLLAMA_API_URL:-https://autotests.ai/ollama/api/generate}
+      - OLLAMA_API_MODEL=${OLLAMA_API_MODEL:-openchat:latest}
+    restart: always
+    networks:
+      - niffler-network
+
   gateway.niffler.dc:
     container_name: gateway.niffler.dc
     image: ${PREFIX}/niffler-gateway-docker:latest

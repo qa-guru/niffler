@@ -63,8 +63,8 @@ spring:
 niffler-userdata:
   base-uri: 'http://localhost:8089'
 firebase:
-  enabled: true
-  path: ${GOOGLE_APPLICATION_CREDENTIALS}
+  enabled: false
+  path: ${GOOGLE_APPLICATION_CREDENTIALS:}
 ---
 spring:
   config:

@@ -9,6 +9,7 @@ import "./styles.css";
 import {SessionContext} from "../../context/SessionContext.tsx";
 import {HeaderMenu} from "./HeaderMenu";
 import {NewSpendingButton} from "./NewSpendingButton";
+import {AISpendingButton} from "./AISpendingButton";
 import {MenuButton} from "./MenuButton";
 import {useMediaQuery, useTheme} from "@mui/material";
 import {MobileHeaderMenu} from "./MobileHeaderMenu";
@@ -78,7 +79,10 @@ export const MenuAppBar: FC = () => {
                                         </Typography>
                                     </Link>
                                 </Box>
-                                <NewSpendingButton/>
+                                <Box sx={{ display: "flex" }}>
+                                    <AISpendingButton/>
+                                    <NewSpendingButton/>
+                                </Box>
                             </>
                             :
                             <>
@@ -91,6 +95,7 @@ export const MenuAppBar: FC = () => {
                                     </Link>
                                 </Box>
                                 <Box>
+                                    <AISpendingButton/>
                                     <NewSpendingButton/>
                                     <MenuButton onMenuClick={onAvatarClick}
                                                 isMenuOpened={open}
