@@ -8,6 +8,7 @@ import {FC} from "react";
 import {SpendingPage} from "../../pages/SpendingPage";
 import {NotFoundPage} from "../../pages/NotFoundPage";
 import {LogoutPage} from "../../pages/Logout";
+import {AISpendingPage} from "../../pages/AISpendingPage";
 
 export const AppContent: FC = () => {
     return (
@@ -21,6 +22,7 @@ export const AppContent: FC = () => {
                     <Route path="/profile" element={<ProfilePage/>}/>
                     <Route path="/spending" element={<SpendingPage/>}/>
                     <Route path="/spending/:id" element={<SpendingPage/>}/>
+                    <Route path="/ai-spending" element={<AISpendingPage/>}/>
                     <Route path="/people">
                         <Route path="/people/all" element={<PeoplePage activeTab={"all"}/>}/>
                         <Route path="/people/friends" element={<PeoplePage activeTab={"friends"}/>}/>

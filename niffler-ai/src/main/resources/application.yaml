@@ -1,0 +1,52 @@
+server:
+  port: 8094
+
+spring:
+  application:
+    name: niffler-ai
+
+ollama:
+  api:
+    url: ${OLLAMA_API_URL:https://autotests.ai/ollama/api/generate}
+    token: ${OLLAMA_API_TOKEN}
+    model: ${OLLAMA_API_MODEL:openchat:latest}
+
+logging:
+  level:
+    root: INFO
+    guru.qa.niffler: DEBUG
+    org.springframework.web: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'prod'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'staging'
+

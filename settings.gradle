@@ -6,6 +6,7 @@ def modules = [
         'niffler-currency',
         'niffler-userdata',
         'niffler-spend',
+        'niffler-ai',
         'niffler-grpc-common',
         'niffler-e-2-e-tests'
 ]
