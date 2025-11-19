@@ -100,6 +100,21 @@ confluentinc/cp-zookeeper  7.3.2            6fe5551964f5   7 years ago     451MB
 docker volume create pgdata
 ```
 
+#### 4.0 Если у вас ОС Windows:
+
+Необходимо выполнить следующие команды в каталоге /postgres/script :
+```
+sed -i -e 's/\r$//' init-database.sh
+chmod +x init-database.sh
+```
+
+Также необходимо исправить команду в скрипте localenv.sh (в корне проекта):
+
+```diff
+- docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -v ./postgres/script:/docker-entrypoint-initdb.d -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -d postgres:15.1 --max_prepared_transactions=100
++ docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -v /$(pwd)/postgres/script:/docker-entrypoint-initdb.d -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -d postgres:15.1 --max_prepared_transactions=100
+```
+
 #### 4. Запустить БД, zookeeper и kafka 3-мя последовательными командами:
 
 Запустив скрипт (Для Windows необходимо использовать bash terminal: gitbash, cygwin или wsl)
@@ -127,7 +142,7 @@ docker run --name=kafka -e KAFKA_BROKER_ID=1 \
 Для Windows (Необходимо использовать bash terminal: gitbash, cygwin или wsl):
 
 ```posh
-docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -v pgdata:/var/lib/postgresql/data -v ./postgres/script:/docker-entrypoint-initdb.d -d postgres:15.1 --max_prepared_transactions=100
+docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -v pgdata:/var/lib/postgresql/data -v /$(pwd)/postgres/script:/docker-entrypoint-initdb.d -d postgres:15.1 --max_prepared_transactions=100
 
 docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -p 2181:2181 -d confluentinc/cp-zookeeper:7.3.2
 
@@ -135,21 +150,6 @@ docker run --name=kafka -e KAFKA_BROKER_ID=1 -e KAFKA_ZOOKEEPER_CONNECT=$(docker
 ```
 
 [Про IP zookeeper](https://github.com/confluentinc/cp-docker-images/issues/801#issuecomment-692085103)
-
-Если вы используете Windows и контейнер с БД не стартует с ошибкой в логе:
-
-```
-server started
-/usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/init-database.sh
-/usr/local/bin/docker-entrypoint.sh: /docker-entrypoint-initdb.d/init-database.sh: /bin/bash^M: bad interpreter: No such file or directory
-```
-
-То необходимо выполнить следующие команды в каталоге /postgres/script :
-
-```
-sed -i -e 's/\r$//' init-database.sh
-chmod +x init-database.sh
-```
 
 #### 5. Установить Java версии 21. Это необходимо, т.к. проект использует синтаксис Java 21
 
