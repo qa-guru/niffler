@@ -1,37 +1,41 @@
 buildscript {
     ext {
-        grpcVersion = '1.66.0'
-        junitVersion = '5.11.0'
-        allureVersion = '2.29.0'
-        selenideVersion = '7.4.2'
-        retrofitVersion = '2.11.0'
-        okhttp3Version = '3.14.9'
-        logbackVersion = '1.4.11'
-        slf4jVersion = '2.0.9'
-        springJdbcVersion = '6.1.12'
-        springCryptoVersion = '6.3.1'
+        junitVersion = '5.13.4'
+        allureVersion = '2.30.0'
+        selenideVersion = '7.11.1'
+        okhttp3Version = '5.2.1'
+        retrofitVersion = '3.0.0'
+        apollographqlVersion = '0.0.2'
+        logbackVersion = '1.5.20'
+        slf4jVersion = '2.0.17'
+        springJdbcVersion = '6.2.12'
+        springCryptoVersion = '6.5.6'
         p6spyVersion = '3.9.1'
-        hibernateVersion = '6.6.0.Final'
-        kafkaClientsVersion = '3.8.0'
+        hibernateVersion = '7.1.1.Final'
+        kafkaClientsVersion = '4.1.0'
         saajVersion = '3.0.4'
-        jakartaJaxbVersion = '4.0.2'
-        springDataCommonsVersion = '3.3.3'
-        wiremockVersion = '3.0.1'
+        springDataCommonsVersion = '3.5.5'
+        wiremockVersion = '3.13.1'
+        ashotVersion = '1.5.4'
         fakerVersion = '1.0.2'
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
                 ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
-                : "http://127.0.0.1:8089/ws/userdata.wsdl"
+                : "http://localhost:8089/ws/userdata.wsdl"
+        gatewayGraphqlUrl = System.getProperty("test.env") == "docker"
+                ? "http://gateway.niffler.dc:8090/graphql"
+                : "http://localhost:8090/graphql"
     }
 }
 
 plugins {
-    id 'io.qameta.allure' version '2.12.0'
-    id 'io.qameta.allure-adapter' version '2.12.0'
+    id 'io.qameta.allure' version '3.0.0'
+    id 'io.qameta.allure-adapter' version '3.0.0'
     id 'com.github.edeandrea.xjc-generation' version '1.6'
+    id 'com.apollographql.apollo' version '4.3.3'
 }
 
 group = 'guru.qa'
-version = '2.0.1'
+version = '2.1.4'
 
 allure {
     version.set("${allureVersion}")
@@ -52,11 +56,28 @@ xjcGeneration {
     }
 }
 
+apollo {
+    service("niffler") {
+        generateKotlinModels.set(false)
+        packageName.set("guru.qa")
+        srcDir("src/test/graphql")
+        mapScalar("Date", "java.util.Date")
+        introspection {
+            endpointUrl.set("${gatewayGraphqlUrl}")
+            schemaFile.set(file("src/test/graphql/schema.graphqls"))
+        }
+        outputDirConnection {
+            connectToJavaSourceSet("test")
+        }
+    }
+}
+
 sourceSets {
     test {
         java {
             srcDir('src/test/java')
             srcDir("$buildDir/generated-sources/test/xjc")
+            srcDir("$buildDir/generated/source/apollo/e2e")
         }
     }
 }
@@ -68,11 +89,21 @@ dependencies {
     // JUnit
     testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
     // REST
-    testImplementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
-    testImplementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
     testImplementation "com.squareup.okhttp3:logging-interceptor:${okhttp3Version}"
     testImplementation "com.squareup.okhttp3:okhttp-urlconnection:${okhttp3Version}"
+    testImplementation "com.squareup.okhttp3:okhttp:${okhttp3Version}"
+    testImplementation("com.squareup.retrofit2:retrofit:${retrofitVersion}") {
+        exclude group: "com.squareup.okhttp3"
+    }
+    testImplementation("com.squareup.retrofit2:converter-jackson:${retrofitVersion}") {
+        exclude group: "com.squareup.okhttp3"
+    }
+    testImplementation "com.squareup.retrofit2:converter-scalars:${retrofitVersion}"
     testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
+    // GraphQL
+    testImplementation "com.apollographql.java:client:${apollographqlVersion}"
+    testImplementation "com.apollographql.java:rx2:${apollographqlVersion}"
+    testImplementation 'com.apollographql.adapters:apollo-adapters-core:0.7.0'
     // DB
     testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
@@ -91,30 +122,30 @@ dependencies {
     testImplementation "io.qameta.allure:allure-grpc:${allureVersion}"
     // WEB
     testImplementation "com.codeborne:selenide:${selenideVersion}"
+    testImplementation "ru.yandex.qatools.ashot:ashot:${ashotVersion}"
     // Utils
     testImplementation("com.github.javafaker:javafaker:${fakerVersion}") {
         exclude group: 'org.yaml'
     }
-    testImplementation 'commons-io:commons-io:2.16.1'
+    testImplementation 'commons-io:commons-io:2.20.0'
     testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
     testImplementation 'com.github.vertical-blank:sql-formatter:2.0.5'
     // gRPC
-    testImplementation "io.grpc:grpc-protobuf:${project.ext.grpcVersion}"
+    testImplementation "io.grpc:grpc-api:${project.ext.grpcVersion}"
     testImplementation "io.grpc:grpc-stub:${project.ext.grpcVersion}"
-    testImplementation "io.grpc:grpc-netty:${project.ext.grpcVersion}"
+    testImplementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
     testImplementation "com.google.protobuf:protobuf-java:${project.ext.protobufVersion}"
     testImplementation "com.google.protobuf:protobuf-java-util:${project.ext.protobufVersion}"
     testImplementation project(':niffler-grpc-common')
     compileOnly 'jakarta.annotation:jakarta.annotation-api:1.3.5' // Java 9+ compatibility - Do NOT update to 2.0.0
     // SOAP
     testImplementation "com.sun.xml.messaging.saaj:saaj-impl:${saajVersion}"
-    testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:${jakartaJaxbVersion}"
+    testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:${project.ext.jakartaJaxbVersion}"
     xjc "org.glassfish.jaxb:jaxb-xjc:${project.ext.jakartaJaxbVersion}"
     // Kafka
     testImplementation "org.apache.kafka:kafka-clients:${kafkaClientsVersion}"
     // Wiremock
-    testImplementation "com.github.tomakehurst:wiremock-jre8:${wiremockVersion}"
-    testImplementation "com.github.tomakehurst:wiremock-standalone:${wiremockVersion}"
+    testImplementation "org.wiremock:wiremock:${project.ext.wiremockVersion}"
     // Lombok
     testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
@@ -130,11 +161,10 @@ tasks.register('printVersion') {
     }
 }
 
+tasks.named { it == "generateNifflerApolloSources" }.configureEach {
+    dependsOn("downloadNifflerApolloSchemaFromIntrospection")
+}
+
 test {
-    options {
-        systemProperties(System.getProperties())
-    }
-    testLogging.showStandardStreams = true
-    testLogging.exceptionFormat = 'full'
-    useJUnitPlatform()
+    dependsOn("generateNifflerApolloSources")
 }

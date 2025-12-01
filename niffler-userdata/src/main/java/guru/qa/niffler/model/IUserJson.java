@@ -19,5 +19,5 @@ public interface IUserJson {
 
   String photoSmall();
 
-  FriendState friendState();
+  FriendshipStatus friendshipStatus();
 }

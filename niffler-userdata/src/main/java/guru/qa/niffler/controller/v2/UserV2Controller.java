@@ -26,7 +26,6 @@ public class UserV2Controller {
     this.userService = userService;
   }
 
-
   @GetMapping("/all")
   public Page<? extends IUserJson> allUsers(@RequestParam String username,
                                             @PageableDefault Pageable pageable,

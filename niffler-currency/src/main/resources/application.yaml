@@ -4,6 +4,7 @@ server:
 grpc:
   server:
     port: 8092
+    max-inbound-message-size: 1MB
 
 spring:
   application:
@@ -34,7 +35,9 @@ spring:
     show-sql: false
     generate-ddl: true
     open-in-view: false
-
+  cloud:
+    compatibility-verifier:
+      enabled: false
 logging:
   level:
     root: INFO

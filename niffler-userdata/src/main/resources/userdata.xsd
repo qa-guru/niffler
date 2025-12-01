@@ -92,9 +92,19 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="registerPushTokenRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="username" type="xs:string"/>
+                <xs:element name="token" type="xs:string"/>
+                <xs:element name="userAgent" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
     <!-- RESPONSE TYPES -->
 
-    <xs:element name="UserResponse">
+    <xs:element name="userResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="user" type="tns:user"/>
@@ -102,11 +112,13 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="UsersResponse">
+    <xs:element name="usersResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="user" type="tns:user" minOccurs="0" maxOccurs="unbounded">
                 </xs:element>
+                <xs:element name="size" type="xs:int" minOccurs="0"/>
+                <xs:element name="number" type="xs:int" minOccurs="0"/>
                 <xs:element name="totalElements" type="xs:long" minOccurs="0"/>
                 <xs:element name="totalPages" type="xs:int" minOccurs="0"/>
             </xs:sequence>
@@ -125,7 +137,7 @@
             <xs:element name="currency" type="tns:currency"/>
             <xs:element name="photo" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="photoSmall" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="friendState" type="tns:friendState" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="friendshipStatus" type="tns:friendshipStatus" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -146,7 +158,7 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="friendState">
+    <xs:simpleType name="friendshipStatus">
         <xs:restriction base="xs:string">
             <xs:enumeration value="INVITE_SENT"/>
             <xs:enumeration value="INVITE_RECEIVED"/>

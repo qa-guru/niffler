@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.qameta.allure.model.Status;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 
 import static guru.qa.niffler.jupiter.extension.AllureLogsExtension.caseName;
 
+@ParametersAreNonnullByDefault
 public class AllurePassedAttachmentsExtension implements SuiteExtension {
 
   private static final ObjectMapper om = new ObjectMapper();

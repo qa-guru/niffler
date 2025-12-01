@@ -17,13 +17,13 @@
 - [Jakarta Bean Validation](https://beanvalidation.org/)
 - [Jakarta JAXB](https://eclipse-ee4j.github.io/jaxb-ri/)
 - [JUnit 5 (Extensions, Resolvers, etc)](https://junit.org/junit5/docs/current/user-guide/)
-- [Retrofit 2](https://square.github.io/retrofit/)
+- [Retrofit 3](https://square.github.io/retrofit/)
 - [Allure](https://docs.qameta.io/allure/)
 - [Selenide](https://selenide.org/)
 - [Selenoid & Selenoid-UI](https://aerokube.com/selenoid/latest/)
 - [Allure-docker-service](https://github.com/fescobar/allure-docker-service)
 - [Java 21](https://adoptium.net/en-GB/temurin/releases/)
-- [Gradle 8.6](https://docs.gradle.org/8.6/release-notes.html)
+- [Gradle 9.1](https://docs.gradle.org/9.1.0/release-notes.html)
 - [GHA](https://docs.github.com/en/actions)
 - И многие другие
 
@@ -41,7 +41,6 @@
 - [Designing a friendships database structure: Should I use a multivalued column?](https://dba.stackexchange.com/questions/135941/designing-a-friendships-database-structure-should-i-use-a-multivalued-column)
 - [Гонсалвес Э.: Изучаем Java EE 7, глава "Глава 4. Java.Persistence.API"](https://www.litres.ru/book/entoni-gonsalves/izuchaem-java-ee-7-8480934/otzivi/)
 - [(Hopefully) the final article about equals and hashCode for JPA entities with DB-generated IDs](https://jpa-buddy.com/blog/hopefully-the-final-article-about-equals-and-hashcode-for-jpa-entities-with-db-generated-ids/)
--
 
 **Схема проекта Niffler 2.0**
 
@@ -54,6 +53,7 @@
 Во-первых, и в-главных, необходимо использовать [bash terminal](https://www.geeksforgeeks.org/working-on-git-bash/), а
 не powershell.
 [Полезное и короткое видео о git bash](https://www.youtube.com/watch?v=zM9Mb-otqww)
+Обязательно добавьте bash терминал в [качестве терминала в вашей IDE (IDEA, PyCharm)](https://stackoverflow.com/questions/20573213/embed-git-bash-in-pycharm-as-external-tool-and-work-with-it-in-pycharm-window-w)
 Во-вторых, если у вас что-то не работает - пишите в TG чат группы - будем вместе дополнять README, т.к. изначально
 проект разработан под nix
 
@@ -111,7 +111,7 @@ User-MacBook-Pro  niffler % bash localenv.sh
 Или выполнив последовательно команды, для *nix:
 
 ```posh
-docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -v pgdata:/var/lib/postgresql/data -d postgres:15.1
+docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -v pgdata:/var/lib/postgresql/data -v ./postgres/script:/docker-entrypoint-initdb.d -d postgres:15.1 --max_prepared_transactions=100
 
 docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -p 2181:2181 -d confluentinc/cp-zookeeper:7.3.2
 
@@ -127,7 +127,7 @@ docker run --name=kafka -e KAFKA_BROKER_ID=1 \
 Для Windows (Необходимо использовать bash terminal: gitbash, cygwin или wsl):
 
 ```posh
-docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -v pgdata:/var/lib/postgresql/data -d postgres:15.1
+docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -v pgdata:/var/lib/postgresql/data -v ./postgres/script:/docker-entrypoint-initdb.d -d postgres:15.1 --max_prepared_transactions=100
 
 docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -p 2181:2181 -d confluentinc/cp-zookeeper:7.3.2
 
@@ -144,7 +144,7 @@ server started
 /usr/local/bin/docker-entrypoint.sh: /docker-entrypoint-initdb.d/init-database.sh: /bin/bash^M: bad interpreter: No such file or directory
 ```
 
-То необходимо выполнить следующие команды в каталоге /postgres :
+То необходимо выполнить следующие команды в каталоге /postgres/script :
 
 ```
 sed -i -e 's/\r$//' init-database.sh
@@ -169,9 +169,15 @@ OpenJDK 64-Bit Server VM Temurin-21.0.1+12 (build 21.0.1+12-LTS, mixed mode)
 #### 6. Установить пакетый менеджер для сборки front-end npm
 
 [Инструкция](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
-Рекомендованная версия Node.js - 22.6.0
+Рекомендованная версия Node.js - 22.6.0, npm - 10.8.2
 
-# Запуск Niffler локальное в IDE:
+```posh
+User-MacBook-Pro ~ % node -v && npm --version
+v20.18.0
+10.8.2
+```
+
+# Запуск Niffler локально в IDE:
 
 #### 1. Выбрать какой фронтенд предполагается запускать - REST или GraphQL, и перейти в соответсвующий каталог
 
@@ -181,10 +187,10 @@ OpenJDK 64-Bit Server VM Temurin-21.0.1+12 (build 21.0.1+12-LTS, mixed mode)
 User-MacBook-Pro niffler % cd niffler-ng-client
 ```
 
-или для GraphQL **_(временно недоступно)_**:
+или для GraphQL
 
 ```posh
-User-MacBook-Pro niffler % cd niffler-ng-client-gql
+User-MacBook-Pro niffler % cd niffler-ng-gql-client
 ```
 
 #### 2. Запустить фронтенд в режиме preview (сначала обновить зависимости)
@@ -213,12 +219,33 @@ User-MacBook-Pro niffler-auth % gradle bootRun --args='--spring.profiles.active=
 Или просто перейдя к main-классу приложения NifflerAuthApplication выбрать run в IDEA (предварительно удостовериться что
 выполнен предыдущий пункт)
 
+Если сервис не стартует с ошибкой:
+```posh
+FATAL: database "niffler-auth" does not exist
+```
+то необходимо проверить, было ли сообщение об автоматическом создании баз данныхз в логе контейнера с Postgres (niffler-all):
+```posh
+docker logs -f niffler-all
+... 
+Multiple database creation requested: niffler-auth,niffler-currency,niffler-spend,niffler-userdata"
+...
+```
+Если сообщения нет, то необходимо создать базы данных вручную (при этом, мы создаем только пустые БД, без таблиц):
+- Установить одну из программ для визуальной работы с Postgres. Например, PgAdmin, DBeaver или Datagrip.
+- Подключиться к БД postgres (host: localhost, port: 5432, user: postgres, pass: secret, database name: postgres) из PgAdmin и создать пустые БД микросервисов
+```sql
+   create database "niffler-userdata" with owner postgres;
+   create database "niffler-spend" with owner postgres;
+   create database "niffler-currency" with owner postgres;
+   create database "niffler-auth" with owner postgres;
+```
+
 #### 5  Запустить в любой последовательности другие сервисы: niffler-currency, niffler-spend, niffler-gateway, niffler-userdata
 
-Фронтенд Niffler при запуске локально будет работать для вас по адресу http://127.0.0.1:3000/,
-OpenAPI (Swagger) сервиса niffler-gateway доступен по адресу: http://127.0.0.1:8090/swagger-ui/index.html
-GraphiQL интерфейс сервиса niffler-gateway доступен по адресу: http://127.0.0.1:8090/graphiql
-WSDL сервиса niffler-userdata доступен по адресу: http://127.0.0.1:8089/ws/userdata.wsdl
+Фронтенд Niffler при запуске локально будет работать для вас по адресу http://localhost:3000/,
+OpenAPI (Swagger) сервиса niffler-gateway доступен по адресу: http://localhost:8090/swagger-ui/index.html
+GraphiQL интерфейс сервиса niffler-gateway доступен по адресу: http://localhost:8090/graphiql
+WSDL сервиса niffler-userdata доступен по адресу: http://localhost:8089/ws/userdata.wsdl
 
 # Запуск Niffler в докере:
 
@@ -259,18 +286,10 @@ User-MacBook-Pro niffler % vi /etc/hosts
 User-MacBook-Pro niffler % cd niffler
 ```
 
-#### 6. Запустить все сервисы, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
-
-для REST:
+#### 6. Запустить все сервисы
 
 ```posh
 User-MacBook-Pro  niffler % bash docker-compose-dev.sh
-```
-
-для GraphQL **_(временно недоступно)_**:
-
-```posh
-User-MacBook-Pro  niffler % bash docker-compose-dev.sh gql
 ```
 
 Текущая версия `docker-compose-dev.sh` **удалит все запущенные Docker контейнеры в системе**, поэтому если у вас есть
@@ -308,7 +327,7 @@ Build to Docker daemon failed, perhaps you should make sure your credentials for
 ```
 
 Если вы не можете подключиться к БД в docker, указывая верные login и password, то возможно у вас поднята другая база на
-том же порту 5432 .
+том же порту 5432.
 Это известная проблема, что Postgres в docker может стартануть при зянятом порту 5432, надо убедиться что у вас не
 поднят никакой другой Postgres на этом порту.
 
@@ -332,7 +351,6 @@ chmod +x init-database.sh
 #### 1. Войти в свою УЗ на https://hub.docker.com/ и последовательно создать публичные репозитории
 
 - niffler-ng-client
-- niffler-ng-client-gql
 - niffler-userdata
 - niffler-spend
 - niffler-gateway
@@ -355,18 +373,12 @@ chmod +x init-database.sh
 User-MacBook-Pro niffler % cd niffler
 ```
 
-#### 5. Собрать все имеджи, запушить и запустить niffler одной командой, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
+#### 5. Собрать все имеджи, запушить и запустить niffler одной командой:
 
 для REST:
 
 ```posh
 User-MacBook-Pro  niffler % bash docker-compose-dev.sh push
-```
-
-для GraphQL **_(временно недоступно)_**:
-
-```posh
-User-MacBook-Pro  niffler % bash docker-compose-dev.sh gql push 
 ```
 
 # Запуск e-2-e тестов в Docker network изолированно Niffler в докере:
@@ -377,22 +389,16 @@ User-MacBook-Pro  niffler % bash docker-compose-dev.sh gql push
 User-MacBook-Pro niffler % cd niffler
 ```
 
-#### 2. Запустить все сервисы и тесты, если необходим фронтенд GraphQL, то это указывается аргументом к скрипту:
-
-для REST:
+#### 2. Запустить все сервисы и тесты:
 
 ```posh
 User-MacBook-Pro  niffler % bash docker-compose-e2e.sh
 ```
 
-для GraphQL:
-
-```posh
-User-MacBook-Pro  niffler % bash docker-compose-e2e.sh gql
-```
-
 #### 3. Selenoid UI доступен по адресу: http://localhost:9090/
 
-#### 4. Allure доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
+#### 4. Allure UI доступен по адресу: http://localhost:5252/
 
-<img src="/niffler-ng-client/src/assets/images/niffler-with-a-coin.png" width="250">
+#### 5. Allure report доступен по адресу: http://localhost:5050/allure-docker-service/projects/niffler-ng/reports/latest/index.html
+
+<img src="./niffler-ng-client/src/assets/images/niffler-with-a-coin.png" width="250">

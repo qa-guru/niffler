@@ -1,21 +1,25 @@
 package guru.qa.niffler.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import guru.qa.niffler.config.keys.KeyManager;
-import guru.qa.niffler.service.SpecificRequestDumperFilter;
+import guru.qa.niffler.service.OidcCookiesLogoutAuthenticationSuccessHandler;
 import guru.qa.niffler.service.cors.CorsCustomizer;
-import org.apache.catalina.filters.RequestDumperFilter;
+import guru.qa.niffler.service.serialization.JdbcSessionObjectMapperConfigurer;
+import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.session.DefaultCookieSerializerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
+import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -23,122 +27,188 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.oidc.web.authentication.OidcLogoutAuthenticationSuccessHandler;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
-import org.springframework.security.web.PortMapperImpl;
-import org.springframework.security.web.PortResolverImpl;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.session.DisableEncodeUrlFilter;
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.security.web.webauthn.management.JdbcPublicKeyCredentialUserEntityRepository;
+import org.springframework.security.web.webauthn.management.JdbcUserCredentialRepository;
+import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
+import org.springframework.security.web.webauthn.management.UserCredentialRepository;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Map;
 import java.util.UUID;
 
 @Configuration
-public class NifflerAuthServiceConfig {
+public class NifflerAuthServiceConfig implements BeanClassLoaderAware {
 
   private final KeyManager keyManager;
   private final String nifflerFrontUri;
   private final String nifflerAuthUri;
-  private final String clientId;
+  private final String androidAppUri;
+  private final String webClientId;
+  private final String mobileClientId;
+  private final String mobileCustomScheme;
   private final CorsCustomizer corsCustomizer;
-  private final String serverPort;
-  private final String defaultHttpsPort = "443";
   private final Environment environment;
+
+  /**
+   * For ObjectMapper configuration
+   *
+   * @see guru.qa.niffler.config.NifflerAuthServiceConfig#jdbcOAuth2AuthorizationService(JdbcOperations, RegisteredClientRepository, ObjectMapper)
+   */
+  private ClassLoader classLoader;
 
   @Autowired
   public NifflerAuthServiceConfig(KeyManager keyManager,
                                   @Value("${niffler-front.base-uri}") String nifflerFrontUri,
                                   @Value("${niffler-auth.base-uri}") String nifflerAuthUri,
-                                  @Value("${oauth2.client-id}") String clientId,
-                                  @Value("${server.port}") String serverPort,
+                                  @Value("${oauth2.android-app-uri}") String androidAppUri,
+                                  @Value("${oauth2.web-client-id}") String webClientId,
+                                  @Value("${oauth2.mobile-client-id}") String mobileClientId,
+                                  @Value("${oauth2.mobile-custom-scheme}") String mobileCustomScheme,
                                   CorsCustomizer corsCustomizer,
                                   Environment environment) {
     this.keyManager = keyManager;
     this.nifflerFrontUri = nifflerFrontUri;
     this.nifflerAuthUri = nifflerAuthUri;
-    this.clientId = clientId;
-    this.serverPort = serverPort;
+    this.androidAppUri = androidAppUri;
+    this.webClientId = webClientId;
+    this.mobileClientId = mobileClientId;
+    this.mobileCustomScheme = mobileCustomScheme;
     this.corsCustomizer = corsCustomizer;
     this.environment = environment;
   }
 
+  @Override
+  public void setBeanClassLoader(@Nonnull ClassLoader classLoader) {
+    this.classLoader = classLoader;
+  }
+
   @Bean
   @Order(Ordered.HIGHEST_PRECEDENCE)
-  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
-                                                                    LoginUrlAuthenticationEntryPoint entryPoint) throws Exception {
-    OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-    if (environment.acceptsProfiles(Profiles.of("local", "staging"))) {
-      http.addFilterBefore(new SpecificRequestDumperFilter(
-          new RequestDumperFilter(),
-          "/login", "/oauth2/.*"
-      ), DisableEncodeUrlFilter.class);
-    }
+  public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+    OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+        OAuth2AuthorizationServerConfigurer.authorizationServer();
 
-    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-        .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
-
-    http.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(entryPoint))
-        .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
+    http
+        .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+        .with(authorizationServerConfigurer, authorizationServer ->
+            authorizationServer.oidc(oidc ->
+                oidc.logoutEndpoint(
+                    logout ->
+                        logout.logoutResponseHandler(
+                            new OidcCookiesLogoutAuthenticationSuccessHandler(
+                                new OidcLogoutAuthenticationSuccessHandler(),
+                                "XSRF-TOKEN"
+                            )
+                        )
+                )
+            )
+        )
+        .authorizeHttpRequests(authorize ->
+            authorize.anyRequest().authenticated()
+        )
+        .exceptionHandling(ex -> ex
+            .accessDeniedPage("/error")
+            .defaultAuthenticationEntryPointFor(
+                new LoginUrlAuthenticationEntryPoint("/login"),
+                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+            )
+        )
+        .sessionManagement(sm -> sm.invalidSessionUrl("/login"));
 
     corsCustomizer.corsCustomizer(http);
+    if (environment.matchesProfiles("prod | staging")) {
+      http.redirectToHttps(Customizer.withDefaults());
+    }
+
     return http.build();
   }
 
   @Bean
-  @Profile({"staging", "prod"})
-  public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttps() {
-    LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint("/login");
-    PortMapperImpl portMapper = new PortMapperImpl();
-    portMapper.setPortMappings(Map.of(
-        serverPort, defaultHttpsPort,
-        "80", defaultHttpsPort,
-        "8080", "8443"
-    ));
-    PortResolverImpl portResolver = new PortResolverImpl();
-    portResolver.setPortMapper(portMapper);
-    entryPoint.setForceHttps(true);
-    entryPoint.setPortMapper(portMapper);
-    entryPoint.setPortResolver(portResolver);
-    return entryPoint;
+  public RegisteredClientRepository registeredClientRepository(JdbcOperations jdbcOperations) {
+    RegisteredClientRepository registeredClientRepository = new JdbcRegisteredClientRepository(jdbcOperations);
+    RegisteredClient webClient = registeredClientRepository.findByClientId(webClientId);
+    RegisteredClient mobileClient = registeredClientRepository.findByClientId(mobileClientId);
+    if (webClient == null) {
+      registeredClientRepository.save(
+          registeredClient(
+              webClientId,
+              nifflerFrontUri + Callbacks.Web.login,
+              nifflerFrontUri + Callbacks.Web.logout
+          )
+      );
+    }
+    if (mobileClient == null) {
+      registeredClientRepository.save(
+          registeredClient(
+              mobileClientId,
+              mobileCustomScheme + androidAppUri + Callbacks.Android.login,
+              mobileCustomScheme + androidAppUri + Callbacks.Android.logout
+          )
+      );
+    }
+    return registeredClientRepository;
+  }
+
+  /**
+   * Do not use @Primary ObjectMapper directly!
+   * Only configured via JdbcSessionObjectMapperConfigure:
+   *
+   * @see JdbcSessionObjectMapperConfigurer
+   */
+  @Bean
+  public OAuth2AuthorizationService jdbcOAuth2AuthorizationService(JdbcOperations jdbc,
+                                                                   RegisteredClientRepository registeredClientRepository,
+                                                                   ObjectMapper objectMapper) {
+    final ObjectMapper configuredOm = JdbcSessionObjectMapperConfigurer.apply(this.classLoader, objectMapper);
+    var jdbcOAuth2AuthorizationService = new JdbcOAuth2AuthorizationService(
+        jdbc,
+        registeredClientRepository
+    );
+    final var oAuth2AuthorizationRowMapper = new JdbcOAuth2AuthorizationService.OAuth2AuthorizationRowMapper(registeredClientRepository);
+    final var oAuth2AuthorizationParametersMapper = new JdbcOAuth2AuthorizationService.OAuth2AuthorizationParametersMapper();
+    oAuth2AuthorizationRowMapper.setObjectMapper(configuredOm);
+    oAuth2AuthorizationParametersMapper.setObjectMapper(configuredOm);
+    jdbcOAuth2AuthorizationService.setAuthorizationRowMapper(oAuth2AuthorizationRowMapper);
+    jdbcOAuth2AuthorizationService.setAuthorizationParametersMapper(oAuth2AuthorizationParametersMapper);
+    return jdbcOAuth2AuthorizationService;
   }
 
   @Bean
-  @Profile({"local", "docker"})
-  public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPointHttp() {
-    return new LoginUrlAuthenticationEntryPoint("/login");
+  public OAuth2AuthorizationConsentService authorizationConsentService(JdbcOperations jdbc,
+                                                                       RegisteredClientRepository registeredClientRepository) {
+    return new JdbcOAuth2AuthorizationConsentService(jdbc, registeredClientRepository);
   }
 
   @Bean
-  public RegisteredClientRepository registeredClientRepository() {
-    RegisteredClient publicClient = RegisteredClient.withId(UUID.randomUUID().toString())
-        .clientId(clientId)
-        .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
-        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-        .redirectUri(nifflerFrontUri + "/authorized")
-        .scope(OidcScopes.OPENID)
-        .scope(OidcScopes.PROFILE)
-        .clientSettings(ClientSettings.builder()
-            .requireAuthorizationConsent(true)
-            .requireProofKey(true)
-            .build()
-        )
-        .tokenSettings(TokenSettings.builder()
-            .accessTokenTimeToLive(Duration.of(2, ChronoUnit.HOURS))
-            .build())
-        .build();
+  public PublicKeyCredentialUserEntityRepository jdbcPublicKeyCredentialRepository(JdbcOperations jdbc) {
+    return new JdbcPublicKeyCredentialUserEntityRepository(jdbc);
+  }
 
-    return new InMemoryRegisteredClientRepository(publicClient);
+  @Bean
+  public UserCredentialRepository jdbcUserCredentialRepository(JdbcOperations jdbc) {
+    return new JdbcUserCredentialRepository(jdbc);
   }
 
   @Bean
@@ -154,6 +224,11 @@ public class NifflerAuthServiceConfig {
   }
 
   @Bean
+  public DefaultCookieSerializerCustomizer defaultCookieSerializerCustomizer() {
+    return cookieSerializer -> cookieSerializer.setUseBase64Encoding(false);
+  }
+
+  @Bean
   public JWKSource<SecurityContext> jwkSource() throws NoSuchAlgorithmException {
     JWKSet set = new JWKSet(keyManager.rsaKey());
     return (jwkSelector, securityContext) -> jwkSelector.select(set);
@@ -162,5 +237,35 @@ public class NifflerAuthServiceConfig {
   @Bean
   public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
     return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+  }
+
+  @Bean
+  public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
+    return context -> {
+      if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
+        context.getClaims().expiresAt(Instant.now().plus(60, ChronoUnit.MINUTES));
+      }
+    };
+  }
+
+  private RegisteredClient registeredClient(String clientId, String redirectUri, String logoutRedirectUri) {
+    return RegisteredClient.withId(UUID.randomUUID().toString())
+        .clientId(clientId)
+        .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+        .redirectUri(redirectUri)
+        .scope(OidcScopes.OPENID)
+        .scope(OidcScopes.PROFILE)
+        .clientSettings(ClientSettings.builder()
+            .requireAuthorizationConsent(true)
+            .requireProofKey(true)
+            .build()
+        )
+        .postLogoutRedirectUri(logoutRedirectUri)
+        .tokenSettings(TokenSettings.builder()
+            .accessTokenTimeToLive(Duration.of(60, ChronoUnit.MINUTES))
+            .authorizationCodeTimeToLive(Duration.of(10, ChronoUnit.SECONDS))
+            .build())
+        .build();
   }
 }

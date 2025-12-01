@@ -4,23 +4,35 @@ import guru.qa.niffler.data.CategoryEntity;
 import guru.qa.niffler.data.SpendEntity;
 import guru.qa.niffler.data.projection.SumByCategoryInfo;
 import guru.qa.niffler.data.repository.SpendRepository;
+import guru.qa.niffler.ex.SpendExportException;
 import guru.qa.niffler.ex.SpendNotFoundException;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static org.apache.commons.csv.CSVFormat.DEFAULT;
+
 @Component
+@ParametersAreNonnullByDefault
 public class SpendService {
 
   private final SpendRepository spendRepository;
@@ -34,7 +46,7 @@ public class SpendService {
 
   @Transactional
   public @Nonnull
-  SpendJson saveSpendForUser(@Nonnull SpendJson spend) {
+  SpendJson saveSpendForUser(SpendJson spend) {
     final String username = spend.username();
 
     SpendEntity spendEntity = new SpendEntity();
@@ -51,7 +63,7 @@ public class SpendService {
 
   @Transactional
   public @Nonnull
-  SpendJson editSpendForUser(@Nonnull SpendJson spend) {
+  SpendJson editSpendForUser(SpendJson spend) {
     return spendRepository.findByIdAndUsername(spend.id(), spend.username()).map(
         spendEntity -> {
           CategoryEntity categoryEntity = categoryService.getOrSave(spend.category());
@@ -69,8 +81,8 @@ public class SpendService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  SpendJson getSpendForUser(@Nonnull String id,
-                            @Nonnull String username) {
+  SpendJson getSpendForUser(String id,
+                            String username) {
     return spendRepository.findByIdAndUsername(extractUuid(id), username)
         .map(SpendJson::fromEntity)
         .orElseThrow(() -> new SpendNotFoundException(
@@ -80,7 +92,7 @@ public class SpendService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  List<SpendJson> getSpendsForUser(@Nonnull String username,
+  List<SpendJson> getSpendsForUser(String username,
                                    @Nullable CurrencyValues filterCurrency,
                                    @Nullable Date dateFrom,
                                    @Nullable Date dateTo) {
@@ -92,8 +104,8 @@ public class SpendService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  Page<SpendJson> getSpendsForUser(@Nonnull String username,
-                                   @Nonnull Pageable pageable,
+  Page<SpendJson> getSpendsForUser(String username,
+                                   Pageable pageable,
                                    @Nullable CurrencyValues filterCurrency,
                                    @Nullable Date dateFrom,
                                    @Nullable Date dateTo,
@@ -103,7 +115,7 @@ public class SpendService {
   }
 
   @Transactional
-  public void deleteSpends(@Nonnull String username, @Nonnull List<String> ids) {
+  public void deleteSpends(String username, List<String> ids) {
     spendRepository.deleteByUsernameAndIdIn(
         username,
         ids.stream().map(UUID::fromString).toList()
@@ -112,7 +124,7 @@ public class SpendService {
 
   @Transactional(readOnly = true)
   @Nonnull
-  List<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
+  List<SpendEntity> getSpendsEntityForUser(String username,
                                            @Nullable CurrencyValues filterCurrency,
                                            @Nullable Date dateFrom,
                                            @Nullable Date dateTo) {
@@ -132,7 +144,7 @@ public class SpendService {
 
   @Transactional(readOnly = true)
   @Nonnull
-  List<SumByCategoryInfo> getSumByCategories(@Nonnull String username,
+  List<SumByCategoryInfo> getSumByCategories(String username,
                                              @Nullable Date dateFrom,
                                              @Nullable Date dateTo) {
     dateFrom = dateFrom == null ? new Date(0) : dateFrom;
@@ -146,12 +158,12 @@ public class SpendService {
 
   @Transactional(readOnly = true)
   @Nonnull
-  Page<SpendEntity> getSpendsEntityForUser(@Nonnull String username,
+  Page<SpendEntity> getSpendsEntityForUser(String username,
                                            @Nullable CurrencyValues filterCurrency,
                                            @Nullable Date dateFrom,
                                            @Nullable Date dateTo,
                                            @Nullable String searchQuery,
-                                           @Nonnull Pageable pageable) {
+                                           Pageable pageable) {
     dateTo = dateTo == null
         ? new Date()
         : dateTo;
@@ -177,8 +189,35 @@ public class SpendService {
     return spends;
   }
 
-  private @Nonnull UUID extractUuid(@Nonnull String id) {
-    UUID spendId;
+  @Transactional(readOnly = true)
+  public @Nonnull ByteArrayInputStream exportSpendsToCsv(String username) {
+    final List<SpendEntity> spends = spendRepository.findAllByUsernameOrderBySpendDateDesc(username);
+    try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+         CSVPrinter csvPrinter = new CSVPrinter(
+             new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8)),
+             DEFAULT.builder().setHeader(
+                 "Id", "Category", "Description", "Amount", "Currency", "Date"
+             ).get()
+         )) {
+      for (SpendEntity spend : spends) {
+        csvPrinter.printRecord(
+            spend.getId(),
+            spend.getCategory().getName(),
+            spend.getDescription(),
+            spend.getAmount(),
+            spend.getCurrency(),
+            spend.getSpendDate()
+        );
+      }
+      csvPrinter.flush();
+      return new ByteArrayInputStream(out.toByteArray());
+    } catch (IOException e) {
+      throw new SpendExportException("Error generating CSV for user: " + username);
+    }
+  }
+
+  private @Nonnull UUID extractUuid(String id) {
+    final UUID spendId;
     try {
       spendId = UUID.fromString(id);
     } catch (IllegalArgumentException e) {

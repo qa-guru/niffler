@@ -7,8 +7,8 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
-import jaxb.userdata.FriendState;
 import jaxb.userdata.FriendsRequest;
+import jaxb.userdata.FriendshipStatus;
 import jaxb.userdata.RemoveFriendRequest;
 import jaxb.userdata.UsersResponse;
 import org.junit.jupiter.api.Assertions;
@@ -58,13 +58,13 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
     final var foundedFriend = usersResponse.getUser().getLast();
 
     step("Check income invitation in response", () -> {
-      assertSame(FriendState.INVITE_RECEIVED, foundedInvitation.getFriendState());
+      assertSame(FriendshipStatus.INVITE_RECEIVED, foundedInvitation.getFriendshipStatus());
       assertEquals(testInvitation.id(), UUID.fromString(foundedInvitation.getId()));
       assertEquals(testInvitation.username(), foundedInvitation.getUsername());
     });
 
     step("Check friend in response", () -> {
-      assertSame(FriendState.FRIEND, foundedFriend.getFriendState());
+      assertSame(FriendshipStatus.FRIEND, foundedFriend.getFriendshipStatus());
       assertEquals(testFriend.id(), UUID.fromString(foundedFriend.getId()));
       assertEquals(testFriend.username(), foundedFriend.getUsername());
     });
@@ -94,7 +94,7 @@ public class UserDataFriendsSoapTest extends BaseSoapTest {
     final var foundedFriend = usersResponse.getUser().getFirst();
 
     step("Check friend in response", () -> {
-      assertSame(FriendState.FRIEND, foundedFriend.getFriendState());
+      assertSame(FriendshipStatus.FRIEND, foundedFriend.getFriendshipStatus());
       assertEquals(testFriend.id(), UUID.fromString(foundedFriend.getId()));
       assertEquals(testFriend.username(), foundedFriend.getUsername());
     });

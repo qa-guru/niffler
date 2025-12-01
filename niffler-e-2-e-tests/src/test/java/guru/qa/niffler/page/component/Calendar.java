@@ -5,25 +5,29 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.time.Month;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.codeborne.selenide.Condition.matchText;
 import static com.codeborne.selenide.Selenide.$;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
+@ParametersAreNonnullByDefault
 public class Calendar extends BaseComponent<Calendar> {
 
-  public Calendar(@Nonnull SelenideElement self) {
+  public Calendar(SelenideElement self) {
     super(self);
   }
 
   public Calendar() {
     super($(".MuiPickersLayout-root"));
   }
+
+  public static final String DATE_REGEXP = "^\\w+ \\d{4}$";
 
   private final SelenideElement input = $("input[name='date']");
   private final SelenideElement calendarButton = $("button[aria-label*='Choose date']");
@@ -33,7 +37,7 @@ public class Calendar extends BaseComponent<Calendar> {
   private final ElementsCollection dateRows = self.$$(".MuiDayCalendar-weekContainer");
 
   @Step("Select date in calendar: {date}")
-  public void selectDateInCalendar(@Nonnull Date date) {
+  public void selectDateInCalendar(Date date) {
     java.util.Calendar cal = new GregorianCalendar();
     cal.setTime(date);
     calendarButton.click();
@@ -92,6 +96,7 @@ public class Calendar extends BaseComponent<Calendar> {
   }
 
   private int getActualMonthIndex() {
+    currentMonthAndYear.should(matchText(DATE_REGEXP));
     return Month.valueOf(currentMonthAndYear.getText()
             .split(" ")[0]
             .toUpperCase())
@@ -99,6 +104,7 @@ public class Calendar extends BaseComponent<Calendar> {
   }
 
   private int getActualYear() {
+    currentMonthAndYear.should(matchText(DATE_REGEXP));
     return Integer.parseInt(currentMonthAndYear.getText().split(" ")[1]);
   }
 }

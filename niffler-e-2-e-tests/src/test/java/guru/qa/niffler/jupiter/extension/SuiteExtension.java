@@ -3,6 +3,9 @@ package guru.qa.niffler.jupiter.extension;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public interface SuiteExtension extends BeforeAllCallback {
 
   default void beforeSuite(ExtensionContext context) {
@@ -17,7 +20,7 @@ public interface SuiteExtension extends BeforeAllCallback {
         getOrComputeIfAbsent(this.getClass(),
             k -> {
               beforeSuite(context);
-              return (ExtensionContext.Store.CloseableResource) this::afterSuite;
+              return (AutoCloseable) this::afterSuite;
             }
         );
   }

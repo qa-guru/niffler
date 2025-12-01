@@ -4,11 +4,11 @@ import {Box, useMediaQuery, useTheme} from "@mui/material";
 import {FC} from "react";
 import {apiClient} from "../../../api/apiClient.ts";
 import {useSnackBar} from "../../../context/SnackBarContext.tsx";
-import {FriendState} from "../../../types/FriendState.ts";
+import {FriendshipStatus} from "../../../types/FriendshipStatus.ts";
 
 interface AddFriendButtonInterface {
     username: string;
-    handleUpdateUserData: (username: string, newFriendState: FriendState) => void;
+    handleUpdateUserData: (username: string, newFriendshipStatus: FriendshipStatus) => void;
 }
 
 export const AddFriendButton: FC<AddFriendButtonInterface> = ({username, handleUpdateUserData}) => {
@@ -19,7 +19,7 @@ export const AddFriendButton: FC<AddFriendButtonInterface> = ({username, handleU
     const handleAddUser = (username: string) => {
         apiClient.sendInvitation(username, {
             onSuccess: (data) => {
-                handleUpdateUserData(data.username, data.friendState);
+                handleUpdateUserData(data.username, data.friendshipStatus);
                 snackbar.showSnackBar(`Invitation sent to ${username}`, "success");
             },
             onFailure: e => {

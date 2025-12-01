@@ -30,8 +30,8 @@ public record UserJson(
     String photo,
     @JsonProperty("photoSmall")
     String photoSmall,
-    @JsonProperty("friendState")
-    FriendState friendState) implements IUserJson {
+    @JsonProperty("friendshipStatus")
+    FriendshipStatus friendshipStatus) implements IUserJson {
 
   public @Nonnull User toJaxbUser() {
     User jaxbUser = new User();
@@ -43,9 +43,9 @@ public record UserJson(
     jaxbUser.setCurrency(currency != null ? Currency.valueOf(currency.name()) : null);
     jaxbUser.setPhoto(photo);
     jaxbUser.setPhotoSmall(photoSmall);
-    jaxbUser.setFriendState(friendState() == null ?
-        jaxb.userdata.FriendState.VOID :
-        jaxb.userdata.FriendState.valueOf(friendState().name()));
+    jaxbUser.setFriendshipStatus(friendshipStatus() == null ?
+        jaxb.userdata.FriendshipStatus.VOID :
+        jaxb.userdata.FriendshipStatus.valueOf(friendshipStatus().name()));
     return jaxbUser;
   }
 
@@ -59,13 +59,13 @@ public record UserJson(
         jaxbUser.getCurrency() != null ? CurrencyValues.valueOf(jaxbUser.getCurrency().name()) : null,
         jaxbUser.getPhoto(),
         jaxbUser.getPhotoSmall(),
-        (jaxbUser.getFriendState() != null && jaxbUser.getFriendState() != jaxb.userdata.FriendState.VOID)
-            ? FriendState.valueOf(jaxbUser.getFriendState().name())
+        (jaxbUser.getFriendshipStatus() != null && jaxbUser.getFriendshipStatus() != jaxb.userdata.FriendshipStatus.VOID)
+            ? FriendshipStatus.valueOf(jaxbUser.getFriendshipStatus().name())
             : null
     );
   }
 
-  public static @Nonnull UserJson fromEntity(@Nonnull UserEntity entity, @Nullable FriendState friendState) {
+  public static @Nonnull UserJson fromEntity(@Nonnull UserEntity entity, @Nullable FriendshipStatus friendshipStatus) {
     return new UserJson(
         entity.getId(),
         entity.getUsername(),
@@ -75,7 +75,7 @@ public record UserJson(
         entity.getCurrency(),
         entity.getPhoto() != null && entity.getPhoto().length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null,
         entity.getPhotoSmall() != null && entity.getPhotoSmall().length > 0 ? new String(entity.getPhotoSmall(), StandardCharsets.UTF_8) : null,
-        friendState
+        friendshipStatus
     );
   }
 

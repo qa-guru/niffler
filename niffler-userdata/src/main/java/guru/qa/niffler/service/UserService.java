@@ -23,13 +23,16 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
-import static guru.qa.niffler.model.FriendState.FRIEND;
-import static guru.qa.niffler.model.FriendState.INVITE_SENT;
+import static guru.qa.niffler.model.FriendshipStatus.FRIEND;
+import static guru.qa.niffler.model.FriendshipStatus.INVITE_SENT;
 
+@ParametersAreNonnullByDefault
 @Component
 public class UserService {
 
@@ -37,10 +40,12 @@ public class UserService {
 
   public static final CurrencyValues DEFAULT_USER_CURRENCY = CurrencyValues.RUB;
   private final UserRepository userRepository;
+  private final MessagingService messagingService;
 
   @Autowired
-  public UserService(UserRepository userRepository) {
+  public UserService(UserRepository userRepository, MessagingService messagingService) {
     this.userRepository = userRepository;
+    this.messagingService = messagingService;
   }
 
   @Transactional
@@ -68,7 +73,7 @@ public class UserService {
 
   @Transactional
   public @Nonnull
-  UserJson update(@Nonnull UserJson user) {
+  UserJson update(UserJson user) {
     UserEntity userEntity = userRepository.findByUsername(user.username())
         .orElseGet(() -> {
           UserEntity emptyUser = new UserEntity();
@@ -89,7 +94,7 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  UserJson getCurrentUser(@Nonnull String username) {
+  UserJson getCurrentUser(String username) {
     return userRepository.findByUsername(username).map(UserJson::fromEntity)
         .orElseGet(() -> new UserJson(
             null,
@@ -106,7 +111,7 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  List<UserJsonBulk> allUsers(@Nonnull String username,
+  List<UserJsonBulk> allUsers(String username,
                               @Nullable String searchQuery) {
     List<UserWithStatus> usersFromDb = searchQuery == null
         ? userRepository.findByUsernameNot(username)
@@ -119,8 +124,8 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  Page<UserJsonBulk> allUsers(@Nonnull String username,
-                              @Nonnull Pageable pageable,
+  Page<UserJsonBulk> allUsers(String username,
+                              Pageable pageable,
                               @Nullable String searchQuery) {
     Page<UserWithStatus> usersFromDb = searchQuery == null
         ? userRepository.findByUsernameNot(username, pageable)
@@ -131,7 +136,7 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  List<UserJsonBulk> friends(@Nonnull String username,
+  List<UserJsonBulk> friends(String username,
                              @Nullable String searchQuery) {
     List<UserWithStatus> usersFromDb = searchQuery == null
         ? userRepository.findFriends(getRequiredUser(username))
@@ -144,8 +149,8 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public @Nonnull
-  Page<UserJsonBulk> friends(@Nonnull String username,
-                             @Nonnull Pageable pageable,
+  Page<UserJsonBulk> friends(String username,
+                             Pageable pageable,
                              @Nullable String searchQuery) {
     Page<UserWithStatus> usersFromDb = searchQuery == null
         ? userRepository.findFriends(getRequiredUser(username), pageable)
@@ -155,30 +160,44 @@ public class UserService {
   }
 
   @Transactional
-  public UserJson createFriendshipRequest(@Nonnull String username, @Nonnull String targetUsername) {
+  public UserJson createFriendshipRequest(String username, String targetUsername) {
     if (Objects.equals(username, targetUsername)) {
       throw new SameUsernameException("Can`t create friendship request for self user");
     }
     UserEntity currentUser = getRequiredUser(username);
     UserEntity targetUser = getRequiredUser(targetUsername);
-    currentUser.addFriends(FriendshipStatus.PENDING, targetUser);
+    final guru.qa.niffler.model.FriendshipStatus returnedStates;
+    Optional<FriendshipEntity> mayBeInvite = getFriendshipRequest(currentUser, targetUser);
+    if (mayBeInvite.isPresent()) {
+      mayBeInvite.get().setStatus(FriendshipStatus.ACCEPTED);
+      currentUser.addFriends(FriendshipStatus.ACCEPTED, targetUser);
+      returnedStates = FRIEND;
+    } else {
+      currentUser.addFriends(FriendshipStatus.PENDING, targetUser);
+      returnedStates = INVITE_SENT;
+    }
     userRepository.save(currentUser);
-    return UserJson.fromEntity(targetUser, INVITE_SENT);
+    messagingService.notifyUser(
+        targetUsername,
+        "New friendship request",
+        "User " + username + " send friendship request to you!",
+        null,
+        null,
+        null
+    );
+    return UserJson.fromEntity(targetUser, returnedStates);
   }
 
   @Transactional
   public @Nonnull
-  UserJson acceptFriendshipRequest(@Nonnull String username, @Nonnull String targetUsername) {
+  UserJson acceptFriendshipRequest(String username, String targetUsername) {
     if (Objects.equals(username, targetUsername)) {
       throw new SameUsernameException("Can`t accept friendship request for self user");
     }
     UserEntity currentUser = getRequiredUser(username);
     UserEntity targetUser = getRequiredUser(targetUsername);
 
-    FriendshipEntity invite = currentUser.getFriendshipAddressees()
-        .stream()
-        .filter(fe -> fe.getRequester().equals(targetUser))
-        .findFirst()
+    FriendshipEntity invite = getFriendshipRequest(currentUser, targetUser)
         .orElseThrow(() -> new NotFoundException("Can`t find invitation from username: '" + targetUsername + "'"));
 
     invite.setStatus(FriendshipStatus.ACCEPTED);
@@ -189,7 +208,7 @@ public class UserService {
 
   @Transactional
   public @Nonnull
-  UserJson declineFriendshipRequest(@Nonnull String username, @Nonnull String targetUsername) {
+  UserJson declineFriendshipRequest(String username, String targetUsername) {
     if (Objects.equals(username, targetUsername)) {
       throw new SameUsernameException("Can`t decline friendship request for self user");
     }
@@ -205,7 +224,7 @@ public class UserService {
   }
 
   @Transactional
-  public void removeFriend(@Nonnull String username, @Nonnull String targetUsername) {
+  public void removeFriend(String username, String targetUsername) {
     if (Objects.equals(username, targetUsername)) {
       throw new SameUsernameException("Can`t remove friendship relation for self user");
     }
@@ -221,14 +240,22 @@ public class UserService {
     userRepository.save(targetUser);
   }
 
-  public static boolean isPhotoString(String photo) {
+  public static boolean isPhotoString(@Nullable String photo) {
     return photo != null && photo.startsWith("data:image");
   }
 
   @Nonnull
-  UserEntity getRequiredUser(@Nonnull String username) {
+  UserEntity getRequiredUser(String username) {
     return userRepository.findByUsername(username).orElseThrow(
         () -> new NotFoundException("Can`t find user by username: '" + username + "'")
     );
+  }
+
+  @Nonnull
+  private Optional<FriendshipEntity> getFriendshipRequest(UserEntity currentUser, UserEntity targetUser) {
+    return currentUser.getFriendshipAddressees()
+        .stream()
+        .filter(fe -> fe.getRequester().equals(targetUser))
+        .findFirst();
   }
 }

@@ -1,4 +1,4 @@
-import {FriendState} from "../../../types/FriendState.ts";
+import {FriendshipStatus} from "../../../types/FriendshipStatus.ts";
 import {FC} from "react";
 import {useMediaQuery, useTheme} from "@mui/material";
 import {useSnackBar} from "../../../context/SnackBarContext.tsx";
@@ -9,7 +9,7 @@ import {useDialog} from "../../../context/DialogContext.tsx";
 
 interface DeclineButtonInterface {
     username: string;
-    handleUpdateUserData: (username: string, newFriendState: FriendState) => void;
+    handleUpdateUserData: (username: string, newFriendshipStatus: FriendshipStatus) => void;
 }
 
 export const DeclineButton: FC<DeclineButtonInterface> = ({username, handleUpdateUserData}) => {
@@ -25,7 +25,7 @@ export const DeclineButton: FC<DeclineButtonInterface> = ({username, handleUpdat
             onSubmit: () => {
                 apiClient.declineInvitation(username, {
                     onSuccess: (data) => {
-                        handleUpdateUserData(data.username, data.friendState);
+                        handleUpdateUserData(data.username, data.friendshipStatus);
                         snackbar.showSnackBar(`Invitation of ${username} is declined`, "success");
                     },
                     onFailure: e => {

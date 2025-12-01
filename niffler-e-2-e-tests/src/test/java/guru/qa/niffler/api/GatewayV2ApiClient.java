@@ -9,10 +9,11 @@ import guru.qa.niffler.model.rest.StatisticV2Json;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public class GatewayV2ApiClient extends RestClient {
 
   private final GatewayV2Api gatewayV2Api;
@@ -24,7 +25,7 @@ public class GatewayV2ApiClient extends RestClient {
 
   @Step("Send REST GET('/api/v2/spends/all') request to niffler-gateway")
   @Nullable
-  public RestPage<SpendJson> allSpendsPageable(@Nonnull String bearerToken,
+  public RestPage<SpendJson> allSpendsPageable(String bearerToken,
                                                @Nullable CurrencyValues currency,
                                                @Nullable DataFilterValues filterPeriod,
                                                @Nullable Integer page,
@@ -37,7 +38,7 @@ public class GatewayV2ApiClient extends RestClient {
 
   @Step("Send REST GET('/api/v2/users/all') request to niffler-gateway")
   @Nullable
-  public RestPage<UserJson> allUsersPageable(@Nonnull String bearerToken,
+  public RestPage<UserJson> allUsersPageable(String bearerToken,
                                              @Nullable String searchQuery,
                                              @Nullable Integer page,
                                              @Nullable Integer size,
@@ -49,7 +50,7 @@ public class GatewayV2ApiClient extends RestClient {
 
   @Step("Send REST GET('/api/v2/friends/all') request to niffler-gateway")
   @Nullable
-  public RestPage<UserJson> allFriendsPageable(@Nonnull String bearerToken,
+  public RestPage<UserJson> allFriendsPageable(String bearerToken,
                                                @Nullable String searchQuery,
                                                @Nullable Integer page,
                                                @Nullable Integer size,
@@ -61,7 +62,7 @@ public class GatewayV2ApiClient extends RestClient {
 
   @Step("Send REST GET('/api/v2/invitations/income') request to niffler-gateway")
   @Nullable
-  public RestPage<UserJson> incomeInvitationsPageable(@Nonnull String bearerToken,
+  public RestPage<UserJson> incomeInvitationsPageable(String bearerToken,
                                                       @Nullable String searchQuery,
                                                       @Nullable Integer page,
                                                       @Nullable Integer size,
@@ -73,7 +74,7 @@ public class GatewayV2ApiClient extends RestClient {
 
   @Step("Send REST GET('/api/v2/invitations/outcome') request to niffler-gateway")
   @Nullable
-  public RestPage<UserJson> outcomeInvitationsPageable(@Nonnull String bearerToken,
+  public RestPage<UserJson> outcomeInvitationsPageable(String bearerToken,
                                                        @Nullable String searchQuery,
                                                        @Nullable Integer page,
                                                        @Nullable Integer size,

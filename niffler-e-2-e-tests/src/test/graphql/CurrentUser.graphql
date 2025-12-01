@@ -1,0 +1,12 @@
+query CurrentUser {
+    user {
+        id
+        username
+        fullname
+        photo
+        categories {
+            name
+            archived
+        }
+    }
+}

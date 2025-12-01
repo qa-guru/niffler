@@ -19,3 +19,5 @@ spring:
 
 niffler-userdata:
   base-uri: 'http://userdata.niffler.dc:8089'
+firebase:
+  enabled: false

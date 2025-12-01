@@ -3,6 +3,7 @@
 <head>
     <title>Login to Niffler</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="1740"/>
     <link rel="icon" th:href="@{images/favicon.ico}"/>
     <link href="../static/styles/styles.css" th:href="@{styles/styles.css}" rel="stylesheet"
           type="text/css"/>
@@ -20,7 +21,7 @@
                 </p>
             </div>
             <div class="form-section">
-                <form class="form" action="#" th:action="@{/login}" method="post">
+                <form class="form" id="login-form" action="#" th:action="@{/login}" method="post">
                     <h1 class="header">Log in</h1>
                     <div th:if="${param.error}" class="form__error-container">
                         <p class="form__error">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
@@ -32,6 +33,7 @@
                         <input class="form__input"
                                type="text"
                                name="username"
+                               id="username"
                                placeholder="Type your username"
                                autocomplete="false"
                                required/>
@@ -40,39 +42,36 @@
                         <input class="form__input"
                                type="password"
                                name="password"
+                               id="password"
                                placeholder="Type your password"
                                autocomplete="false"
                                required/>
                         <button type="button" class="form__password-button"></button>
                     </label>
-                    <button class="form__submit" type="submit">
-                        Log in
+                    <button class="form__submit" id="login-button" type="submit">
+                        <span class="button-text">Log in</span>
+                        <span class="loader hidden"></span>
+                    </button>
+                    <button th:if="${@environment.acceptsProfiles('!docker')}" class="form__submit" id="login-with-passkey-button">
+                        <span class="button-text">Log in with passkey</span>
                     </button>
                     <span class="divider"></span>
-                    <a class="form__register" th:href="@{/register}" href="/register">Create new account</a>
+                    <a class="form__register" id="register-button" th:href="@{/register}" href="/register">Create new
+                        account
+                        <span class="loader hidden"></span>
+                    </a>
                 </form>
             </div>
         </section>
     </div>
 </main>
-<script>
-    const passwordButton = document.querySelector(".form__password-button");
-    const passwordInput = document.querySelector("[name=password]");
 
-    const togglePasswordInputType = (inputType) => {
-        return inputType === "password" ? "text" : "password";
-    }
-
-    const togglePasswordButtonClass = () => {
-        passwordButton.classList.toggle("form__password-button_active");
-    }
-
-    const handlePasswordButtonClick = () => {
-        passwordInput.setAttribute("type", togglePasswordInputType(passwordInput.getAttribute("type")));
-        togglePasswordButtonClass();
-    }
-
-    passwordButton.addEventListener("click", handlePasswordButtonClick);
+<script th:inline="javascript">
+    window.AUTH_BASE = [[${authUri}]] || window.location.origin;
+    window.FRONT_BASE = [[${frontUri}]];
 </script>
+
+<script th:src="${@environment.acceptsProfiles('docker')} ? @{/scripts/login-docker.js} : @{/scripts/login.js}"
+        defer></script>
 </body>
 </html>

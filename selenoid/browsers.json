@@ -4,11 +4,31 @@
     "versions": {
       "125.0": {
         "image": "selenoid/vnc_chrome:125.0",
-        "port": "4444"
+        "port": "4444",
+        "env": [
+          "TZ=Europe/Moscow"
+        ]
       },
       "127.0": {
         "image": "selenoid/vnc_chrome:127.0",
-        "port": "4444"
+        "port": "4444",
+        "env": [
+          "TZ=Europe/Moscow"
+        ]
+      },
+      "135.0": {
+        "image": "twilio/selenoid:chrome_stable_135",
+        "port": "4444",
+        "env": [
+          "TZ=Europe/Moscow"
+        ]
+      },
+      "140.0": {
+        "image": "twilio/selenoid:chrome_stable_140",
+        "port": "4444",
+        "env": [
+          "TZ=Europe/Moscow"
+        ]
       }
     }
   }

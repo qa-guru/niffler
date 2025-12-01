@@ -10,7 +10,12 @@ import {CalendarIcon} from "../Icon/CalendarIcon.tsx";
 import {apiClient} from "../../api/apiClient.ts";
 import {useNavigate} from "react-router-dom";
 import {useSnackBar} from "../../context/SnackBarContext.tsx";
-import {convertSpendingToFormData, SPENDING_INITIAL_STATE, spendingFormValidate} from "./formValidate.ts";
+import {
+    convertSpendingToFormData,
+    MIN_ACCEPTABLE_DATE,
+    SPENDING_INITIAL_STATE,
+    spendingFormValidate
+} from "./formValidate.ts";
 import {formHasErrors} from "../../utils/form.ts";
 import {Loader} from "../Loader";
 import {isApiError} from "../../types/Error.ts";
@@ -91,7 +96,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                 }
             };
             apiClient.addSpend(data, {
-                onSuccess: (_data) => {
+                onSuccess: () => {
                     snackbar.showSnackBar("New spending is successfully created", "success");
                     navigate("/main");
                     setSaveButtonLoading(false);
@@ -122,7 +127,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                 }
             };
             apiClient.editSpend(data, {
-                onSuccess: (_data) => {
+                onSuccess: () => {
                     snackbar.showSnackBar(`Spending is edited successfully`, "success");
                     setSaveButtonLoading(false);
                     navigate("/main");
@@ -248,11 +253,18 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                                 openPickerIcon: CalendarIcon,
                             }}
                             value={formData.spendDate.value}
-                            shouldDisableDate={day => day.isAfter(dayjs())}
+                            shouldDisableDate={day => day.isBefore(dayjs(MIN_ACCEPTABLE_DATE)) || day.isAfter(dayjs())}
                             onChange={newDate => setFormData({
                                 ...formData,
                                 spendDate: {...formData.spendDate, value: dayjs(newDate)}
                             })}
+                            slotProps={{
+                                textField: {
+                                    helperText: formData.spendDate.error
+                                        ? <span className="input__helper-text">{formData.spendDate.errorMessage}</span>
+                                        : null,
+                                },
+                            }}
                         />
                     </LocalizationProvider>
                 </Grid>

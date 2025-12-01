@@ -1,6 +1,7 @@
 package guru.qa.niffler.model.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import guru.qa.niffler.utils.DateUtils;
 
 import java.util.Date;
 import java.util.UUID;
@@ -36,5 +37,12 @@ public record SpendJson(
         description,
         username
     );
+  }
+
+  public String toSimpleString() {
+    return category.name() + " | "
+        + amount + " " + currency.symbol + " | "
+        + description + " | "
+        + DateUtils.getDateAsString(spendDate, "MMM d, yyyy");
   }
 }

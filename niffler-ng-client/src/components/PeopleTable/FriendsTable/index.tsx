@@ -26,8 +26,8 @@ export const FriendsTable = () => {
         ((!prevPage && page === 0) || page === prevPage) ? setIsLoading(true) : setIsButtonLoading(true);
         apiClient.getFriends(search, page, {
             onSuccess: data => {
-                setFriends(data.content.filter(user => user.friendState === "FRIEND"));
-                setInvitations(data.content.filter(user => user.friendState === "INVITE_RECEIVED"));
+                setFriends(data.content.filter(user => user.friendshipStatus === "FRIEND"));
+                setInvitations(data.content.filter(user => user.friendshipStatus === "INVITE_RECEIVED"));
                 setHasPreviousPage(!data.first);
                 setHasLastPage(!data.last);
                 setIsLoading(false);
@@ -48,8 +48,8 @@ export const FriendsTable = () => {
     }
 
     const handleUpdateInvitations = (data: User[]) => {
-        setFriends([...friends, ...data.filter(user => user.friendState === "FRIEND")]);
-        setInvitations(data.filter(user => user.friendState === "INVITE_RECEIVED"));
+        setFriends([...friends, ...data.filter(user => user.friendshipStatus === "FRIEND")]);
+        setInvitations(data.filter(user => user.friendshipStatus === "INVITE_RECEIVED"));
     }
 
     return (

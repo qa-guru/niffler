@@ -37,8 +37,8 @@ public class GatewaySpendRestTest extends BaseRestTest {
   @ParameterizedTest(name = "Тестовые данные для запроса: {0}")
   @ApiLogin(
       user = @GenerateUser(categories = {
-          @GenerateCategory("Рестораны"),
-          @GenerateCategory("Бары"),
+          @GenerateCategory(name = "Рестораны"),
+          @GenerateCategory(name = "Бары"),
       })
   )
   @Tag("REST")

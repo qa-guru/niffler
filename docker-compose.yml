@@ -6,8 +6,10 @@ services:
       - CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata
       - PGUSER=postgres
       - POSTGRES_PASSWORD=secret
+      - TZ=GMT+3
+      - PGTZ=GMT+3
     volumes:
-      - ./postgres:/docker-entrypoint-initdb.d
+      - ./postgres/script:/docker-entrypoint-initdb.d
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
       interval: 3s
@@ -15,6 +17,7 @@ services:
       retries: 5
     ports:
       - 5432:5432
+    command: [ "postgres", "-c", "max_prepared_transactions=100" ]
     networks:
       - niffler-network
 
@@ -51,6 +54,8 @@ services:
     image: ${PREFIX}/niffler-auth-docker:latest
     ports:
       - 9000:9000
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=512m -XX:MaxHeapSize=768m
     healthcheck:
       test: "wget --spider http://localhost:9000/actuator/health || exit 1"
       interval: 5s
@@ -71,6 +76,8 @@ services:
     ports:
       - 8091:8091
       - 8092:8092
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
     restart: always
     depends_on:
       niffler-all-db:
@@ -83,6 +90,8 @@ services:
     image: ${PREFIX}/niffler-gateway-docker:latest
     ports:
       - 8090:8090
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
     healthcheck:
       test: "wget --spider http://localhost:8090/actuator/health || exit 1"
       interval: 5s
@@ -100,6 +109,8 @@ services:
     image: ${PREFIX}/niffler-spend-docker:latest
     ports:
       - 8093:8093
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
     restart: always
     depends_on:
       niffler-all-db:
@@ -112,6 +123,8 @@ services:
     image: ${PREFIX}/niffler-userdata-docker:latest
     ports:
       - 8089:8089
+    environment:
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
     restart: always
     depends_on:
       auth.niffler.dc:
@@ -121,19 +134,97 @@ services:
 
   frontend.niffler.dc:
     container_name: frontend.niffler.dc
+    image: ${PREFIX}/niffler-ng-client-docker:latest
     build:
-      context: ./${FRONT}
+      context: ./niffler-ng-client
       dockerfile: ./Dockerfile
-      tags:
-        - ${PREFIX}/${FRONT}-docker:latest
       args:
         NPM_COMMAND: build:docker
-        VERSION: ${FRONT_VERSION}
     ports:
       - 80:80
     depends_on:
       gateway.niffler.dc:
         condition: service_started
+    networks:
+      - niffler-network
+
+  selenoid:
+    profiles:
+      - test
+    container_name: selenoid
+    image: aerokube/selenoid:1.11.3
+    platform: linux/${ARCH}
+    volumes:
+      - ./selenoid:/etc/selenoid
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Europe/Moscow
+    restart: unless-stopped
+    command: [ "-conf", "/etc/selenoid/browsers.json", "-limit", "3", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "niffler_niffler-network" ]
+    ports:
+      - 4444:4444
+    networks:
+      - niffler-network
+
+  selenoid-ui:
+    profiles:
+      - test
+    container_name: selenoid-ui
+    image: aerokube/selenoid-ui:1.10.11
+    depends_on:
+      - selenoid
+    restart: unless-stopped
+    ports:
+      - 9091:8080
+    command: [ "--selenoid-uri", "http://selenoid:4444" ]
+    networks:
+      - niffler-network
+
+  niffler-e-2-e:
+    profiles: [ test ]
+    container_name: niffler-e-2-e
+    image: ${PREFIX}/niffler-e-2-e-tests:latest
+    build:
+      context: ./
+      dockerfile: ./niffler-e-2-e-tests/Dockerfile
+    environment:
+      - ALLURE_DOCKER_API=${ALLURE_DOCKER_API}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - BUILD_URL=${BUILD_URL}
+      - HEAD_COMMIT_MESSAGE=${HEAD_COMMIT_MESSAGE}
+      - EXECUTION_TYPE=${EXECUTION_TYPE}
+    volumes:
+      - ./niffler-e-2-e-tests/.screen-output/screenshots/selenoid:/niffler/niffler-e-2-e-tests/.screen-output/screenshots/selenoid
+    depends_on:
+      frontend.niffler.dc:
+        condition: service_started
+    networks:
+      - niffler-network
+
+  allure:
+    profiles: [ test ]
+    container_name: allure
+    image: frankescobar/allure-docker-service:2.27.0
+    depends_on:
+      - niffler-e-2-e
+    environment:
+      - CHECK_RESULTS_EVERY_SECONDS=NONE
+      - KEEP_HISTORY=1
+    ports:
+      - 5050:5050
+    networks:
+      - niffler-network
+
+  allure-ui:
+    profiles: [ test ]
+    container_name: allure-ui
+    image: frankescobar/allure-docker-service-ui:7.0.3
+    depends_on:
+      - allure
+    environment:
+      - ALLURE_DOCKER_PUBLIC_API_URL=http://localhost:5050
+    ports:
+      - 5252:5252
     networks:
       - niffler-network
 

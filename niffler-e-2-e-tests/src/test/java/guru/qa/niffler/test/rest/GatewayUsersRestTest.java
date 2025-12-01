@@ -18,7 +18,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.List;
 
-import static guru.qa.niffler.model.rest.FriendState.INVITE_SENT;
+import static guru.qa.niffler.model.rest.FriendshipStatus.INVITE_SENT;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -113,8 +113,8 @@ public class GatewayUsersRestTest extends BaseRestTest {
     );
 
     step("Check sorting by status", () -> {
-          assertEquals(INVITE_SENT, allUsersResponse.getFirst().friendState());
-          assertNull(allUsersResponse.get(1).friendState());
+          assertEquals(INVITE_SENT, allUsersResponse.getFirst().friendshipStatus());
+          assertNull(allUsersResponse.get(1).friendshipStatus());
         }
     );
 

@@ -4,6 +4,13 @@ server:
     whitelabel:
       enabled: false
     path: /error
+  servlet:
+    session:
+      timeout: 60m
+      cookie:
+        name: JSESSIONID
+        max-age: 3600
+      tracking-modes: cookie
 
 spring:
   application:
@@ -24,6 +31,8 @@ spring:
     baseline-version: 0
     schemas: public
     locations: classpath:db/migration/niffler-auth
+  session:
+    timeout: 60m
   jpa:
     hibernate:
       ddl-auto: none
@@ -36,17 +45,31 @@ spring:
     show-sql: false
     generate-ddl: true
     open-in-view: false
-
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 365d
+  cloud:
+    compatibility-verifier:
+      enabled: false
 logging:
   level:
     root: INFO
     org.springframework.kafka: INFO
     org.springframework.web: INFO
-    org.springframework.security: INFO
-    org.springframework.security.oauth2: INFO
     org.springframework.web.cors: INFO
+    org.springframework.security.web.csrf: INFO
+    org.springframework.security.web.authentication.logout: INFO
+    org.springframework.security.web.webauthn: TRACE
+    org.springframework.security: INFO
+    org.springframework.web.servlet.handler: INFO
+    org.springframework.web.servlet.DispatcherServlet: INFO
+    org.springframework.security.oauth2: INFO
+    org.springframework.security.oauth2.server.authorization: INFO
     org.apache.catalina.filters.RequestDumperFilter: INFO
     org.springframework.boot.autoconfigure: INFO
+    org.apache.coyote.http11.Http11Processor: INFO
 
 ---
 spring:
@@ -65,11 +88,17 @@ spring:
     username: postgres
     password: secret
 niffler-front:
-  base-uri: 'http://127.0.0.1:3000'
+  base-uri: 'http://localhost:3000'
 niffler-auth:
-  base-uri: 'http://127.0.0.1:9000'
+  base-uri: 'http://localhost:9000'
+  rp-id: 'localhost'
 oauth2:
-  client-id: 'client'
+  web-client-id: 'client'
+  mobile-client-id: 'mobile-client'
+  mobile-custom-scheme: 'app://'
+  android-app-uri: 'ru.niffler_android'
+webauthn:
+  enabled: true
 ---
 spring:
   config:
@@ -90,8 +119,14 @@ niffler-front:
   base-uri: 'http://frontend.niffler.dc'
 niffler-auth:
   base-uri: 'http://auth.niffler.dc:9000'
+  rp-id: 'http host not supported'
 oauth2:
-  client-id: 'client'
+  web-client-id: 'client'
+  mobile-client-id: 'mobile-client'
+  mobile-custom-scheme: 'app://'
+  android-app-uri: 'ru.niffler_android'
+webauthn:
+  enabled: false
 ---
 spring:
   config:
@@ -112,12 +147,25 @@ spring:
     url: ${db.url}
     username: ${db.username}
     password: ${db.password}
+
+server:
+  tomcat:
+    remoteip:
+      port-header: 'x-forwarded-for'
+      protocol-header: 'x-forwarded-proto'
+
 niffler-front:
   base-uri: 'https://niffler.qa.guru'
 niffler-auth:
   base-uri: 'https://auth.niffler.qa.guru'
+  rp-id: 'niffler.qa.guru'
 oauth2:
-  client-id: ${client-id}
+  web-client-id: ${web-client-id}
+  mobile-client-id: ${mobile-client-id}
+  mobile-custom-scheme: ${mobile-custom-scheme}
+  android-app-uri: ${android-app-uri}
+webauthn:
+  enabled: true
 ---
 spring:
   config:
@@ -138,10 +186,23 @@ spring:
     url: ${db.url}
     username: ${db.username}
     password: ${db.password}
+
+server:
+  tomcat:
+    remoteip:
+      port-header: 'x-forwarded-for'
+      protocol-header: 'x-forwarded-proto'
+
 niffler-front:
   base-uri: 'https://niffler-stage.qa.guru'
 niffler-auth:
   base-uri: 'https://auth.niffler-stage.qa.guru'
+  rp-id: 'niffler-stage.qa.guru'
 oauth2:
-  client-id: ${client-id}
+  web-client-id: ${web-client-id}
+  mobile-client-id: ${mobile-client-id}
+  mobile-custom-scheme: ${mobile-custom-scheme}
+  android-app-uri: ${android-app-uri}
+webauthn:
+  enabled: true
 ---

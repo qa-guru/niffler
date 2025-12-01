@@ -7,46 +7,74 @@ on:
 jobs:
   e2e-tests:
     runs-on: ubuntu-latest
+    env:
+      PROFILE: docker
+      PREFIX: qaguru
+      ARCH: amd64
+      FRONT: niffler-ng-client
+      COMPOSE_PROFILES: test
+      ALLURE_DOCKER_API: ${{ secrets.ALLURE_DOCKER_API }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      EXECUTION_TYPE: github
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Set up JDK 21 for x64
+        with:
+          ref: ${{ env.GITHUB_SHA }}
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-          architecture: x64
-      - name: Setup Gradle 8.6
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.6
-      - name: Build and run e2e-tests
-        id: e2e
-        env:
-          PROFILE: docker
-          PREFIX: qaguru
-          ARCH: amd64
-          FRONT: niffler-ng-client
-          ALLURE_DOCKER_API: ${{ secrets.ALLURE_DOCKER_API }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          HEAD_COMMIT_MESSAGE: ${{ github.event.pull_request.head.sha || github.sha }}
-          EXECUTION_TYPE: github
+      - name: Build backends
+        id: build
         run: |
-          : # build backends with profile `docker`, only for testing
-          bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test || exit 1
-          : # pull browser (see browsers.json)        
-          docker pull selenoid/vnc_chrome:127.0
+          ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
+      - name: Report test results
+        uses: dorny/test-reporter@v2
+        if: always() && steps.build.outcome != 'skipped'
+        with:
+          name: Unit & Integration tests
+          path: '**/build/test-results/test/TEST-*.xml'
+          reporter: java-junit
+          badge-title: 'unit & integration tests'
+      - name: Add comment to PR with link to unit tests results
+        if: always() && steps.build.outcome != 'skipped'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const buildStatus = '${{ steps.build.outcome }}'
+            const message = buildStatus === 'success'
+              ? `✅ UNIT & INTEGRATION TESTS PASSED`
+              : `🔴 UNIT & INTEGRATION TESTS FAILED`
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            })
+      - name: Pull browsers
+        run: |
+          docker pull twilio/selenoid:chrome_stable_140
+      - name: Get the last commit message
+        run: |
+          echo "HEAD_COMMIT_MESSAGE=$(git show -s --format=%s)" >> $GITHUB_ENV
+      - name: Prepare screenshot dir
+        run: |
+          mkdir -p niffler-e-2-e-tests/.screen-output/screenshots/selenoid
+      - name: Run e2e-tests
+        id: e2e
+        run: |
           : # run e2e tests
-          docker compose -f docker-compose.test.yml up -d
+          docker compose up -d
           docker ps -a
           docker wait niffler-e-2-e
           exit_code=$(docker inspect -f '{{.State.ExitCode}}' niffler-e-2-e)
-          echo "e2e_exit_code=$exit_code" >> $GITHUB_OUTPUT
+          echo "E2E_EXIT_CODE=$exit_code" >> $GITHUB_OUTPUT
           echo "### Test logs ###"
           docker logs niffler-e-2-e
-          docker compose -f docker-compose.test.yml down
-          docker system prune -a -f
           if [ "$exit_code" -eq "0" ]; then
             echo "Tests passed successfully!"
             exit 0
@@ -54,29 +82,33 @@ jobs:
             echo "Tests failed!"
             exit 1
           fi
-      - name: Add comment to PR with link to allure
+      - name: Upload screenshots artifact
         if: always()
-        uses: actions/github-script@v6
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-screenshots-${{ github.run_id }}
+          path: |
+            niffler-e-2-e-tests/.screen-output/screenshots/selenoid/**/*.png
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Add comment to PR with link to allure
+        if: always() && steps.e2e.outcome != 'skipped'
+        uses: actions/github-script@v7
         with:
           script: |
-            const issues = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
-            })
-            const pr = context.issue.number || issues.data[0].number
-            const exitCode = ${{ steps.e2e.outputs.e2e_exit_code }}
-            const message = exitCode == '0' ? 
-              '✅ TEST RUN PASSED ✅ There is the [report](https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler-ng/reports/latest/index.html)\n🕓 All reports [history](https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler-ng)' :
-              '🔴 TEST RUN FAILED 🔴 There is the [report](https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler-ng/reports/latest/index.html)\n🕓 All reports [history](https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler-ng)'
+            const exitCode = ${{ steps.e2e.outputs.E2E_EXIT_CODE }}
+            const reportUrl = 'https://allure.niffler-stage.qa.guru/api/allure-docker-service/projects/niffler-ng/reports/latest/index.html'
+            const historyUrl = 'https://allure.niffler-stage.qa.guru/allure-docker-service-ui/projects/niffler-ng'
+            const message = exitCode == '0' ?
+              `✅ E2E TESTS PASSED\nThere is the [report](${reportUrl})\nAll reports [history](${historyUrl})` :
+              `🔴 E2E TESTS FAILED\nThere is the [report](${reportUrl})\nAll reports [history](${historyUrl})`
             github.rest.issues.createComment({
-              issue_number: pr,
+              issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: message
             })
-  
+
   collect-versions:
     needs: e2e-tests
     uses: ./.github/workflows/versions.yml
@@ -98,7 +130,6 @@ jobs:
           echo "SPEND_VER=${{ needs.collect-versions.outputs.spend-ver }}" >> $GITHUB_ENV
           echo "USERDATA_VER=${{ needs.collect-versions.outputs.userdata-ver }}" >> $GITHUB_ENV
           echo "FRONT_VER=${{ needs.collect-versions.outputs.front-ver }}" >> $GITHUB_ENV
-          echo "FRONT_IMAGE=niffler-ng-client" >> $GITHUB_ENV
 
       - name: Summary info
         run: |
@@ -107,7 +138,7 @@ jobs:
           echo "### niffler-gateway version will be used: ${{ env.PREFIX }}/niffler-gateway-${{ env.PROFILE }}:${{ env.GATEWAY_VER }}"
           echo "### niffler-spend version will be used: ${{ env.PREFIX }}/niffler-spend-${{ env.PROFILE }}:${{ env.SPEND_VER }}"
           echo "### niffler-userdata version will be used: ${{ env.PREFIX }}/niffler-userdata-${{ env.PROFILE }}:${{ env.USERDATA_VER }}"
-          echo "### niffler-front version will be used: ${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
+          echo "### niffler-front version will be used: ${{ env.PREFIX }}/niffler-ng-client-${{ env.PROFILE }}:${{ env.FRONT_VER }}"
           echo "### java version ###"
           java -version
 
@@ -134,6 +165,7 @@ jobs:
           docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
 
       - name: build auth & deploy to staging
+        id: deploy_auth
         if: steps.changes.outputs.auth == 'true'
         working-directory: ./
         run: |
@@ -145,6 +177,7 @@ jobs:
           echo "Deploy auth to staging done!"
 
       - name: build currency & deploy to staging
+        id: deploy_currency
         if: steps.changes.outputs.currency == 'true'
         working-directory: ./
         run: |
@@ -156,6 +189,7 @@ jobs:
           echo "Deploy currency to staging done!"
 
       - name: build gateway & deploy to staging
+        id: deploy_gateway
         if: steps.changes.outputs.gateway == 'true'
         working-directory: ./
         run: |
@@ -167,6 +201,7 @@ jobs:
           echo "Deploy gateway to staging done!"
 
       - name: build spend & deploy to staging
+        id: deploy_spend
         if: steps.changes.outputs.spend == 'true'
         working-directory: ./
         run: |
@@ -178,6 +213,7 @@ jobs:
           echo "Deploy spend to staging done!"
 
       - name: build userdata & deploy to staging
+        id: deploy_userdata
         if: steps.changes.outputs.userdata == 'true'
         working-directory: ./
         run: |
@@ -189,11 +225,12 @@ jobs:
           echo "Deploy userdata to staging done!"
 
       - name: build frontend & deploy to staging
+        id: deploy_frontend
         if: steps.changes.outputs.frontend == 'true'
         working-directory: ./niffler-ng-client
         run: |
           pwd
-          IMAGE_TAG="${{ env.PREFIX }}/${{ env.FRONT_IMAGE }}-${{ env.PROFILE }}"
+          IMAGE_TAG="${{ env.PREFIX }}/niffler-ng-client-${{ env.PROFILE }}"
           docker build --build-arg NPM_COMMAND=build:staging --build-arg VERSION=${{ env.FRONT_VER }} -t ${IMAGE_TAG}:${{ env.FRONT_VER }} -t ${IMAGE_TAG}:latest .
           docker push ${IMAGE_TAG}:${{ env.FRONT_VER }}
           docker push ${IMAGE_TAG}:latest

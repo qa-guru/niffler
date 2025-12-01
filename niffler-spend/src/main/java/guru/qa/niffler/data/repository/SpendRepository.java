@@ -9,15 +9,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
 
   @Nonnull
-  Optional<SpendEntity> findByIdAndUsername(@Nonnull UUID id, @Nonnull String username);
+  Optional<SpendEntity> findByIdAndUsername(UUID id, String username);
 
   @Query(
       "SELECT new guru.qa.niffler.data.projection.SumByCategory('Archived', s.currency, ROUND(SUM(s.amount), 2), MIN(s.spendDate), MAX(s.spendDate))  FROM SpendEntity s join CategoryEntity c on s.category = c " +
@@ -25,9 +27,9 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
           "group by s.currency"
   )
   List<SumByCategory> statisticByArchivedCategory(
-      @Nonnull String username,
-      @Nonnull Date dateFrom,
-      @Nonnull Date dateTo
+      String username,
+      Date dateFrom,
+      Date dateTo
   );
 
   @Query(
@@ -36,24 +38,27 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
           "group by c.name, s.currency"
   )
   List<SumByCategory> statisticByCategory(
-      @Nonnull String username,
-      @Nonnull Date dateFrom,
-      @Nonnull Date dateTo
+      String username,
+      Date dateFrom,
+      Date dateTo
   );
 
   @Nonnull
+  List<SpendEntity> findAllByUsernameOrderBySpendDateDesc(String username);
+
+  @Nonnull
   List<SpendEntity> findAllByUsernameAndSpendDateGreaterThanEqualAndSpendDateLessThanEqualOrderBySpendDateDesc(
-      @Nonnull String username,
-      @Nonnull Date dateFrom,
-      @Nonnull Date dateTo
+      String username,
+      Date dateFrom,
+      Date dateTo
   );
 
   @Nonnull
   List<SpendEntity> findAllByUsernameAndCurrencyAndSpendDateGreaterThanEqualAndSpendDateLessThanEqualOrderBySpendDateDesc(
-      @Nonnull String username,
-      @Nonnull CurrencyValues currency,
-      @Nonnull Date dateFrom,
-      @Nonnull Date dateTo
+      String username,
+      CurrencyValues currency,
+      Date dateFrom,
+      Date dateTo
   );
 
   @Nonnull
@@ -64,10 +69,10 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
           "order by s.spendDate desc "
   )
   Page<SpendEntity> findAll(
-      @Nonnull String username,
-      @Nonnull Date dateFrom,
-      @Nonnull Date dateTo,
-      @Nonnull Pageable pageable
+      String username,
+      Date dateFrom,
+      Date dateTo,
+      Pageable pageable
   );
 
   @Nonnull
@@ -79,11 +84,11 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
           "order by s.spendDate desc "
   )
   Page<SpendEntity> findAll(
-      @Nonnull String username,
-      @Nonnull Date dateFrom,
-      @Nonnull Date dateTo,
-      @Nonnull String searchQuery,
-      @Nonnull Pageable pageable
+      String username,
+      Date dateFrom,
+      Date dateTo,
+      String searchQuery,
+      Pageable pageable
   );
 
   @Nonnull
@@ -95,11 +100,11 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
           "order by s.spendDate desc "
   )
   Page<SpendEntity> findAll(
-      @Nonnull String username,
-      @Nonnull CurrencyValues currency,
-      @Nonnull Date dateFrom,
-      @Nonnull Date dateTo,
-      @Nonnull Pageable pageable
+      String username,
+      CurrencyValues currency,
+      Date dateFrom,
+      Date dateTo,
+      Pageable pageable
   );
 
   @Nonnull
@@ -112,13 +117,13 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
           "order by s.spendDate desc "
   )
   Page<SpendEntity> findAll(
-      @Nonnull String username,
-      @Nonnull CurrencyValues currency,
-      @Nonnull Date dateFrom,
-      @Nonnull Date dateTo,
-      @Nonnull String searchQuery,
-      @Nonnull Pageable pageable
+      String username,
+      CurrencyValues currency,
+      Date dateFrom,
+      Date dateTo,
+      String searchQuery,
+      Pageable pageable
   );
 
-  void deleteByUsernameAndIdIn(@Nonnull String username, @Nonnull List<UUID> ids);
+  void deleteByUsernameAndIdIn(String username, List<UUID> ids);
 }

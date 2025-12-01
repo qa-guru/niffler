@@ -1,18 +1,18 @@
-import {Grid, InputLabel, Typography, useMediaQuery, useTheme} from "@mui/material"
-import {FC, FormEvent, useContext, useEffect, useState,} from "react";
-import {ImageUpload} from "../ImageUpload";
-import {apiClient} from "../../api/apiClient.ts";
-import {useSnackBar} from "../../context/SnackBarContext.tsx";
-import {SessionContext} from "../../context/SessionContext.tsx";
-import {convertUserToFormData, profileFormValidate, UserFormData} from "./formValidate.ts";
-import {formHasErrors} from "../../utils/form.ts";
-import {Input} from "../Input";
+import { Grid, InputLabel, Typography, useMediaQuery, useTheme} from "@mui/material";
+import { FC, FormEvent, useContext, useEffect, useState } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { ImageUpload } from "../ImageUpload";
+import { apiClient } from "../../api/apiClient.ts";
+import { useSnackBar } from "../../context/SnackBarContext.tsx";
+import { SessionContext } from "../../context/SessionContext.tsx";
+import { convertUserToFormData, profileFormValidate, UserFormData } from "./formValidate.ts";
+import { formHasErrors } from "../../utils/form.ts";
+import { Input } from "../Input";
 
 export const ProfileForm: FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const {user, updateUser} = useContext(SessionContext);
+    const { user, updateUser } = useContext(SessionContext);
     const [formData, setFormData] = useState<UserFormData>(convertUserToFormData(user));
     const [isSaveButtonLoading, setSaveButtonLoading] = useState(false);
     const snackbar = useSnackBar();
@@ -51,10 +51,10 @@ export const ProfileForm: FC = () => {
             container
             component="form"
             onSubmit={onSubmit}
-            spacing={2}
+            spacing={0}
             sx={{
                 maxWidth: "624px",
-                margin: "40px auto"
+                margin: isMobile ? "0 auto 20px" : "40px auto"
             }}
         >
             <Grid item xs={12}>
@@ -65,29 +65,29 @@ export const ProfileForm: FC = () => {
                     Profile
                 </Typography>
             </Grid>
-            <Grid item xs={isMobile ? 10 : 8}>
+            <Grid item xs={isMobile ? 12 : 8}>
                 <ImageUpload
                     buttonText="Upload new picture"
                     file={formData.photo?.value ?? ""}
                     error={formData.photo?.error ?? false}
                     helperText={formData.photo?.errorMessage ?? ""}
                     isAvatar
-                    onFileUpload={(file) => setFormData({
-                        ...formData, photo: {
-                            ...formData.photo, value: file ?? "",
-                        }
-                    })}/>
+                    onFileUpload={(file) =>
+                        setFormData({ ...formData, photo: { ...formData.photo, value: file ?? "" } })
+                    }
+                />
             </Grid>
             <Grid item xs={12}>
                 <Grid
                     container
                     spacing={3}
                     sx={{
-                        alignItems: {xs: "center", sm: "flex-start"},
-                        flexDirection: {xs: "column", sm: "row"}
+                        marginTop: isMobile ? 2 : 1,
+                        alignItems: { xs: "center", sm: "flex-start" },
+                        flexDirection: { xs: "column", sm: "row" }
                     }}
                 >
-                    <Grid item xs={isMobile ? true : 4} sx={{width: "100%"}}>
+                    <Grid item xs={isMobile ? true : 4} sx={{ width: "100%" }}>
                         <InputLabel
                             htmlFor={"username"}
                             sx={{
@@ -104,9 +104,9 @@ export const ProfileForm: FC = () => {
                             disabled
                         />
                     </Grid>
-                    <Grid item xs={isMobile ? true : 4} sx={{width: "100%"}}>
+                    <Grid item xs={isMobile ? true : 4} sx={{ width: "100%" }}>
                         <InputLabel htmlFor={"name"}
-                                    sx={{color: theme.palette.black.main}}>
+                            sx={{ color: theme.palette.black.main }}>
                             Name
                         </InputLabel>
                         <Input
@@ -143,5 +143,5 @@ export const ProfileForm: FC = () => {
                 </Grid>
             </Grid>
         </Grid>
-    )
-}
+    );
+};

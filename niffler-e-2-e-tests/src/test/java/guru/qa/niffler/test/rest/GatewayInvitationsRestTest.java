@@ -8,7 +8,7 @@ import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.rest.FriendJson;
-import guru.qa.niffler.model.rest.FriendState;
+import guru.qa.niffler.model.rest.FriendshipStatus;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
@@ -52,7 +52,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
 
     step("Check friend in response", () -> {
       assertEquals(user.testData().incomeInvitations().getFirst().username(), friend.username());
-      assertEquals(FriendState.FRIEND, friend.friendState());
+      assertEquals(FriendshipStatus.FRIEND, friend.friendshipStatus());
     });
 
     step("Check that friends present in GET /friends request for both users", () ->
@@ -93,7 +93,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
 
     step("Check declined friend in response", () -> {
       assertEquals(user.testData().incomeInvitations().getFirst().username(), declinedFriend.username());
-      assertNull(declinedFriend.friendState());
+      assertNull(declinedFriend.friendshipStatus());
     });
 
     step("Check that outcome & income invitations removed for both users", () ->
@@ -102,7 +102,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
                 gatewayApiClient.allFriends(bearerToken, null).isEmpty(),
                 "Current user should not have income invitations after declining"),
             () -> assertNull(
-                userdataApiClient.allUsers(incomeInvitation, null).getFirst().friendState(),
+                userdataApiClient.allUsers(incomeInvitation, null).getFirst().friendshipStatus(),
                 "Inviter should not have outcome invitations after declining")
         )
     );
@@ -114,7 +114,7 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
                 "Current user should not have income invitations after declining"),
             () -> assertNull(userdataApiClient.allUsers(incomeInvitation, null)
                     .getFirst()
-                    .friendState(),
+                    .friendshipStatus(),
                 "Inviter should not have outcome invitations after declining"),
             () -> assertTrue(
                 userdataApiClient.friends(incomeInvitation, null)
@@ -146,22 +146,22 @@ public class GatewayInvitationsRestTest extends BaseRestTest {
 
     step("Check invitation in response", () -> {
       assertEquals(friendWillBeAdded, outcomeInvitation.username());
-      assertEquals(FriendState.INVITE_SENT, outcomeInvitation.friendState());
+      assertEquals(FriendshipStatus.INVITE_SENT, outcomeInvitation.friendshipStatus());
     });
 
     step("Check that friends request & income invitation present for both users", () ->
         Assertions.assertAll(
             () -> assertEquals(
-                FriendState.INVITE_SENT,
+                FriendshipStatus.INVITE_SENT,
                 gatewayApiClient.allUsers(bearerToken, null)
                     .getFirst()
-                    .friendState(),
+                    .friendshipStatus(),
                 "Current user should have outcome invitation after adding"),
             () -> assertEquals(
-                FriendState.INVITE_RECEIVED,
+                FriendshipStatus.INVITE_RECEIVED,
                 userdataApiClient.friends(friendWillBeAdded, null)
                     .getFirst()
-                    .friendState(),
+                    .friendshipStatus(),
                 "Target friend should have 1 income invitation"
             )
         )

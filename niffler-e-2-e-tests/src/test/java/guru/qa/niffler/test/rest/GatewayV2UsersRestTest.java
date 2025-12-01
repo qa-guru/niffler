@@ -9,7 +9,7 @@ import guru.qa.niffler.jupiter.annotation.OutcomeInvitations;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.page.RestPage;
-import guru.qa.niffler.model.rest.FriendState;
+import guru.qa.niffler.model.rest.FriendshipStatus;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Epic("[REST][niffler-gateway]: Пагинация Users")
-@DisplayName("[REST][niffler-gateway]: Пагинация Users")
+@Epic("[REST][niffler-gateway]: Пагинация Users V2")
+@DisplayName("[REST][niffler-gateway]: Пагинация Users V2")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GatewayV2UsersRestTest extends BaseRestTest {
 
@@ -76,7 +76,7 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         assertEquals(5, firstPageContent.size())
     );
     step("Check 0 element with INVITE_RECEIVED state on first page", () ->
-        assertEquals(userInvitation.get(0).username(), firstPageContent.get(0).username())
+        assertEquals(userInvitation.getFirst().username(), firstPageContent.getFirst().username())
     );
     step("Check 1 element with INVITE_RECEIVED state on first page", () ->
         assertEquals(userInvitation.get(1).username(), firstPageContent.get(1).username())
@@ -85,7 +85,7 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         assertEquals(userInvitation.get(2).username(), firstPageContent.get(2).username())
     );
     step("Check first element with FRIEND state on first page", () ->
-        assertEquals(userFriends.get(0).username(), firstPageContent.get(3).username())
+        assertEquals(userFriends.getFirst().username(), firstPageContent.get(3).username())
     );
   }
 
@@ -134,7 +134,7 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         assertEquals(userInvitation.getFirst().username(), firstPageContent.getFirst().username())
     );
     step("Check first element of first page", () ->
-        assertEquals(userFriends.get(0).username(), firstPageContent.get(1).username())
+        assertEquals(userFriends.getFirst().username(), firstPageContent.get(1).username())
     );
     step("Check second element of first page", () ->
         assertEquals(userFriends.get(1).username(), firstPageContent.get(2).username())
@@ -167,7 +167,7 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         assertTrue(firstPage.getTotalPages() > 0)
     );
     step("Check that first element is outcome invitation", () ->
-        assertEquals(FriendState.INVITE_SENT, firstPage.getContent().getFirst().friendState())
+        assertEquals(FriendshipStatus.INVITE_SENT, firstPage.getContent().getFirst().friendshipStatus())
     );
   }
 }

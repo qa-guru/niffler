@@ -5,11 +5,15 @@ import guru.qa.niffler.api.interceptor.CodeInterceptor;
 import guru.qa.niffler.api.service.RestClient;
 import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import io.qameta.allure.Step;
+import io.qameta.allure.okhttp3.AllureOkHttp3;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 
+import static java.util.Objects.requireNonNull;
+
+@ParametersAreNonnullByDefault
 public class AuthApiClient extends RestClient {
 
   private final AuthApi authApi;
@@ -18,16 +22,16 @@ public class AuthApiClient extends RestClient {
     super(
         CFG.authUrl(),
         true,
-        new CodeInterceptor()
+        new CodeInterceptor(),
+        new AllureOkHttp3()
     );
     this.authApi = retrofit.create(AuthApi.class);
   }
 
-
   @Step("Perform API Oauth 2.0 authorization flow for user with username: {username}, password: {password}")
-  public void login(@Nonnull ExtensionContext context,
-                    @Nonnull String username,
-                    @Nonnull String password) throws IOException {
+  public void login(ExtensionContext context,
+                    String username,
+                    String password) throws IOException {
     authApi.authorize(
         "code",
         "client",
@@ -53,12 +57,12 @@ public class AuthApiClient extends RestClient {
 
     ApiLoginExtension.setToken(
         context,
-        response.get("id_token").asText()
+        requireNonNull(response).get("id_token").asText()
     );
   }
 
   @Step("Perform registration for user with username: {username}, password: {password}")
-  public void register(@Nonnull String username, @Nonnull String password) throws IOException {
+  public void register(String username, String password) throws IOException {
     authApi.requestRegisterForm().execute();
     authApi.register(
         username,

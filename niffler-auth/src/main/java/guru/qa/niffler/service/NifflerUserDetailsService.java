@@ -1,8 +1,9 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.data.repository.UserRepository;
-import guru.qa.niffler.domain.NifflerUserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +24,17 @@ public class NifflerUserDetailsService implements UserDetailsService {
   @Transactional(readOnly = true)
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return userRepository.findByUsername(username)
-        .map(NifflerUserPrincipal::new)
+        .map(ue -> new User(
+            ue.getUsername(),
+            ue.getPassword(),
+            ue.getEnabled(),
+            ue.getAccountNonExpired(),
+            ue.getCredentialsNonExpired(),
+            ue.getAccountNonLocked(),
+            ue.getAuthorities().stream().map(
+                a -> new SimpleGrantedAuthority(a.getAuthority().name())
+            ).toList()
+        ))
         .orElseThrow(() -> new UsernameNotFoundException("Username: `" + username + "` not found"));
   }
 }

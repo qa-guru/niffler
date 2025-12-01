@@ -6,6 +6,7 @@ build
 !gradle/wrapper/gradle-wrapper.properties
 !**/src/main/**/build/
 !**/src/test/**/build/
+/secret/**
 
 ### STS ###
 .apt_generated
@@ -40,3 +41,4 @@ out/
 
 ### gRPC generated files ###
 /niffler-grpc-common/src/generated/**
+/niffler-e-2-e-tests/.screen-output/**

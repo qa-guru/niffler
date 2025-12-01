@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -23,30 +26,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   private String appName;
 
   @ExceptionHandler(NotFoundException.class)
-  public ResponseEntity<ErrorJson> handleNotFoundException(@Nonnull RuntimeException ex,
-                                                           @Nonnull HttpServletRequest request) {
+  public ResponseEntity<ErrorJson> handleNotFoundException(RuntimeException ex,
+                                                           HttpServletRequest request) {
     LOG.warn("### Resolve Exception in @RestControllerAdvice ", ex);
     return withStatus("Bad request", HttpStatus.NOT_FOUND, ex.getMessage(), request);
   }
 
   @ExceptionHandler(SameUsernameException.class)
-  public ResponseEntity<ErrorJson> handleSameUsernameException(@Nonnull RuntimeException ex,
-                                                               @Nonnull HttpServletRequest request) {
+  public ResponseEntity<ErrorJson> handleSameUsernameException(RuntimeException ex,
+                                                               HttpServletRequest request) {
     LOG.warn("### Resolve Exception in @RestControllerAdvice ", ex);
     return withStatus("Bad request", HttpStatus.BAD_REQUEST, ex.getMessage(), request);
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorJson> handleException(@Nonnull Exception ex,
-                                                   @Nonnull HttpServletRequest request) {
+  public ResponseEntity<ErrorJson> handleException(Exception ex,
+                                                   HttpServletRequest request) {
     LOG.warn("### Resolve Exception in @RestControllerAdvice ", ex);
     return withStatus("Internal error", HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
   }
 
-  private @Nonnull ResponseEntity<ErrorJson> withStatus(@Nonnull String type,
-                                                        @Nonnull HttpStatus status,
-                                                        @Nonnull String message,
-                                                        @Nonnull HttpServletRequest request) {
+  private @Nonnull ResponseEntity<ErrorJson> withStatus(String type,
+                                                        HttpStatus status,
+                                                        String message,
+                                                        HttpServletRequest request) {
     return ResponseEntity
         .status(status)
         .body(new ErrorJson(

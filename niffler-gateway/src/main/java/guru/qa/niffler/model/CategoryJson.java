@@ -1,6 +1,8 @@
 package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import guru.qa.niffler.model.gql.CategoryGqlInput;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -18,4 +20,12 @@ public record CategoryJson(
     @JsonProperty("archived")
     boolean archived) {
 
+  public static CategoryJson fromCategoryInput(@Nonnull CategoryGqlInput input, @Nonnull String username) {
+    return new CategoryJson(
+        input.id(),
+        input.name(),
+        username,
+        input.archived()
+    );
+  }
 }

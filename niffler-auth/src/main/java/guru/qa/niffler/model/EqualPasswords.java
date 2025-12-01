@@ -1,6 +1,6 @@
 package guru.qa.niffler.model;
 
-import guru.qa.niffler.service.EqualPasswordsValidator;
+import guru.qa.niffler.validation.EqualPasswordsValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

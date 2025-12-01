@@ -6,19 +6,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class WaitForOne<K, V> {
 
   private final Map<K, SyncSubject> storedValues = new ConcurrentHashMap<>();
 
-  public void provide(@Nonnull K k, @Nonnull V v) {
+  public void put(@Nonnull K k, @Nonnull V v) {
     storedValues.computeIfAbsent(k, SyncSubject::new)
-        .provideIfNotProvided(v);
+        .putOnce(v);
   }
 
   @Nullable
-  public V wait(@Nonnull K k, long timeoutMs) {
+  public V get(@Nonnull K k, long timeoutMs) {
     SyncSubject subject = storedValues.computeIfAbsent(k, SyncSubject::new);
     try {
       return subject.latch.await(timeoutMs, TimeUnit.MILLISECONDS)
@@ -27,17 +26,6 @@ public class WaitForOne<K, V> {
     } catch (InterruptedException e) {
       return null;
     }
-  }
-
-  @Nonnull
-  public Map<K, V> getAsMap() {
-    return this.storedValues.entrySet()
-        .stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                (v) -> v.getValue().value
-            ));
   }
 
   private final class SyncSubject {
@@ -50,7 +38,7 @@ public class WaitForOne<K, V> {
       this.latch = new CountDownLatch(1);
     }
 
-    private synchronized void provideIfNotProvided(V v) {
+    private synchronized void putOnce(V v) {
       if (this.latch.getCount() != 0L) {
         this.value = v;
         this.latch.countDown();

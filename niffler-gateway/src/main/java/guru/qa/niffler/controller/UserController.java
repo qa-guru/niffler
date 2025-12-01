@@ -1,7 +1,9 @@
 package guru.qa.niffler.controller;
 
+import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserDataClient;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@SecurityRequirement(name = NifflerGatewayServiceConfig.OPEN_API_AUTH_SCHEME)
 public class UserController {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
@@ -33,21 +36,21 @@ public class UserController {
 
   @GetMapping("/current")
   public UserJson currentUser(@AuthenticationPrincipal Jwt principal) {
-    String username = principal.getClaim("sub");
-    return userDataClient.currentUser(username);
+    final String principalUsername = principal.getClaim("sub");
+    return userDataClient.currentUser(principalUsername);
   }
 
   @GetMapping("/all")
   public List<UserJson> allUsers(@AuthenticationPrincipal Jwt principal,
                                  @RequestParam(required = false) String searchQuery) {
-    String username = principal.getClaim("sub");
-    return userDataClient.allUsers(username, searchQuery);
+    final String principalUsername = principal.getClaim("sub");
+    return userDataClient.allUsers(principalUsername, searchQuery);
   }
 
   @PostMapping("/update")
   public UserJson updateUserInfo(@AuthenticationPrincipal Jwt principal,
                                  @Valid @RequestBody UserJson user) {
-    String username = principal.getClaim("sub");
-    return userDataClient.updateUserInfo(user.addUsername(username));
+    final String principalUsername = principal.getClaim("sub");
+    return userDataClient.updateUserInfo(user.addUsername(principalUsername));
   }
 }

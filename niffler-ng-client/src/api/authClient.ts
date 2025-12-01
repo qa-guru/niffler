@@ -1,8 +1,15 @@
-const BASE_URL = `${import.meta.env.VITE_AUTH_URL}`;
+import { accessTokenFromLocalStorage, bearerToken, revokeTokenFromUrlEncodedParams } from "./authUtils.ts";
+import { csrfTokenUrl, registerPasskeyOptionsUrl, registerPasskeyUrl, revokeAccessTokenUrl, tokenUrl } from "./url/auth.ts";
+import { JsonTokens } from "../types/JsonTokens.ts";
+import { RegisterPasskeyPayload } from "../types/RegisterPasskeyPayload.ts";
+import { RequestHandler } from "../types/RequestHandler.ts";
+import { ApiError } from "../types/Error.ts";
+import { CsrfToken } from "../types/CsrfToken.ts";
 
 export const authClient = {
-    getToken: async (url: string, data: URLSearchParams) => {
-        const response = await fetch(`${BASE_URL}/${url}`, {
+
+    getToken: async (data: URLSearchParams): Promise<JsonTokens> => {
+        const response = await fetch(tokenUrl(), {
             method: "POST",
             credentials: "include",
             headers: {
@@ -15,19 +22,74 @@ export const authClient = {
         }
         return response.json();
     },
-    logout: async ({onSuccess, onFailure}: { onSuccess: () => void, onFailure: (e: Error) => void }) => {
-        const response = await fetch(`${BASE_URL}/logout`, {
+
+    getCsrfToken: async (): Promise<CsrfToken> => {
+        const token: string = await bearerToken();
+        const response = await fetch(csrfTokenUrl(), {
             method: "GET",
             credentials: "include",
             headers: {
                 "Content-type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("id_token")}`,
+                "Authorization": token
             }
         });
         if (!response.ok) {
-            onFailure(new Error("Failed logout"))
+            throw new Error("Failed loading csrf token");
+        }
+        return response.json();
+    },
+
+    registerPasskeyOptions: async (csrf: string, { onSuccess, onFailure }: RequestHandler<any>): Promise<any> => {
+        const token: string = await bearerToken();
+        const response = await fetch(registerPasskeyOptionsUrl(), {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-type": "application/json",
+                "X-XSRF-TOKEN": csrf,
+                "Authorization": token
+            },
+        });
+        if (!response.ok || response.headers.get("content-type")?.includes("text/html")) {
+            onFailure(new ApiError("Failed to request webauth options", response.status));
+        }
+        return onSuccess(response.json());
+    },
+
+    registerPasskey: async (payload: RegisterPasskeyPayload, csrf: string, { onSuccess, onFailure }: RequestHandler<any>): Promise<any> => {
+        const token: string = await bearerToken();
+        const response = await fetch(registerPasskeyUrl(), {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-type": "application/json",
+                "X-XSRF-TOKEN": csrf,
+                "Authorization": token
+            },
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok || response.headers.get("content-type")?.includes("text/html")) {
+            onFailure(new ApiError("Failed to request webauth options", response.status));
+        }
+        return onSuccess(response.json());
+    },
+
+    revokeAccessToken: async ({ onSuccess, onFailure }: { onSuccess: () => void, onFailure: (e: Error) => void }) => {
+        const accessToken = accessTokenFromLocalStorage();
+        const data = revokeTokenFromUrlEncodedParams(accessToken);
+        const logoutResponse = await fetch(revokeAccessTokenUrl(), {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded",
+            },
+            body: data.toString()
+        });
+
+        if (!logoutResponse.ok) {
+            onFailure(new Error("Failed revoke token"))
         } else {
             onSuccess();
         }
-    }
+    },
 }

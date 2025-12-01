@@ -13,4 +13,6 @@ public @interface Friends {
   boolean handleAnnotation() default true;
 
   int count() default 0;
+
+  GenerateCategory[] categories() default {};
 }

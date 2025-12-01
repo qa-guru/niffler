@@ -4,7 +4,9 @@ server:
 spring:
   application:
     name: niffler-gateway
-
+  cloud:
+    compatibility-verifier:
+      enabled: false
 logging:
   level:
     root: INFO
@@ -15,7 +17,7 @@ logging:
     org.springframework.boot.autoconfigure: INFO
 
 niffler-userdata:
-  client: rest
+  client: soap
 
 ---
 spring:
@@ -31,7 +33,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: 'http://127.0.0.1:9000'
+          issuer-uri: 'http://localhost:9000'
   graphql:
     graphiql:
       enabled: true
@@ -43,13 +45,15 @@ grpc:
       negotiationType: PLAINTEXT
 
 niffler-currency:
-  base-uri: 'http://127.0.0.1:8091'
+  base-uri: 'http://localhost:8091'
 niffler-userdata:
-  base-uri: 'http://127.0.0.1:8089'
+  base-uri: 'http://localhost:8089'
 niffler-spend:
-  base-uri: 'http://127.0.0.1:8093'
+  base-uri: 'http://localhost:8093'
 niffler-front:
-  base-uri: 'http://127.0.0.1:3000'
+  base-uri: 'http://localhost:3000'
+niffler-gateway:
+  base-uri: 'http://localhost:8090'
 ---
 spring:
   config:
@@ -80,6 +84,8 @@ niffler-spend:
   base-uri: 'http://spend.niffler.dc:8093'
 niffler-front:
   base-uri: 'http://frontend.niffler.dc'
+niffler-gateway:
+  base-uri: 'http://gateway.niffler.dc:8090'
 ---
 spring:
   config:
@@ -106,6 +112,12 @@ grpc:
       address: ${niffler-currency.grpc.url}
       negotiationType: PLAINTEXT
 
+server:
+  tomcat:
+    remoteip:
+      port-header: 'x-forwarded-for'
+      protocol-header: 'x-forwarded-proto'
+
 niffler-currency:
   base-uri: ${niffler-currency.url}
 niffler-userdata:
@@ -114,6 +126,8 @@ niffler-spend:
   base-uri: ${niffler-spend.url}
 niffler-front:
   base-uri: 'https://niffler.qa.guru'
+niffler-gateway:
+  base-uri: 'https://api.niffler.qa.guru'
 ---
 spring:
   config:
@@ -140,6 +154,12 @@ grpc:
       address: ${niffler-currency.grpc.url}
       negotiationType: PLAINTEXT
 
+server:
+  tomcat:
+    remoteip:
+      port-header: 'x-forwarded-for'
+      protocol-header: 'x-forwarded-proto'
+
 niffler-currency:
   base-uri: ${niffler-currency.url}
 niffler-userdata:
@@ -148,4 +168,6 @@ niffler-spend:
   base-uri: ${niffler-spend.url}
 niffler-front:
   base-uri: 'https://niffler-stage.qa.guru'
+niffler-gateway:
+  base-uri: 'https://api.niffler-stage.qa.guru'
 ---

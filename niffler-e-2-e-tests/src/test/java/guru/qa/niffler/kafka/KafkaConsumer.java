@@ -19,7 +19,6 @@ import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class KafkaConsumer implements Runnable {
 
   private static final Logger LOG = LoggerFactory.getLogger(KafkaConsumer.class);
-  private static final Config CFG = Config.getConfig();
+  private static final Config CFG = Config.getInstance();
   private static final WaitForOne<String, UserJson> MESSAGES = new WaitForOne<>();
   private static final ObjectMapper OM = new ObjectMapper();
 
@@ -64,10 +63,6 @@ public class KafkaConsumer implements Runnable {
     running.set(false);
   }
 
-  @Nonnull
-  public static Map<String, UserJson> getMessages() {
-    return MESSAGES.getAsMap();
-  }
 
   @Nullable
   public static UserJson getMessage(@Nonnull String username) {
@@ -76,7 +71,7 @@ public class KafkaConsumer implements Runnable {
 
   @Nullable
   public static UserJson getMessage(@Nonnull String username, long timeoutMs) {
-    return MESSAGES.wait(username, timeoutMs);
+    return MESSAGES.get(username, timeoutMs);
   }
 
   @Nonnull
@@ -118,18 +113,20 @@ public class KafkaConsumer implements Runnable {
       UserJson userJson = Objects.requireNonNull(
           OM.readValue(recordValue, UserJson.class)
       );
-      MESSAGES.provide(userJson.username(), userJson);
+      MESSAGES.put(userJson.username(), userJson);
     } catch (JsonProcessingException e) {
       LOG.error("### Parse message fail", e);
     }
   }
 
   private void logRecord(@Nonnull ConsumerRecord<String, String> record) {
-    LOG.debug(String.format("topic = %s, \npartition = %d, \noffset = %d, \nkey = %s, \nvalue = %s\n\n",
+    LOG.debug(
+        "topic = {}, \npartition = {}, \noffset = {}, \nkey = {}, \nvalue = {}\n\n",
         record.topic(),
         record.partition(),
         record.offset(),
         record.key(),
-        record.value()));
+        record.value()
+    );
   }
 }

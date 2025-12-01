@@ -2,20 +2,8 @@
 source ./docker.properties
 export PROFILE=docker
 export PREFIX="${IMAGE_PREFIX}"
-export FRONT_VERSION="2.1.0"
-export ARCH=$(uname -m)
-
-echo '### Java version ###'
-java --version
-
-if [[ "$1" = "gql" ]]; then
-  export FRONT="niffler-ng-client-gql"
-else
-  export FRONT="niffler-ng-client"
-fi
 
 docker compose down
-
 docker_containers=$(docker ps -a -q)
 docker_images=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'niffler')
 
@@ -30,14 +18,16 @@ if [ ! -z "$docker_images" ]; then
   docker rmi $docker_images
 fi
 
+echo '### Java version ###'
+java --version
 bash ./gradlew clean
-if [ "$1" = "push" ] || [ "$2" = "push" ]; then
+if [ "$1" = "push" ]; then
   echo "### Build & push images ###"
-  bash ./gradlew jib -x :niffler-e-2-e-tests:test
+  bash ./gradlew jib -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
   docker compose push frontend.niffler.dc
 else
   echo "### Build images ###"
-  bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
+  bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
 fi
 
 docker compose up -d

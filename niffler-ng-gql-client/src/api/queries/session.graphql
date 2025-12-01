@@ -1,0 +1,5 @@
+query Session {
+    session {
+        username
+    }
+}

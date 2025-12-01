@@ -10,11 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.math.BigDecimal;
 
 import static guru.qa.niffler.grpc.CurrencyValues.valueOf;
 
 @Component
+@ParametersAreNonnullByDefault
 public class GrpcCurrencyClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(GrpcCurrencyClient.class);
@@ -28,8 +30,8 @@ public class GrpcCurrencyClient {
 
   public @Nonnull
   BigDecimal calculate(double amount,
-                       @Nonnull CurrencyValues spendCurrency,
-                       @Nonnull CurrencyValues desiredCurrency) {
+                       CurrencyValues spendCurrency,
+                       CurrencyValues desiredCurrency) {
     return BigDecimal.valueOf(
         nifflerCurrencyServiceStub.calculateRate(
             CalculateRequest.newBuilder()

@@ -1,0 +1,17 @@
+mutation UpdateUser($input: UserInput!) {
+    user(input: $input) {
+        id
+        username
+        fullname
+        photo
+    }
+}
+
+mutation UpdateFriendshipStatus($input: FriendshipInput!) {
+    friendship(input: $input) {
+        id
+        username
+        fullname
+        photo
+    }
+}

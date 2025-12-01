@@ -7,6 +7,8 @@ import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.page.component.Calendar;
 import guru.qa.niffler.page.component.SelectField;
 import io.qameta.allure.Step;
+import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.Keys;
 
 import java.util.Date;
 
@@ -25,6 +27,7 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
   private final SelenideElement categoryInput = $("#category");
   private final ElementsCollection categories = $$(".MuiChip-root");
   private final SelenideElement descriptionInput = $("#description");
+  private final SelenideElement dateInput = $("input[name='date']");
 
   private final SelenideElement cancelBtn = $("#cancel");
   private final SelenideElement saveBtn = $("#save");
@@ -37,7 +40,7 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
 
   @Step("Fill spending data from object")
   public EditSpendingPage fillPage(SpendJson spend) {
-    return setNewSpendingDate(spend.spendDate())
+    return selectSpendingDateInCalendar(spend.spendDate())
         .setNewSpendingAmount(spend.amount())
         .setNewSpendingCurrency(spend.currency())
         .setNewSpendingCategory(spend.category().name())
@@ -71,9 +74,19 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
     return this;
   }
 
-  @Step("Set new spending date: {0}")
-  public EditSpendingPage setNewSpendingDate(Date date) {
+  @Step("Select spending date: {0} from calendar")
+  public EditSpendingPage selectSpendingDateInCalendar(Date date) {
     calendar.selectDateInCalendar(date);
+    return this;
+  }
+
+  @Step("Set new spending date: {0}")
+  public EditSpendingPage pasteSpendingDate(String date) {
+    dateInput.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+    dateInput.sendKeys(Keys.BACK_SPACE);
+    if (!StringUtils.isEmpty(date)) {
+      dateInput.setValue(date);
+    }
     return this;
   }
 

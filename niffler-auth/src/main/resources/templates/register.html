@@ -3,6 +3,7 @@
 <head>
     <title>Register to Niffler</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="1740"/>
     <link rel="icon" th:href="@{images/favicon.ico}"/>
     <link href="../static/styles/styles.css" th:href="@{styles/styles.css}" rel="stylesheet"
           type="text/css"/>
@@ -27,7 +28,7 @@
                         Sign up
                     </h1>
                     <p class="header__additional">
-                        Already have an account? <a class="form__link" th:href="@{|${frontUri}|}">Log in!</a>
+                        Already have an account? <a class="form__link" href="/login">Log in!</a>
                     </p>
                     <label class="form__label">Username
                         <input class="form__input" type="text" id="username" th:field="*{username}" name="username"
@@ -49,46 +50,19 @@
                         <span class="form__error" th:if="${#fields.hasErrors('passwordSubmit')}"
                               th:errors="*{passwordSubmit}"></span>
                     </label>
-                    <button class="form__submit" type="submit">
-                        Sign Up
+                    <button class="form__submit" id="register-button" type="submit">
+                        <span class="button-text">Sign Up</span>
+                        <span class="loader hidden"></span>
                     </button>
                 </form>
                 <div class="form" th:unless="${username == null}">
                     <p class="form__paragraph form__paragraph_success">Congratulations! You've registered!</p>
-                    <a class="form_sign-in" th:href="@{|${frontUri}|}">Sign in</a>
+                    <a class="form_sign-in" th:href="@{|${frontUri}|}" th:text="${finalStep} ?: 'Sign in'">Sign in</a>
                 </div>
             </div>
         </section>
     </div>
 </main>
-<script>
-    const passwordButton = document.getElementById("passwordBtn");
-    const passwordInput = document.getElementById("password");
-
-    const passwordSubmitButton = document.getElementById("passwordSubmitBtn");
-    const passwordSubmitInput = document.getElementById("passwordSubmit");
-
-    const togglePasswordInputType = (inputType) => {
-        return inputType === "password" ? "text" : "password";
-    }
-
-    const togglePasswordButtonClass = (passwordBtn) => {
-        passwordBtn.classList.toggle("form__password-button_active");
-    }
-
-    const handlePasswordButtonClick = () => {
-        passwordInput.setAttribute("type", togglePasswordInputType(passwordInput.getAttribute("type")));
-        togglePasswordButtonClass(passwordButton);
-    }
-
-    const handleSubmitPasswordButtonClick = () => {
-        passwordSubmitInput.setAttribute("type", togglePasswordInputType(passwordSubmitInput.getAttribute("type")));
-        togglePasswordButtonClass(passwordSubmitButton);
-    }
-
-    passwordButton.addEventListener("click", handlePasswordButtonClick);
-    passwordSubmitButton.addEventListener("click", handleSubmitPasswordButtonClick);
-
-</script>
+<script th:src="@{/scripts/reg.js}" defer></script>
 </body>
 </html>

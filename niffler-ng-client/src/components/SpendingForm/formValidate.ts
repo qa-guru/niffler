@@ -4,10 +4,12 @@ import {Category} from "../../types/Category.ts";
 import {Spending} from "../../types/Spending.ts";
 import {IStringIndex} from "../../types/IStringIndex.ts";
 
+export const MIN_ACCEPTABLE_DATE = "1970-01-01";
+
 const MIN_AMOUNT_ERROR = `Amount has to be not less then 0.01`;
 const MAX_DESCRIPTION_LENGTH = 100;
 const MAX_DESCRIPTION_ERROR = `Description length has to be not longer that ${MAX_DESCRIPTION_LENGTH} symbols`;
-const FUTURE_DATE_ERROR = "Date can not be in the future";
+const DATE_RANGE_ERROR = "Date must be between 01.01.1970 and today";
 const EMPTY_CATEGORY_ERROR = "Please choose category";
 
 export const SPENDING_INITIAL_STATE = {
@@ -70,8 +72,8 @@ export const spendingFormValidate = (formValues: SpendingFormData): SpendingForm
         ...newFormValues,
         amount: {
             ...newFormValues.amount,
-            error: formValues.amount.value <= 0,
-            errorMessage: formValues.amount.value <= 0 ? MIN_AMOUNT_ERROR : "",
+            error: formValues.amount.value < 0.1,
+            errorMessage: formValues.amount.value < 0.1 ? MIN_AMOUNT_ERROR : "",
         },
         description: {
             ...newFormValues.description,
@@ -80,8 +82,11 @@ export const spendingFormValidate = (formValues: SpendingFormData): SpendingForm
         },
         spendDate: {
             ...newFormValues.spendDate,
-            error: formValues.spendDate.value.isAfter(dayjs()),
-            errorMessage: formValues.spendDate.value.isAfter(dayjs()) ? FUTURE_DATE_ERROR : "",
+            error:
+                !formValues.spendDate.value.isValid() ||
+                formValues.spendDate.value.isBefore(dayjs(MIN_ACCEPTABLE_DATE)) ||
+                formValues.spendDate.value.isAfter(dayjs()),
+            errorMessage: DATE_RANGE_ERROR,
         },
         category: {
             ...newFormValues.category,

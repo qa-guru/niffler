@@ -1,0 +1,3 @@
+mutation FcmToken($input: FcmTokenInput!) {
+  fcmToken(input: $input)
+}

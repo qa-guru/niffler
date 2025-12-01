@@ -18,6 +18,8 @@ public abstract class BaseEndpoint {
             .map(UserJsonBulk::toJaxbUser)
             .toList()
     );
+    response.setSize(users.getSize());
+    response.setNumber(users.getNumber());
     response.setTotalElements(users.getTotalElements());
     response.setTotalPages(users.getTotalPages());
     return response;
