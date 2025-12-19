@@ -1,4 +1,4 @@
-FROM gradle:9.2.1-jdk21-alpine
+FROM gradle:9.2.1-jdk21
 
 WORKDIR /home/gradle/niffler
 ENV TZ=Europe/Moscow
