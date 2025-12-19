@@ -1,13 +1,11 @@
-FROM eclipse-temurin:21-jdk
+FROM 9.2.1-jdk21-alpine
 
-WORKDIR /niffler
+WORKDIR /home/gradle/niffler
 ENV TZ=Europe/Moscow
-COPY ./gradle ./gradle
 COPY ./niffler-e-2-e-tests ./niffler-e-2-e-tests
 COPY ./niffler-grpc-common ./niffler-grpc-common
-COPY ./gradlew ./
 COPY ./build.gradle ./
 COPY ./settings.gradle ./
 COPY ./gradle.properties ./
 
-CMD ./gradlew test -p niffler-e-2-e-tests -Dtest.env=docker -Drepository=jpa -Duser.timezone=Europe/Moscow
+CMD gradle test -p niffler-e-2-e-tests -Dtest.env=docker -Drepository=jpa -Duser.timezone=Europe/Moscow

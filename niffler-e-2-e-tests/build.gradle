@@ -1,21 +1,22 @@
 buildscript {
     ext {
-        junitVersion = '5.13.4'
-        allureVersion = '2.30.0'
-        selenideVersion = '7.11.1'
-        okhttp3Version = '5.2.1'
+        junitVersion = '5.14.1'
+        allureVersion = '2.32.0'
+        aspectJVersion = '1.9.22'
+        selenideVersion = '7.13.0'
+        okhttp3Version = '5.3.2'
         retrofitVersion = '3.0.0'
         apollographqlVersion = '0.0.2'
-        logbackVersion = '1.5.20'
+        logbackVersion = '1.5.22'
         slf4jVersion = '2.0.17'
         springJdbcVersion = '6.2.12'
         springCryptoVersion = '6.5.6'
         p6spyVersion = '3.9.1'
-        hibernateVersion = '7.1.1.Final'
-        kafkaClientsVersion = '4.1.0'
+        hibernateVersion = '7.2.0.Final'
+        kafkaClientsVersion = '4.1.1'
         saajVersion = '3.0.4'
         springDataCommonsVersion = '3.5.5'
-        wiremockVersion = '3.13.1'
+        wiremockVersion = '3.13.2'
         ashotVersion = '1.5.4'
         fakerVersion = '1.0.2'
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
@@ -28,20 +29,19 @@ buildscript {
 }
 
 plugins {
-    id 'io.qameta.allure' version '3.0.0'
-    id 'io.qameta.allure-adapter' version '3.0.0'
+    id 'io.qameta.allure' version '3.0.1'
+    id 'io.qameta.allure-adapter' version '3.0.1'
     id 'com.github.edeandrea.xjc-generation' version '1.6'
     id 'com.apollographql.apollo' version '4.3.3'
 }
 
 group = 'guru.qa'
-version = '2.1.4'
+version = '2.1.5'
 
-allure {
-    version.set("${allureVersion}")
-    adapter {
-        aspectjVersion.set("1.9.22")
-        aspectjWeaver.set(true)
+configurations {
+    agent {
+        canBeResolved = true
+        canBeConsumed = true
     }
 }
 
@@ -87,7 +87,8 @@ dependencies {
     testImplementation "ch.qos.logback:logback-classic:${logbackVersion}"
     testImplementation "org.slf4j:slf4j-api:${slf4jVersion}"
     // JUnit
-    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter"
     // REST
     testImplementation "com.squareup.okhttp3:logging-interceptor:${okhttp3Version}"
     testImplementation "com.squareup.okhttp3:okhttp-urlconnection:${okhttp3Version}"
@@ -111,15 +112,17 @@ dependencies {
     testImplementation "org.hibernate:hibernate-core:${hibernateVersion}"
     testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
     // Allure
-    testImplementation "io.qameta.allure:allure-attachments:${allureVersion}"
-    testImplementation("io.qameta.allure:allure-junit5:${allureVersion}") {
+    agent "org.aspectj:aspectjweaver:${aspectJVersion}"
+    testImplementation platform("io.qameta.allure:allure-bom:$allureVersion")
+    testImplementation "io.qameta.allure:allure-attachments"
+    testImplementation "io.qameta.allure:allure-okhttp3"
+    testImplementation "io.qameta.allure:allure-grpc"
+    testImplementation("io.qameta.allure:allure-junit5") {
         exclude group: "org.junit.jupiter"
     }
-    testImplementation("io.qameta.allure:allure-selenide:${allureVersion}") {
+    testImplementation("io.qameta.allure:allure-selenide") {
         exclude group: 'com.codeborne'
     }
-    testImplementation "io.qameta.allure:allure-okhttp3:${allureVersion}"
-    testImplementation "io.qameta.allure:allure-grpc:${allureVersion}"
     // WEB
     testImplementation "com.codeborne:selenide:${selenideVersion}"
     testImplementation "ru.yandex.qatools.ashot:ashot:${ashotVersion}"
@@ -127,7 +130,7 @@ dependencies {
     testImplementation("com.github.javafaker:javafaker:${fakerVersion}") {
         exclude group: 'org.yaml'
     }
-    testImplementation 'commons-io:commons-io:2.20.0'
+    testImplementation 'commons-io:commons-io:2.21.0'
     testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
     testImplementation 'com.github.vertical-blank:sql-formatter:2.0.5'
     // gRPC
@@ -167,4 +170,5 @@ tasks.named { it == "generateNifflerApolloSources" }.configureEach {
 
 test {
     dependsOn("generateNifflerApolloSources")
+    jvmArgs = [ "-javaagent:${configurations.agent.singleFile}" ]
 }

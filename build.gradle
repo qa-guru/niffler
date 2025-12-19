@@ -6,6 +6,10 @@ plugins {
 
 group = 'guru.qa'
 
+wrapper {
+    gradleVersion = '9.2.1'
+}
+
 allprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
@@ -31,7 +35,7 @@ subprojects {
         springOpenApiVersion = '2.8.13'
         webauthn4jVersion = '0.29.7.RELEASE'
         postgresDriverVersion = '42.7.8'
-        flywayVersion = '11.14.1'
+        flywayVersion = '11.19.1'
         springGrpcVersion = '3.1.0.RELEASE'
         springGraphqlDateTimeVersion = '6.0.0'
         springSecurityTestVersion = '6.5.6'
@@ -43,7 +47,7 @@ subprojects {
         thumbnailatorVersion = '0.4.21'
         apacheCsvVersion = '1.14.1'
         h2Version = '2.4.240'
-        mockitoVersion = '5.20.0'
+        mockitoVersion = '5.21.0'
 
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64v8/eclipse-temurin:21-jdk"

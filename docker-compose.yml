@@ -23,7 +23,7 @@ services:
 
   zookeeper:
     container_name: zookeeper
-    image: confluentinc/cp-zookeeper:7.3.2
+    image: confluentinc/cp-zookeeper:7.7.7
     ports:
       - 2181:2181
     environment:
@@ -33,7 +33,7 @@ services:
 
   kafka:
     container_name: kafka
-    image: confluentinc/cp-kafka:7.3.2
+    image: confluentinc/cp-kafka:7.7.7
     ports:
       - 9092:9092
     depends_on:
@@ -194,7 +194,7 @@ services:
       - HEAD_COMMIT_MESSAGE=${HEAD_COMMIT_MESSAGE}
       - EXECUTION_TYPE=${EXECUTION_TYPE}
     volumes:
-      - ./niffler-e-2-e-tests/.screen-output/screenshots/selenoid:/niffler/niffler-e-2-e-tests/.screen-output/screenshots/selenoid
+      - ./niffler-e-2-e-tests/.screen-output/screenshots/selenoid:/home/gradle/niffler/niffler-e-2-e-tests/.screen-output/screenshots/selenoid
     depends_on:
       frontend.niffler.dc:
         condition: service_started

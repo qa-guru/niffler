@@ -75,12 +75,12 @@ User-MacBook-Pro ~ % docker -v
 Docker version 20.10.14, build a224086
 ```
 
-#### 2. Спуллить контейнер postgres:15.1, zookeeper и kafka версии 7.3.2
+#### 2. Спуллить контейнер postgres:15.1, zookeeper и kafka версии 7.7.7
 
 ```posh
 docker pull postgres:15.1
-docker pull confluentinc/cp-zookeeper:7.3.2
-docker pull confluentinc/cp-kafka:7.3.2
+docker pull confluentinc/cp-zookeeper:7.7.7
+docker pull confluentinc/cp-kafka:7.7.7
 ```
 
 После `pull` вы увидите спуленный image командой `docker images`
@@ -89,8 +89,8 @@ docker pull confluentinc/cp-kafka:7.3.2
 mitriis-MacBook-Pro ~ % docker images            
 REPOSITORY                 TAG              IMAGE ID       CREATED         SIZE
 postgres                   15.1             9f3ec01f884d   10 days ago     379MB
-confluentinc/cp-kafka      7.3.2            db97697f6e28   12 months ago   457MB
-confluentinc/cp-zookeeper  7.3.2            6fe5551964f5   7 years ago     451MB
+confluentinc/cp-kafka      7.7.7            db97697f6e28   12 months ago   457MB
+confluentinc/cp-zookeeper  7.7.7            6fe5551964f5   7 years ago     451MB
 
 ```
 
@@ -98,6 +98,21 @@ confluentinc/cp-zookeeper  7.3.2            6fe5551964f5   7 years ago     451MB
 
 ```posh
 docker volume create pgdata
+```
+
+#### 4.0 Если у вас ОС Windows:
+
+Необходимо выполнить следующие команды в каталоге /postgres/script :
+```
+sed -i -e 's/\r$//' init-database.sh
+chmod +x init-database.sh
+```
+
+Также необходимо исправить команду в скрипте localenv.sh (в корне проекта):
+
+```diff
+- docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -v ./postgres/script:/docker-entrypoint-initdb.d -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -d postgres:15.1 --max_prepared_transactions=100
++ docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data -v /$(pwd)/postgres/script:/docker-entrypoint-initdb.d -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -d postgres:15.1 --max_prepared_transactions=100
 ```
 
 #### 4. Запустить БД, zookeeper и kafka 3-мя последовательными командами:
@@ -113,43 +128,28 @@ User-MacBook-Pro  niffler % bash localenv.sh
 ```posh
 docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -v pgdata:/var/lib/postgresql/data -v ./postgres/script:/docker-entrypoint-initdb.d -d postgres:15.1 --max_prepared_transactions=100
 
-docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -p 2181:2181 -d confluentinc/cp-zookeeper:7.3.2
+docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -p 2181:2181 -d confluentinc/cp-zookeeper:7.7.7
 
 docker run --name=kafka -e KAFKA_BROKER_ID=1 \
--e KAFKA_ZOOKEEPER_CONNECT=$(docker inspect zookeeper --format='{{ .NetworkSettings.IPAddress }}'):2181 \
+-e KAFKA_ZOOKEEPER_CONNECT=$(docker inspect zookeeper --format='{{ .NetworkSettings.Networks.bridge.IPAddress }}'):2181 \
 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
 -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
 -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
--p 9092:9092 -d confluentinc/cp-kafka:7.3.2
+-p 9092:9092 -d confluentinc/cp-kafka:7.7.7
 ```
 
 Для Windows (Необходимо использовать bash terminal: gitbash, cygwin или wsl):
 
 ```posh
-docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -v pgdata:/var/lib/postgresql/data -v ./postgres/script:/docker-entrypoint-initdb.d -d postgres:15.1 --max_prepared_transactions=100
+docker run --name niffler-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -e CREATE_DATABASES=niffler-auth,niffler-currency,niffler-spend,niffler-userdata -e TZ=GMT+3 -e PGTZ=GMT+3 -v pgdata:/var/lib/postgresql/data -v /$(pwd)/postgres/script:/docker-entrypoint-initdb.d -d postgres:15.1 --max_prepared_transactions=100
 
-docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -p 2181:2181 -d confluentinc/cp-zookeeper:7.3.2
+docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -p 2181:2181 -d confluentinc/cp-zookeeper:7.7.7
 
-docker run --name=kafka -e KAFKA_BROKER_ID=1 -e KAFKA_ZOOKEEPER_CONNECT=$(docker inspect zookeeper --format="{{ .NetworkSettings.IPAddress }}"):2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 -p 9092:9092 -d confluentinc/cp-kafka:7.3.2
+docker run --name=kafka -e KAFKA_BROKER_ID=1 -e KAFKA_ZOOKEEPER_CONNECT=$(docker inspect zookeeper --format="{{ .NetworkSettings.Networks.bridge.IPAddress }}"):2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 -p 9092:9092 -d confluentinc/cp-kafka:7.7.7
 ```
 
 [Про IP zookeeper](https://github.com/confluentinc/cp-docker-images/issues/801#issuecomment-692085103)
-
-Если вы используете Windows и контейнер с БД не стартует с ошибкой в логе:
-
-```
-server started
-/usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/init-database.sh
-/usr/local/bin/docker-entrypoint.sh: /docker-entrypoint-initdb.d/init-database.sh: /bin/bash^M: bad interpreter: No such file or directory
-```
-
-То необходимо выполнить следующие команды в каталоге /postgres/script :
-
-```
-sed -i -e 's/\r$//' init-database.sh
-chmod +x init-database.sh
-```
 
 #### 5. Установить Java версии 21. Это необходимо, т.к. проект использует синтаксис Java 21
 
