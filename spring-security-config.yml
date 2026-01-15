@@ -1,0 +1,62 @@
+# Дополнительные переменные окружения для защиты от DoS в Spring Boot приложениях
+# Добавить в docker-compose.yml для всех Java сервисов
+
+# JVM опции для защиты от DoS и оптимизации производительности
+JAVA_TOOL_OPTIONS: >-
+  -XX:InitialHeapSize=384m 
+  -XX:MaxHeapSize=512m 
+  -XX:+UseG1GC 
+  -XX:MaxGCPauseMillis=200 
+  -XX:+ExitOnOutOfMemoryError
+  -XX:+UnlockExperimentalVMOptions
+  -XX:+UseCGroupMemoryLimitForHeap
+  -XX:+PrintGCDetails
+  -XX:+HeapDumpOnOutOfMemoryError
+  -XX:HeapDumpPath=/tmp
+
+# Spring Boot настройки для защиты от DoS
+SPRING_APPLICATION_PROPERTIES: |
+  # Tomcat настройки
+  server.tomcat.max-threads=200
+  server.tomcat.min-spare-threads=10
+  server.tomcat.max-connections=8192
+  server.tomcat.accept-count=100
+  server.tomcat.connection-timeout=20000
+  server.tomcat.keep-alive-timeout=60000
+  server.tomcat.max-keep-alive-requests=100
+  
+  # Ограничения размера запросов
+  server.max-http-header-size=64KB
+  spring.servlet.multipart.max-file-size=10MB
+  spring.servlet.multipart.max-request-size=10MB
+  
+  # Таймауты
+  spring.mvc.async.request-timeout=30000
+  spring.transaction.default-timeout=30
+  
+  # Connection pool настройки
+  spring.datasource.hikari.maximum-pool-size=10
+  spring.datasource.hikari.minimum-idle=2
+  spring.datasource.hikari.connection-timeout=30000
+  spring.datasource.hikari.idle-timeout=600000
+  spring.datasource.hikari.max-lifetime=1800000
+  spring.datasource.hikari.leak-detection-threshold=60000
+  
+  # Actuator security
+  management.endpoints.web.exposure.include=health,info,metrics
+  management.endpoints.web.base-path=/actuator
+  management.endpoint.health.show-details=when-authorized
+  
+  # Rate limiting for actuator
+  management.server.port=8081
+  
+  # Security headers
+  security.headers.frame=DENY
+  security.headers.content-type=nosniff
+  security.headers.xss=1; mode=block
+  
+  # Logging для мониторинга
+  logging.level.org.springframework.security=WARN
+  logging.level.org.springframework.web=WARN
+  logging.level.org.apache.tomcat=WARN
+  logging.level.com.zaxxer.hikari=WARN

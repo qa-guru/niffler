@@ -1,0 +1,18 @@
+# Testing framework
+pytest>=7.4.0
+pytest-xdist>=3.5.0
+
+# Selene - browser automation
+selene>=2.0.0rc7
+
+# Allure reporting
+allure-pytest>=2.13.2
+
+# Data generation
+faker>=20.0.0
+
+# API testing (for future API login implementation)
+requests>=2.31.0
+
+# Additional utilities
+python-dotenv>=1.0.0

@@ -28,32 +28,32 @@ public class LocalConfig implements Config {
 
   @Override
   public String frontUrl() {
-    return "http://localhost:3000/";
+    return "http://frontend.niffler.dc/";
   }
 
   @Override
   public String gatewayUrl() {
-    return "http://localhost:8090/";
+    return "http://gateway.niffler.dc:8090/";
   }
 
   @Override
   public String userdataUrl() {
-    return "http://localhost:8089/";
+    return "http://userdata.niffler.dc:8089/";
   }
 
   @Override
   public String currencyGrpcHost() {
-    return "localhost";
+    return "currency.niffler.dc";
   }
 
   @Override
   public String spendUrl() {
-    return "http://localhost:8093/";
+    return "http://spend.niffler.dc:8093/";
   }
 
   @Override
   public String authUrl() {
-    return "http://localhost:9000/";
+    return "http://auth.niffler.dc:9000/";
   }
 
   @Override

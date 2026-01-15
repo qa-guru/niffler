@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Allure
+allure-results/
+allure-report/
+/niffler-e-2-e-tests-python/allure-results
+
+# Logs
+*.log
+logs/*.log
+/niffler-e-2-e-tests-python/logs
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

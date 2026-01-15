@@ -42,3 +42,14 @@ out/
 ### gRPC generated files ###
 /niffler-grpc-common/src/generated/**
 /niffler-e-2-e-tests/.screen-output/**
+
+### Python ###
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+niffler-e-2-e-tests-python/.env

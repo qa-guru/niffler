@@ -12,12 +12,23 @@ services:
       - ./postgres/script:/docker-entrypoint-initdb.d
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
-      interval: 3s
-      timeout: 3s
-      retries: 5
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     ports:
       - 5432:5432
-    command: [ "postgres", "-c", "max_prepared_transactions=100" ]
+    command: [ "postgres", "-c", "max_prepared_transactions=100", "-c", "max_connections=200", "-c", "shared_buffers=256MB" ]
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    restart: unless-stopped
+    stop_grace_period: 30s
     networks:
       - niffler-network
 
@@ -28,6 +39,24 @@ services:
       - 2181:2181
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_SESSION_TIMEOUT=18000
+      - ZOOKEEPER_MAX_CLIENT_CNXNS=60
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "2181" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+    restart: unless-stopped
+    stop_grace_period: 30s
     networks:
       - niffler-network
 
@@ -38,7 +67,7 @@ services:
       - 9092:9092
     depends_on:
       zookeeper:
-        condition: service_started
+        condition: service_healthy
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
@@ -46,6 +75,29 @@ services:
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
       - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
       - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_NUM_NETWORK_THREADS=8
+      - KAFKA_NUM_IO_THREADS=8
+      - KAFKA_SOCKET_SEND_BUFFER_BYTES=102400
+      - KAFKA_SOCKET_RECEIVE_BUFFER_BYTES=102400
+      - KAFKA_SOCKET_REQUEST_MAX_BYTES=104857600
+      - KAFKA_NUM_PARTITIONS=3
+      - KAFKA_NUM_RECOVERY_THREADS_PER_DATA_DIR=1
+    healthcheck:
+      test: [ "CMD", "kafka-broker-api-versions", "--bootstrap-server=localhost:9092" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+    restart: unless-stopped
+    stop_grace_period: 30s
     networks:
       - niffler-network
 
@@ -55,13 +107,28 @@ services:
     ports:
       - 9000:9000
     environment:
-      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=512m -XX:MaxHeapSize=768m
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=512m -XX:MaxHeapSize=768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ExitOnOutOfMemoryError
     healthcheck:
-      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    restart: always
+      test: [ "CMD", "wget", "--spider", "-q", "--tries=1", "--connect-timeout=5", "--read-timeout=5", "http://localhost:9000/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+    restart: unless-stopped
+    stop_grace_period: 30s
     depends_on:
       niffler-all-db:
         condition: service_healthy
@@ -77,8 +144,17 @@ services:
       - 8091:8091
       - 8092:8092
     environment:
-      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
-    restart: always
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ExitOnOutOfMemoryError
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.75'
+        reservations:
+          memory: 384M
+          cpus: '0.25'
+    restart: unless-stopped
+    stop_grace_period: 30s
     depends_on:
       niffler-all-db:
         condition: service_healthy
@@ -91,13 +167,23 @@ services:
     ports:
       - 8090:8090
     environment:
-      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ExitOnOutOfMemoryError
     healthcheck:
-      test: "wget --spider http://localhost:8090/actuator/health || exit 1"
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    restart: always
+      test: [ "CMD", "wget", "--spider", "-q", "--tries=1", "--connect-timeout=5", "--read-timeout=5", "http://localhost:8090/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '1.0'
+        reservations:
+          memory: 384M
+          cpus: '0.5'
+    restart: unless-stopped
+    stop_grace_period: 30s
     depends_on:
       auth.niffler.dc:
         condition: service_healthy
@@ -110,8 +196,17 @@ services:
     ports:
       - 8093:8093
     environment:
-      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
-    restart: always
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ExitOnOutOfMemoryError
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.75'
+        reservations:
+          memory: 384M
+          cpus: '0.25'
+    restart: unless-stopped
+    stop_grace_period: 30s
     depends_on:
       niffler-all-db:
         condition: service_healthy
@@ -124,8 +219,17 @@ services:
     ports:
       - 8089:8089
     environment:
-      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m
-    restart: always
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=384m -XX:MaxHeapSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ExitOnOutOfMemoryError
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.75'
+        reservations:
+          memory: 384M
+          cpus: '0.25'
+    restart: unless-stopped
+    stop_grace_period: 30s
     depends_on:
       auth.niffler.dc:
         condition: service_healthy
@@ -142,9 +246,19 @@ services:
         NPM_COMMAND: build:docker
     ports:
       - 80:80
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+        reservations:
+          memory: 64M
+          cpus: '0.1'
+    restart: unless-stopped
+    stop_grace_period: 10s
     depends_on:
       gateway.niffler.dc:
-        condition: service_started
+        condition: service_healthy
     networks:
       - niffler-network
 
