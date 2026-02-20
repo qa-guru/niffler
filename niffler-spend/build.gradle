@@ -41,8 +41,7 @@ jib {
         ports = ['8093']
         jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
         environment = [
-                'VAULT_TOKEN': "${System.env.VAULT_TOKEN}".toString(),
-                'TZ'         : 'Europe/Moscow'
+                'TZ': 'Europe/Moscow'
         ]
         creationTime = 'USE_CURRENT_TIMESTAMP'
         labels = [

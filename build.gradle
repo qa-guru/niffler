@@ -50,8 +50,8 @@ subprojects {
         mockitoVersion = '5.21.0'
 
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
-                ? "arm64v8/eclipse-temurin:21-jdk"
-                : "eclipse-temurin:21-jdk"
+                ? "arm64v8/eclipse-temurin:21-jre"
+                : "eclipse-temurin:21-jre"
         dockerArch = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64"
                 : "amd64"

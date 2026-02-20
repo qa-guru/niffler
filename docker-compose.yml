@@ -152,7 +152,7 @@ services:
     profiles:
       - test
     container_name: selenoid
-    image: aerokube/selenoid:1.11.3
+    image: adtechqatools/selenoid:latest-release
     platform: linux/${ARCH}
     volumes:
       - ./selenoid:/etc/selenoid

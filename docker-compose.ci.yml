@@ -3,6 +3,7 @@ services:
     container_name: auth.niffler.dc
     image: ${PREFIX}/niffler-auth-${PROFILE}:${AUTH_VER}
     pull_policy: always
+    mem_limit: 1600m
     environment:
       - VAULT_TOKEN=${VAULT_TOKEN}
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=1024m -XX:MaxHeapSize=1024m
@@ -21,6 +22,7 @@ services:
     container_name: currency.niffler.dc
     image: ${PREFIX}/niffler-currency-${PROFILE}:${CURRENCY_VER}
     pull_policy: always
+    mem_limit: 1200m
     environment:
       - VAULT_TOKEN=${VAULT_TOKEN}
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
@@ -35,6 +37,7 @@ services:
     container_name: gateway.niffler.dc
     image: ${PREFIX}/niffler-gateway-${PROFILE}:${GATEWAY_VER}
     pull_policy: always
+    mem_limit: 1200m
     environment:
       - VAULT_TOKEN=${VAULT_TOKEN}
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
@@ -56,6 +59,7 @@ services:
     container_name: spend.niffler.dc
     image: ${PREFIX}/niffler-spend-${PROFILE}:${SPEND_VER}
     pull_policy: always
+    mem_limit: 1200m
     environment:
       - VAULT_TOKEN=${VAULT_TOKEN}
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
@@ -69,6 +73,7 @@ services:
     container_name: userdata.niffler.dc
     image: ${PREFIX}/niffler-userdata-${PROFILE}:${USERDATA_VER}
     pull_policy: always
+    mem_limit: 1200m
     environment:
       - VAULT_TOKEN=${VAULT_TOKEN}
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
