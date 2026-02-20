@@ -1,0 +1,71 @@
+on:
+  workflow_call:
+    inputs:
+      service-name:
+        description: 'Service name (e.g. auth, currency, gateway, spend, userdata, frontend)'
+        required: true
+        type: string
+      compose-service:
+        description: 'Docker compose service name (e.g. auth.niffler.dc, frontend.niffler.dc)'
+        required: true
+        type: string
+      gradle-module:
+        description: 'Gradle module to build via jib (e.g. :niffler-auth:jib). Empty for frontend.'
+        required: false
+        type: string
+        default: ''
+      npm-command:
+        description: 'NPM build command for frontend (e.g. build:prod). Empty for backend services.'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  collect-versions:
+    uses: ./.github/workflows/versions.yml
+    with:
+      runner: niffler-prod-runner
+
+  deploy:
+    runs-on: niffler-prod-runner
+    needs: collect-versions
+    steps:
+      - name: Push required props to GITHUB_ENV
+        run: |
+          echo "PROFILE=prod" >> $GITHUB_ENV
+          echo "PREFIX=${{ vars.DOCKER_HUB_ACC }}" >> $GITHUB_ENV
+          echo "VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}" >> $GITHUB_ENV
+          echo "AUTH_VER=${{ needs.collect-versions.outputs.auth-ver }}" >> $GITHUB_ENV
+          echo "CURRENCY_VER=${{ needs.collect-versions.outputs.currency-ver }}" >> $GITHUB_ENV
+          echo "GATEWAY_VER=${{ needs.collect-versions.outputs.gateway-ver }}" >> $GITHUB_ENV
+          echo "SPEND_VER=${{ needs.collect-versions.outputs.spend-ver }}" >> $GITHUB_ENV
+          echo "USERDATA_VER=${{ needs.collect-versions.outputs.userdata-ver }}" >> $GITHUB_ENV
+          echo "FRONT_VER=${{ needs.collect-versions.outputs.front-ver }}" >> $GITHUB_ENV
+      - name: Docker login
+        run: |
+          docker login --username ${{ vars.DOCKER_HUB_ACC }} --password "${{ secrets.DOCKER_HUB_PASSWORD }}"
+      - name: Build backend via jib
+        if: inputs.gradle-module != ''
+        working-directory: ./
+        run: |
+          pwd
+          echo "### ${{ inputs.service-name }} version will be used ###"
+          echo "### java version ###"
+          java -version
+          bash ./gradlew ${{ inputs.gradle-module }} -x :niffler-e-2-e-tests:test || exit 1
+      - name: Build frontend via docker
+        if: inputs.npm-command != ''
+        working-directory: ./niffler-ng-client
+        run: |
+          pwd
+          IMAGE_TAG="${{ env.PREFIX }}/niffler-ng-client-${{ env.PROFILE }}"
+          echo "### niffler-front version will be used: ${IMAGE_TAG}:${{ env.FRONT_VER }} ###"
+          docker build --build-arg NPM_COMMAND=${{ inputs.npm-command }} --build-arg VERSION=${{ env.FRONT_VER }} -t ${IMAGE_TAG}:${{ env.FRONT_VER }} -t ${IMAGE_TAG}:latest .
+          docker push ${IMAGE_TAG}:${{ env.FRONT_VER }}
+          docker push ${IMAGE_TAG}:latest
+      - name: Deploy
+        run: |
+          docker compose -f docker-compose.ci.yml pull ${{ inputs.compose-service }}
+          docker compose -f docker-compose.ci.yml stop ${{ inputs.compose-service }} && docker compose -f docker-compose.ci.yml up -d --no-deps ${{ inputs.compose-service }}
+          docker system prune -a -f
+          echo "Deploy ${{ inputs.service-name }} to prod done!"

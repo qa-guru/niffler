@@ -1,10 +1,10 @@
 plugins {
-    id 'org.springframework.boot' version '3.5.6'
+    id 'org.springframework.boot' version '3.5.8'
     id 'com.google.cloud.tools.jib' version '3.4.1'
 }
 
 group = 'guru.qa'
-version = '2.0.6'
+version = '2.0.7'
 
 dependencies {
     implementation project(':niffler-grpc-common')
@@ -32,8 +32,7 @@ jib {
         ports = ['8091', '8092']
         jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
         environment = [
-                'VAULT_TOKEN': "${System.env.VAULT_TOKEN}".toString(),
-                'TZ'         : 'Europe/Moscow'
+                'TZ': 'Europe/Moscow'
         ]
         creationTime = 'USE_CURRENT_TIMESTAMP'
         labels = [
