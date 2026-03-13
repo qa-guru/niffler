@@ -28,6 +28,6 @@ java --version
 bash ./gradlew clean
 bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test -Duser.timezone=UTC
 
-docker pull twilio/selenoid:chrome_stable_140
+docker pull twilio/selenoid:chrome_stable_146
 docker compose up -d
 docker ps -a

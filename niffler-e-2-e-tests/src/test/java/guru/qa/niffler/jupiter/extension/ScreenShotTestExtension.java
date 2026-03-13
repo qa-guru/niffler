@@ -33,6 +33,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ScreenShotTestExtension.class);
   public static final String ASSERT_SCREEN_MESSAGE = "Screen comparison failure";
+  private static boolean rewriteExpected = Boolean.parseBoolean(System.getProperty("rewrite.screenshots", "false"));
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
   private static final Base64.Encoder encoder = Base64.getEncoder();
@@ -57,7 +58,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
   @Override
   public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
     final ScreenShotTest screenShotTest = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
-    if (screenShotTest.rewriteExpected()) {
+    if (rewriteExpected || screenShotTest.rewriteExpected()) {
       final BufferedImage actual = getActual();
       if (actual != null) {
         ImageIO.write(
