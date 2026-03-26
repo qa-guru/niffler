@@ -46,7 +46,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: niffler-test.local
+    - host: niffler
       http:
         paths:
           - path: /
