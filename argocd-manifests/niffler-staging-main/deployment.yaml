@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: niffler-frontend
-          image: qaguru/niffler-ng-client-local:latest
+          image: nginx:latest
           ports:
             - containerPort: 80
 ---
