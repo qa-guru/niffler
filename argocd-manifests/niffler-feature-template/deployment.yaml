@@ -1,14 +1,7 @@
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: niffler-feature-template
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: niffler-frontend
-  namespace: niffler-feature-template
 spec:
   replicas: 1
   selector:
@@ -20,40 +13,10 @@ spec:
         app: niffler-frontend
     spec:
       containers:
-        - name: niffler-frontend
-          image: niffler-image-placeholder:latest
+        - name: frontend
+          image: niffler-frontend:latest
           ports:
             - containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: niffler-frontend
-  namespace: niffler-feature-template
-spec:
-  selector:
-    app: niffler-frontend
-  ports:
-    - port: 80
-      targetPort: 80
-  type: ClusterIP
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: niffler-frontend
-  namespace: niffler-feature-template
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-spec:
-  rules:
-    - host: niffler-feature-template.local
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: niffler-frontend
-                port:
-                  number: 80
+          env:
+            - name: REACT_APP_ENV
+              value: "feature"
