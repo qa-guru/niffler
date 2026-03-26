@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: niffler-frontend:latest
+          image: nginx:alpine
           ports:
             - containerPort: 80
           env:
