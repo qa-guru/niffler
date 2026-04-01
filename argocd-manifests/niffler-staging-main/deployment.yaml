@@ -1,0 +1,59 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: niffler-staging-main
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: niffler-frontend
+  namespace: niffler-staging-main
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: niffler-frontend
+  template:
+    metadata:
+      labels:
+        app: niffler-frontend
+    spec:
+      containers:
+        - name: niffler-frontend
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: niffler-frontend
+  namespace: niffler-staging-main
+spec:
+  selector:
+    app: niffler-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: niffler-frontend
+  namespace: niffler-staging-main
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: niffler
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: niffler-frontend
+                port:
+                  number: 80

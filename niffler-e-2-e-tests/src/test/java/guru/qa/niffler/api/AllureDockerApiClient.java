@@ -33,7 +33,7 @@ public class AllureDockerApiClient extends RestClient {
     allureDockerApi.generateReport(projectId, executionName, executionFrom, executionType).execute();
   }
 
-  public void sendResultsToAllure(String projectId, AllureResults allureResults) throws IOException {
+  public void sendResultsToAllur(String projectId, AllureResults allureResults) throws IOException {
     int code = allureDockerApi.uploadResults(
         projectId,
         allureResults
