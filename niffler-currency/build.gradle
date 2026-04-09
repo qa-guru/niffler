@@ -1,10 +1,10 @@
 plugins {
     id 'org.springframework.boot' version '3.5.8'
-    id 'com.google.cloud.tools.jib' version '3.4.1'
+    id 'com.google.cloud.tools.jib' version '3.5.3'
 }
 
 group = 'guru.qa'
-version = '2.0.7'
+version = '2.0.8'
 
 dependencies {
     implementation project(':niffler-grpc-common')
@@ -18,13 +18,14 @@ dependencies {
     implementation "io.grpc:grpc-netty-shaded:${project.ext.grpcVersion}"
     implementation "io.grpc:grpc-services:${project.ext.grpcVersion}"
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
-    implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
-    implementation "org.flywaydb:flyway-database-postgresql:${project.ext.flywayVersion}"
-    annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    runtimeOnly "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'com.h2database:h2'
 }
 
 jib {

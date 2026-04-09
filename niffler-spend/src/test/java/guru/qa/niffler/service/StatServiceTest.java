@@ -2,6 +2,8 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.data.CategoryEntity;
 import guru.qa.niffler.data.SpendEntity;
+import guru.qa.niffler.data.projection.SumByCategory;
+import guru.qa.niffler.data.projection.SumByCategoryInfo;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -19,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -27,10 +30,12 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class StatServiceTest {
@@ -223,6 +228,84 @@ class StatServiceTest {
     List<SpendJson> fishCatchSpends = map.get("Рыбалка");
     assertEquals(2, barSpends.size());
     assertEquals(1, fishCatchSpends.size());
+  }
+
+  @Test
+  void getTotalSummShouldSumAllAmountsWithTwoDecimalRounding(@Mock GrpcCurrencyClient grpcCurrencyClient) {
+    List<SumByCategoryInfo> items = List.of(
+        new SumByCategory("Бар", CurrencyValues.RUB, 100.555, new Date(), new Date()),
+        new SumByCategory("Еда", CurrencyValues.RUB, 200.333, new Date(), new Date()),
+        new SumByCategory("Кино", CurrencyValues.RUB, 50.112, new Date(), new Date())
+    );
+
+    statService = new StatService(null, null, grpcCurrencyClient);
+    double total = statService.getTotalSumm(items);
+
+    assertEquals(351.0, total);
+  }
+
+  @Test
+  void mapToUserCurrencyShouldReturnSameObjectWhenCurrencyMatches(@Mock GrpcCurrencyClient grpcCurrencyClient) {
+    SumByCategoryInfo item = new SumByCategory("Еда", CurrencyValues.RUB, 500.0, new Date(), new Date());
+    statService = new StatService(null, null, grpcCurrencyClient);
+
+    SumByCategoryInfo result = statService.mapToUserCurrency(CurrencyValues.RUB, item);
+
+    assertSame(item, result);
+  }
+
+  @Test
+  void mapToUserCurrencyShouldConvertWhenCurrencyDiffers(@Mock GrpcCurrencyClient grpcCurrencyClient) {
+    SumByCategoryInfo item = new SumByCategory("Еда", CurrencyValues.RUB, 7500.0, new Date(), new Date());
+    lenient().when(grpcCurrencyClient.calculate(7500.0, CurrencyValues.RUB, CurrencyValues.USD))
+        .thenReturn(BigDecimal.valueOf(100.00));
+
+    statService = new StatService(null, null, grpcCurrencyClient);
+
+    SumByCategoryInfo result = statService.mapToUserCurrency(CurrencyValues.USD, item);
+
+    assertEquals(CurrencyValues.USD, result.currency());
+    assertEquals(100.0, result.sum());
+    verify(grpcCurrencyClient).calculate(7500.0, CurrencyValues.RUB, CurrencyValues.USD);
+  }
+
+  @Test
+  void toCategoriesMapShouldGroupByName(@Mock GrpcCurrencyClient grpcCurrencyClient) {
+    statService = new StatService(null, null, grpcCurrencyClient);
+
+    SumByCategoryInfo eda1 = new SumByCategory("Еда", CurrencyValues.RUB, 100.0, new Date(), new Date());
+    SumByCategoryInfo eda2 = new SumByCategory("Еда", CurrencyValues.USD, 50.0, new Date(), new Date());
+    SumByCategoryInfo bar = new SumByCategory("Бар", CurrencyValues.RUB, 200.0, new Date(), new Date());
+
+    HashMap<String, List<SumByCategoryInfo>> map = List.of(eda1, eda2, bar)
+        .stream()
+        .collect(statService.toCategoriesMap());
+
+    assertEquals(2, map.size());
+    assertNotNull(map.get("Еда"));
+    assertNotNull(map.get("Бар"));
+    assertEquals(2, map.get("Еда").size());
+    assertEquals(1, map.get("Бар").size());
+  }
+
+  @Test
+  void bindSpendsToCategoriesShouldGroupArchivedCategoryUnderArchivedKey() {
+    CategoryEntity archivedCategory = new CategoryEntity();
+    archivedCategory.setName("Старые расходы");
+    archivedCategory.setUsername("dima");
+    archivedCategory.setArchived(true);
+
+    SpendEntity archivedSpend = new SpendEntity();
+    archivedSpend.setCategory(archivedCategory);
+    archivedSpend.setAmount(300.0);
+    archivedSpend.setDescription("Покупка");
+    archivedSpend.setCurrency(CurrencyValues.RUB);
+    archivedSpend.setSpendDate(new Date());
+
+    Map<String, List<SpendJson>> map = statService.bindSpendsToCategories(List.of(archivedSpend));
+
+    assertNotNull(map.get(CategoryService.ARCHIVED_CATEGORY_NAME));
+    assertEquals(1, map.get(CategoryService.ARCHIVED_CATEGORY_NAME).size());
   }
 
   private Date addDaysToDate(Date date, int selector, int days) {

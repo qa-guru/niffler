@@ -1,10 +1,10 @@
 plugins {
     id 'org.springframework.boot' version '3.5.8'
-    id 'com.google.cloud.tools.jib' version '3.4.1'
+    id 'com.google.cloud.tools.jib' version '3.5.3'
 }
 
 group = 'guru.qa'
-version = '2.5.4'
+version = '2.5.5'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -17,16 +17,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.session:spring-session-jdbc'
     implementation "com.webauthn4j:webauthn4j-core:${project.ext.webauthn4jVersion}"
-    implementation "org.springframework.kafka:spring-kafka:${project.ext.springKafkaVersion}"
+    implementation 'org.springframework.kafka:spring-kafka'
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
-    implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
-    implementation "org.flywaydb:flyway-database-postgresql:${project.ext.flywayVersion}"
-    annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    runtimeOnly "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "com.h2database:h2:${project.ext.h2Version}"
+    testImplementation 'com.h2database:h2'
+    testImplementation "org.springframework.security:spring-security-test"
 }
 
 jib {

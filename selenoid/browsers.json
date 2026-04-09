@@ -30,8 +30,8 @@
           "TZ=Europe/Moscow"
         ]
       },
-      "146.0": {
-        "image": "twilio/selenoid:chrome_stable_146",
+      "147.0": {
+        "image": "twilio/selenoid:chrome_stable_147",
         "port": "4444",
         "env": [
           "TZ=Europe/Moscow"

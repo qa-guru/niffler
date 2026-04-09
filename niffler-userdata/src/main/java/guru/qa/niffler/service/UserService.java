@@ -17,7 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -127,9 +129,10 @@ public class UserService {
   Page<UserJsonBulk> allUsers(String username,
                               Pageable pageable,
                               @Nullable String searchQuery) {
+    Pageable safePageable = withoutStatusSort(pageable);
     Page<UserWithStatus> usersFromDb = searchQuery == null
-        ? userRepository.findByUsernameNot(username, pageable)
-        : userRepository.findByUsernameNot(username, searchQuery, pageable);
+        ? userRepository.findByUsernameNot(username, safePageable)
+        : userRepository.findByUsernameNot(username, searchQuery, safePageable);
 
     return usersFromDb.map(UserJsonBulk::fromUserEntityProjection);
   }
@@ -152,9 +155,10 @@ public class UserService {
   Page<UserJsonBulk> friends(String username,
                              Pageable pageable,
                              @Nullable String searchQuery) {
+    Pageable safePageable = withoutStatusSort(pageable);
     Page<UserWithStatus> usersFromDb = searchQuery == null
-        ? userRepository.findFriends(getRequiredUser(username), pageable)
-        : userRepository.findFriends(getRequiredUser(username), searchQuery, pageable);
+        ? userRepository.findFriends(getRequiredUser(username), safePageable)
+        : userRepository.findFriends(getRequiredUser(username), searchQuery, safePageable);
 
     return usersFromDb.map(UserJsonBulk::fromFriendEntityProjection);
   }
@@ -242,6 +246,16 @@ public class UserService {
 
   public static boolean isPhotoString(@Nullable String photo) {
     return photo != null && photo.startsWith("data:image");
+  }
+
+  @Nonnull
+  private Pageable withoutStatusSort(Pageable pageable) {
+    List<Sort.Order> secondaryOrders = pageable.getSort().stream()
+        .filter(o -> !o.getProperty().equalsIgnoreCase("status")
+                  && !o.getProperty().equalsIgnoreCase("friendshipStatus"))
+        .toList();
+    Sort secondarySort = secondaryOrders.isEmpty() ? Sort.unsorted() : Sort.by(secondaryOrders);
+    return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), secondarySort);
   }
 
   @Nonnull

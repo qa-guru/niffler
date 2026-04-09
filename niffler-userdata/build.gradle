@@ -1,11 +1,11 @@
 plugins {
     id 'org.springframework.boot' version '3.5.8'
-    id 'com.google.cloud.tools.jib' version '3.4.1'
+    id 'com.google.cloud.tools.jib' version '3.5.3'
     id 'com.github.edeandrea.xjc-generation' version '1.6'
 }
 
 group = 'guru.qa'
-version = '2.2.3'
+version = '2.2.4'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -13,21 +13,22 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation "org.springframework.kafka:spring-kafka:${project.ext.springKafkaVersion}"
+    implementation 'org.springframework.kafka:spring-kafka'
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
-    implementation "org.flywaydb:flyway-core:${project.ext.flywayVersion}"
-    implementation "org.flywaydb:flyway-database-postgresql:${project.ext.flywayVersion}"
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
     implementation "com.google.firebase:firebase-admin:${project.ext.firebaseVersion}"
     implementation "wsdl4j:wsdl4j:${project.ext.wsdl4jVersion}"
     implementation "net.coobird:thumbnailator:${project.ext.thumbnailatorVersion}"
-    annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    runtimeOnly "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
 
-    xjc "org.glassfish.jaxb:jaxb-xjc:${project.ext.jakartaJaxbVersion}"
+    xjc 'org.glassfish.jaxb:jaxb-xjc'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "com.h2database:h2:${project.ext.h2Version}"
+    testImplementation 'com.h2database:h2'
+    testImplementation 'org.springframework.ws:spring-ws-test'
 }
 
 xjcGeneration {

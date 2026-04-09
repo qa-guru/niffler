@@ -65,8 +65,7 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
   @Query(
       "select s from SpendEntity s left join CategoryEntity c on s.category = c " +
           "where s.username = :username " +
-          "and s.spendDate >= :dateFrom and s.spendDate <= :dateTo " +
-          "order by s.spendDate desc "
+          "and s.spendDate >= :dateFrom and s.spendDate <= :dateTo "
   )
   Page<SpendEntity> findAll(
       String username,
@@ -80,8 +79,7 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
       "select s from SpendEntity s left join CategoryEntity c on s.category = c " +
           "where s.username = :username " +
           "and (lower(s.description) like lower(concat('%', :searchQuery, '%')) or lower(c.name) like lower(concat('%', :searchQuery, '%')))" +
-          "and s.spendDate >= :dateFrom and s.spendDate <= :dateTo " +
-          "order by s.spendDate desc "
+          "and s.spendDate >= :dateFrom and s.spendDate <= :dateTo "
   )
   Page<SpendEntity> findAll(
       String username,
@@ -96,8 +94,7 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
       "select s from SpendEntity s left join CategoryEntity c on s.category = c " +
           "where s.username = :username " +
           "and s.currency = :currency " +
-          "and s.spendDate >= :dateFrom and s.spendDate <= :dateTo " +
-          "order by s.spendDate desc "
+          "and s.spendDate >= :dateFrom and s.spendDate <= :dateTo "
   )
   Page<SpendEntity> findAll(
       String username,
@@ -113,8 +110,7 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
           "where s.username = :username " +
           "and s.currency = :currency " +
           "and (lower(s.description) like lower(concat('%', :searchQuery, '%')) or lower(c.name) like lower(concat('%', :searchQuery, '%')))" +
-          "and s.spendDate >= :dateFrom and s.spendDate <= :dateTo " +
-          "order by s.spendDate desc "
+          "and s.spendDate >= :dateFrom and s.spendDate <= :dateTo "
   )
   Page<SpendEntity> findAll(
       String username,

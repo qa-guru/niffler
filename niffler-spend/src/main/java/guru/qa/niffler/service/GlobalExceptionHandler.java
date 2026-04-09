@@ -1,6 +1,7 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.ex.CategoryNotFoundException;
+import guru.qa.niffler.ex.InvalidCategoryNameException;
 import guru.qa.niffler.ex.SpendExportException;
 import guru.qa.niffler.ex.SpendNotFoundException;
 import guru.qa.niffler.ex.TooManyCategoriesException;
@@ -28,7 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @Value("${spring.application.name}")
   private String appName;
 
-  @ExceptionHandler(TooManyCategoriesException.class)
+  @ExceptionHandler({TooManyCategoriesException.class, InvalidCategoryNameException.class})
   public ResponseEntity<ErrorJson> handleNotAcceptableException(RuntimeException ex,
                                                                 HttpServletRequest request) {
     LOG.warn("### Resolve Exception in @RestControllerAdvice ", ex);

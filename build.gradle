@@ -7,7 +7,7 @@ plugins {
 group = 'guru.qa'
 
 wrapper {
-    gradleVersion = '9.2.1'
+    gradleVersion = '9.4.1'
 }
 
 allprojects {
@@ -28,26 +28,25 @@ allprojects {
 subprojects {
     ext {
         dockerHubName = "qaguru"
+        springBootVersion = '3.5.8'
 
-        lombokVersion = '1.18.42'
-        springKafkaVersion = '3.3.10'
+        lombokVersion = '1.18.44'
+        postgresDriverVersion = '42.7.10'
+        flywayVersion = '11.19.1'
+        h2Version = '2.4.240'
+        mockitoVersion = '5.23.0'
+        logbackVersion = '1.5.32'
         springVaultVersion = '4.3.0'
         springOpenApiVersion = '2.8.13'
-        webauthn4jVersion = '0.29.7.RELEASE'
-        postgresDriverVersion = '42.7.8'
-        flywayVersion = '11.19.1'
+        webauthn4jVersion = '0.31.2.RELEASE'
         springGrpcVersion = '3.1.0.RELEASE'
         springGraphqlDateTimeVersion = '6.0.0'
-        springSecurityTestVersion = '6.5.6'
-        firebaseVersion = '9.7.0'
-        jakartaJaxbVersion = '4.0.2'
+        firebaseVersion = '9.8.0'
         wsdl4jVersion = '1.6.3'
-        protobufVersion = '4.32.0'
-        grpcVersion = '1.75.0'
+        protobufVersion = '4.34.1'
+        grpcVersion = '1.80.0'
         thumbnailatorVersion = '0.4.21'
         apacheCsvVersion = '1.14.1'
-        h2Version = '2.4.240'
-        mockitoVersion = '5.21.0'
 
         dockerImage = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64v8/eclipse-temurin:21-jre"
@@ -55,6 +54,22 @@ subprojects {
         dockerArch = System.getProperty("os.arch") == "aarch64" || System.getProperty("os.arch") == "arm64"
                 ? "arm64"
                 : "amd64"
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        }
+        dependencies {
+            dependency "org.projectlombok:lombok:${lombokVersion}"
+            dependency "org.postgresql:postgresql:${postgresDriverVersion}"
+            dependency "org.flywaydb:flyway-core:${flywayVersion}"
+            dependency "org.flywaydb:flyway-database-postgresql:${flywayVersion}"
+            dependency "com.h2database:h2:${h2Version}"
+            dependency "org.mockito:mockito-core:${mockitoVersion}"
+            dependency "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+            dependency "ch.qos.logback:logback-classic:${logbackVersion}"
+        }
     }
 
     tasks.withType(Test).configureEach {

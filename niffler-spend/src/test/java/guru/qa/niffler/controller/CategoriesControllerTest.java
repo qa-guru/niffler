@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -101,5 +102,93 @@ class CategoriesControllerTest {
         .andExpect(jsonPath("$.name").value("Веселье"))
         .andExpect(jsonPath("$.username").value(fixtureUser))
         .andExpect(jsonPath("$.archived").value(true));
+  }
+
+  @ValueSource(strings = {"Archived", "ARCHIVED", "archived"})
+  @ParameterizedTest
+  void addCategoryWithArchivedNameShouldReturn406(String catName) throws Exception {
+    CategoryJson categoryJson = new CategoryJson(null, catName, "duck", false);
+
+    mockMvc.perform(post("/internal/categories/add")
+            .contentType(APPLICATION_JSON)
+            .content(om.writeValueAsString(categoryJson)))
+        .andExpect(status().isNotAcceptable())
+        .andExpect(jsonPath("$.status").value(406));
+  }
+
+  @Test
+  @Sql("/guru/qa/niffler/controller/CategoriesControllerTest_TooMany.sql")
+  void addCategoryWhenActiveLimitExceededShouldReturn406() throws Exception {
+    CategoryJson categoryJson = new CategoryJson(null, "Новая категория", "duck", false);
+
+    mockMvc.perform(post("/internal/categories/add")
+            .contentType(APPLICATION_JSON)
+            .content(om.writeValueAsString(categoryJson)))
+        .andExpect(status().isNotAcceptable())
+        .andExpect(jsonPath("$.status").value(406));
+  }
+
+  @Test
+  @Sql(FIXTURE)
+  void getCategoriesWithExcludeArchivedTrueShouldReturnOnlyActiveCategories() throws Exception {
+    mockMvc.perform(get("/internal/categories/all")
+            .param("username", "duck")
+            .param("excludeArchived", "true"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", hasSize(1)))
+        .andExpect(jsonPath("$[0].name").value("Веселье"))
+        .andExpect(jsonPath("$[0].archived").value(false));
+  }
+
+  @Test
+  void updateNonExistentCategoryShouldReturn404() throws Exception {
+    CategoryJson categoryJson = new CategoryJson(
+        UUID.fromString("00000000-0000-0000-0000-000000000000"),
+        "НовоеИмя",
+        "duck",
+        false
+    );
+
+    mockMvc.perform(patch("/internal/categories/update")
+            .contentType(APPLICATION_JSON)
+            .content(om.writeValueAsString(categoryJson)))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.status").value(404));
+  }
+
+  @Test
+  @Sql(FIXTURE)
+  void updateCategoryWithArchivedNameShouldReturn406() throws Exception {
+    final String fixtureCategoryId = "68bcb6da-f690-41df-bef4-18c98de97d1a";
+
+    CategoryJson categoryJson = new CategoryJson(
+        UUID.fromString(fixtureCategoryId),
+        "Archived",
+        "duck",
+        false
+    );
+
+    mockMvc.perform(patch("/internal/categories/update")
+            .contentType(APPLICATION_JSON)
+            .content(om.writeValueAsString(categoryJson)))
+        .andExpect(status().isNotAcceptable())
+        .andExpect(jsonPath("$.status").value(406));
+  }
+
+  @Test
+  @Sql("/guru/qa/niffler/controller/CategoriesControllerTest_TooMany.sql")
+  void unarchiveCategoryWhenActiveLimitExceededShouldReturn406() throws Exception {
+    CategoryJson categoryJson = new CategoryJson(
+        UUID.fromString("1a000000-0000-0000-0000-000000000001"),
+        "Старые расходы",
+        "duck",
+        false
+    );
+
+    mockMvc.perform(patch("/internal/categories/update")
+            .contentType(APPLICATION_JSON)
+            .content(om.writeValueAsString(categoryJson)))
+        .andExpect(status().isNotAcceptable())
+        .andExpect(jsonPath("$.status").value(406));
   }
 }

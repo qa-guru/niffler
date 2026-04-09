@@ -6,6 +6,7 @@ import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.core.serializer.Deserializer;
 import org.springframework.core.serializer.Serializer;
@@ -49,6 +50,7 @@ public class SessionConfig implements BeanClassLoaderAware {
   private ClassLoader classLoader;
 
   @Bean
+  @Profile("!test")
   public SessionRepositoryCustomizer<JdbcIndexedSessionRepository> customizer() {
     return (sessionRepository) -> {
       sessionRepository.setCreateSessionAttributeQuery(CREATE_SESSION_ATTRIBUTE_QUERY);

@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "(u = f.addressee and f.requester.username = :username) " +
           "where u.username <> :username " +
           "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
-          "order by f.status asc"
+          "order by f.status asc nulls last"
   )
   List<UserWithStatus> findByUsernameNot(String username);
 
@@ -38,7 +38,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "where u.username <> :username " +
           "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
           "and (lower(u.username) like lower(concat('%', :searchQuery, '%')) or lower(u.fullname) like lower(concat('%', :searchQuery, '%')))" +
-          "order by f.status asc"
+          "order by f.status asc nulls last"
   )
   List<UserWithStatus> findByUsernameNot(@Param("username") String username,
                                          @Param("searchQuery") String searchQuery);
@@ -50,7 +50,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "(u = f.addressee and f.requester.username = :username) " +
           "where u.username <> :username " +
           "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
-          "order by f.status asc"
+          "order by f.status asc nulls last"
   )
   Page<UserWithStatus> findByUsernameNot(String username,
                                          Pageable pageable);
@@ -63,7 +63,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
           "where u.username <> :username " +
           "and (f.status = guru.qa.niffler.data.FriendshipStatus.PENDING or f.status is null)" +
           "and (lower(u.username) like lower(concat('%', :searchQuery, '%')) or lower(u.fullname) like lower(concat('%', :searchQuery, '%')))" +
-          "order by f.status asc"
+          "order by f.status asc nulls last"
   )
   Page<UserWithStatus> findByUsernameNot(@Param("username") String username,
                                          @Param("searchQuery") String searchQuery,

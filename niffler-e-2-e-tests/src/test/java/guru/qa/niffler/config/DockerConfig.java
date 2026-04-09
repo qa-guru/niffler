@@ -20,7 +20,7 @@ public class DockerConfig implements Config {
     Configuration.remote = "http://selenoid:4444/wd/hub";
     Configuration.timeout = 10000;
     Configuration.browser = "chrome";
-    Configuration.browserVersion = "146.0";
+    Configuration.browserVersion = "147.0";
     Configuration.pageLoadStrategy = "eager";
     Configuration.browserCapabilities = new ChromeOptions()
         .addArguments("--enable-automation")
