@@ -57,8 +57,10 @@ subprojects {
     }
 
     dependencyManagement {
-        imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        if (project.name != 'niffler-e-2-e-tests') {
+            imports {
+                mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+            }
         }
         dependencies {
             dependency "org.projectlombok:lombok:${lombokVersion}"
