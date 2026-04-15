@@ -20,6 +20,8 @@ public @interface GenerateSpend {
 
   int addDaysToSpendDate() default 0;
 
+  String spendDate() default "";
+
   double amount();
 
   CurrencyValues currency() default CurrencyValues.RUB;

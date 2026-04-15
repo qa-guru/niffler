@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static guru.qa.niffler.utils.DataUtils.randomAmount;
+import static guru.qa.niffler.utils.DateUtils.getDateAsString;
 import static guru.qa.niffler.utils.DataUtils.randomSentence;
 import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITHOUT_AMOUNT;
 import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY;
@@ -200,5 +201,25 @@ public class SpendingTest extends BaseWebTest {
     new MainPage().getSpendingTable()
         .deleteSpending("Коктейль")
         .checkTableSize(0);
+  }
+
+  @Test
+  @AllureId("500028")
+  @DisplayName("WEB: Дата траты с 1 по 9 число отображается без ведущего нуля")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      spends = @GenerateSpend(
+          name = "Обед",
+          category = "Еда",
+          amount = 500.0,
+          spendDate = "05.01.2025"
+      )
+  ))
+  void spendingDateShouldNotHaveLeadingZero(@User UserJson user) {
+    SpendJson spend = user.testData().spends().getFirst();
+    String expectedDateText = getDateAsString(spend.spendDate(), "MMM d, yyyy");
+
+    new MainPage().getSpendingTable()
+        .checkSpendingDateText(spend.description(), expectedDateText);
   }
 }
