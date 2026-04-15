@@ -152,7 +152,9 @@ public class DatabaseCreateUserExtension extends AbstractCreateUserExtension {
         SpendEntity se = new SpendEntity();
         se.setUsername(createdUser.username());
         se.setCurrency(guru.qa.niffler.data.entity.CurrencyValues.valueOf(spend.currency().name()));
-        se.setSpendDate(DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()));
+        se.setSpendDate(spend.spendDate().isEmpty()
+            ? DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate())
+            : DateUtils.fromString(spend.spendDate(), "dd.MM.yyyy"));
         se.setAmount(spend.amount());
         se.setDescription(spend.name());
         se.setCategory(
