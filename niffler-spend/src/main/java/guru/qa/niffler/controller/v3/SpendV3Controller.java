@@ -6,6 +6,7 @@ import guru.qa.niffler.service.SpendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,7 +33,7 @@ public class SpendV3Controller {
 
   @GetMapping("/all")
   public PagedModel<SpendJson> getSpends(@RequestParam String username,
-                                         @PageableDefault Pageable pageable,
+                                         @PageableDefault(sort = "spendDate", direction = Sort.Direction.DESC) Pageable pageable,
                                          @RequestParam(required = false) CurrencyValues filterCurrency,
                                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
                                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date to,

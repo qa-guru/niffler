@@ -14,4 +14,4 @@ RUN gradle :niffler-e-2-e-tests:dependencies :niffler-grpc-common:dependencies -
 COPY ./niffler-e-2-e-tests ./niffler-e-2-e-tests
 COPY ./niffler-grpc-common ./niffler-grpc-common
 
-CMD gradle test -p niffler-e-2-e-tests --no-daemon -Dtest.env=docker -Drepository=jpa -Duser.timezone=Europe/Moscow
+CMD gradle test -p niffler-e-2-e-tests --no-daemon -Dtest.env=docker -Drepository=jpa -Duser.timezone=Europe/Moscow -Drewrite.screenshots=true

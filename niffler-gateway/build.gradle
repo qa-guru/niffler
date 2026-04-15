@@ -1,6 +1,6 @@
 plugins {
     id 'org.springframework.boot' version '3.5.8'
-    id 'com.google.cloud.tools.jib' version '3.4.1'
+    id 'com.google.cloud.tools.jib' version '3.5.3'
     id 'com.github.edeandrea.xjc-generation' version '1.6'
 }
 
@@ -33,10 +33,10 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${project.ext.springOpenApiVersion}"
 
-    xjc "org.glassfish.jaxb:jaxb-xjc:${project.ext.jakartaJaxbVersion}"
+    xjc 'org.glassfish.jaxb:jaxb-xjc'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "org.springframework.security:spring-security-test:${project.ext.springSecurityTestVersion}"
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 xjcGeneration {

@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NoWhitespaceValidatorTest {
 
@@ -18,6 +19,16 @@ class NoWhitespaceValidatorTest {
   @ParameterizedTest
   void shouldReturnFalseForStringsWithSpaces(String input) {
     assertFalse(
+        validator.isValid(input, context)
+    );
+  }
+
+  @ValueSource(strings = {
+      "foo", "foobar"
+  })
+  @ParameterizedTest
+  void shouldReturnTrueForStringsWithoutSpaces(String input) {
+    assertTrue(
         validator.isValid(input, context)
     );
   }

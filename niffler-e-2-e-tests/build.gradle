@@ -1,21 +1,21 @@
 buildscript {
     ext {
         junitVersion = '5.14.1'
-        allureVersion = '2.32.0'
-        aspectJVersion = '1.9.22'
-        selenideVersion = '7.13.0'
+        allureVersion = '2.34.0'
+        aspectJVersion = '1.9.25.1'
+        selenideVersion = '7.15.1'
         okhttp3Version = '5.3.2'
         retrofitVersion = '3.0.0'
         apollographqlVersion = '0.0.2'
-        logbackVersion = '1.5.22'
-        slf4jVersion = '2.0.17'
-        springJdbcVersion = '6.2.12'
-        springCryptoVersion = '6.5.6'
         p6spyVersion = '3.9.1'
-        hibernateVersion = '7.2.0.Final'
-        kafkaClientsVersion = '4.1.1'
+        hibernateVersion = '7.3.0.Final'
+        springFrameworkVersion = '6.2.14'
+        springDataVersion = '3.5.6'
+        springSecurityVersion = '6.5.7'
+        jakartaXmlBindVersion = '4.0.4'
+        jaxbXjcVersion = '4.0.6'
+        kafkaClientsVersion = '4.2.0'
         saajVersion = '3.0.4'
-        springDataCommonsVersion = '3.5.5'
         wiremockVersion = '3.13.2'
         ashotVersion = '1.5.4'
         fakerVersion = '1.0.2'
@@ -29,10 +29,10 @@ buildscript {
 }
 
 plugins {
-    id 'io.qameta.allure' version '3.0.1'
-    id 'io.qameta.allure-adapter' version '3.0.1'
+    id 'io.qameta.allure' version '3.1.0'
+    id 'io.qameta.allure-adapter' version '3.1.0'
     id 'com.github.edeandrea.xjc-generation' version '1.6'
-    id 'com.apollographql.apollo' version '4.3.3'
+    id 'com.apollographql.apollo' version '4.4.3'
 }
 
 group = 'guru.qa'
@@ -84,8 +84,8 @@ sourceSets {
 
 dependencies {
     // Logs
-    testImplementation "ch.qos.logback:logback-classic:${logbackVersion}"
-    testImplementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    testImplementation 'ch.qos.logback:logback-classic'
+    testImplementation 'org.slf4j:slf4j-api:2.0.17'
     // JUnit
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
@@ -100,17 +100,17 @@ dependencies {
         exclude group: "com.squareup.okhttp3"
     }
     testImplementation "com.squareup.retrofit2:converter-scalars:${retrofitVersion}"
-    testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
+    testImplementation "org.springframework.data:spring-data-commons:${springDataVersion}"
     // GraphQL
     testImplementation "com.apollographql.java:client:${apollographqlVersion}"
     testImplementation "com.apollographql.java:rx2:${apollographqlVersion}"
     testImplementation 'com.apollographql.adapters:apollo-adapters-core:0.7.0'
     // DB
-    testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
-    testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
+    testImplementation "org.springframework:spring-jdbc:${springFrameworkVersion}"
+    testImplementation 'org.postgresql:postgresql'
     testImplementation "p6spy:p6spy:${p6spyVersion}"
-    testImplementation "org.hibernate:hibernate-core:${hibernateVersion}"
-    testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
+    testImplementation "org.hibernate.orm:hibernate-core:${hibernateVersion}"
+    testImplementation "org.springframework.security:spring-security-crypto:${springSecurityVersion}"
     // Allure
     agent "org.aspectj:aspectjweaver:${aspectJVersion}"
     testImplementation platform("io.qameta.allure:allure-bom:$allureVersion")
@@ -143,15 +143,15 @@ dependencies {
     compileOnly 'jakarta.annotation:jakarta.annotation-api:1.3.5' // Java 9+ compatibility - Do NOT update to 2.0.0
     // SOAP
     testImplementation "com.sun.xml.messaging.saaj:saaj-impl:${saajVersion}"
-    testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:${project.ext.jakartaJaxbVersion}"
-    xjc "org.glassfish.jaxb:jaxb-xjc:${project.ext.jakartaJaxbVersion}"
+    testImplementation "jakarta.xml.bind:jakarta.xml.bind-api:${jakartaXmlBindVersion}"
+    xjc "org.glassfish.jaxb:jaxb-xjc:${jaxbXjcVersion}"
     // Kafka
     testImplementation "org.apache.kafka:kafka-clients:${kafkaClientsVersion}"
     // Wiremock
     testImplementation "org.wiremock:wiremock:${project.ext.wiremockVersion}"
     // Lombok
-    testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
 }
 
 tasks.withType(JavaCompile).configureEach {

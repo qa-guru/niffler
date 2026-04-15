@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -47,7 +46,6 @@ public class SecurityConfig {
   }
 
   @Bean
-  @Profile("!docker")
   @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "true")
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                         CsrfTokenRepository csrfTokenRepository,
@@ -64,7 +62,6 @@ public class SecurityConfig {
   }
 
   @Bean
-  @Profile("!docker")
   @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "true")
   public PublicKeyCredentialRpEntity publicKeyCredentialRpEntity() {
     return PublicKeyCredentialRpEntity.builder()
@@ -81,7 +78,6 @@ public class SecurityConfig {
    * @link <a href="https://github.com/DannyMoerkerke/webauthn-demo">demo</a>
    */
   @Bean
-  @Profile("!docker")
   @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "true")
   public WebAuthnRelyingPartyOperations webAuthnRelyingPartyOperations(PublicKeyCredentialRpEntity publicKeyCredentialRpEntity,
                                                                        PublicKeyCredentialUserEntityRepository jdbcPublicKeyCredentialRepository,
@@ -116,8 +112,7 @@ public class SecurityConfig {
    * http supported only for `localhost`
    */
   @Bean
-  @Profile("docker")
-  @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "false")
+  @ConditionalOnProperty(name = "webauthn.enabled", havingValue = "false", matchIfMissing = true)
   public SecurityFilterChain dockerSecurityFilterChain(HttpSecurity http,
                                                        CsrfTokenRepository csrfTokenRepository) throws Exception {
     return commonSecurityConfiguration(http, csrfTokenRepository).build();
