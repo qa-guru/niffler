@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: niffler-feature-template
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pggorbachev/niffler.git
+    targetRevision: HEAD
+    path: argocd-manifests/niffler-feature-template
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: niffler-feature-template
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
