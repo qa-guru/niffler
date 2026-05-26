@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.ben-manes.versions' version '0.53.0'
+    id 'com.github.ben-manes.versions' version '0.54.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -30,21 +30,21 @@ subprojects {
         dockerHubName = "qaguru"
         springBootVersion = '3.5.8'
 
-        lombokVersion = '1.18.44'
-        postgresDriverVersion = '42.7.10'
+        lombokVersion = '1.18.46'
+        jacksonVersion = '2.21'
+        postgresDriverVersion = '42.7.11'
         flywayVersion = '11.19.1'
         h2Version = '2.4.240'
         mockitoVersion = '5.23.0'
         logbackVersion = '1.5.32'
-        springVaultVersion = '4.3.0'
         springOpenApiVersion = '2.8.13'
         webauthn4jVersion = '0.31.2.RELEASE'
         springGrpcVersion = '3.1.0.RELEASE'
         springGraphqlDateTimeVersion = '6.0.0'
-        firebaseVersion = '9.8.0'
+        firebaseVersion = '9.9.0'
         wsdl4jVersion = '1.6.3'
-        protobufVersion = '4.34.1'
-        grpcVersion = '1.80.0'
+        protobufVersion = '4.35.0'
+        grpcVersion = '1.81.0'
         thumbnailatorVersion = '0.4.21'
         apacheCsvVersion = '1.14.1'
 
@@ -63,6 +63,7 @@ subprojects {
             }
         }
         dependencies {
+            dependency "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
             dependency "org.projectlombok:lombok:${lombokVersion}"
             dependency "org.postgresql:postgresql:${postgresDriverVersion}"
             dependency "org.flywaydb:flyway-core:${flywayVersion}"

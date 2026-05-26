@@ -256,7 +256,7 @@ export const SpendingForm: FC<SpendingFormInterface> = ({id, isEdit}) => {
                             shouldDisableDate={day => day.isBefore(dayjs(MIN_ACCEPTABLE_DATE)) || day.isAfter(dayjs())}
                             onChange={newDate => setFormData({
                                 ...formData,
-                                spendDate: {...formData.spendDate, value: dayjs(newDate)}
+                                spendDate: {...formData.spendDate, value: newDate ?? dayjs(NaN)}
                             })}
                             slotProps={{
                                 textField: {

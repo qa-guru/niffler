@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '2.5.5'
+version = '2.5.6'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -18,7 +18,6 @@ dependencies {
     implementation 'org.springframework.session:spring-session-jdbc'
     implementation "com.webauthn4j:webauthn4j-core:${project.ext.webauthn4jVersion}"
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation "org.springframework.cloud:spring-cloud-starter-vault-config:${project.ext.springVaultVersion}"
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
     annotationProcessor 'org.projectlombok:lombok'

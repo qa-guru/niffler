@@ -5,8 +5,15 @@ services:
     pull_policy: always
     mem_limit: 1600m
     environment:
-      - VAULT_TOKEN=${VAULT_TOKEN}
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=1024m -XX:MaxHeapSize=1024m
+      - AUTH_DB_URL
+      - AUTH_DB_USERNAME
+      - AUTH_DB_PASSWORD
+      - AUTH_KAFKA_URL
+      - AUTH_WEB_CLIENT_ID
+      - AUTH_MOBILE_CLIENT_ID
+      - AUTH_MOBILE_CUSTOM_SCHEME
+      - AUTH_ANDROID_APP_URI
     ports:
       - 9000:9000
     healthcheck:
@@ -24,8 +31,10 @@ services:
     pull_policy: always
     mem_limit: 1200m
     environment:
-      - VAULT_TOKEN=${VAULT_TOKEN}
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
+      - CURRENCY_DB_URL
+      - CURRENCY_DB_USERNAME
+      - CURRENCY_DB_PASSWORD
     ports:
       - 8091:8091
       - 8092:8092
@@ -39,8 +48,11 @@ services:
     pull_policy: always
     mem_limit: 1200m
     environment:
-      - VAULT_TOKEN=${VAULT_TOKEN}
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
+      - GATEWAY_NIFFLER_CURRENCY_GRPC_URL
+      - GATEWAY_NIFFLER_CURRENCY_URL
+      - GATEWAY_NIFFLER_USERDATA_URL
+      - GATEWAY_NIFFLER_SPEND_URL
     ports:
       - 8090:8090
     healthcheck:
@@ -59,10 +71,15 @@ services:
     container_name: spend.niffler.dc
     image: ${PREFIX}/niffler-spend-${PROFILE}:${SPEND_VER}
     pull_policy: always
-    mem_limit: 1200m
+    mem_limit: 1600m
     environment:
-      - VAULT_TOKEN=${VAULT_TOKEN}
-      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
+      - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=1024m -XX:MaxHeapSize=1024m
+      - SPEND_DB_URL
+      - SPEND_DB_USERNAME
+      - SPEND_DB_PASSWORD
+      - SPEND_NIFFLER_CURRENCY_GRPC_URL
+      - SPEND_NIFFLER_CURRENCY_URL
+      - SPEND_NIFFLER_USERDATA_URL
     ports:
       - 8093:8093
     restart: always
@@ -75,8 +92,13 @@ services:
     pull_policy: always
     mem_limit: 1200m
     environment:
-      - VAULT_TOKEN=${VAULT_TOKEN}
       - JAVA_TOOL_OPTIONS=-XX:InitialHeapSize=768m -XX:MaxHeapSize=768m
+      - USERDATA_DB_URL
+      - USERDATA_DB_USERNAME
+      - USERDATA_DB_PASSWORD
+      - USERDATA_KAFKA_URL
+      - USERDATA_NIFFLER_USERDATA_URL
+      - USERDATA_FIREBASE_KEY
     ports:
       - 8089:8089
     restart: always

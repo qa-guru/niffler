@@ -11,12 +11,14 @@ spring:
     name: niffler-currency
   datasource:
     hikari:
+      pool-name: ${spring.application.name}-pool
       connection-timeout: 20000
-      minimum-idle: 10
-      maximum-pool-size: 30
-      idle-timeout: 10000
-      max-lifetime: 1000
-      auto-commit: true
+      minimum-idle: 15
+      maximum-pool-size: 15
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      keepalive-time: 120000
+      leak-detection-threshold: 30000
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -35,9 +37,6 @@ spring:
     show-sql: false
     generate-ddl: true
     open-in-view: false
-  cloud:
-    compatibility-verifier:
-      enabled: false
 logging:
   level:
     root: INFO
@@ -51,11 +50,6 @@ spring:
   config:
     activate:
       on-profile: 'local'
-  autoconfigure:
-    exclude:
-      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   datasource:
     username: postgres
     password: secret
@@ -65,11 +59,6 @@ spring:
   config:
     activate:
       on-profile: 'docker'
-  autoconfigure:
-    exclude:
-      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   datasource:
     username: postgres
     password: secret
@@ -79,35 +68,17 @@ spring:
   config:
     activate:
       on-profile: 'prod'
-    import: vault://
-  cloud:
-    vault:
-      authentication: TOKEN
-      host: vault.qa.guru
-      uri: https://vault.qa.guru
-      token: ${VAULT_TOKEN}
-      kv:
-        enabled: true
   datasource:
-    url: ${db.url}
-    username: ${db.username}
-    password: ${db.password}
+    url: ${CURRENCY_DB_URL}
+    username: ${CURRENCY_DB_USERNAME}
+    password: ${CURRENCY_DB_PASSWORD}
 ---
 spring:
   config:
     activate:
       on-profile: 'staging'
-    import: vault://
-  cloud:
-    vault:
-      authentication: TOKEN
-      host: vault.qa.guru
-      uri: https://vault.qa.guru
-      token: ${VAULT_TOKEN}
-      kv:
-        enabled: true
   datasource:
-    url: ${db.url}
-    username: ${db.username}
-    password: ${db.password}
+    url: ${CURRENCY_DB_URL}
+    username: ${CURRENCY_DB_USERNAME}
+    password: ${CURRENCY_DB_PASSWORD}
 ---
