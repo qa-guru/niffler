@@ -14,6 +14,8 @@ services:
       - AUTH_MOBILE_CLIENT_ID
       - AUTH_MOBILE_CUSTOM_SCHEME
       - AUTH_ANDROID_APP_URI
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - 9000:9000
     healthcheck:
@@ -35,6 +37,8 @@ services:
       - CURRENCY_DB_URL
       - CURRENCY_DB_USERNAME
       - CURRENCY_DB_PASSWORD
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - 8091:8091
       - 8092:8092
@@ -80,6 +84,8 @@ services:
       - SPEND_NIFFLER_CURRENCY_GRPC_URL
       - SPEND_NIFFLER_CURRENCY_URL
       - SPEND_NIFFLER_USERDATA_URL
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - 8093:8093
     restart: always
@@ -99,6 +105,8 @@ services:
       - USERDATA_KAFKA_URL
       - USERDATA_NIFFLER_USERDATA_URL
       - USERDATA_FIREBASE_KEY
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - 8089:8089
     restart: always

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'guru.qa'
-version = '2.2.5'
+version = '2.2.6'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
