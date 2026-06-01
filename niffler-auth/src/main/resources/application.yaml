@@ -19,12 +19,14 @@ spring:
     log-request-details: true
   datasource:
     hikari:
+      pool-name: ${spring.application.name}-pool
       connection-timeout: 20000
-      minimum-idle: 10
-      maximum-pool-size: 30
-      idle-timeout: 10000
-      max-lifetime: 1000
-      auto-commit: true
+      minimum-idle: 15
+      maximum-pool-size: 15
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      keepalive-time: 120000
+      leak-detection-threshold: 30000
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -50,9 +52,6 @@ spring:
       cache:
         cachecontrol:
           max-age: 365d
-  cloud:
-    compatibility-verifier:
-      enabled: false
 logging:
   level:
     root: INFO
@@ -76,11 +75,6 @@ spring:
   config:
     activate:
       on-profile: 'local'
-  autoconfigure:
-    exclude:
-      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
     bootstrap-servers: 'localhost:9092'
   datasource:
@@ -104,11 +98,6 @@ spring:
   config:
     activate:
       on-profile: 'docker'
-  autoconfigure:
-    exclude:
-      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
     bootstrap-servers: 'kafka:9092'
   datasource:
@@ -132,21 +121,12 @@ spring:
   config:
     activate:
       on-profile: 'prod'
-    import: vault://
-  cloud:
-    vault:
-      authentication: TOKEN
-      host: vault.qa.guru
-      uri: https://vault.qa.guru
-      token: ${VAULT_TOKEN}
-      kv:
-        enabled: true
   kafka:
-    bootstrap-servers: ${kafka.url}
+    bootstrap-servers: ${AUTH_KAFKA_URL}
   datasource:
-    url: ${db.url}
-    username: ${db.username}
-    password: ${db.password}
+    url: ${AUTH_DB_URL}
+    username: ${AUTH_DB_USERNAME}
+    password: ${AUTH_DB_PASSWORD}
 
 server:
   tomcat:
@@ -160,10 +140,10 @@ niffler-auth:
   base-uri: 'https://auth.niffler.qa.guru'
   rp-id: 'niffler.qa.guru'
 oauth2:
-  web-client-id: ${web-client-id}
-  mobile-client-id: ${mobile-client-id}
-  mobile-custom-scheme: ${mobile-custom-scheme}
-  android-app-uri: ${android-app-uri}
+  web-client-id: ${AUTH_WEB_CLIENT_ID}
+  mobile-client-id: ${AUTH_MOBILE_CLIENT_ID}
+  mobile-custom-scheme: ${AUTH_MOBILE_CUSTOM_SCHEME}
+  android-app-uri: ${AUTH_ANDROID_APP_URI}
 webauthn:
   enabled: true
 ---
@@ -171,21 +151,12 @@ spring:
   config:
     activate:
       on-profile: 'staging'
-    import: vault://
-  cloud:
-    vault:
-      authentication: TOKEN
-      host: vault.qa.guru
-      uri: https://vault.qa.guru
-      token: ${VAULT_TOKEN}
-      kv:
-        enabled: true
   kafka:
-    bootstrap-servers: ${kafka.url}
+    bootstrap-servers: ${AUTH_KAFKA_URL}
   datasource:
-    url: ${db.url}
-    username: ${db.username}
-    password: ${db.password}
+    url: ${AUTH_DB_URL}
+    username: ${AUTH_DB_USERNAME}
+    password: ${AUTH_DB_PASSWORD}
 
 server:
   tomcat:
@@ -199,10 +170,10 @@ niffler-auth:
   base-uri: 'https://auth.niffler-stage.qa.guru'
   rp-id: 'niffler-stage.qa.guru'
 oauth2:
-  web-client-id: ${web-client-id}
-  mobile-client-id: ${mobile-client-id}
-  mobile-custom-scheme: ${mobile-custom-scheme}
-  android-app-uri: ${android-app-uri}
+  web-client-id: ${AUTH_WEB_CLIENT_ID}
+  mobile-client-id: ${AUTH_MOBILE_CLIENT_ID}
+  mobile-custom-scheme: ${AUTH_MOBILE_CUSTOM_SCHEME}
+  android-app-uri: ${AUTH_ANDROID_APP_URI}
 webauthn:
   enabled: true
 ---

@@ -34,7 +34,6 @@ jobs:
         run: |
           echo "PROFILE=prod" >> $GITHUB_ENV
           echo "PREFIX=${{ vars.DOCKER_HUB_ACC }}" >> $GITHUB_ENV
-          echo "VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}" >> $GITHUB_ENV
           echo "AUTH_VER=${{ needs.collect-versions.outputs.auth-ver }}" >> $GITHUB_ENV
           echo "CURRENCY_VER=${{ needs.collect-versions.outputs.currency-ver }}" >> $GITHUB_ENV
           echo "GATEWAY_VER=${{ needs.collect-versions.outputs.gateway-ver }}" >> $GITHUB_ENV
@@ -64,6 +63,34 @@ jobs:
           docker push ${IMAGE_TAG}:${{ env.FRONT_VER }}
           docker push ${IMAGE_TAG}:latest
       - name: Deploy
+        env:
+          AUTH_DB_URL: ${{ secrets.NIFFLER_AUTH_PROD_DB_URL }}
+          AUTH_DB_USERNAME: ${{ secrets.NIFFLER_AUTH_PROD_DB_USERNAME }}
+          AUTH_DB_PASSWORD: ${{ secrets.NIFFLER_AUTH_PROD_DB_PASSWORD }}
+          AUTH_KAFKA_URL: ${{ secrets.NIFFLER_AUTH_PROD_KAFKA_URL }}
+          AUTH_WEB_CLIENT_ID: ${{ secrets.NIFFLER_AUTH_PROD_WEB_CLIENT_ID }}
+          AUTH_MOBILE_CLIENT_ID: ${{ secrets.NIFFLER_AUTH_PROD_MOBILE_CLIENT_ID }}
+          AUTH_MOBILE_CUSTOM_SCHEME: ${{ secrets.NIFFLER_AUTH_PROD_MOBILE_CUSTOM_SCHEME }}
+          AUTH_ANDROID_APP_URI: ${{ secrets.NIFFLER_AUTH_PROD_ANDROID_APP_URI }}
+          CURRENCY_DB_URL: ${{ secrets.NIFFLER_CURRENCY_PROD_DB_URL }}
+          CURRENCY_DB_USERNAME: ${{ secrets.NIFFLER_CURRENCY_PROD_DB_USERNAME }}
+          CURRENCY_DB_PASSWORD: ${{ secrets.NIFFLER_CURRENCY_PROD_DB_PASSWORD }}
+          GATEWAY_NIFFLER_CURRENCY_GRPC_URL: ${{ secrets.NIFFLER_GATEWAY_PROD_NIFFLER_CURRENCY_GRPC_URL }}
+          GATEWAY_NIFFLER_CURRENCY_URL: ${{ secrets.NIFFLER_GATEWAY_PROD_NIFFLER_CURRENCY_URL }}
+          GATEWAY_NIFFLER_USERDATA_URL: ${{ secrets.NIFFLER_GATEWAY_PROD_NIFFLER_USERDATA_URL }}
+          GATEWAY_NIFFLER_SPEND_URL: ${{ secrets.NIFFLER_GATEWAY_PROD_NIFFLER_SPEND_URL }}
+          SPEND_DB_URL: ${{ secrets.NIFFLER_SPEND_PROD_DB_URL }}
+          SPEND_DB_USERNAME: ${{ secrets.NIFFLER_SPEND_PROD_DB_USERNAME }}
+          SPEND_DB_PASSWORD: ${{ secrets.NIFFLER_SPEND_PROD_DB_PASSWORD }}
+          SPEND_NIFFLER_CURRENCY_GRPC_URL: ${{ secrets.NIFFLER_SPEND_PROD_NIFFLER_CURRENCY_GRPC_URL }}
+          SPEND_NIFFLER_CURRENCY_URL: ${{ secrets.NIFFLER_SPEND_PROD_NIFFLER_CURRENCY_URL }}
+          SPEND_NIFFLER_USERDATA_URL: ${{ secrets.NIFFLER_SPEND_PROD_NIFFLER_USERDATA_URL }}
+          USERDATA_DB_URL: ${{ secrets.NIFFLER_USERDATA_PROD_DB_URL }}
+          USERDATA_DB_USERNAME: ${{ secrets.NIFFLER_USERDATA_PROD_DB_USERNAME }}
+          USERDATA_DB_PASSWORD: ${{ secrets.NIFFLER_USERDATA_PROD_DB_PASSWORD }}
+          USERDATA_KAFKA_URL: ${{ secrets.NIFFLER_USERDATA_PROD_KAFKA_URL }}
+          USERDATA_NIFFLER_USERDATA_URL: ${{ secrets.NIFFLER_USERDATA_PROD_NIFFLER_USERDATA_URL }}
+          USERDATA_FIREBASE_KEY: ${{ secrets.NIFFLER_USERDATA_PROD_FIREBASE_KEY }}
         run: |
           docker compose -f docker-compose.ci.yml pull ${{ inputs.compose-service }}
           docker compose -f docker-compose.ci.yml stop ${{ inputs.compose-service }} && docker compose -f docker-compose.ci.yml up -d --no-deps ${{ inputs.compose-service }}

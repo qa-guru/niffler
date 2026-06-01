@@ -12,6 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
+import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -84,6 +85,15 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
   @Nonnull
   public SpendingTable checkTableSize(int expectedSize) {
     tableRows.should(size(expectedSize));
+    return this;
+  }
+
+  @Step("Check that spending with description {0} has date text {1}")
+  @Nonnull
+  public SpendingTable checkSpendingDateText(String description, String expectedDateText) {
+    searchSpendingByDescription(description);
+    SelenideElement row = tableRows.find(text(description));
+    row.$$("td").get(4).should(exactText(expectedDateText));
     return this;
   }
 }

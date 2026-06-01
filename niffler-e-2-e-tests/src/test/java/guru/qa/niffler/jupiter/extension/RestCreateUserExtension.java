@@ -104,7 +104,9 @@ public class RestCreateUserExtension extends AbstractCreateUserExtension {
 
         SpendJson sj = new SpendJson(
             null,
-            DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate()),
+            spend.spendDate().isEmpty()
+                ? DateUtils.addDaysToDate(new Date(), Calendar.DAY_OF_WEEK, spend.addDaysToSpendDate())
+                : DateUtils.fromString(spend.spendDate(), "dd.MM.yyyy"),
             spend.amount(),
             spend.currency(),
             existingCategory.orElseGet(() -> new CategoryJson(

@@ -6,12 +6,14 @@ spring:
     name: niffler-userdata
   datasource:
     hikari:
+      pool-name: ${spring.application.name}-pool
       connection-timeout: 20000
-      minimum-idle: 10
-      maximum-pool-size: 30
-      idle-timeout: 10000
-      max-lifetime: 1000
-      auto-commit: true
+      minimum-idle: 15
+      maximum-pool-size: 15
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      keepalive-time: 120000
+      leak-detection-threshold: 30000
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -30,9 +32,6 @@ spring:
     show-sql: false
     generate-ddl: true
     open-in-view: false
-  cloud:
-    compatibility-verifier:
-      enabled: false
 logging:
   level:
     root: INFO
@@ -46,11 +45,6 @@ spring:
   config:
     activate:
       on-profile: 'local'
-  autoconfigure:
-    exclude:
-      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
     bootstrap-servers: 'localhost:9092'
     consumer:
@@ -70,11 +64,6 @@ spring:
   config:
     activate:
       on-profile: 'docker'
-  autoconfigure:
-    exclude:
-      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
-      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
     bootstrap-servers: 'kafka:9092'
     consumer:
@@ -93,55 +82,37 @@ spring:
   config:
     activate:
       on-profile: 'prod'
-    import: vault://
-  cloud:
-    vault:
-      authentication: TOKEN
-      host: vault.qa.guru
-      uri: https://vault.qa.guru
-      token: ${VAULT_TOKEN}
-      kv:
-        enabled: true
   kafka:
-    bootstrap-servers: ${kafka.url}
+    bootstrap-servers: ${USERDATA_KAFKA_URL}
     consumer:
       group-id: 'userdata'
       auto-offset-reset: earliest
   datasource:
-    url: ${db.url}
-    username: ${db.username}
-    password: ${db.password}
+    url: ${USERDATA_DB_URL}
+    username: ${USERDATA_DB_USERNAME}
+    password: ${USERDATA_DB_PASSWORD}
 niffler-userdata:
-  base-uri: ${niffler-userdata.url}
+  base-uri: ${USERDATA_NIFFLER_USERDATA_URL}
 firebase:
   enabled: true
-  config: ${firebase.key}
+  config: ${USERDATA_FIREBASE_KEY}
 ---
 spring:
   config:
     activate:
       on-profile: 'staging'
-    import: vault://
-  cloud:
-    vault:
-      authentication: TOKEN
-      host: vault.qa.guru
-      uri: https://vault.qa.guru
-      token: ${VAULT_TOKEN}
-      kv:
-        enabled: true
   kafka:
-    bootstrap-servers: ${kafka.url}
+    bootstrap-servers: ${USERDATA_KAFKA_URL}
     consumer:
       group-id: 'userdata'
       auto-offset-reset: earliest
   datasource:
-    url: ${db.url}
-    username: ${db.username}
-    password: ${db.password}
+    url: ${USERDATA_DB_URL}
+    username: ${USERDATA_DB_USERNAME}
+    password: ${USERDATA_DB_PASSWORD}
 niffler-userdata:
-  base-uri: ${niffler-userdata.url}
+  base-uri: ${USERDATA_NIFFLER_USERDATA_URL}
 firebase:
   enabled: true
-  config: ${firebase.key}
+  config: ${USERDATA_FIREBASE_KEY}
 ---
