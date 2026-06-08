@@ -30,7 +30,7 @@ class GrpcCurrencyServiceIntegrationTest {
 
   @Test
   @Sql(FIXTURE)
-  void getAllCurrenciesShouldReturnAllFourCurrenciesFromDb() {
+  void getAllCurrenciesWhenFourCurrenciesInDbReturnsFourItems() {
     CapturingStreamObserver<CurrencyResponse> observer = new CapturingStreamObserver<>();
 
     grpcCurrencyService.getAllCurrencies(Empty.getDefaultInstance(), observer);
@@ -42,7 +42,7 @@ class GrpcCurrencyServiceIntegrationTest {
 
   @Test
   @Sql(FIXTURE)
-  void getAllCurrenciesShouldContainCorrectRatesFromDb() {
+  void getAllCurrenciesWhenCurrenciesInDbReturnsCorrectRates() {
     CapturingStreamObserver<CurrencyResponse> observer = new CapturingStreamObserver<>();
 
     grpcCurrencyService.getAllCurrencies(Empty.getDefaultInstance(), observer);
@@ -72,7 +72,7 @@ class GrpcCurrencyServiceIntegrationTest {
 
   @Test
   @Sql(FIXTURE)
-  void calculateRateShouldConvertRubToKztUsingDbRates() {
+  void calculateRateWhenRubToKztConvertsCorrectlyUsingDbRates() {
     CapturingStreamObserver<CalculateResponse> observer = new CapturingStreamObserver<>();
     CalculateRequest request = CalculateRequest.newBuilder()
         .setAmount(150.0)
@@ -88,7 +88,7 @@ class GrpcCurrencyServiceIntegrationTest {
 
   @Test
   @Sql(FIXTURE)
-  void calculateRateShouldConvertUsdToEurUsingDbRates() {
+  void calculateRateWhenUsdToEurConvertsCorrectlyUsingDbRates() {
     CapturingStreamObserver<CalculateResponse> observer = new CapturingStreamObserver<>();
     CalculateRequest request = CalculateRequest.newBuilder()
         .setAmount(34.0)
@@ -104,7 +104,7 @@ class GrpcCurrencyServiceIntegrationTest {
 
   @Test
   @Sql(FIXTURE)
-  void calculateRateShouldReturnSameAmountForSameCurrency() {
+  void calculateRateWhenSameCurrencyReturnsSameAmount() {
     CapturingStreamObserver<CalculateResponse> observer = new CapturingStreamObserver<>();
     CalculateRequest request = CalculateRequest.newBuilder()
         .setAmount(150.0)

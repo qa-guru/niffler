@@ -17,6 +17,8 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: false
 
-grpc:
-  server:
-    port: -1
+  grpc:
+    server:
+      inprocess:
+        name: niffler-currency-test
+        exclusive: true

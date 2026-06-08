@@ -60,7 +60,7 @@ class GrpcCurrencyServiceTest {
     grpcCurrencyService = new GrpcCurrencyService(currencyRepository);
   }
 
-  static Stream<Arguments> spendCurrencyShouldBeConverted() {
+  static Stream<Arguments> convertSpendToWhenValidCurrencyPairsConvertsCorrectly() {
     return Stream.of(
         Arguments.of(150.00, guru.qa.niffler.grpc.CurrencyValues.RUB, guru.qa.niffler.grpc.CurrencyValues.KZT, 1071.43),
         Arguments.of(34.00, guru.qa.niffler.grpc.CurrencyValues.USD, guru.qa.niffler.grpc.CurrencyValues.EUR, 31.48),
@@ -71,7 +71,7 @@ class GrpcCurrencyServiceTest {
 
   @MethodSource
   @ParameterizedTest
-  void spendCurrencyShouldBeConverted(double spend,
+  void convertSpendToWhenValidCurrencyPairsConvertsCorrectly(double spend,
                                       guru.qa.niffler.grpc.CurrencyValues spendCurrency,
                                       guru.qa.niffler.grpc.CurrencyValues desiredCurrency,
                                       double expectedResult) {
@@ -82,7 +82,7 @@ class GrpcCurrencyServiceTest {
     Assertions.assertEquals(expectedResult, result.doubleValue());
   }
 
-  static Stream<Arguments> additionalConversionCases() {
+  static Stream<Arguments> convertSpendToWhenCrossCurrencyPairsConvertsCorrectly() {
     return Stream.of(
         Arguments.of(100.0, guru.qa.niffler.grpc.CurrencyValues.USD, guru.qa.niffler.grpc.CurrencyValues.RUB, 6666.67),
         Arguments.of(100.0, guru.qa.niffler.grpc.CurrencyValues.USD, guru.qa.niffler.grpc.CurrencyValues.USD, 100.0),
@@ -93,7 +93,7 @@ class GrpcCurrencyServiceTest {
 
   @MethodSource
   @ParameterizedTest
-  void additionalConversionCases(double spend,
+  void convertSpendToWhenCrossCurrencyPairsConvertsCorrectly(double spend,
                                   guru.qa.niffler.grpc.CurrencyValues spendCurrency,
                                   guru.qa.niffler.grpc.CurrencyValues desiredCurrency,
                                   double expectedResult) {
@@ -104,7 +104,7 @@ class GrpcCurrencyServiceTest {
   }
 
   @Test
-  void convertSpendShouldThrowWhenCurrencyNotFound() {
+  void convertSpendToWhenCurrencyNotInListThrowsNoSuchElementException() {
     Assertions.assertThrows(
         NoSuchElementException.class,
         () -> grpcCurrencyService.convertSpendTo(
@@ -117,7 +117,7 @@ class GrpcCurrencyServiceTest {
   }
 
   @Test
-  void getAllCurrenciesShouldReturnAllFourCurrencies(@Mock CurrencyRepository currencyRepository) {
+  void getAllCurrenciesWhenFourCurrenciesInRepositoryReturnsFourItems(@Mock CurrencyRepository currencyRepository) {
     lenient().when(currencyRepository.findAll()).thenReturn(testCurrencies);
     GrpcCurrencyService service = new GrpcCurrencyService(currencyRepository);
 
@@ -144,7 +144,7 @@ class GrpcCurrencyServiceTest {
   }
 
   @Test
-  void calculateRateShouldReturnCorrectCalculatedAmount(@Mock CurrencyRepository currencyRepository) {
+  void calculateRateWhenValidRequestReturnsCalculatedAmount(@Mock CurrencyRepository currencyRepository) {
     lenient().when(currencyRepository.findAll()).thenReturn(testCurrencies);
     GrpcCurrencyService service = new GrpcCurrencyService(currencyRepository);
 
@@ -166,7 +166,7 @@ class GrpcCurrencyServiceTest {
   }
 
   @Test
-  void calculateRateShouldCallOnCompletedAfterOnNext(@Mock CurrencyRepository currencyRepository) {
+  void calculateRateWhenProcessedCallsOnNextThenOnCompleted(@Mock CurrencyRepository currencyRepository) {
     lenient().when(currencyRepository.findAll()).thenReturn(testCurrencies);
     GrpcCurrencyService service = new GrpcCurrencyService(currencyRepository);
 

@@ -16,7 +16,7 @@ class PhotoStringValidatorTest {
 
   @NullAndEmptySource
   @ParameterizedTest
-  void shouldReturnTrueForNullOrEmptyStrings(String input) {
+  void isValidWhenNullOrEmptyReturnsTrue(String input) {
     assertTrue(
         validator.isValid(input, context)
     );
@@ -28,7 +28,7 @@ class PhotoStringValidatorTest {
       "image/png;base64,iVBORw0KGgoAAAANSUhEUg=="
   })
   @ParameterizedTest
-  void shouldReturnFalseIfNotStartingWithDataImage(String input) {
+  void isValidWhenNotStartingWithDataImageReturnsFalse(String input) {
     assertFalse(
         validator.isValid(input, context)
     );
@@ -39,7 +39,7 @@ class PhotoStringValidatorTest {
       "data:image/jpeg;base64"
   })
   @ParameterizedTest
-  void shouldReturnFalseIfNoCommaSeparator(String input) {
+  void isValidWhenNoCommaSeparatorReturnsFalse(String input) {
     assertFalse(
         validator.isValid(input, context)
     );
@@ -50,7 +50,7 @@ class PhotoStringValidatorTest {
       "data:image/tiff;base64,SGVsbG8="
   })
   @ParameterizedTest
-  void shouldReturnFalseForUnsupportedMimeTypes(String input) {
+  void isValidWhenUnsupportedMimeTypeReturnsFalse(String input) {
     assertFalse(
         validator.isValid(input, context)
     );
@@ -61,7 +61,7 @@ class PhotoStringValidatorTest {
       "data:image/jpeg;base64,12345!@#$%"
   })
   @ParameterizedTest
-  void shouldReturnFalseForInvalidBase64(String input) {
+  void isValidWhenInvalidBase64ReturnsFalse(String input) {
     assertFalse(
         validator.isValid(input, context)
     );
@@ -72,7 +72,7 @@ class PhotoStringValidatorTest {
       "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/"
   })
   @ParameterizedTest
-  void shouldReturnTrueForValidImageData(String input) {
+  void isValidWhenValidBase64ImageDataReturnsTrue(String input) {
     assertTrue(
         validator.isValid(input, context)
     );

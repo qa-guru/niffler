@@ -1,12 +1,11 @@
 server:
   port: 8091
 
-grpc:
-  server:
-    port: 8092
-    max-inbound-message-size: 1MB
-
 spring:
+  grpc:
+    server:
+      port: 8092
+      max-inbound-message-size: 1MB
   application:
     name: niffler-currency
   datasource:

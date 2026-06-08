@@ -2,12 +2,14 @@ package guru.qa.niffler.service;
 
 
 import guru.qa.niffler.grpc.CalculateRequest;
+import guru.qa.niffler.grpc.NifflerCurrencyServiceGrpc;
 import guru.qa.niffler.grpc.NifflerCurrencyServiceGrpc.NifflerCurrencyServiceBlockingStub;
 import guru.qa.niffler.model.CurrencyValues;
 import jakarta.annotation.Nonnull;
-import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.grpc.client.GrpcChannelFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,11 +23,12 @@ public class GrpcCurrencyClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(GrpcCurrencyClient.class);
 
-  private NifflerCurrencyServiceBlockingStub nifflerCurrencyServiceStub;
+  private final NifflerCurrencyServiceBlockingStub nifflerCurrencyServiceStub;
 
-  @GrpcClient("grpcCurrencyClient")
-  public void setNifflerCurrencyServiceStub(NifflerCurrencyServiceBlockingStub nifflerCurrencyServiceStub) {
-    this.nifflerCurrencyServiceStub = nifflerCurrencyServiceStub;
+  @Autowired
+  public GrpcCurrencyClient(GrpcChannelFactory channels) {
+    this.nifflerCurrencyServiceStub = NifflerCurrencyServiceGrpc.newBlockingStub(
+        channels.createChannel("grpcCurrencyClient"));
   }
 
   public @Nonnull

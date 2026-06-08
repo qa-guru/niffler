@@ -49,11 +49,12 @@ spring:
     url: 'jdbc:postgresql://localhost:5432/niffler-spend'
     username: postgres
     password: secret
-grpc:
-  client:
-    grpcCurrencyClient:
-      address: 'static://localhost:8092'
-      negotiationType: PLAINTEXT
+  grpc:
+    client:
+      channels:
+        grpcCurrencyClient:
+          address: 'localhost:8092'
+          negotiation-type: plaintext
 
 niffler-currency:
   base-uri: 'http://localhost:8091'
@@ -68,11 +69,12 @@ spring:
     url: 'jdbc:postgresql://niffler-all-db:5432/niffler-spend'
     username: postgres
     password: secret
-grpc:
-  client:
-    grpcCurrencyClient:
-      address: 'static://currency.niffler.dc:8092'
-      negotiationType: PLAINTEXT
+  grpc:
+    client:
+      channels:
+        grpcCurrencyClient:
+          address: 'currency.niffler.dc:8092'
+          negotiation-type: plaintext
 
 niffler-currency:
   base-uri: 'http://currency.niffler.dc:8091'
@@ -87,11 +89,12 @@ spring:
     url: ${SPEND_DB_URL}
     username: ${SPEND_DB_USERNAME}
     password: ${SPEND_DB_PASSWORD}
-grpc:
-  client:
-    grpcCurrencyClient:
-      address: ${SPEND_NIFFLER_CURRENCY_GRPC_URL}
-      negotiationType: PLAINTEXT
+  grpc:
+    client:
+      channels:
+        grpcCurrencyClient:
+          address: ${SPEND_NIFFLER_CURRENCY_GRPC_URL}
+          negotiation-type: plaintext
 
 niffler-currency:
   base-uri: ${SPEND_NIFFLER_CURRENCY_URL}
@@ -106,11 +109,12 @@ spring:
     url: ${SPEND_DB_URL}
     username: ${SPEND_DB_USERNAME}
     password: ${SPEND_DB_PASSWORD}
-grpc:
-  client:
-    grpcCurrencyClient:
-      address: ${SPEND_NIFFLER_CURRENCY_GRPC_URL}
-      negotiationType: PLAINTEXT
+  grpc:
+    client:
+      channels:
+        grpcCurrencyClient:
+          address: ${SPEND_NIFFLER_CURRENCY_GRPC_URL}
+          negotiation-type: plaintext
 
 niffler-currency:
   base-uri: ${SPEND_NIFFLER_CURRENCY_URL}

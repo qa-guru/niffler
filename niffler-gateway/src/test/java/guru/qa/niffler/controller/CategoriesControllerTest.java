@@ -37,7 +37,7 @@ class CategoriesControllerTest {
   @Nested
   class CategoriesControllerValidationTest {
 
-    static Stream<Arguments> allValidationErrorsShouldBePresentInResponseBody() {
+    static Stream<Arguments> addOrUpdateCategoryWhenInvalidInputReturnsBadRequest() {
       return Stream.of(
           Arguments.of(post("/api/categories/add"), null, randomAlphanumeric(1)),
           Arguments.of(patch("/api/categories/update"), UUID.randomUUID(), null)
@@ -46,9 +46,9 @@ class CategoriesControllerTest {
 
     @MethodSource
     @ParameterizedTest
-    void allValidationErrorsShouldBePresentInResponseBody(MockHttpServletRequestBuilder action,
-                                                          UUID categoryId,
-                                                          String categoryName) throws Exception {
+    void addOrUpdateCategoryWhenInvalidInputReturnsBadRequest(MockHttpServletRequestBuilder action,
+                                                              UUID categoryId,
+                                                              String categoryName) throws Exception {
       final CategoryJson incorrectCategory = new CategoryJson(
           categoryId,
           categoryName,
