@@ -35,7 +35,7 @@ class InvitationsControllerTest {
   @Nested
   class InvitationsControllerValidationTest {
 
-    static Stream<Arguments> allValidationErrorsShouldBePresentInResponseBody() {
+    static Stream<Arguments> invitationActionWhenInvalidUsernameReturnsBadRequest() {
       return Stream.of(
           Arguments.of(post("/api/invitations/send"), randomAlphanumeric(2)),
           Arguments.of(post("/api/invitations/accept"), randomAlphanumeric(51)),
@@ -45,8 +45,8 @@ class InvitationsControllerTest {
 
     @MethodSource
     @ParameterizedTest
-    void allValidationErrorsShouldBePresentInResponseBody(MockHttpServletRequestBuilder action,
-                                                          String incorrectUsername) throws Exception {
+    void invitationActionWhenInvalidUsernameReturnsBadRequest(MockHttpServletRequestBuilder action,
+                                                              String incorrectUsername) throws Exception {
       final FriendJson incorrectFriendRequest = new FriendJson(
           incorrectUsername
       );

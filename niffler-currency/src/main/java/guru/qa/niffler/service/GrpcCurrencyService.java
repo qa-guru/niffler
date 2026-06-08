@@ -12,7 +12,7 @@ import guru.qa.niffler.grpc.CurrencyValues;
 import guru.qa.niffler.grpc.NifflerCurrencyServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.Nonnull;
-import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-@GrpcService
+@Service
 public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurrencyServiceImplBase {
 
   private static final Logger LOG = LoggerFactory.getLogger(GrpcCurrencyService.class);
@@ -53,6 +53,15 @@ public class GrpcCurrencyService extends NifflerCurrencyServiceGrpc.NifflerCurre
   @Transactional(readOnly = true)
   @Override
   public void calculateRate(CalculateRequest request, StreamObserver<CalculateResponse> responseObserver) {
+    if (request.getSpendCurrency() == CurrencyValues.UNSPECIFIED) {
+      throw new IllegalArgumentException("spendCurrency must not be UNSPECIFIED");
+    }
+    if (request.getDesiredCurrency() == CurrencyValues.UNSPECIFIED) {
+      throw new IllegalArgumentException("desiredCurrency must not be UNSPECIFIED");
+    }
+    if (request.getAmount() < 0) {
+      throw new IllegalArgumentException("amount must be non-negative, got: " + request.getAmount());
+    }
     BigDecimal result = convertSpendTo(
         request.getAmount(),
         request.getSpendCurrency(),

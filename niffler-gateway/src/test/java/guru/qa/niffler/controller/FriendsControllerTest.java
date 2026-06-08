@@ -28,7 +28,7 @@ class FriendsControllerTest {
   @Nested
   class FriendsControllerValidationTest {
 
-    static Stream<Arguments> allValidationErrorsShouldBePresentInResponseBody() {
+    static Stream<Arguments> removeFriendWhenInvalidUsernameReturnsBadRequest() {
       return Stream.of(
           Arguments.of(randomAlphanumeric(2)),
           Arguments.of(randomAlphanumeric(51)),
@@ -38,7 +38,7 @@ class FriendsControllerTest {
 
     @MethodSource
     @ParameterizedTest
-    void allValidationErrorsShouldBePresentInResponseBody(String incorrectUsername) throws Exception {
+    void removeFriendWhenInvalidUsernameReturnsBadRequest(String incorrectUsername) throws Exception {
       final String fixtureUser = "bee";
       mockMvc.perform(delete("/api/friends/remove")
               .with(jwt().jwt(c -> c.claim("sub", fixtureUser)))

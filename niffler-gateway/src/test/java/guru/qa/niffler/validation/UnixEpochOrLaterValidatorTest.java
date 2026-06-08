@@ -17,35 +17,35 @@ class UnixEpochOrLaterValidatorTest {
   private final ConstraintValidatorContext context = Mockito.mock(ConstraintValidatorContext.class);
 
   @Test
-  void shouldReturnFalseForNullDate() {
+  void isValidWhenNullDateReturnsFalse() {
     assertFalse(
         validator.isValid(null, context)
     );
   }
 
   @Test
-  void shouldReturnFalseForDateBeforeUnixEpoch() {
+  void isValidWhenDateBeforeUnixEpochReturnsFalse() {
     assertFalse(
         validator.isValid(new Date(UNIX_EPOCH_TIME - 1000), context)
     );
   }
 
   @Test
-  void shouldReturnFalseForFutureDate() {
+  void isValidWhenFutureDateReturnsFalse() {
     assertFalse(
         validator.isValid(new Date(System.currentTimeMillis() + 1000), context)
     );
   }
 
   @Test
-  void shouldReturnTrueForValidDateWithinRange() {
+  void isValidWhenDateWithinValidRangeReturnsTrue() {
     assertTrue(
         validator.isValid(new Date(System.currentTimeMillis() - 10000), context)
     );
   }
 
   @Test
-  void shouldReturnTrueForUnixEpochTime() {
+  void isValidWhenUnixEpochTimeReturnsTrue() {
     assertTrue(
         validator.isValid(new Date(UNIX_EPOCH_TIME), context)
     );
