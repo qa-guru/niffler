@@ -29,12 +29,12 @@ spring:
   graphql:
     graphiql:
       enabled: true
-
-grpc:
-  client:
-    grpcCurrencyClient:
-      address: 'static://localhost:8092'
-      negotiationType: PLAINTEXT
+  grpc:
+    client:
+      channels:
+        grpcCurrencyClient:
+          address: 'localhost:8092'
+          negotiation-type: plaintext
 
 niffler-currency:
   base-uri: 'http://localhost:8091'
@@ -56,12 +56,12 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: 'http://auth.niffler.dc:9000'
-
-grpc:
-  client:
-    grpcCurrencyClient:
-      address: 'static://currency.niffler.dc:8092'
-      negotiationType: PLAINTEXT
+  grpc:
+    client:
+      channels:
+        grpcCurrencyClient:
+          address: 'currency.niffler.dc:8092'
+          negotiation-type: plaintext
 
 niffler-currency:
   base-uri: 'http://currency.niffler.dc:8091'
@@ -83,12 +83,12 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: 'https://auth.niffler.qa.guru'
-
-grpc:
-  client:
-    grpcCurrencyClient:
-      address: ${GATEWAY_NIFFLER_CURRENCY_GRPC_URL}
-      negotiationType: PLAINTEXT
+  grpc:
+    client:
+      channels:
+        grpcCurrencyClient:
+          address: ${GATEWAY_NIFFLER_CURRENCY_GRPC_URL}
+          negotiation-type: plaintext
 
 server:
   tomcat:
@@ -116,12 +116,12 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: 'https://auth.niffler-stage.qa.guru'
-
-grpc:
-  client:
-    grpcCurrencyClient:
-      address: ${GATEWAY_NIFFLER_CURRENCY_GRPC_URL}
-      negotiationType: PLAINTEXT
+  grpc:
+    client:
+      channels:
+        grpcCurrencyClient:
+          address: ${GATEWAY_NIFFLER_CURRENCY_GRPC_URL}
+          negotiation-type: plaintext
 
 server:
   tomcat:

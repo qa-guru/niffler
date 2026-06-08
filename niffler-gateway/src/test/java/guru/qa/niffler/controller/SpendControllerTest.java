@@ -41,7 +41,7 @@ class SpendControllerTest {
   @Nested
   class SpendControllerValidationTest {
 
-    static Stream<Arguments> allValidationErrorsShouldBePresentInResponseBody() {
+    static Stream<Arguments> addOrEditSpendWhenInvalidInputReturnsBadRequest() {
       return Stream.of(
           Arguments.of(post("/api/spends/add"), null),
           Arguments.of(patch("/api/spends/edit"), UUID.randomUUID())
@@ -50,7 +50,7 @@ class SpendControllerTest {
 
     @MethodSource
     @ParameterizedTest
-    void allValidationErrorsShouldBePresentInResponseBody(MockHttpServletRequestBuilder action, UUID spendId) throws Exception {
+    void addOrEditSpendWhenInvalidInputReturnsBadRequest(MockHttpServletRequestBuilder action, UUID spendId) throws Exception {
       final SpendJson incorrectSpend = new SpendJson(
           spendId,
           new Date(UNIX_EPOCH_TIME - 1000),

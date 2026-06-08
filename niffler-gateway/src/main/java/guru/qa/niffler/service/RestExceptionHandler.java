@@ -3,6 +3,7 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.ex.NoRestResponseException;
 import guru.qa.niffler.ex.NoSoapResponseException;
 import guru.qa.niffler.model.ErrorJson;
+import io.grpc.StatusRuntimeException;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -111,6 +112,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                                HttpServletRequest request) {
     LOG.warn("### Resolve Validation Exception in @RestControllerAdvice ", ex);
     return withStatus(ENTITY_VALIDATION_ERROR, HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+  }
+
+  @ExceptionHandler(StatusRuntimeException.class)
+  public @Nonnull ResponseEntity<ErrorJson> handleGrpcException(StatusRuntimeException ex,
+                                                                HttpServletRequest request) {
+    LOG.warn("### Resolve gRPC StatusRuntimeException [{}] in @RestControllerAdvice", ex.getStatus().getCode(), ex);
+    HttpStatus httpStatus = switch (ex.getStatus().getCode()) {
+      case NOT_FOUND -> HttpStatus.NOT_FOUND;
+      case INVALID_ARGUMENT -> HttpStatus.BAD_REQUEST;
+      case PERMISSION_DENIED, UNAUTHENTICATED -> HttpStatus.FORBIDDEN;
+      default -> HttpStatus.SERVICE_UNAVAILABLE;
+    };
+    String detail = ex.getStatus().getDescription() != null
+        ? ex.getStatus().getDescription()
+        : ex.getStatus().getCode().name();
+    return withStatus("gRPC service error", httpStatus, detail, request);
   }
 
   @ExceptionHandler(Exception.class)

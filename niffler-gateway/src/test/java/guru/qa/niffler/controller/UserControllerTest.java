@@ -31,7 +31,7 @@ class UserControllerTest {
   class UserControllerValidationTest {
 
     @Test
-    void allValidationErrorsShouldBePresentInResponseBody() throws Exception {
+    void updateUserWhenInvalidInputReturnsBadRequest() throws Exception {
       final UserJson incorrectUser = new UserJson(
           null,
           randomAlphanumeric(2),

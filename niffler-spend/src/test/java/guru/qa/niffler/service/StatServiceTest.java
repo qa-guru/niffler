@@ -104,12 +104,12 @@ class StatServiceTest {
   }
 
   @Test
-  void getStatisticTest() {
+  void getStatisticWhenSpendsExistReturnsFourStatistics() {
     List<StatisticJson> result = statService.getStatistic("dima", userCurrency, null, null, null);
     assertEquals(4, result.size());
   }
 
-  static Stream<Arguments> resolveDesiredCurrenciesInStatisticTest() {
+  static Stream<Arguments> resolveDesiredCurrenciesInStatisticWhenCurrencyFilterApplied() {
     return Stream.of(
         Arguments.of(null, CurrencyValues.values()),
         Arguments.of(CurrencyValues.KZT, new CurrencyValues[]{CurrencyValues.KZT}),
@@ -119,13 +119,13 @@ class StatServiceTest {
 
   @MethodSource
   @ParameterizedTest
-  void resolveDesiredCurrenciesInStatisticTest(CurrencyValues tested, CurrencyValues[] expected) {
+  void resolveDesiredCurrenciesInStatisticWhenCurrencyFilterApplied(CurrencyValues tested, CurrencyValues[] expected) {
     CurrencyValues[] currencyValues = statService.resolveDesiredCurrenciesInStatistic(tested);
     assertArrayEquals(expected, currencyValues);
   }
 
   @Test
-  void createDefaultStatisticJsonTest() {
+  void createDefaultStatisticJsonWhenCalledReturnsStatisticWithZeroTotals() {
     Date dateTo = new Date();
     StatisticJson defaultStatisticJson = statService.createDefaultStatisticJson(CurrencyValues.KZT, userCurrency, dateTo);
     assertEquals(dateTo, defaultStatisticJson.dateTo());
@@ -138,7 +138,7 @@ class StatServiceTest {
   }
 
   @Test
-  void enrichStatisticDateFromByFirstStreamElementTest() {
+  void enrichStatisticDateFromByFirstStreamElementWhenMultipleSpendsSetsEarliestDate() {
     Date dateTo = new Date();
     StatisticJson defaultStatisticJson = statService.createDefaultStatisticJson(CurrencyValues.KZT, userCurrency, dateTo);
 
@@ -154,7 +154,7 @@ class StatServiceTest {
   }
 
   @Test
-  void enrichStatisticTotalAmountByAllStreamElementsTest() {
+  void enrichStatisticTotalAmountByAllStreamElementsWhenMultipleSpendsReturnsCumulativeTotal() {
     Date dateTo = new Date();
     StatisticJson defaultStatisticJson = statService.createDefaultStatisticJson(CurrencyValues.KZT, userCurrency, dateTo);
 
@@ -170,7 +170,7 @@ class StatServiceTest {
   }
 
   @Test
-  void enrichStatisticTotalInUserCurrencyByAllStreamElementsSameCurrencyTest() {
+  void enrichStatisticTotalInUserCurrencyWhenSameCurrencySkipsConversion() {
     Date dateTo = new Date();
     CurrencyValues statisticCurrency = CurrencyValues.RUB;
     CurrencyValues userCurrency = CurrencyValues.RUB;
@@ -191,7 +191,7 @@ class StatServiceTest {
   }
 
   @Test
-  void enrichStatisticTotalInUserCurrencyByAllStreamElementsDifferentCurrencyTest() {
+  void enrichStatisticTotalInUserCurrencyWhenDifferentCurrencyConvertsCorrectly() {
     Date dateTo = new Date();
     CurrencyValues statisticCurrency = CurrencyValues.RUB;
     CurrencyValues userCurrency = CurrencyValues.USD;
@@ -211,7 +211,7 @@ class StatServiceTest {
   }
 
   @Test
-  void bindSpendsToCategoriesTest() {
+  void bindSpendsToCategoriesWhenMultipleSpendsGroupsByCategory() {
     CurrencyValues statisticCurrency = CurrencyValues.RUB;
 
     List<SpendEntity> sortedSpends = Stream.of(secondSpend, firstSpend, thirdSpend)
@@ -231,7 +231,7 @@ class StatServiceTest {
   }
 
   @Test
-  void getTotalSummShouldSumAllAmountsWithTwoDecimalRounding(@Mock GrpcCurrencyClient grpcCurrencyClient) {
+  void getTotalSummWhenMultipleItemsSumsWithTwoDecimalRounding(@Mock GrpcCurrencyClient grpcCurrencyClient) {
     List<SumByCategoryInfo> items = List.of(
         new SumByCategory("Бар", CurrencyValues.RUB, 100.555, new Date(), new Date()),
         new SumByCategory("Еда", CurrencyValues.RUB, 200.333, new Date(), new Date()),
@@ -245,7 +245,7 @@ class StatServiceTest {
   }
 
   @Test
-  void mapToUserCurrencyShouldReturnSameObjectWhenCurrencyMatches(@Mock GrpcCurrencyClient grpcCurrencyClient) {
+  void mapToUserCurrencyWhenCurrencyMatchesReturnsSameItem(@Mock GrpcCurrencyClient grpcCurrencyClient) {
     SumByCategoryInfo item = new SumByCategory("Еда", CurrencyValues.RUB, 500.0, new Date(), new Date());
     statService = new StatService(null, null, grpcCurrencyClient);
 
@@ -255,7 +255,7 @@ class StatServiceTest {
   }
 
   @Test
-  void mapToUserCurrencyShouldConvertWhenCurrencyDiffers(@Mock GrpcCurrencyClient grpcCurrencyClient) {
+  void mapToUserCurrencyWhenCurrencyDiffersConvertsToUserCurrency(@Mock GrpcCurrencyClient grpcCurrencyClient) {
     SumByCategoryInfo item = new SumByCategory("Еда", CurrencyValues.RUB, 7500.0, new Date(), new Date());
     lenient().when(grpcCurrencyClient.calculate(7500.0, CurrencyValues.RUB, CurrencyValues.USD))
         .thenReturn(BigDecimal.valueOf(100.00));
@@ -270,7 +270,7 @@ class StatServiceTest {
   }
 
   @Test
-  void toCategoriesMapShouldGroupByName(@Mock GrpcCurrencyClient grpcCurrencyClient) {
+  void toCategoriesMapWhenCalledGroupsItemsByName(@Mock GrpcCurrencyClient grpcCurrencyClient) {
     statService = new StatService(null, null, grpcCurrencyClient);
 
     SumByCategoryInfo eda1 = new SumByCategory("Еда", CurrencyValues.RUB, 100.0, new Date(), new Date());
@@ -289,7 +289,7 @@ class StatServiceTest {
   }
 
   @Test
-  void bindSpendsToCategoriesShouldGroupArchivedCategoryUnderArchivedKey() {
+  void bindSpendsToCategoriesWhenArchivedSpendGroupsUnderArchivedKey() {
     CategoryEntity archivedCategory = new CategoryEntity();
     archivedCategory.setName("Старые расходы");
     archivedCategory.setUsername("dima");
