@@ -24,7 +24,7 @@ public class SearchField extends BaseComponent<SearchField> {
   @Nonnull
   public SearchField search(String query) {
     clearIfNotEmpty();
-    self.setValue(query).pressEnter();
+    self.setValue(query);
     return this;
   }
 

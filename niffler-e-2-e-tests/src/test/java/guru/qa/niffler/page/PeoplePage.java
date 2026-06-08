@@ -7,6 +7,7 @@ import io.qameta.allure.Step;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
@@ -53,6 +54,24 @@ public class PeoplePage extends BasePage<PeoplePage> {
   public PeoplePage checkExistingUser(String username) {
     searchInput.search(username);
     peopleTable.$$("tr").find(text(username)).should(visible);
+    return this;
+  }
+
+  @Step("Search for: {query}")
+  public PeoplePage searchPeople(String query) {
+    searchInput.search(query);
+    return this;
+  }
+
+  @Step("Clear search input")
+  public PeoplePage clearSearch() {
+    searchInput.clearIfNotEmpty();
+    return this;
+  }
+
+  @Step("Check people table has size {expectedSize}")
+  public PeoplePage checkPeopleTableSize(int expectedSize) {
+    peopleTable.$$("tr").shouldHave(size(expectedSize));
     return this;
   }
 }
