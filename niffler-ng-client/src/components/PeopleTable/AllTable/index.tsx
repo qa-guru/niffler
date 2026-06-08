@@ -26,8 +26,8 @@ export const AllTable = () => {
         apiClient.getAllPeople(search, page, {
             onSuccess: data => {
                 setPeople(data.content);
-                setHasPreviousPage(!data.first);
-                setHasLastPage(!data.last);
+                setHasPreviousPage(data.page.number > 0);
+                setHasLastPage(data.page.number < data.page.totalPages - 1);
                 setIsLoading(false);
                 setIsButtonLoading(false);
             },

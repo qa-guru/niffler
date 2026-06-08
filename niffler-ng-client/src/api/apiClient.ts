@@ -103,7 +103,7 @@ export const apiClient = {
         onFailure
     }: RequestHandler<Pageable<Spending>>, filterPeriod: string, filterCurrency: string) => {
         await makeRequest(
-            `/v2/spends/all?page=${page}&searchQuery=${searchQuery}&filterCurrency=${filterCurrency}&filterPeriod=${filterPeriod}`,
+            `/v3/spends/all?page=${page}&searchQuery=${searchQuery}&filterCurrency=${filterCurrency}&filterPeriod=${filterPeriod}`,
             {
                 onSuccess,
                 onFailure,
@@ -162,14 +162,14 @@ export const apiClient = {
     },
 
     getAllPeople: async (searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
-        await makeRequest(`/v2/users/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`, {
+        await makeRequest(`/v3/users/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`, {
             onSuccess,
             onFailure,
         });
     },
 
     getFriends: async (searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
-        await makeRequest(`/v2/friends/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`,
+        await makeRequest(`/v3/friends/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`,
             {
                 onSuccess,
                 onFailure,

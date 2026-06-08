@@ -101,8 +101,8 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                         spendDate: convertDate(item.spendDate),
                     }));
                     setData(converted);
-                    setHasPreviousPage(!data.first);
-                    setHasLastPage(!data.last);
+                    setHasPreviousPage(data.page.number > 0);
+                    setHasLastPage(data.page.number < data.page.totalPages - 1);
                     setLoading(false);
                     setIsButtonLoading(false);
                 },
