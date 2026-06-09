@@ -1,13 +1,14 @@
 package guru.qa.niffler.page.component;
 
+import com.codeborne.selenide.DownloadOptions;
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.FileDownloadMode;
 import com.codeborne.selenide.SelenideElement;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import guru.qa.niffler.model.rest.DataFilterValues;
 import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
-import guru.qa.niffler.page.component.download.DownloadComponent;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
@@ -44,9 +45,9 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
   private final ElementsCollection menuItems = $$(".MuiList-padding li");
   private final SelenideElement deleteBtn = self.$("#delete");
   private final SelenideElement contextMenuBtn = self.$("#spending-menu");
-  private final DownloadComponent downloadComponent = DownloadComponent.getInstance();
   private final SelenideElement csvMenu = $("ul[role='menu']");
   private final ElementsCollection csvMenuItems = csvMenu.$$("li");
+  private final SelenideElement downloadComponent = csvMenuItems.find(exactText("Export to CSV"));
   private final SelenideElement popup = $("div[role='dialog']");
 
   private final SelenideElement tableHeader = self.$(".MuiTableHead-root");
@@ -107,10 +108,8 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
   @Step("Export spendings to CSV")
   @Nonnull
   public File exportCsv() throws IOException, InterruptedException {
-    final String fileName = "spend-history.csv";
     return downloadComponent.download(
-        csvMenuItems.find(exactText("Export to CSV")),
-        fileName
+        DownloadOptions.using(FileDownloadMode.FOLDER).withExtension("csv")
     );
   }
 

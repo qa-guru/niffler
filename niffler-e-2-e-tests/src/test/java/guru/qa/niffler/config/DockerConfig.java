@@ -22,6 +22,7 @@ public class DockerConfig implements Config {
     Configuration.browser = "chrome";
     Configuration.browserVersion = "147.0";
     Configuration.pageLoadStrategy = "eager";
+    Configuration.downloadsFolder = "/home/selenium/Downloads";
     Configuration.browserCapabilities = new ChromeOptions()
         .addArguments("--enable-automation")
         .addArguments("--no-sandbox")
