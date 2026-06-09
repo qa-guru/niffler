@@ -61,6 +61,8 @@ interface SpendingsTableInterface {
     handleChangePeriod: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
     selectedCurrency: Currency,
     handleChangeCurrency: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+    selectedCategory: string | null,
+    onCategoryFilterReset: () => void,
     onDeleteCallback: () => void;
 }
 
@@ -69,11 +71,14 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
                                                                 handleChangePeriod,
                                                                 selectedCurrency,
                                                                 handleChangeCurrency,
+                                                                selectedCategory,
+                                                                onCategoryFilterReset,
                                                                 onDeleteCallback
                                                             }) => {
     const [page, setPage] = useState(0);
     const [currencies, setCurrencies] = useState<Currency[]>([]);
     const [search, setSearch] = useState("");
+    const [appliedSearch, setAppliedSearch] = useState("");
     const [selected, setSelected] = useState<string[]>([]);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -87,6 +92,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
             searchQuery: search,
             filterPeriod: convertFilterPeriod(period),
             filterCurrency: convertCurrencyToData(selectedCurrency),
+            category: selectedCategory,
         },
         fetchPolicy: "cache-and-network",
         errorPolicy: "none",
@@ -111,7 +117,7 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
         }
     });
 
-    const loadSpends = useCallback((search: string, page: number, period: FilterPeriodValue, selectedCurrency: Currency) => {
+    const loadSpends = useCallback((search: string, page: number, period: FilterPeriodValue, selectedCurrency: Currency, category: string | null) => {
         refetch({
             page,
             size: 10,
@@ -119,12 +125,21 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
             searchQuery: search,
             filterPeriod: convertFilterPeriod(period),
             filterCurrency: convertCurrencyToData(selectedCurrency),
+            category,
         });
     }, [refetch]);
 
     useEffect(() => {
-        loadSpends(search, page, period, selectedCurrency);
-    }, [period, selectedCurrency, search, page, loadSpends]);
+        loadSpends(selectedCategory ?? appliedSearch, page, period, selectedCurrency, selectedCategory);
+    }, [period, selectedCurrency, appliedSearch, page, selectedCategory, loadSpends]);
+
+    useEffect(() => {
+        if (selectedCategory) {
+            setSearch(selectedCategory);
+            setAppliedSearch(selectedCategory);
+            setPage(0);
+        }
+    }, [selectedCategory]);
 
     const handleSpendingClick = (id: string) => {
         navigate(`/spending/${id}`);
@@ -158,13 +173,23 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
     const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
     const handleInputSearch = (value: string) => {
-        setSearch(value);
+        setAppliedSearch(value);
+        if (value.length === 0) {
+            onCategoryFilterReset();
+        }
         setPage(0);
+    }
+
+    const handleSearchChange = (value: string) => {
+        setSearch(value);
+        if (value.length > 0 && value !== selectedCategory) {
+            onCategoryFilterReset();
+        }
     }
 
     const onDelete = () => {
         onDeleteCallback();
-        loadSpends(search, page, period, selectedCurrency);
+        loadSpends(selectedCategory ?? appliedSearch, page, period, selectedCurrency, selectedCategory);
         setSelected([]);
     }
 
@@ -176,6 +201,8 @@ export const SpendingsTable: FC<SpendingsTableInterface> = ({
 
             <Toolbar
                 handleInputSearch={handleInputSearch}
+                search={search}
+                onSearchChange={handleSearchChange}
                 period={period}
                 selectedCurrency={selectedCurrency}
                 handleChangeCurrency={handleChangeCurrency}

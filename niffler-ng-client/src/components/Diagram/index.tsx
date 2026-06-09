@@ -9,6 +9,8 @@ import {CurrencyValue, getCurrencyIcon} from "../../types/Currency.ts";
 
 interface DiagramInterface {
     stat: Statistic,
+    selectedCategory: string | null,
+    onCategoryClick: (category: string) => void,
 }
 
 Chart.register(ArcElement, Legend);
@@ -16,7 +18,7 @@ Chart.register(htmlLegendPlugin);
 Chart.register(titlePlugin);
 Chart.register(emptyCirclePlugin);
 
-export const Diagram: FC<DiagramInterface> = ({stat}) => {
+export const Diagram: FC<DiagramInterface> = ({stat, selectedCategory, onCategoryClick}) => {
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -66,6 +68,8 @@ export const Diagram: FC<DiagramInterface> = ({stat}) => {
             },
             htmlLegend: {
                 containerID: 'legend-container',
+                selectedLabel: selectedCategory,
+                onLabelClick: onCategoryClick,
             },
         },
         tooltips: {

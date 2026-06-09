@@ -7,7 +7,7 @@ type Query {
     currencies: [Currency!]!
     user: User!
     allPeople(page:Int!, size:Int!, sort:[String!], searchQuery:String): UserConnection
-    spends(page:Int!, size:Int!, sort:[String!], searchQuery:String, filterPeriod: FilterPeriod, filterCurrency: CurrencyValues): SpendConnection
+    spends(page:Int!, size:Int!, sort:[String!], searchQuery:String, filterPeriod: FilterPeriod, filterCurrency: CurrencyValues, category: String): SpendConnection
     stat(filterPeriod: FilterPeriod, filterCurrency: CurrencyValues, statCurrency: CurrencyValues): Statistic!
 }
 

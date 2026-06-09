@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Selenide.$;
 import static guru.qa.niffler.condition.ScreenshotConditions.image;
 import static guru.qa.niffler.condition.StatConditions.color;
@@ -30,6 +31,27 @@ public class StatComponent extends BaseComponent<StatComponent> {
   @Nonnull
   public StatComponent checkStatisticBubblesContains(String... texts) {
     bubbles.should(CollectionCondition.texts(texts));
+    return this;
+  }
+
+  @Step("Click statistic bubble for category {0}")
+  @Nonnull
+  public StatComponent clickCategoryBubble(String category) {
+    bubbles.find(text(category)).click();
+    return this;
+  }
+
+  @Step("Check statistic bubble for category {0} is selected")
+  @Nonnull
+  public StatComponent checkCategoryBubbleSelected(String category) {
+    bubbles.find(text(category)).shouldHave(attribute("aria-pressed", "true"));
+    return this;
+  }
+
+  @Step("Check statistic bubble for category {0} is not selected")
+  @Nonnull
+  public StatComponent checkCategoryBubbleNotSelected(String category) {
+    bubbles.find(text(category)).shouldHave(attribute("aria-pressed", "false"));
     return this;
   }
 

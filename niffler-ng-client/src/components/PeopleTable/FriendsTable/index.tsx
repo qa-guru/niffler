@@ -28,8 +28,8 @@ export const FriendsTable = () => {
             onSuccess: data => {
                 setFriends(data.content.filter(user => user.friendshipStatus === "FRIEND"));
                 setInvitations(data.content.filter(user => user.friendshipStatus === "INVITE_RECEIVED"));
-                setHasPreviousPage(!data.first);
-                setHasLastPage(!data.last);
+                setHasPreviousPage(data.page.number > 0);
+                setHasLastPage(data.page.number < data.page.totalPages - 1);
                 setIsLoading(false);
                 setIsButtonLoading(false);
             },

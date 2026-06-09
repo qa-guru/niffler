@@ -2,7 +2,6 @@ package guru.qa.niffler.controller.v2;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.hamcrest.core.StringStartsWith;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,6 +33,7 @@ class SpendV2ControllerTest {
   private MockMvc mockMvc;
 
   private static final String MULTI_PAGE_FIXTURE = "/guru/qa/niffler/controller/v2/SpendV2ControllerTest_MultiPage.sql";
+  private static final String CATEGORY_FIXTURE = "/guru/qa/niffler/controller/v2/SpendV2ControllerTest_Category.sql";
 
   @Test
   @Sql(MULTI_PAGE_FIXTURE)
@@ -129,6 +129,31 @@ class SpendV2ControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content", hasSize(1)))
         .andExpect(jsonPath("$.content[0].description").value("Обучение Niffler Next Generation!"));
+  }
+
+  @Test
+  @Sql(CATEGORY_FIXTURE)
+  void getSpendsWithCategoryFilterShouldReturnOnlySelectedCategory() throws Exception {
+    mockMvc.perform(get("/internal/v2/spends/all")
+            .param("username", "duck")
+            .param("category", "Еда"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content[0].category.name").value("Еда"))
+        .andExpect(jsonPath("$.content[1].category.name").value("Еда"));
+  }
+
+  @Test
+  @Sql(CATEGORY_FIXTURE)
+  void getSpendsWithCategoryAndSearchQueryShouldReturnIntersection() throws Exception {
+    mockMvc.perform(get("/internal/v2/spends/all")
+            .param("username", "duck")
+            .param("category", "Еда")
+            .param("searchQuery", "Завтрак"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content", hasSize(1)))
+        .andExpect(jsonPath("$.content[0].category.name").value("Еда"))
+        .andExpect(jsonPath("$.content[0].description").value("Завтрак"));
   }
 
   @Test

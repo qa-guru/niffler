@@ -34,8 +34,9 @@ public class SpendV2Controller {
                                    @PageableDefault Pageable pageable,
                                    @RequestParam(required = false) DataFilterValues filterPeriod,
                                    @RequestParam(required = false) CurrencyValues filterCurrency,
-                                   @RequestParam(required = false) String searchQuery) {
+                                   @RequestParam(required = false) String searchQuery,
+                                   @RequestParam(required = false) String category) {
     final String principalUsername = principal.getClaim("sub");
-    return spendClient.getSpendsV2(principalUsername, pageable, filterPeriod, filterCurrency, searchQuery);
+    return spendClient.getSpendsV2(principalUsername, pageable, filterPeriod, filterCurrency, searchQuery, category);
   }
 }

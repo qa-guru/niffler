@@ -37,9 +37,10 @@ public class SpendV3Controller {
                                          @PageableDefault Pageable pageable,
                                          @RequestParam(required = false) DataFilterValues filterPeriod,
                                          @RequestParam(required = false) CurrencyValues filterCurrency,
-                                         @RequestParam(required = false) String searchQuery) {
+                                         @RequestParam(required = false) String searchQuery,
+                                         @RequestParam(required = false) String category) {
     final String principalUsername = principal.getClaim("sub");
-    return spendClient.getSpendsV3(principalUsername, pageable, filterPeriod, filterCurrency, searchQuery);
+    return spendClient.getSpendsV3(principalUsername, pageable, filterPeriod, filterCurrency, searchQuery, category);
   }
 
   @GetMapping(value = "/export/csv", produces = "text/csv")

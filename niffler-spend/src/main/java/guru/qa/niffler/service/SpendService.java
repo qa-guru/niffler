@@ -110,7 +110,19 @@ public class SpendService {
                                    @Nullable Date dateFrom,
                                    @Nullable Date dateTo,
                                    @Nullable String searchQuery) {
-    return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo, searchQuery, pageable)
+    return getSpendsForUser(username, pageable, filterCurrency, dateFrom, dateTo, searchQuery, null);
+  }
+
+  @Transactional(readOnly = true)
+  public @Nonnull
+  Page<SpendJson> getSpendsForUser(String username,
+                                   Pageable pageable,
+                                   @Nullable CurrencyValues filterCurrency,
+                                   @Nullable Date dateFrom,
+                                   @Nullable Date dateTo,
+                                   @Nullable String searchQuery,
+                                   @Nullable String category) {
+    return getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo, searchQuery, category, pageable)
         .map(SpendJson::fromEntity);
   }
 
@@ -163,6 +175,7 @@ public class SpendService {
                                            @Nullable Date dateFrom,
                                            @Nullable Date dateTo,
                                            @Nullable String searchQuery,
+                                           @Nullable String category,
                                            Pageable pageable) {
     dateTo = dateTo == null
         ? new Date()
@@ -172,21 +185,15 @@ public class SpendService {
         ? new Date(0)
         : dateFrom;
 
-    Page<SpendEntity> spends;
-    if (filterCurrency != null) {
-      if (searchQuery != null) {
-        spends = spendRepository.findAll(username, filterCurrency, dateFrom, dateTo, searchQuery, pageable);
-      } else {
-        spends = spendRepository.findAll(username, filterCurrency, dateFrom, dateTo, pageable);
-      }
-    } else {
-      if (searchQuery != null) {
-        spends = spendRepository.findAll(username, dateFrom, dateTo, searchQuery, pageable);
-      } else {
-        spends = spendRepository.findAll(username, dateFrom, dateTo, pageable);
-      }
-    }
-    return spends;
+    return spendRepository.findAll(
+        username,
+        filterCurrency,
+        dateFrom,
+        dateTo,
+        normalizeFilter(searchQuery),
+        normalizeFilter(category),
+        pageable
+    );
   }
 
   @Transactional(readOnly = true)
@@ -226,5 +233,9 @@ public class SpendService {
       );
     }
     return spendId;
+  }
+
+  private @Nullable String normalizeFilter(@Nullable String value) {
+    return value == null || value.isBlank() ? null : value;
   }
 }

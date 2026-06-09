@@ -11,6 +11,7 @@ import { ensureServiceWorkerReady, requestNotificationPermission, subscribeForeg
 
 export const MainPage = () => {
     const [period, setPeriod] = useState<FilterPeriodValue>({ label: "All time", value: "ALL" });
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
         { currency: "ALL" });
     const theme = useTheme();
@@ -56,6 +57,10 @@ export const MainPage = () => {
 
     const handleChangeCurrency = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setSelectedCurrency({ currency: e.target.value });
+    }
+
+    const handleCategoryClick = (category: string) => {
+        setSelectedCategory(category);
     }
 
     const pushInitOnce = useRef(false);
@@ -163,7 +168,9 @@ export const MainPage = () => {
                                 total: data?.stat.total ?? 0,
                                 currency: data?.stat.currency ?? "RUB",
                                 statByCategories: data?.stat.statByCategories ?? [],
-                            }} />
+                            }}
+                                     selectedCategory={selectedCategory}
+                                     onCategoryClick={handleCategoryClick}/>
                         </Box>
                         <Box id="legend-container" sx={{
                             display: "flex",
@@ -196,6 +203,8 @@ export const MainPage = () => {
                         handleChangePeriod={handleChangePeriod}
                         selectedCurrency={selectedCurrency}
                         handleChangeCurrency={handleChangeCurrency}
+                        selectedCategory={selectedCategory}
+                        onCategoryFilterReset={() => setSelectedCategory(null)}
                         onDeleteCallback={loadStats}
                     />
                 </Grid>

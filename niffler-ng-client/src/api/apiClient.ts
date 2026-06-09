@@ -101,9 +101,18 @@ export const apiClient = {
     getSpends: async (searchQuery: string, page: number, {
         onSuccess,
         onFailure
-    }: RequestHandler<Pageable<Spending>>, filterPeriod: string, filterCurrency: string) => {
+    }: RequestHandler<Pageable<Spending>>, filterPeriod: string, filterCurrency: string, category: string | null) => {
+        const params = new URLSearchParams({
+            page: String(page),
+            searchQuery,
+            filterCurrency,
+            filterPeriod,
+        });
+        if (category) {
+            params.set("category", category);
+        }
         await makeRequest(
-            `/v2/spends/all?page=${page}&searchQuery=${searchQuery}&filterCurrency=${filterCurrency}&filterPeriod=${filterPeriod}`,
+            `/v3/spends/all?${params.toString()}`,
             {
                 onSuccess,
                 onFailure,
@@ -162,14 +171,14 @@ export const apiClient = {
     },
 
     getAllPeople: async (searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
-        await makeRequest(`/v2/users/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`, {
+        await makeRequest(`/v3/users/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`, {
             onSuccess,
             onFailure,
         });
     },
 
     getFriends: async (searchQuery: string, page: number, { onSuccess, onFailure }: RequestHandler<Pageable<User>>) => {
-        await makeRequest(`/v2/friends/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`,
+        await makeRequest(`/v3/friends/all?page=${page}&searchQuery=${searchQuery}&sort=username,ASC`,
             {
                 onSuccess,
                 onFailure,

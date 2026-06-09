@@ -40,13 +40,15 @@ public interface SpendClient {
                               Pageable pageable,
                               @Nullable DataFilterValues filterPeriod,
                               @Nullable CurrencyValues filterCurrency,
-                              @Nullable String searchQuery);
+                              @Nullable String searchQuery,
+                              @Nullable String category);
 
   PagedModel<SpendJson> getSpendsV3(String username,
                                     Pageable pageable,
                                     @Nullable DataFilterValues filterPeriod,
                                     @Nullable CurrencyValues filterCurrency,
-                                    @Nullable String searchQuery);
+                                    @Nullable String searchQuery,
+                                    @Nullable String category);
 
   @Nonnull
   SpendJson addSpend(SpendJson spend);

@@ -204,6 +204,59 @@ public class SpendingTest extends BaseWebTest {
   }
 
   @Test
+  @AllureId("500033")
+  @DisplayName("WEB: Клик по чипсу категории фильтрует таблицу трат")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      spends = {
+          @GenerateSpend(name = "Завтрак", category = "Еда", amount = 100.0),
+          @GenerateSpend(name = "Обед", category = "Еда", amount = 200.0),
+          @GenerateSpend(name = "Такси", category = "Поездки", amount = 300.0),
+      }
+  ))
+  void categoryBubbleClickShouldFilterSpendingTable() {
+    MainPage mainPage = new MainPage();
+
+    mainPage.getStatComponent()
+        .clickCategoryBubble("Еда")
+        .checkCategoryBubbleSelected("Еда");
+
+    mainPage.getSpendingTable()
+        .checkTableSize(2)
+        .checkTableContainsDescription("Завтрак")
+        .checkTableContainsDescription("Обед")
+        .checkTableDoesNotContainDescription("Такси");
+  }
+
+  @Test
+  @AllureId("500030")
+  @DisplayName("WEB: Очистка поиска сбрасывает фильтр по чипсу категории")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      spends = {
+          @GenerateSpend(name = "Завтрак", category = "Еда", amount = 100.0),
+          @GenerateSpend(name = "Обед", category = "Еда", amount = 200.0),
+          @GenerateSpend(name = "Такси", category = "Поездки", amount = 300.0),
+      }
+  ))
+  void clearSearchShouldResetCategoryBubbleFilter() {
+    MainPage mainPage = new MainPage();
+
+    mainPage.getStatComponent()
+        .clickCategoryBubble("Еда")
+        .checkCategoryBubbleSelected("Еда");
+
+    mainPage.getSpendingTable()
+        .checkTableSize(2)
+        .clearSearch()
+        .checkTableSize(3)
+        .checkTableContainsDescription("Такси");
+
+    mainPage.getStatComponent()
+        .checkCategoryBubbleNotSelected("Еда");
+  }
+
+  @Test
   @AllureId("500028")
   @DisplayName("WEB: Дата траты с 1 по 9 число отображается без ведущего нуля")
   @Tag("WEB")

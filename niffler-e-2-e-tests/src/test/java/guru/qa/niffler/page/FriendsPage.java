@@ -78,4 +78,16 @@ public class FriendsPage extends BasePage<FriendsPage> {
     popup.$(byText("Decline")).click(usingJavaScript());
     return this;
   }
+
+  @Step("Search for: {query}")
+  public FriendsPage searchFriend(String query) {
+    searchInput.search(query);
+    return this;
+  }
+
+  @Step("Clear search input")
+  public FriendsPage clearSearch() {
+    searchInput.clearIfNotEmpty();
+    return this;
+  }
 }

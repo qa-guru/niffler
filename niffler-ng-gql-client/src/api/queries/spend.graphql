@@ -1,5 +1,5 @@
-query Spends($page:Int!, $size:Int!, $sort: [String!], $searchQuery:String, $filterPeriod: FilterPeriod, $filterCurrency: CurrencyValues) {
-    spends(page: $page, size: $size, sort: $sort, searchQuery: $searchQuery, filterPeriod: $filterPeriod, filterCurrency: $filterCurrency) {
+query Spends($page:Int!, $size:Int!, $sort: [String!], $searchQuery:String, $filterPeriod: FilterPeriod, $filterCurrency: CurrencyValues, $category: String) {
+    spends(page: $page, size: $size, sort: $sort, searchQuery: $searchQuery, filterPeriod: $filterPeriod, filterCurrency: $filterCurrency, category: $category) {
         edges {
             node {
                 id

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Date;
@@ -118,6 +119,25 @@ public interface SpendRepository extends JpaRepository<SpendEntity, UUID> {
       Date dateFrom,
       Date dateTo,
       String searchQuery,
+      Pageable pageable
+  );
+
+  @Nonnull
+  @Query(
+      "select s from SpendEntity s left join CategoryEntity c on s.category = c " +
+          "where s.username = :username " +
+          "and (:currency is null or s.currency = :currency) " +
+          "and (:category is null or lower(c.name) = lower(cast(:category as string))) " +
+          "and (:searchQuery is null or lower(s.description) like lower(concat('%', cast(:searchQuery as string), '%')) or lower(c.name) like lower(concat('%', cast(:searchQuery as string), '%'))) " +
+          "and s.spendDate >= :dateFrom and s.spendDate <= :dateTo "
+  )
+  Page<SpendEntity> findAll(
+      String username,
+      @Nullable CurrencyValues currency,
+      Date dateFrom,
+      Date dateTo,
+      @Nullable String searchQuery,
+      @Nullable String category,
       Pageable pageable
   );
 

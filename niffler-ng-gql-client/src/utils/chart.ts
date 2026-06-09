@@ -36,10 +36,12 @@ export const htmlLegendPlugin: Plugin = {
         }
         const generateLabels = chart.options.plugins?.legend?.labels?.generateLabels;
         const currency = (chart.config.options as DoughnutOptions).title.currency;
+        const htmlLegend = (chart.config.options as DoughnutOptions).plugins.htmlLegend;
         if (generateLabels) {
             const items = generateLabels(chart);
             items.forEach((item: any, index: number) => {
                 const datasetPoint = dataset.data[index];
+                const selected = htmlLegend.selectedLabel === item.text;
                 const li = document.createElement('li')
                 li.style.alignItems = 'center'
                 li.style.display = 'flex'
@@ -52,6 +54,20 @@ export const htmlLegendPlugin: Plugin = {
                 li.style.display = 'block'
                 li.style.backgroundColor = item.fillStyle;
                 li.style.borderRadius = "20px"
+                li.style.border = selected ? '1px solid #111827' : '1px solid transparent'
+                li.style.boxSizing = 'border-box'
+                li.style.cursor = 'pointer'
+                li.style.fontWeight = selected ? '700' : '400'
+                li.tabIndex = 0
+                li.setAttribute('role', 'button')
+                li.setAttribute('aria-pressed', String(selected))
+                li.onclick = () => htmlLegend.onLabelClick(item.text)
+                li.onkeydown = (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault()
+                        htmlLegend.onLabelClick(item.text)
+                    }
+                }
 
                 const text = document.createTextNode(`${item.text} ${datasetPoint} ${currency}`)
                 li.appendChild(text)
