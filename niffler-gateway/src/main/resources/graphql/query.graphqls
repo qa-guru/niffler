@@ -8,6 +8,7 @@ type Query {
     user: User!
     allPeople(page:Int!, size:Int!, sort:[String!], searchQuery:String): UserConnection
     spends(page:Int!, size:Int!, sort:[String!], searchQuery:String, filterPeriod: FilterPeriod, filterCurrency: CurrencyValues, category: String): SpendConnection
+    spendsCsv: String!
     stat(filterPeriod: FilterPeriod, filterCurrency: CurrencyValues, statCurrency: CurrencyValues): Statistic!
 }
 

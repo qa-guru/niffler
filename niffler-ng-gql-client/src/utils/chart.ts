@@ -54,7 +54,10 @@ export const htmlLegendPlugin: Plugin = {
                 li.style.display = 'block'
                 li.style.backgroundColor = item.fillStyle;
                 li.style.borderRadius = "20px"
-                li.style.border = selected ? '1px solid #111827' : '1px solid transparent'
+                li.style.border = '1px solid transparent'
+                li.style.boxShadow = selected
+                    ? '0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12)'
+                    : 'none'
                 li.style.boxSizing = 'border-box'
                 li.style.cursor = 'pointer'
                 li.style.fontWeight = selected ? '700' : '400'

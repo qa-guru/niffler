@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 
+import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -59,6 +60,14 @@ public class SpendQueryController {
     return spendClient.getSpend(
         id,
         principalUsername
+    );
+  }
+
+  @QueryMapping
+  public String spendsCsv(@AuthenticationPrincipal Jwt principal) {
+    final String principalUsername = principal.getClaim("sub");
+    return Base64.getEncoder().encodeToString(
+        spendClient.exportToCsv(principalUsername)
     );
   }
 

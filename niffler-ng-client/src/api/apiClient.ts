@@ -18,6 +18,7 @@ interface RequestOptions {
     headers?: HeadersInit,
     body?: BodyInit | null,
     timeout?: number,
+    responseType?: "json" | "blob",
 }
 
 declare global {
@@ -118,6 +119,21 @@ export const apiClient = {
                 onFailure,
             },
         );
+    },
+
+    exportSpendsToCsv: async ({ onSuccess, onFailure }: RequestHandler<Blob>) => {
+        await makeRequest("/v3/spends/export/csv",
+            {
+                onSuccess,
+                onFailure,
+            },
+            {
+                method: "GET",
+                headers: {
+                    "Accept": "text/csv",
+                },
+                responseType: "blob",
+            });
     },
 
     getSpend: async (id: string, { onSuccess, onFailure }: RequestHandler<Spending>) => {
@@ -288,9 +304,9 @@ async function makeRequest<T>(path: string, { onSuccess, onFailure }: RequestHan
         }
 
         if (response.status !== 204 && options?.method !== "DELETE") {
-            const data = await response.json();
+            const data = options?.responseType === "blob" ? await response.blob() : await response.json();
             if (!response.ok) {
-                throw new ApiError(data.detail, data.status);
+                throw new ApiError(data.detail ?? "Request failed", data.status ?? response.status);
             }
             onSuccess(data);
         }

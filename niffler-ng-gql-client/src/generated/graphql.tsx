@@ -130,6 +130,7 @@ export type Query = {
   session: Session;
   spend: Spend;
   spends?: Maybe<SpendConnection>;
+  spendsCsv: Scalars['String']['output'];
   stat: Statistic;
   user: User;
 };
@@ -328,6 +329,11 @@ export type SpendQueryVariables = Exact<{
 
 
 export type SpendQuery = { __typename?: 'Query', spend: { __typename?: 'Spend', id: string, spendDate: any, currency: CurrencyValues, amount: number, description?: string | null, category: { __typename?: 'Category', name: string } } };
+
+export type SpendsCsvQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SpendsCsvQuery = { __typename?: 'Query', spendsCsv: string };
 
 export type StatQueryVariables = Exact<{
   filterPeriod?: InputMaybe<FilterPeriod>;
@@ -774,6 +780,43 @@ export type SpendQueryHookResult = ReturnType<typeof useSpendQuery>;
 export type SpendLazyQueryHookResult = ReturnType<typeof useSpendLazyQuery>;
 export type SpendSuspenseQueryHookResult = ReturnType<typeof useSpendSuspenseQuery>;
 export type SpendQueryResult = Apollo.QueryResult<SpendQuery, SpendQueryVariables>;
+export const SpendsCsvDocument = gql`
+    query SpendsCsv {
+  spendsCsv
+}
+    `;
+
+/**
+ * __useSpendsCsvQuery__
+ *
+ * To run a query within a React component, call `useSpendsCsvQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpendsCsvQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpendsCsvQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSpendsCsvQuery(baseOptions?: Apollo.QueryHookOptions<SpendsCsvQuery, SpendsCsvQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SpendsCsvQuery, SpendsCsvQueryVariables>(SpendsCsvDocument, options);
+      }
+export function useSpendsCsvLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SpendsCsvQuery, SpendsCsvQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SpendsCsvQuery, SpendsCsvQueryVariables>(SpendsCsvDocument, options);
+        }
+export function useSpendsCsvSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SpendsCsvQuery, SpendsCsvQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SpendsCsvQuery, SpendsCsvQueryVariables>(SpendsCsvDocument, options);
+        }
+export type SpendsCsvQueryHookResult = ReturnType<typeof useSpendsCsvQuery>;
+export type SpendsCsvLazyQueryHookResult = ReturnType<typeof useSpendsCsvLazyQuery>;
+export type SpendsCsvSuspenseQueryHookResult = ReturnType<typeof useSpendsCsvSuspenseQuery>;
+export type SpendsCsvQueryResult = Apollo.QueryResult<SpendsCsvQuery, SpendsCsvQueryVariables>;
 export const StatDocument = gql`
     query Stat($filterPeriod: FilterPeriod, $filterCurrency: CurrencyValues, $statCurrency: CurrencyValues) {
   stat(
