@@ -31,7 +31,12 @@ public class DockerConfig implements Config {
         .addArguments("--lang=en")
         .setExperimentalOption("prefs", Map.of(
             "intl.accept_languages", "en",
-            "intl.selected_languages", "en"
+            "intl.selected_languages", "en",
+            "profile.default_content_settings.popups", 0,
+            "download.default_directory", "/home/selenium/Downloads",
+            "download.prompt_for_download", false,
+            "download.directory_upgrade", true,
+            "safebrowsing.enabled", false
         ));
   }
 

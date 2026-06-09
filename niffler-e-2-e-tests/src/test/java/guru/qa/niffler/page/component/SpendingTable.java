@@ -2,23 +2,38 @@ package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import guru.qa.niffler.model.rest.DataFilterValues;
 import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
+import guru.qa.niffler.page.component.download.DownloadComponent;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
+import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static guru.qa.niffler.condition.TableConditions.spends;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ParametersAreNonnullByDefault
 public class SpendingTable extends BaseComponent<SpendingTable> {
@@ -28,6 +43,10 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
   private final SelenideElement currencyMenu = self.$("#currency");
   private final ElementsCollection menuItems = $$(".MuiList-padding li");
   private final SelenideElement deleteBtn = self.$("#delete");
+  private final SelenideElement contextMenuBtn = self.$("#spending-menu");
+  private final DownloadComponent downloadComponent = DownloadComponent.getInstance();
+  private final SelenideElement csvMenu = $("ul[role='menu']");
+  private final ElementsCollection csvMenuItems = csvMenu.$$("li");
   private final SelenideElement popup = $("div[role='dialog']");
 
   private final SelenideElement tableHeader = self.$(".MuiTableHead-root");
@@ -65,6 +84,57 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
     row.$$("td").get(0).click();
     deleteBtn.click();
     popup.$(byText("Delete")).click(usingJavaScript());
+    return this;
+  }
+
+  @Step("Open spending context menu")
+  @Nonnull
+  public SpendingTable openContextMenu() {
+    contextMenuBtn.click();
+    csvMenu.shouldBe(visible);
+    return this;
+  }
+
+  @Step("Check spending context menu CSV actions")
+  @Nonnull
+  public SpendingTable checkCsvActionsVisible() {
+    csvMenuItems.find(exactText("Export to CSV")).shouldBe(visible);
+    csvMenuItems.find(exactText("Import CSV")).shouldBe(visible)
+        .shouldHave(attribute("aria-disabled", "true"));
+    return this;
+  }
+
+  @Step("Export spendings to CSV")
+  @Nonnull
+  public File exportCsv() throws IOException, InterruptedException {
+    final String fileName = "spend-history.csv";
+    return downloadComponent.download(
+        csvMenuItems.find(exactText("Export to CSV")),
+        fileName
+    );
+  }
+
+  @Step("Check CSV file contains exported spendings")
+  @Nonnull
+  public SpendingTable checkCsvContains(File csvFile, SpendJson... expectedSpends) throws IOException, CsvException {
+    final List<String[]> rows;
+    try (CSVReader reader = new CSVReader(Files.newBufferedReader(csvFile.toPath(), StandardCharsets.UTF_8))) {
+      rows = reader.readAll();
+    }
+    assertArrayEquals(
+        new String[]{"Id", "Category", "Description", "Amount", "Currency", "Date"},
+        rows.getFirst()
+    );
+    for (SpendJson expectedSpend : expectedSpends) {
+      final String[] csvRow = rowByDescription(rows, expectedSpend.description());
+      assertAll(() -> {
+        assertTrue(csvRow[0].matches("[0-9a-fA-F-]{36}"), "CSV should contain spend id");
+        assertEquals(expectedSpend.category().name(), csvRow[1]);
+        assertEquals(expectedSpend.description(), csvRow[2]);
+        assertEquals(String.valueOf(expectedSpend.amount()), csvRow[3]);
+        assertEquals(expectedSpend.currency().name(), csvRow[4]);
+      });
+    }
     return this;
   }
 
@@ -118,4 +188,13 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
     row.$$("td").get(4).should(exactText(expectedDateText));
     return this;
   }
+
+  private String[] rowByDescription(List<String[]> csvRows, String description) {
+    return csvRows.stream()
+        .skip(1)
+        .filter(row -> description.equals(row[2]))
+        .findFirst()
+        .orElse(null);
+  }
+
 }

@@ -1,13 +1,16 @@
-import {Box, MenuItem, Stack, TextField, Toolbar as MuiToolbar, useMediaQuery, useTheme} from "@mui/material";
+import {Box, Menu, MenuItem, Stack, TextField, Toolbar as MuiToolbar, useMediaQuery, useTheme} from "@mui/material";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
 import {SearchInput} from "../../SearchInput";
 import {filterPeriod, FilterPeriodValue} from "../../../types/FilterPeriod.ts";
 import {Currency, CurrencyValue, getCurrencyIcon} from "../../../types/Currency.ts";
 import {SecondaryButton} from "../../Button";
-import {ChangeEvent, FC} from "react";
+import {ChangeEvent, FC, MouseEvent, useState} from "react";
 import {useDialog} from "../../../context/DialogContext.tsx";
 import {useSnackBar} from "../../../context/SnackBarContext.tsx";
 import DeleteIcon from "../../../assets/icons/ic_delete.svg?react";
-import {useDeleteSpendsMutation} from "../../../generated/graphql.tsx";
+import {useDeleteSpendsMutation, useSpendsCsvLazyQuery} from "../../../generated/graphql.tsx";
 
 
 interface ToolbarInterface {
@@ -39,6 +42,8 @@ export const Toolbar: FC<ToolbarInterface> = ({
     const dialog = useDialog();
     const snackbar = useSnackBar();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const isMenuOpen = Boolean(menuAnchor);
     const [deleteSpends] = useDeleteSpendsMutation({
         onCompleted: () => {
             snackbar.showSnackBar("Spendings succesfully deleted", "info");
@@ -49,6 +54,45 @@ export const Toolbar: FC<ToolbarInterface> = ({
             console.error(err);
         },
     });
+    const [exportSpendsCsv] = useSpendsCsvLazyQuery({
+        fetchPolicy: "network-only",
+        onCompleted: (data) => {
+            downloadCsv(data.spendsCsv);
+            snackbar.showSnackBar("Spendings successfully exported", "info");
+        },
+        onError: (err) => {
+            snackbar.showSnackBar("Can not export spendings", "error");
+            console.error(err);
+        },
+    });
+
+    const handleOpenMenu = (event: MouseEvent<HTMLButtonElement>) => {
+        setMenuAnchor(event.currentTarget);
+    }
+
+    const handleCloseMenu = () => {
+        setMenuAnchor(null);
+    }
+
+    const downloadCsv = (base64Csv: string) => {
+        const binary = window.atob(base64Csv);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        const blob = new Blob([bytes], {type: "text/csv;charset=utf-8"});
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "spend-history.csv";
+        link.click();
+        window.URL.revokeObjectURL(url);
+    }
+
+    const handleExportCsv = () => {
+        handleCloseMenu();
+        exportSpendsCsv();
+    }
 
     const onDeleteButtonClick = () => {
         dialog.showDialog({
@@ -130,6 +174,38 @@ export const Toolbar: FC<ToolbarInterface> = ({
                         ))}
                     </TextField>
                 )}
+                <SecondaryButton
+                    sx={{
+                        fontWeight: 400,
+                        padding: 1,
+                        minWidth: "48px",
+                        minHeight: "48px",
+                        marginRight: "8px",
+                    }}
+                    id="spending-menu"
+                    type={"button"}
+                    aria-controls={isMenuOpen ? "spending-csv-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={isMenuOpen ? "true" : undefined}
+                    onClick={handleOpenMenu}
+                >
+                    <MoreVertIcon/>
+                </SecondaryButton>
+                <Menu
+                    id="spending-csv-menu"
+                    anchorEl={menuAnchor}
+                    open={isMenuOpen}
+                    onClose={handleCloseMenu}
+                >
+                    <MenuItem onClick={handleExportCsv}>
+                        <FileDownloadOutlinedIcon sx={{marginRight: 1}}/>
+                        Export to CSV
+                    </MenuItem>
+                    <MenuItem disabled>
+                        <UploadFileOutlinedIcon sx={{marginRight: 1}}/>
+                        Import CSV
+                    </MenuItem>
+                </Menu>
                 {isMobile ?
                     <SecondaryButton
                         sx={{

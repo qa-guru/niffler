@@ -1,5 +1,6 @@
 package guru.qa.niffler.test.web;
 
+import com.opencsv.exceptions.CsvException;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
@@ -20,6 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -254,6 +257,40 @@ public class SpendingTest extends BaseWebTest {
 
     mainPage.getStatComponent()
         .checkCategoryBubbleNotSelected("Еда");
+  }
+
+  @Test
+  @AllureId("500034")
+  @DisplayName("WEB: Пользователь имеет возможность экспортировать траты в CSV")
+  @Tag("WEB")
+  @ApiLogin(user = @GenerateUser(
+      spends = {
+          @GenerateSpend(
+              name = "CSV экспорт - кофе",
+              category = "Еда",
+              amount = 150.0,
+              currency = CurrencyValues.RUB
+          ),
+          @GenerateSpend(
+              name = "CSV export - taxi",
+              category = "Transport",
+              amount = 430.5,
+              currency = CurrencyValues.USD
+          ),
+      }
+  ))
+  void shouldExportSpendingsToCsv(@User UserJson user) throws IOException, CsvException, InterruptedException {
+    SpendingTable spendingTable = new MainPage().getSpendingTable()
+        .openContextMenu()
+        .checkCsvActionsVisible();
+
+    File csvFile = spendingTable.exportCsv();
+
+    spendingTable.checkCsvContains(
+        csvFile,
+        user.testData().spends().get(0),
+        user.testData().spends().get(1)
+    );
   }
 
   @Test
