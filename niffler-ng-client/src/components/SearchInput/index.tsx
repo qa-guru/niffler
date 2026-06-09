@@ -6,11 +6,15 @@ import {useDebounce} from "../../hooks/useDebounce.ts";
 
 interface SearchInputInterface {
     onSearchSubmit: (value: string) => void;
+    value?: string;
+    onChange?: (value: string) => void;
 }
 
-export const SearchInput: FC<SearchInputInterface> = ({onSearchSubmit}) => {
+export const SearchInput: FC<SearchInputInterface> = ({onSearchSubmit, value, onChange}) => {
     const theme = useTheme();
-    const [search, setSearch] = useState("");
+    const [innerValue, setInnerValue] = useState("");
+    const search = value ?? innerValue;
+    const setSearch = onChange ?? setInnerValue;
     const debouncedSearch = useDebounce(search, 300);
 
     useEffect(() => {

@@ -17,6 +17,8 @@ export interface DoughnutOptions {
         },
         htmlLegend: {
             containerID: string,
+            selectedLabel: string | null,
+            onLabelClick: (label: string) => void,
         },
     },
     tooltips: {

@@ -40,13 +40,15 @@ public class SpendQueryController {
                                  @Argument @Nullable List<String> sort,
                                  @Argument @Nullable String searchQuery,
                                  @Argument @Nullable DataFilterValues filterPeriod,
-                                 @Argument @Nullable CurrencyValues filterCurrency) {
+                                 @Argument @Nullable CurrencyValues filterCurrency,
+                                 @Argument @Nullable String category) {
     return spendClient.getSpendsV2(
         principal.getClaim("sub"),
         new GqlQueryPaginationAndSort(page, size, sort).pageable(),
         filterPeriod,
         filterCurrency,
-        searchQuery
+        searchQuery,
+        category
     );
   }
 

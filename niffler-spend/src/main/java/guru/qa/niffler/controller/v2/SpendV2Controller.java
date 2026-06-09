@@ -33,7 +33,8 @@ public class SpendV2Controller {
                                    @RequestParam(required = false) CurrencyValues filterCurrency,
                                    @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
                                    @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date to,
-                                   @RequestParam(required = false) String searchQuery) {
-    return spendService.getSpendsForUser(username, pageable, filterCurrency, from, to, searchQuery);
+                                   @RequestParam(required = false) String searchQuery,
+                                   @RequestParam(required = false) String category) {
+    return spendService.getSpendsForUser(username, pageable, filterCurrency, from, to, searchQuery, category);
   }
 }

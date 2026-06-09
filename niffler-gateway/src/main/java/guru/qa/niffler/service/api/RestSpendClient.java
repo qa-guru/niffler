@@ -121,17 +121,19 @@ public class RestSpendClient implements SpendClient {
                                      Pageable pageable,
                                      @Nullable DataFilterValues filterPeriod,
                                      @Nullable CurrencyValues filterCurrency,
-                                     @Nullable String searchQuery) {
+                                     @Nullable String searchQuery,
+                                     @Nullable String category) {
     return Optional.ofNullable(
         restTemplate.getForObject(
-            nifflerSpendApiUri + "/v2/spends/all?username={username}&from={from}&to={to}&filterCurrency={filterCurrency}&searchQuery={searchQuery}"
+            nifflerSpendApiUri + "/v2/spends/all?username={username}&from={from}&to={to}&filterCurrency={filterCurrency}&searchQuery={searchQuery}&category={category}"
                 + new HttpQueryPaginationAndSort(pageable),
             RestPage.class,
             username,
             filterPeriod != null ? dateFormat(filterDate(filterPeriod)) : null,
             filterPeriod != null ? dateFormat(new Date()) : null,
             filterCurrency != null ? filterCurrency.name() : null,
-            searchQuery
+            searchQuery,
+            category
         )
     ).orElseThrow(() -> new NoRestResponseException("No REST Page<SpendJson> response is given [/v2/spends/all/ Route]"));
   }
@@ -142,9 +144,10 @@ public class RestSpendClient implements SpendClient {
                                            Pageable pageable,
                                            @Nullable DataFilterValues filterPeriod,
                                            @Nullable CurrencyValues filterCurrency,
-                                           @Nullable String searchQuery) {
+                                           @Nullable String searchQuery,
+                                           @Nullable String category) {
     final ResponseEntity<PagedModelJson<SpendJson>> response = restTemplate.exchange(
-        nifflerSpendApiUri + "/v3/spends/all?username={username}&from={from}&to={to}&filterCurrency={filterCurrency}&searchQuery={searchQuery}"
+        nifflerSpendApiUri + "/v3/spends/all?username={username}&from={from}&to={to}&filterCurrency={filterCurrency}&searchQuery={searchQuery}&category={category}"
             + new HttpQueryPaginationAndSort(pageable),
         HttpMethod.GET,
         null,
@@ -154,7 +157,8 @@ public class RestSpendClient implements SpendClient {
         filterPeriod != null ? dateFormat(filterDate(filterPeriod)) : null,
         filterPeriod != null ? dateFormat(new Date()) : null,
         filterCurrency != null ? filterCurrency.name() : null,
-        searchQuery
+        searchQuery,
+        category
     );
     return Optional.ofNullable(
         response.getBody()

@@ -45,6 +45,7 @@ class SpendV3ControllerTest {
   private MockMvc mockMvc;
 
   private static final String MULTI_PAGE_FIXTURE = "/guru/qa/niffler/controller/v3/SpendV3ControllerTest_MultiPage.sql";
+  private static final String CATEGORY_FIXTURE = "/guru/qa/niffler/controller/v3/SpendV3ControllerTest_Category.sql";
 
   @Test
   @Sql(MULTI_PAGE_FIXTURE)
@@ -215,6 +216,67 @@ class SpendV3ControllerTest {
         .andExpect(jsonPath("$.page.number").value(0))
         .andExpect(jsonPath("$.page.totalElements").value(1))
         .andExpect(jsonPath("$.page.totalPages").value(1));
+  }
+
+  @Test
+  @Sql(CATEGORY_FIXTURE)
+  void getSpendsWithCategoryFilterShouldReturnOnlySelectedCategory() throws Exception {
+    mockMvc.perform(get("/internal/v3/spends/all")
+            .param("username", "duck")
+            .param("category", "Еда"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content.length()").value(2))
+        .andExpect(jsonPath("$.content[0].category.name").value("Еда"))
+        .andExpect(jsonPath("$.content[1].category.name").value("Еда"));
+  }
+
+  @Test
+  @Sql(CATEGORY_FIXTURE)
+  void getSpendsWithCategoryFilterShouldBeCaseInsensitive() throws Exception {
+    mockMvc.perform(get("/internal/v3/spends/all")
+            .param("username", "duck")
+            .param("category", "еда"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content.length()").value(2))
+        .andExpect(jsonPath("$.content[0].category.name").value("Еда"))
+        .andExpect(jsonPath("$.content[1].category.name").value("Еда"));
+  }
+
+  @Test
+  @Sql(CATEGORY_FIXTURE)
+  void getSpendsWithCategoryAndSearchQueryShouldReturnIntersection() throws Exception {
+    mockMvc.perform(get("/internal/v3/spends/all")
+            .param("username", "duck")
+            .param("category", "Еда")
+            .param("searchQuery", "Завтрак"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content.length()").value(1))
+        .andExpect(jsonPath("$.content[0].category.name").value("Еда"))
+        .andExpect(jsonPath("$.content[0].description").value("Завтрак"));
+  }
+
+  @Test
+  @Sql(CATEGORY_FIXTURE)
+  void getSpendsWithCategoryAndCurrencyFilterShouldCombine() throws Exception {
+    mockMvc.perform(get("/internal/v3/spends/all")
+            .param("username", "duck")
+            .param("category", "Поездки")
+            .param("filterCurrency", "USD"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content.length()").value(1))
+        .andExpect(jsonPath("$.content[0].category.name").value("Поездки"))
+        .andExpect(jsonPath("$.content[0].currency").value("USD"));
+  }
+
+  @Test
+  @Sql(CATEGORY_FIXTURE)
+  void getSpendsWithNonExistentCategoryShouldReturnEmpty() throws Exception {
+    mockMvc.perform(get("/internal/v3/spends/all")
+            .param("username", "duck")
+            .param("category", "НесуществующаяКатегория"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content.length()").value(0))
+        .andExpect(jsonPath("$.page.totalElements").value(0));
   }
 
   @Test

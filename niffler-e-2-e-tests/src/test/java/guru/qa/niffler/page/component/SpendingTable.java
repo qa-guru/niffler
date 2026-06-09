@@ -13,6 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -71,6 +72,27 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
   @Nonnull
   public SpendingTable searchSpendingByDescription(String description) {
     searchField.search(description);
+    return this;
+  }
+
+  @Step("Clear spending search")
+  @Nonnull
+  public SpendingTable clearSearch() {
+    searchField.clear();
+    return this;
+  }
+
+  @Step("Check that table contains spending description {0}")
+  @Nonnull
+  public SpendingTable checkTableContainsDescription(String description) {
+    tableRows.find(text(description)).shouldHave(text(description));
+    return this;
+  }
+
+  @Step("Check that table does not contain spending description {0}")
+  @Nonnull
+  public SpendingTable checkTableDoesNotContainDescription(String description) {
+    tableRows.find(text(description)).shouldNot(exist);
     return this;
   }
 

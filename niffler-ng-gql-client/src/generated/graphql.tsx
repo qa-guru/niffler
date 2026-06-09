@@ -149,6 +149,7 @@ export type QuerySpendArgs = {
 
 
 export type QuerySpendsArgs = {
+  category?: InputMaybe<Scalars['String']['input']>;
   filterCurrency?: InputMaybe<CurrencyValues>;
   filterPeriod?: InputMaybe<FilterPeriod>;
   page: Scalars['Int']['input'];
@@ -315,6 +316,7 @@ export type SpendsQueryVariables = Exact<{
   searchQuery?: InputMaybe<Scalars['String']['input']>;
   filterPeriod?: InputMaybe<FilterPeriod>;
   filterCurrency?: InputMaybe<CurrencyValues>;
+  category?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -657,7 +659,7 @@ export type SessionLazyQueryHookResult = ReturnType<typeof useSessionLazyQuery>;
 export type SessionSuspenseQueryHookResult = ReturnType<typeof useSessionSuspenseQuery>;
 export type SessionQueryResult = Apollo.QueryResult<SessionQuery, SessionQueryVariables>;
 export const SpendsDocument = gql`
-    query Spends($page: Int!, $size: Int!, $sort: [String!], $searchQuery: String, $filterPeriod: FilterPeriod, $filterCurrency: CurrencyValues) {
+    query Spends($page: Int!, $size: Int!, $sort: [String!], $searchQuery: String, $filterPeriod: FilterPeriod, $filterCurrency: CurrencyValues, $category: String) {
   spends(
     page: $page
     size: $size
@@ -665,6 +667,7 @@ export const SpendsDocument = gql`
     searchQuery: $searchQuery
     filterPeriod: $filterPeriod
     filterCurrency: $filterCurrency
+    category: $category
   ) {
     edges {
       node {

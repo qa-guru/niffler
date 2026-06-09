@@ -12,6 +12,8 @@ import {useDeleteSpendsMutation} from "../../../generated/graphql.tsx";
 
 interface ToolbarInterface {
     handleInputSearch: (value: string) => void;
+    search: string,
+    onSearchChange: (value: string) => void,
     period: FilterPeriodValue,
     handleChangePeriod: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
     selectedCurrency: Currency,
@@ -23,6 +25,8 @@ interface ToolbarInterface {
 
 export const Toolbar: FC<ToolbarInterface> = ({
                                                   handleInputSearch,
+                                                  search,
+                                                  onSearchChange,
                                                   period,
                                                   handleChangePeriod,
                                                   selectedCurrency,
@@ -67,7 +71,7 @@ export const Toolbar: FC<ToolbarInterface> = ({
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
         }}>
-            <SearchInput onSearchSubmit={handleInputSearch}/>
+            <SearchInput onSearchSubmit={handleInputSearch} value={search} onChange={onSearchChange}/>
             <Box sx={{
                 display: "flex",
                 width: "100%",

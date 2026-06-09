@@ -101,9 +101,18 @@ export const apiClient = {
     getSpends: async (searchQuery: string, page: number, {
         onSuccess,
         onFailure
-    }: RequestHandler<Pageable<Spending>>, filterPeriod: string, filterCurrency: string) => {
+    }: RequestHandler<Pageable<Spending>>, filterPeriod: string, filterCurrency: string, category: string | null) => {
+        const params = new URLSearchParams({
+            page: String(page),
+            searchQuery,
+            filterCurrency,
+            filterPeriod,
+        });
+        if (category) {
+            params.set("category", category);
+        }
         await makeRequest(
-            `/v3/spends/all?page=${page}&searchQuery=${searchQuery}&filterCurrency=${filterCurrency}&filterPeriod=${filterPeriod}`,
+            `/v3/spends/all?${params.toString()}`,
             {
                 onSuccess,
                 onFailure,

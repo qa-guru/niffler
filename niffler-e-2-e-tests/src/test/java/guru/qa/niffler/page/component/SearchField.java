@@ -36,4 +36,10 @@ public class SearchField extends BaseComponent<SearchField> {
     }
     return this;
   }
+
+  @Nonnull
+  public SearchField clear() {
+    clearIfNotEmpty();
+    return this;
+  }
 }
