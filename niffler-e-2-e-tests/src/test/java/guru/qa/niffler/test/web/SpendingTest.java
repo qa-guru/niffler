@@ -19,6 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -280,7 +281,7 @@ public class SpendingTest extends BaseWebTest {
           ),
       }
   ))
-  @DisabledIfEnvironmentVariable(
+  @DisabledIfSystemProperty(
       named = "test.env",
       matches = "docker",
       disabledReason = "Failed to fetch data from http://selenoid:4444/download/.../?json"
