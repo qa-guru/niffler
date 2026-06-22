@@ -14,11 +14,15 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.DataBase.SPEND;
 import static guru.qa.niffler.data.jdbc.DataSourceContext.dataSource;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositoryJdbc implements SpendRepository {
 
   private final DataSource spendDs = dataSource(SPEND);
 
+  @Nonnull
   @Override
   public SpendEntity createSpend(SpendEntity spend) {
     try (Connection conn = spendDs.getConnection();
@@ -53,6 +57,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
     }
   }
 
+  @Nonnull
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
     SpendEntity spend = new SpendEntity();
@@ -84,6 +89,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
     return Optional.of(spend);
   }
 
+  @Nonnull
   @Override
   public CategoryEntity createCategory(CategoryEntity category) {
     try (Connection conn = spendDs.getConnection();
@@ -111,6 +117,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
     }
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     CategoryEntity category = new CategoryEntity();
@@ -135,6 +142,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
     return Optional.of(category);
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findUserCategoryByName(String username, String categoryName) {
     CategoryEntity result = new CategoryEntity();

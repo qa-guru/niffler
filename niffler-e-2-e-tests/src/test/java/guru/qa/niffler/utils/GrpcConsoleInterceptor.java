@@ -14,7 +14,9 @@ import io.grpc.MethodDescriptor;
 import io.grpc.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class GrpcConsoleInterceptor implements ClientInterceptor {
 
   private static final Logger LOG = LoggerFactory.getLogger(GrpcConsoleInterceptor.class);

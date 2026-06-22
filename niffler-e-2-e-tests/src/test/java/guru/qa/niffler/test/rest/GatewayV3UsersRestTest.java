@@ -29,10 +29,12 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[REST][niffler-gateway]: Пагинация Users V2")
 @DisplayName("[REST][niffler-gateway]: Пагинация Users V2")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ParametersAreNonnullByDefault
 public class GatewayV3UsersRestTest extends BaseRestTest {
 
   private static final GatewayV3ApiClient gatewayV3client = new GatewayV3ApiClient();

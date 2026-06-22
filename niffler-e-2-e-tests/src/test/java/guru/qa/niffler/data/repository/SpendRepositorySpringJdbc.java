@@ -15,11 +15,15 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.DataBase.SPEND;
 import static guru.qa.niffler.data.jdbc.DataSourceContext.dataSource;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositorySpringJdbc implements SpendRepository {
 
   private final JdbcTemplate spendJdbcTemplate = new JdbcTemplate(dataSource(SPEND));
 
+  @Nonnull
   @Override
   public SpendEntity createSpend(SpendEntity spend) {
     KeyHolder kh = new GeneratedKeyHolder();
@@ -45,6 +49,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     return spend;
   }
 
+  @Nonnull
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
     return Optional.ofNullable(
@@ -69,6 +74,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     );
   }
 
+  @Nonnull
   @Override
   public CategoryEntity createCategory(CategoryEntity category) {
     KeyHolder kh = new GeneratedKeyHolder();
@@ -88,6 +94,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     return category;
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     return Optional.ofNullable(
@@ -99,6 +106,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     );
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findUserCategoryByName(String username, String categoryName) {
     return Optional.ofNullable(

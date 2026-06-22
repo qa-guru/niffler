@@ -21,9 +21,11 @@ import java.text.SimpleDateFormat;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[REST][niffler-gateway]: Spends")
 @DisplayName("[REST][niffler-gateway]: Spends")
+@ParametersAreNonnullByDefault
 public class GatewaySpendRestTest extends BaseRestTest {
 
   private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

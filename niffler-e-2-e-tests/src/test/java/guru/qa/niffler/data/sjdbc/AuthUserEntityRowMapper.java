@@ -6,11 +6,15 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class AuthUserEntityRowMapper implements RowMapper<AuthUserEntity> {
 
   public static final AuthUserEntityRowMapper instance = new AuthUserEntityRowMapper();
 
+  @Nonnull
   @Override
   public AuthUserEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
     AuthUserEntity user = new AuthUserEntity();

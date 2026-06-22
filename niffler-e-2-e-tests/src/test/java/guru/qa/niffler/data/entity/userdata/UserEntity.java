@@ -25,11 +25,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "\"user\"")
+@ParametersAreNonnullByDefault
 public class UserEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

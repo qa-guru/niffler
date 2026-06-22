@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Stream;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class AllureDockerExtension implements SuiteExtension {
 
   private static final Logger LOG = LoggerFactory.getLogger(AllureDockerExtension.class);

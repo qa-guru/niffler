@@ -35,9 +35,11 @@ import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITHOUT
 import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITHOUT_CATEGORY;
 import static guru.qa.niffler.utils.ErrorMessage.CAN_NOT_CREATE_SPENDING_WITH_INCORRECT_DATE;
 import static guru.qa.niffler.utils.SuccessMessage.SPENDING_ADDED;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic(" [WEB][niffler-ng-client]: Траты")
 @DisplayName(" [WEB][niffler-ng-client]: Траты")
+@ParametersAreNonnullByDefault
 public class SpendingTest extends BaseWebTest {
 
   @Test

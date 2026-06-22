@@ -24,10 +24,12 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[SOAP][niffler-userdata]: Пользователи")
 @DisplayName("[SOAP][niffler-userdata]: Пользователи")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ParametersAreNonnullByDefault
 public class UserDataUsersSoapTest extends BaseSoapTest {
 
   @Test

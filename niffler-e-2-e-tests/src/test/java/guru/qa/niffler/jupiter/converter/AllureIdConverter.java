@@ -4,7 +4,9 @@ import io.qameta.allure.Allure;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.ArgumentConverter;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class AllureIdConverter implements ArgumentConverter {
   @Override
   public Object convert(Object o, ParameterContext parameterContext) throws ArgumentConversionException {

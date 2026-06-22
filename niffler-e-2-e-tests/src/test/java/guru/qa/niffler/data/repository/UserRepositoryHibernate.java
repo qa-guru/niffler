@@ -11,13 +11,17 @@ import java.util.UUID;
 import static guru.qa.niffler.data.DataBase.AUTH;
 import static guru.qa.niffler.data.DataBase.USERDATA;
 import static guru.qa.niffler.data.jpa.EmfContext.entityManager;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class UserRepositoryHibernate implements UserRepository {
 
   private final EntityManager authEm = entityManager(AUTH);
   private final EntityManager userdataEm = entityManager(USERDATA);
 
   @Step("Create user in auth db using Hibernate")
+  @Nonnull
   @Override
   public AuthUserEntity createInAuth(AuthUserEntity user) {
     authEm.persist(user);
@@ -25,6 +29,7 @@ public class UserRepositoryHibernate implements UserRepository {
   }
 
   @Step("Find user in auth db by id: '{id}' using Hibernate")
+  @Nonnull
   @Override
   public Optional<AuthUserEntity> findByIdInAuth(UUID id) {
     return Optional.ofNullable(
@@ -35,6 +40,7 @@ public class UserRepositoryHibernate implements UserRepository {
   }
 
   @Step("Create user in userdata db using Hibernate")
+  @Nonnull
   @Override
   public UserEntity createInUserdata(UserEntity user) {
     userdataEm.persist(user);
@@ -42,6 +48,7 @@ public class UserRepositoryHibernate implements UserRepository {
   }
 
   @Step("Find user in userdata db by id: '{id}' using Hibernate")
+  @Nonnull
   @Override
   public Optional<UserEntity> findByIdInUserdata(UUID id) {
     return Optional.ofNullable(

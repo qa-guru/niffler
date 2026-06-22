@@ -10,8 +10,10 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@ParametersAreNonnullByDefault
 public class RestPage<T> extends PageImpl<T> {
   @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
   public RestPage(@JsonProperty("content") List<T> content,

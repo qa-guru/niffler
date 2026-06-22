@@ -22,11 +22,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static jakarta.persistence.CascadeType.PERSIST;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "spend")
+@ParametersAreNonnullByDefault
 public class SpendEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

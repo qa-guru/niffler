@@ -6,7 +6,9 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public interface GhApi {
 
   @GET("repos/qa-guru/niffler/issues/{ISSUE_NUMBER}")

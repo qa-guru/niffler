@@ -17,10 +17,12 @@ import org.junit.jupiter.api.Test;
 import static com.codeborne.selenide.Selenide.open;
 import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static guru.qa.niffler.jupiter.annotation.User.Selector.NESTED;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 
 @Epic(" [WEB][niffler-ng-client]: Друзья")
 @DisplayName(" [WEB][niffler-ng-client]: Друзья")
+@ParametersAreNonnullByDefault
 public class FriendsTest extends BaseWebTest {
 
   @Test

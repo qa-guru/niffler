@@ -10,8 +10,10 @@ import io.qameta.allure.okhttp3.AllureOkHttp3;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @GqlTest
+@ParametersAreNonnullByDefault
 public abstract class BaseGraphQlTest {
 
   protected static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";

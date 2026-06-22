@@ -29,9 +29,11 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[REST][niffler-gateway]: Stat")
 @DisplayName("[REST][niffler-gateway]: Stat")
+@ParametersAreNonnullByDefault
 public class GatewayStatRestTest extends BaseRestTest {
 
   private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

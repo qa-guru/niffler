@@ -1,0 +1,29 @@
+spring:
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+
+  datasource:
+    url: jdbc:tc:postgresql:15:///niffler-spend
+    username: postgres
+    password: postgres
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    schemas: public
+    locations: classpath:db/migration/niffler-spend
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    generate-ddl: false
+    open-in-view: false
+
+niffler-currency:
+  base-uri: 'http://localhost:8091'
+niffler-userdata:
+  base-uri: 'http://localhost:8089'

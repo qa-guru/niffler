@@ -19,11 +19,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static jakarta.persistence.FetchType.EAGER;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "\"user\"")
+@ParametersAreNonnullByDefault
 public class AuthUserEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

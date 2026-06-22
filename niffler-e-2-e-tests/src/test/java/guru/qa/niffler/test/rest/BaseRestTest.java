@@ -4,8 +4,10 @@ import guru.qa.niffler.api.GatewayApiClient;
 import guru.qa.niffler.jupiter.annotation.meta.RestTest;
 import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @RestTest
+@ParametersAreNonnullByDefault
 public abstract class BaseRestTest {
 
   protected static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";

@@ -14,9 +14,11 @@ import org.junit.jupiter.api.Test;
 
 import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
 import static guru.qa.niffler.utils.ErrorMessage.BAD_CREDENTIALS;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic(" [WEB][niffler-ng-client]: Авторизация")
 @DisplayName(" [WEB][niffler-ng-client]: Авторизация")
+@ParametersAreNonnullByDefault
 public class LoginTest extends BaseWebTest {
 
   @Test

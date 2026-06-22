@@ -7,7 +7,9 @@ import org.postgresql.ds.PGSimpleDataSource;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public enum DataSourceContext {
   INSTANCE;
 

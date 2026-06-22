@@ -23,10 +23,12 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[REST][niffler-gateway]: Пользователи")
 @DisplayName("[REST][niffler-gateway]: Пользователи")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ParametersAreNonnullByDefault
 public class GatewayUsersRestTest extends BaseRestTest {
 
   @Test

@@ -5,7 +5,9 @@ import guru.qa.niffler.utils.DateUtils;
 
 import java.util.Date;
 import java.util.UUID;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public record SpendJson(
     @JsonProperty("id")
     UUID id,

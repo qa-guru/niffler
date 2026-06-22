@@ -15,6 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,6 +27,7 @@ import static guru.qa.niffler.data.DataBase.AUTH;
 import static guru.qa.niffler.data.DataBase.USERDATA;
 import static guru.qa.niffler.data.jdbc.DataSourceContext.dataSource;
 
+@ParametersAreNonnullByDefault
 public class UserRepositorySpringJdbc implements UserRepository {
 
   private final TransactionTemplate authTxTemplate = new TransactionTemplate(
@@ -43,6 +45,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
   private final JdbcTemplate authJdbcTemplate = new JdbcTemplate(dataSource(AUTH));
   private final JdbcTemplate userdataJdbcTemplate = new JdbcTemplate(dataSource(USERDATA));
 
+  @Nonnull
   @Step("Create user in auth db using Spring-jdbc")
   @Override
   public AuthUserEntity createInAuth(AuthUserEntity user) {

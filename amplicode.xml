@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AmplicodePersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="niffler.niffler-auth.main" name="Default">
+        <packages>
+          <package value="guru.qa.niffler" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="niffler.niffler-currency.main" name="Default">
+        <packages>
+          <package value="guru.qa.niffler" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="niffler.niffler-spend.main" name="Default">
+        <packages>
+          <package value="guru.qa.niffler" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="niffler.niffler-userdata.main" name="Default">
+        <packages>
+          <package value="guru.qa.niffler" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>

@@ -23,9 +23,11 @@ import java.util.List;
 import static guru.qa.niffler.model.rest.CurrencyValues.RUB;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[GraphQL][niffler-gateway]: Stat")
 @DisplayName("[GraphQL][niffler-gateway]: Stat")
+@ParametersAreNonnullByDefault
 public class GraphQlStatTest extends BaseGraphQlTest {
 
   private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

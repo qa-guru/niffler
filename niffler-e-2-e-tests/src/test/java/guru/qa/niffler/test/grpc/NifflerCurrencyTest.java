@@ -20,9 +20,11 @@ import java.util.stream.Stream;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[gRPC][niffler-currency]: Валюты")
 @DisplayName("[gRPC][niffler-currency]: Валюты")
+@ParametersAreNonnullByDefault
 public class NifflerCurrencyTest extends BaseGrpcTest {
 
   @Test

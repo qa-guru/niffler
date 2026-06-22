@@ -11,7 +11,9 @@ import io.qameta.allure.attachment.FreemarkerAttachmentRenderer;
 import org.apache.commons.lang3.StringUtils;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class AllureAppender extends StdoutLogger {
   private final AttachmentProcessor<AttachmentData> processor = new DefaultAttachmentProcessor();
   private final String sqlTemplatePath = "sql-query.ftl";

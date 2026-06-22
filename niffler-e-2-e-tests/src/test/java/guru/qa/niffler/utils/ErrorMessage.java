@@ -1,5 +1,7 @@
 package guru.qa.niffler.utils;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+@ParametersAreNonnullByDefault
 public enum ErrorMessage {
   BAD_CREDENTIALS("Bad credentials"),
   CAN_NOT_ADD_CATEGORY("Can not add new category"),

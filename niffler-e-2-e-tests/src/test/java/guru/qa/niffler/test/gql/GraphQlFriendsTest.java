@@ -32,9 +32,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[GraphQL][niffler-gateway]: Друзья")
 @DisplayName("[GraphQL][niffler-gateway]: Друзья")
+@ParametersAreNonnullByDefault
 public class GraphQlFriendsTest extends BaseGraphQlTest {
 
   @Test

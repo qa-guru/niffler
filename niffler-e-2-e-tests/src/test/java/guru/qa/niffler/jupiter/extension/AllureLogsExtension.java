@@ -10,7 +10,9 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 import static io.qameta.allure.model.Status.PASSED;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class AllureLogsExtension implements SuiteExtension {
 
   public static final String caseName = "logs";

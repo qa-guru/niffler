@@ -25,10 +25,12 @@ import java.util.List;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[REST][niffler-gateway]: Пагинация Spends V2")
 @DisplayName("[REST][niffler-gateway]: Пагинация Spends V2")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ParametersAreNonnullByDefault
 public class GatewayV2SpendRestTest extends BaseRestTest {
 
   private static final GatewayV2ApiClient gatewayV2client = new GatewayV2ApiClient();
