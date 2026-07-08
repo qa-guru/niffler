@@ -16,12 +16,14 @@ import org.hibernate.proxy.HibernateProxy;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "friendship")
 @IdClass(FriendShipId.class)
+@ParametersAreNonnullByDefault
 public class FriendshipEntity implements Serializable {
 
   @Id

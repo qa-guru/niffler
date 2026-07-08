@@ -12,9 +12,11 @@ import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
 
 import java.awt.image.BufferedImage;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic(" [WEB][niffler-ng-client]: Траты, скриншотные тесты")
 @DisplayName(" [WEB][niffler-ng-client]: Траты, скриншотные тесты")
+@ParametersAreNonnullByDefault
 public class StatisticTest extends BaseWebTest {
 
 

@@ -7,11 +7,15 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class AuthorityEntityRowMapper implements RowMapper<AuthorityEntity> {
 
   public static final AuthorityEntityRowMapper instance = new AuthorityEntityRowMapper();
 
+  @Nonnull
   @Override
   public AuthorityEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
     AuthorityEntity user = new AuthorityEntity();

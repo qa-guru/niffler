@@ -107,6 +107,7 @@ class StatServiceTest {
   void getStatisticWhenSpendsExistReturnsFourStatistics() {
     List<StatisticJson> result = statService.getStatistic("dima", userCurrency, null, null, null);
     assertEquals(4, result.size());
+    assertEquals(userCurrency, result.getFirst().currency());
   }
 
   static Stream<Arguments> resolveDesiredCurrenciesInStatisticWhenCurrencyFilterApplied() {

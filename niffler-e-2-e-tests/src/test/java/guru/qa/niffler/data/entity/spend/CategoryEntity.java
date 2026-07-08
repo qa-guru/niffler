@@ -13,11 +13,13 @@ import org.hibernate.proxy.HibernateProxy;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "category")
+@ParametersAreNonnullByDefault
 public class CategoryEntity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

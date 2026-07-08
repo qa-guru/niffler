@@ -14,9 +14,11 @@ import org.junit.jupiter.api.Test;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[KAFKA][niffler-auth]: Паблишинг сообщений в кафку")
 @DisplayName("[KAFKA][niffler-auth]: Паблишинг сообщений в кафку")
+@ParametersAreNonnullByDefault
 public class AuthRegistrationKafkaTest extends BaseKafkaTest {
 
   private static final AuthApiClient authClient = new AuthApiClient();

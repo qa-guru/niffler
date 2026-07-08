@@ -31,7 +31,22 @@ public class GatewayV2ApiClient extends RestClient {
                                                @Nullable Integer page,
                                                @Nullable Integer size,
                                                @Nullable List<String> sort) throws Exception {
-    return gatewayV2Api.allSpendsPageable(bearerToken, currency, filterPeriod, page, size, sort)
+    return gatewayV2Api.allSpendsPageable(bearerToken, currency, filterPeriod, page, size, sort, null, null)
+        .execute()
+        .body();
+  }
+
+  @Step("Send REST GET('/api/v2/spends/all') with search request to niffler-gateway")
+  @Nullable
+  public RestPage<SpendJson> allSpendsPageableWithSearch(String bearerToken,
+                                                         @Nullable CurrencyValues currency,
+                                                         @Nullable DataFilterValues filterPeriod,
+                                                         @Nullable Integer page,
+                                                         @Nullable Integer size,
+                                                         @Nullable List<String> sort,
+                                                         @Nullable String searchQuery,
+                                                         @Nullable String category) throws Exception {
+    return gatewayV2Api.allSpendsPageable(bearerToken, currency, filterPeriod, page, size, sort, searchQuery, category)
         .execute()
         .body();
   }
@@ -87,9 +102,10 @@ public class GatewayV2ApiClient extends RestClient {
   @Step("Send REST GET('/api/v2/stat/total') request to niffler-gateway")
   @Nullable
   public StatisticV2Json totalStat(String bearerToken,
+                                   @Nullable CurrencyValues statCurrency,
                                    @Nullable CurrencyValues filterCurrency,
                                    @Nullable DataFilterValues filterPeriod) throws Exception {
-    return gatewayV2Api.totalStatV2(bearerToken, filterCurrency, filterPeriod)
+    return gatewayV2Api.totalStatV2(bearerToken, statCurrency, filterCurrency, filterPeriod)
         .execute()
         .body();
   }

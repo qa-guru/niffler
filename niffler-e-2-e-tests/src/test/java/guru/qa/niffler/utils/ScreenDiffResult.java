@@ -6,7 +6,9 @@ import ru.yandex.qatools.ashot.comparison.ImageDiffer;
 
 import java.awt.image.BufferedImage;
 import java.util.function.BooleanSupplier;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class ScreenDiffResult implements BooleanSupplier {
 
   private final BufferedImage expected;

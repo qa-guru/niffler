@@ -25,9 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[REST][niffler-gateway]: Друзья")
 @DisplayName("[REST][niffler-gateway]: Друзья")
+@ParametersAreNonnullByDefault
 public class GatewayFriendsRestTest extends BaseRestTest {
 
   private static final UserdataApiClient userdataApiClient = new UserdataApiClient();

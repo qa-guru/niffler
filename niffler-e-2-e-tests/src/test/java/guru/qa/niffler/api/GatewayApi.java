@@ -4,6 +4,7 @@ import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.CurrencyJson;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.DataFilterValues;
+import guru.qa.niffler.model.rest.FcmTokenJson;
 import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.SessionJson;
 import guru.qa.niffler.model.rest.SpendJson;
@@ -16,6 +17,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 import javax.annotation.Nonnull;
@@ -25,11 +27,16 @@ import java.util.List;
 public interface GatewayApi {
 
   @GET("api/categories/all")
-  Call<List<CategoryJson>> allCategories(@Header("Authorization") String bearerToken);
+  Call<List<CategoryJson>> allCategories(@Header("Authorization") String bearerToken,
+                                        @Query("excludeArchived") boolean excludeArchived);
 
   @POST("api/categories/add")
   Call<CategoryJson> addCategory(@Header("Authorization") String bearerToken,
                                  @Body CategoryJson category);
+
+  @PATCH("api/categories/update")
+  Call<CategoryJson> updateCategory(@Header("Authorization") String bearerToken,
+                                    @Body CategoryJson category);
 
   @GET("api/currencies/all")
   Call<List<CurrencyJson>> allCurrencies(@Header("Authorization") String bearerToken);
@@ -57,6 +64,10 @@ public interface GatewayApi {
   @GET("api/session/current")
   Call<SessionJson> currentSession(@Header("Authorization") String bearerToken);
 
+  @GET("api/spends/{id}")
+  Call<SpendJson> getSpend(@Header("Authorization") String bearerToken,
+                           @Path("id") String id);
+
   @GET("api/spends/all")
   Call<List<SpendJson>> allSpends(@Header("Authorization") String bearerToken,
                                   @Query("filterCurrency") @Nullable CurrencyValues filterCurrency,
@@ -79,6 +90,12 @@ public interface GatewayApi {
                                       @Query("filterCurrency") @Nullable CurrencyValues filterCurrency,
                                       @Query("filterPeriod") @Nullable DataFilterValues filterPeriod);
 
+  @GET("api/stat/total")
+  Call<List<StatisticJson>> totalStatFull(@Header("Authorization") String bearerToken,
+                                          @Query("statCurrency") @Nullable CurrencyValues statCurrency,
+                                          @Query("filterCurrency") @Nullable CurrencyValues filterCurrency,
+                                          @Query("filterPeriod") @Nullable DataFilterValues filterPeriod);
+
   @GET("api/users/current")
   Call<UserJson> currentUser(@Header("Authorization") String bearerToken);
 
@@ -89,4 +106,8 @@ public interface GatewayApi {
   @POST("api/users/update")
   Call<UserJson> updateUser(@Header("Authorization") String bearerToken,
                             @Body UserJson user);
+
+  @POST("api/push/token")
+  Call<Void> registerPushToken(@Header("Authorization") String bearerToken,
+                               @Body FcmTokenJson fcmToken);
 }

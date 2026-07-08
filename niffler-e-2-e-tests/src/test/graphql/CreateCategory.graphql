@@ -1,0 +1,8 @@
+mutation CreateCategory($input: CategoryInput!) {
+    category(input: $input) {
+        id
+        name
+        username
+        archived
+    }
+}

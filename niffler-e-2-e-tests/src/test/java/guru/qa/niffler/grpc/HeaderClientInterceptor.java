@@ -10,11 +10,13 @@ import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 
 /**
  * A interceptor to handle client header.
  */
+@ParametersAreNonnullByDefault
 public class HeaderClientInterceptor implements ClientInterceptor {
 
   private static final Logger LOG = LoggerFactory.getLogger(HeaderClientInterceptor.class.getName());

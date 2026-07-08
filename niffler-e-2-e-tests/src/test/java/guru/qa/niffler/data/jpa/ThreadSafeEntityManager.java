@@ -26,8 +26,10 @@ import jakarta.persistence.metamodel.Metamodel;
 
 import java.util.List;
 import java.util.Map;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @SuppressWarnings("resource")
+@ParametersAreNonnullByDefault
 public class ThreadSafeEntityManager implements EntityManager {
 
   private final EntityManagerFactory emf;

@@ -2,8 +2,10 @@ package guru.qa.niffler.test.soap;
 
 import guru.qa.niffler.api.UserdataWsClient;
 import guru.qa.niffler.jupiter.annotation.meta.SoapTest;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @SoapTest
+@ParametersAreNonnullByDefault
 public abstract class BaseSoapTest {
 
   protected static final String ID_REGEXP = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";

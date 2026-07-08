@@ -25,10 +25,12 @@ import java.util.List;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[REST][niffler-gateway]: Пагинация Spends V2")
 @DisplayName("[REST][niffler-gateway]: Пагинация Spends V2")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ParametersAreNonnullByDefault
 public class GatewayV2SpendRestTest extends BaseRestTest {
 
   private static final GatewayV2ApiClient gatewayV2client = new GatewayV2ApiClient();
@@ -134,5 +136,62 @@ public class GatewayV2SpendRestTest extends BaseRestTest {
     step("Check second element of first page", () ->
         assertEquals("Кофе", firstPageContent.get(1).description())
     );
+  }
+
+  @Test
+  @AllureId("200047")
+  @DisplayName("REST V2: Список spends фильтруется по searchQuery (описание траты)")
+  @Tag("REST")
+  @ApiLogin(user = @GenerateUser(
+      categories = @GenerateCategory(name = "Бар"),
+      spends = {
+          @GenerateSpend(name = "Уникальный коктейль", category = "Бар", amount = 500),
+          @GenerateSpend(name = "Обычный кофе", category = "Бар", amount = 150),
+      }
+  ))
+  void spendsBySearchQueryV2Test(@Token String bearerToken) throws Exception {
+    final RestPage<SpendJson> result = gatewayV2client.allSpendsPageableWithSearch(
+        bearerToken, null, null, 0, 10, null, "Уникальный", null
+    );
+
+    step("Check response is not null", () ->
+        assertNotNull(result)
+    );
+    step("Check that only 1 spend matches search", () ->
+        assertEquals(1L, result.getTotalElements())
+    );
+    step("Check that returned spend has correct description", () ->
+        assertEquals("Уникальный коктейль", result.getContent().getFirst().description())
+    );
+  }
+
+  @Test
+  @AllureId("200048")
+  @DisplayName("REST V2: Список spends фильтруется по категории")
+  @Tag("REST")
+  @ApiLogin(user = @GenerateUser(
+      categories = {@GenerateCategory(name = "Бар"), @GenerateCategory(name = "Еда")},
+      spends = {
+          @GenerateSpend(name = "Коктейль", category = "Бар", amount = 500),
+          @GenerateSpend(name = "Пицца", category = "Еда", amount = 700),
+          @GenerateSpend(name = "Вино", category = "Бар", amount = 300),
+      }
+  ))
+  void spendsByCategoryFilterV2Test(@Token String bearerToken) throws Exception {
+    final RestPage<SpendJson> result = gatewayV2client.allSpendsPageableWithSearch(
+        bearerToken, null, null, 0, 10, null, null, "Бар"
+    );
+
+    step("Check response is not null", () ->
+        assertNotNull(result)
+    );
+    step("Check that only 2 spends in Бар category are returned", () ->
+        assertEquals(2L, result.getTotalElements())
+    );
+    step("Check all returned spends belong to Бар category", () -> {
+      result.getContent().forEach(s ->
+          assertEquals("Бар", s.category().name())
+      );
+    });
   }
 }

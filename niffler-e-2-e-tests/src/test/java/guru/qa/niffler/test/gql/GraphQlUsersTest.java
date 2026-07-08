@@ -26,9 +26,11 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[GraphQL][niffler-gateway]: Пользователи")
 @DisplayName("[GraphQL][niffler-gateway]: Пользователи")
+@ParametersAreNonnullByDefault
 public class GraphQlUsersTest extends BaseGraphQlTest {
 
   @Test

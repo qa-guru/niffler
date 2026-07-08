@@ -10,17 +10,22 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.DataBase.SPEND;
 import static guru.qa.niffler.data.jpa.EmfContext.entityManager;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositoryHibernate implements SpendRepository {
 
   private final EntityManager spendEm = entityManager(SPEND);
 
+  @Nonnull
   @Override
   public SpendEntity createSpend(SpendEntity spend) {
     spendEm.persist(spend);
     return spend;
   }
 
+  @Nonnull
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
     return Optional.ofNullable(
@@ -28,12 +33,14 @@ public class SpendRepositoryHibernate implements SpendRepository {
     );
   }
 
+  @Nonnull
   @Override
   public CategoryEntity createCategory(CategoryEntity category) {
     spendEm.persist(category);
     return category;
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     return Optional.ofNullable(
@@ -41,6 +48,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
     );
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findUserCategoryByName(String username,
                                                          String name) {

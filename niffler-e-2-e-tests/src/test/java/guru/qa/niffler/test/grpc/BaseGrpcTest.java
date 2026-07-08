@@ -6,8 +6,10 @@ import guru.qa.niffler.jupiter.annotation.meta.GrpcTest;
 import guru.qa.niffler.utils.GrpcConsoleInterceptor;
 import io.grpc.Channel;
 import io.grpc.ManagedChannelBuilder;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @GrpcTest
+@ParametersAreNonnullByDefault
 public abstract class BaseGrpcTest {
 
   protected static final Config CFG = Config.getInstance();

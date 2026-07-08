@@ -3,7 +3,9 @@ package guru.qa.niffler.model.rest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public record StatisticByCategoryJson(
     @JsonProperty("category")
     String category,

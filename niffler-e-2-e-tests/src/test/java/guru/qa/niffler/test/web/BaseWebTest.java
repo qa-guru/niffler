@@ -6,9 +6,11 @@ import guru.qa.niffler.jupiter.annotation.meta.DBTest;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.BeforeEach;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @WebTest
 @DBTest
+@ParametersAreNonnullByDefault
 public abstract class BaseWebTest {
 
   protected static final Config CFG = Config.getInstance();

@@ -1,0 +1,24 @@
+query GetSpends($sort: [String!], $searchQuery: String, $filterPeriod: FilterPeriod, $filterCurrency: CurrencyValues, $category: String) {
+    spends(page: 0, size: 20, sort: $sort, searchQuery: $searchQuery, filterPeriod: $filterPeriod, filterCurrency: $filterCurrency, category: $category) {
+        edges {
+            node {
+                id
+                spendDate
+                currency
+                amount
+                description
+                category {
+                    id
+                    name
+                    username
+                    archived
+                }
+                username
+            }
+        }
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+        }
+    }
+}

@@ -7,7 +7,9 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.util.Map;
 
 import static guru.qa.niffler.utils.UrlUtils.isValidURL;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class DockerConfig implements Config {
 
   static final DockerConfig INSTANCE = new DockerConfig();

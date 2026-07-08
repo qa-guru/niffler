@@ -1,5 +1,7 @@
 package guru.qa.niffler.utils;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+@ParametersAreNonnullByDefault
 public enum SuccessMessage {
   FRIEND_DELETED("Friend is deleted"),
   INVITATION_ACCEPTED("Invitation is accepted"),

@@ -23,9 +23,11 @@ import static guru.qa.niffler.utils.DataUtils.randomUsername;
 import static guru.qa.niffler.utils.ErrorMessage.PASSWORDS_SHOULD_BE_EQUAL;
 import static guru.qa.niffler.utils.ErrorMessage.PASSWORD_SHOULD_NOT_CONTAINS_WHITESPACES;
 import static guru.qa.niffler.utils.ErrorMessage.USERNAME_SHOULD_NOT_CONTAINS_WHITESPACES;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic(" [WEB][niffler-ng-client]: Регистрация")
 @DisplayName(" [WEB][niffler-ng-client]: Регистрация")
+@ParametersAreNonnullByDefault
 public class RegistrationTest extends BaseWebTest {
 
   @Test

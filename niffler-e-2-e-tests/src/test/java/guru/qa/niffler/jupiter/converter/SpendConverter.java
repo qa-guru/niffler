@@ -9,7 +9,9 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class SpendConverter implements ArgumentConverter {
 
   private static final ObjectMapper om = new ObjectMapper();

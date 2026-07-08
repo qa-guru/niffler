@@ -17,9 +17,11 @@ import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Selenide.open;
 import static guru.qa.niffler.jupiter.annotation.User.Selector.METHOD;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic(" [WEB][niffler-ng-client]: Динамический поиск")
 @DisplayName(" [WEB][niffler-ng-client]: Динамический поиск")
+@ParametersAreNonnullByDefault
 public class DynamicSearchTest extends BaseWebTest {
 
   @Test

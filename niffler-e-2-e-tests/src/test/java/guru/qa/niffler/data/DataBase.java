@@ -2,7 +2,9 @@ package guru.qa.niffler.data;
 
 import guru.qa.niffler.config.Config;
 import org.apache.commons.lang3.StringUtils;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public enum DataBase {
   USERDATA("jdbc:postgresql://%s/niffler-userdata"),
   AUTH("jdbc:postgresql://%s/niffler-auth"),

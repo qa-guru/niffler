@@ -22,7 +22,9 @@ public interface GatewayV2Api {
                                               @Query("filterPeriod") @Nullable DataFilterValues filterPeriod,
                                               @Query("page") @Nullable Integer page,
                                               @Query("size") @Nullable Integer size,
-                                              @Query("sort") @Nullable List<String> sort);
+                                              @Query("sort") @Nullable List<String> sort,
+                                              @Query("searchQuery") @Nullable String searchQuery,
+                                              @Query("category") @Nullable String category);
 
   @GET("api/v2/users/all")
   Call<RestPage<UserJson>> allUsersPageable(@Header("Authorization") String bearerToken,
@@ -54,6 +56,7 @@ public interface GatewayV2Api {
 
   @GET("api/v2/stat/total")
   Call<StatisticV2Json> totalStatV2(@Header("Authorization") String bearerToken,
+                                    @Query("statCurrency") @Nullable CurrencyValues statCurrency,
                                     @Query("filterCurrency") @Nullable CurrencyValues filterCurrency,
                                     @Query("filterPeriod") @Nullable DataFilterValues filterPeriod);
 }

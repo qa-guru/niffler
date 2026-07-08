@@ -6,9 +6,11 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Getter
 @Setter
+@ParametersAreNonnullByDefault
 public class FriendShipId implements Serializable {
 
   private UUID requester;

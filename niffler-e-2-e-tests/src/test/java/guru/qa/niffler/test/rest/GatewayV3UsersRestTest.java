@@ -29,10 +29,12 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[REST][niffler-gateway]: Пагинация Users V2")
 @DisplayName("[REST][niffler-gateway]: Пагинация Users V2")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ParametersAreNonnullByDefault
 public class GatewayV3UsersRestTest extends BaseRestTest {
 
   private static final GatewayV3ApiClient gatewayV3client = new GatewayV3ApiClient();
@@ -168,6 +170,56 @@ public class GatewayV3UsersRestTest extends BaseRestTest {
     );
     step("Check that first element is outcome invitation", () ->
         assertEquals(FriendshipStatus.INVITE_SENT, firstPage.getContent().getFirst().friendshipStatus())
+    );
+  }
+
+  @Test
+  @AllureId("200054")
+  @DisplayName("REST V3: Поиск пользователей по searchQuery возвращает только совпадающих")
+  @Tag("REST")
+  @ApiLogin(user = @GenerateUser(
+      outcomeInvitations = @OutcomeInvitations(count = 1)
+  ))
+  void allUsersWithSearchQueryV3Test(@User UserJson user, @Token String bearerToken) throws Exception {
+    final UserJson target = user.testData().outcomeInvitations().getFirst();
+
+    final PagedModelJson<UserJson> result = gatewayV3client.allUsersPageable(
+        bearerToken, target.username(), 0, 10, null
+    );
+
+    step("Check response is not null", () ->
+        assertNotNull(result)
+    );
+    step("Check that exactly one user is found", () ->
+        assertEquals(1L, result.getMetadata().totalElements())
+    );
+    step("Check that found user matches search query", () ->
+        assertEquals(target.username(), result.getContent().getFirst().username())
+    );
+  }
+
+  @Test
+  @AllureId("200055")
+  @DisplayName("REST V3: Поиск друзей по searchQuery возвращает только совпадающих")
+  @Tag("REST")
+  @ApiLogin(user = @GenerateUser(
+      friends = @Friends(count = 2)
+  ))
+  void allFriendsWithSearchQueryV3Test(@User UserJson user, @Token String bearerToken) throws Exception {
+    final UserJson targetFriend = user.testData().friends().getFirst();
+
+    final PagedModelJson<UserJson> result = gatewayV3client.allFriendsPageable(
+        bearerToken, targetFriend.username(), 0, 10, null
+    );
+
+    step("Check response is not null", () ->
+        assertNotNull(result)
+    );
+    step("Check that exactly one friend is found", () ->
+        assertEquals(1L, result.getMetadata().totalElements())
+    );
+    step("Check that found friend matches search query", () ->
+        assertEquals(targetFriend.username(), result.getContent().getFirst().username())
     );
   }
 }

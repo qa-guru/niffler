@@ -7,11 +7,15 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class UserEntityRowMapper implements RowMapper<UserEntity> {
 
   public static final UserEntityRowMapper instance = new UserEntityRowMapper();
 
+  @Nonnull
   @Override
   public UserEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
     UserEntity user = new UserEntity();

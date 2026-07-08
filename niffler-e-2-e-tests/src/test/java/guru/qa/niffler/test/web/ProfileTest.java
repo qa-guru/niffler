@@ -20,9 +20,11 @@ import java.awt.image.BufferedImage;
 import static guru.qa.niffler.utils.DataUtils.randomCategory;
 import static guru.qa.niffler.utils.DataUtils.randomName;
 import static guru.qa.niffler.utils.SuccessMessage.PROFILE_UPDATED;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic(" [WEB][niffler-ng-client]: Профиль")
 @DisplayName(" [WEB][niffler-ng-client]: Профиль")
+@ParametersAreNonnullByDefault
 public class ProfileTest extends BaseWebTest {
 
   @ScreenShotTest(expected = "cat.png", rewriteExpected = true)

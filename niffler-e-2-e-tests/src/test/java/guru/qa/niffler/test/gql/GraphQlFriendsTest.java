@@ -5,12 +5,17 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.java.client.ApolloCall;
 import com.apollographql.java.rx2.Rx2Apollo;
 import guru.qa.Friends2SubQueriesQuery;
+import guru.qa.FriendshipAcceptMutation;
+import guru.qa.FriendshipAddMutation;
+import guru.qa.FriendshipDeleteMutation;
+import guru.qa.FriendshipRejectMutation;
 import guru.qa.FriendsQuery;
 import guru.qa.FriendsWithCategoriesQuery;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Friends;
 import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateUser;
+import guru.qa.niffler.jupiter.annotation.GenerateUsers;
 import guru.qa.niffler.jupiter.annotation.IncomeInvitations;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
@@ -32,9 +37,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[GraphQL][niffler-gateway]: Друзья")
 @DisplayName("[GraphQL][niffler-gateway]: Друзья")
+@ParametersAreNonnullByDefault
 public class GraphQlFriendsTest extends BaseGraphQlTest {
 
   @Test
@@ -152,6 +159,108 @@ public class GraphQlFriendsTest extends BaseGraphQlTest {
     assertEquals(
         "Can`t query categories for another user",
         firstError.getMessage()
+    );
+  }
+
+  @Test
+  @AllureId("400017")
+  @DisplayName("GraphQL: Mutation FriendshipAdd отправляет запрос на дружбу")
+  @Tag("GraphQL")
+  @ApiLogin(user = @GenerateUser)
+  @GenerateUsers({
+      @GenerateUser
+  })
+  void friendshipAddMutationTest(@User(selector = User.Selector.METHOD) UserJson target,
+                                 @Token String bearerToken) throws Exception {
+    ApolloCall<FriendshipAddMutation.Data> apolloCall = apolloClient.mutation(
+        new FriendshipAddMutation(target.username())
+    ).addHttpHeader("Authorization", bearerToken);
+
+    final ApolloResponse<FriendshipAddMutation.Data> response = Rx2Apollo.single(apolloCall).blockingGet();
+    final FriendshipAddMutation.Friendship result = response.dataOrThrow().friendship;
+
+    step("Check that returned user has correct username", () ->
+        assertEquals(target.username(), result.username)
+    );
+    step("Check that friendship status is INVITE_SENT", () ->
+        assertEquals(FriendshipStatus.INVITE_SENT.name(), result.friendshipStatus.rawValue)
+    );
+  }
+
+  @Test
+  @AllureId("400018")
+  @DisplayName("GraphQL: Mutation FriendshipAccept принимает входящий запрос на дружбу")
+  @Tag("GraphQL")
+  @ApiLogin(user = @GenerateUser(
+      incomeInvitations = @IncomeInvitations(count = 1)
+  ))
+  void friendshipAcceptMutationTest(@User UserJson user, @Token String bearerToken) throws Exception {
+    final UserJson inviter = user.testData().incomeInvitations().getFirst();
+
+    ApolloCall<FriendshipAcceptMutation.Data> apolloCall = apolloClient.mutation(
+        new FriendshipAcceptMutation(inviter.username())
+    ).addHttpHeader("Authorization", bearerToken);
+
+    final FriendshipAcceptMutation.Friendship result =
+        Rx2Apollo.single(apolloCall).blockingGet().dataOrThrow().friendship;
+
+    step("Check that inviter username matches", () ->
+        assertEquals(inviter.username(), result.username)
+    );
+    step("Check that friendship status is FRIEND", () ->
+        assertEquals(FriendshipStatus.FRIEND.name(), result.friendshipStatus.rawValue)
+    );
+  }
+
+  @Test
+  @AllureId("400019")
+  @DisplayName("GraphQL: Mutation FriendshipReject отклоняет входящий запрос на дружбу")
+  @Tag("GraphQL")
+  @ApiLogin(user = @GenerateUser(
+      incomeInvitations = @IncomeInvitations(count = 1)
+  ))
+  void friendshipRejectMutationTest(@User UserJson user, @Token String bearerToken) throws Exception {
+    final UserJson inviter = user.testData().incomeInvitations().getFirst();
+
+    ApolloCall<FriendshipRejectMutation.Data> apolloCall = apolloClient.mutation(
+        new FriendshipRejectMutation(inviter.username())
+    ).addHttpHeader("Authorization", bearerToken);
+
+    final FriendshipRejectMutation.Friendship result =
+        Rx2Apollo.single(apolloCall).blockingGet().dataOrThrow().friendship;
+
+    step("Check that inviter username matches", () ->
+        assertEquals(inviter.username(), result.username)
+    );
+    step("Check that friendship status is empty after reject", () ->
+        assertNull(result.friendshipStatus)
+    );
+  }
+
+  @Test
+  @AllureId("400020")
+  @DisplayName("GraphQL: Mutation FriendshipDelete удаляет друга")
+  @Tag("GraphQL")
+  @ApiLogin(user = @GenerateUser(
+      friends = @Friends(count = 1)
+  ))
+  void friendshipDeleteMutationTest(@User UserJson user, @Token String bearerToken) throws Exception {
+    final UserJson friend = user.testData().friends().getFirst();
+
+    ApolloCall<FriendshipDeleteMutation.Data> apolloCall = apolloClient.mutation(
+        new FriendshipDeleteMutation(friend.username())
+    ).addHttpHeader("Authorization", bearerToken);
+
+    Rx2Apollo.single(apolloCall).blockingGet().dataOrThrow();
+
+    ApolloCall<FriendsQuery.Data> friendsCall = apolloClient.query(new FriendsQuery())
+        .addHttpHeader("Authorization", bearerToken);
+
+    final List<FriendsQuery.Edge> friendsAfter =
+        Rx2Apollo.single(friendsCall).blockingGet().dataOrThrow().user.friends.edges;
+
+    step("Check that friends list is empty after deletion", () ->
+        assertTrue(friendsAfter.isEmpty())
     );
   }
 }

@@ -19,13 +19,17 @@ import java.util.UUID;
 import static guru.qa.niffler.data.DataBase.AUTH;
 import static guru.qa.niffler.data.DataBase.USERDATA;
 import static guru.qa.niffler.data.jdbc.DataSourceContext.dataSource;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class UserRepositoryJdbc implements UserRepository {
 
   private final DataSource authDs = dataSource(AUTH);
   private final DataSource userdataDs = dataSource(USERDATA);
 
   @Step("Create user in auth db using JDBC")
+  @Nonnull
   @Override
   public AuthUserEntity createInAuth(AuthUserEntity user) {
     try (Connection conn = authDs.getConnection()) {
@@ -79,6 +83,7 @@ public class UserRepositoryJdbc implements UserRepository {
   }
 
   @Step("Find user in auth db by id: '{id}' using JDBC")
+  @Nonnull
   @Override
   public Optional<AuthUserEntity> findByIdInAuth(UUID id) {
     try (Connection conn = authDs.getConnection();
@@ -96,6 +101,7 @@ public class UserRepositoryJdbc implements UserRepository {
   }
 
   @Step("Create user in userdata db using JDBC")
+  @Nonnull
   @Override
   public UserEntity createInUserdata(UserEntity user) {
     try (Connection conn = userdataDs.getConnection();
@@ -122,6 +128,7 @@ public class UserRepositoryJdbc implements UserRepository {
   }
 
   @Step("Find user in userdata db by id: '{id}' using JDBC")
+  @Nonnull
   @Override
   public Optional<UserEntity> findByIdInUserdata(UUID id) {
     UserEntity user = new UserEntity();
