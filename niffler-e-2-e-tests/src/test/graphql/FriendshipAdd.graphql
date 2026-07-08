@@ -1,0 +1,8 @@
+mutation FriendshipAdd($username: String!) {
+    friendship(input: {username: $username, action: ADD}) {
+        id
+        username
+        fullname
+        friendshipStatus
+    }
+}

@@ -5,6 +5,7 @@ import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.CurrencyJson;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.DataFilterValues;
+import guru.qa.niffler.model.rest.FcmTokenJson;
 import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.SessionJson;
 import guru.qa.niffler.model.rest.SpendJson;
@@ -28,8 +29,8 @@ public class GatewayApiClient extends RestClient {
 
   @Step("Send REST GET('/api/categories/all') request to niffler-gateway")
   @Nullable
-  public List<CategoryJson> allCategories(String bearerToken) throws Exception {
-    return gatewayApi.allCategories(bearerToken)
+  public List<CategoryJson> allCategories(String bearerToken, boolean excludeArchived) throws Exception {
+    return gatewayApi.allCategories(bearerToken, excludeArchived)
         .execute()
         .body();
   }
@@ -38,6 +39,14 @@ public class GatewayApiClient extends RestClient {
   @Nullable
   public CategoryJson addCategory(String bearerToken, CategoryJson category) throws Exception {
     return gatewayApi.addCategory(bearerToken, category)
+        .execute()
+        .body();
+  }
+
+  @Step("Send REST PATCH('/api/categories/update') request to niffler-gateway")
+  @Nullable
+  public CategoryJson updateCategory(String bearerToken, CategoryJson category) throws Exception {
+    return gatewayApi.updateCategory(bearerToken, category)
         .execute()
         .body();
   }
@@ -77,6 +86,25 @@ public class GatewayApiClient extends RestClient {
                                        @Nullable CurrencyValues filterCurrency,
                                        @Nullable DataFilterValues filterPeriod) throws Exception {
     return gatewayApi.totalStat(bearerToken, filterCurrency, filterPeriod)
+        .execute()
+        .body();
+  }
+
+  @Step("Send REST GET('/api/stat/total') with statCurrency request to niffler-gateway")
+  @Nullable
+  public List<StatisticJson> totalStatFull(String bearerToken,
+                                           @Nullable CurrencyValues statCurrency,
+                                           @Nullable CurrencyValues filterCurrency,
+                                           @Nullable DataFilterValues filterPeriod) throws Exception {
+    return gatewayApi.totalStatFull(bearerToken, statCurrency, filterCurrency, filterPeriod)
+        .execute()
+        .body();
+  }
+
+  @Step("Send REST GET('/api/spends/{id}') request to niffler-gateway")
+  @Nullable
+  public SpendJson getSpend(String bearerToken, String id) throws Exception {
+    return gatewayApi.getSpend(bearerToken, id)
         .execute()
         .body();
   }
@@ -159,5 +187,10 @@ public class GatewayApiClient extends RestClient {
     return gatewayApi.currentSession(bearerToken)
         .execute()
         .body();
+  }
+
+  @Step("Send REST POST('/api/push/token') request to niffler-gateway")
+  public void registerPushToken(String bearerToken, FcmTokenJson fcmToken) throws Exception {
+    gatewayApi.registerPushToken(bearerToken, fcmToken).execute();
   }
 }

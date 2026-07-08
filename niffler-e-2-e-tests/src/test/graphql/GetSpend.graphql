@@ -1,0 +1,16 @@
+query GetSpend($id: ID!) {
+    spend(id: $id) {
+        id
+        spendDate
+        currency
+        amount
+        description
+        category {
+            id
+            name
+            username
+            archived
+        }
+        username
+    }
+}

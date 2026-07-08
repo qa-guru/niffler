@@ -82,7 +82,7 @@ public class StatService {
     List<SpendEntity> spendEntities = spendService.getSpendsEntityForUser(username, filterCurrency, dateFrom, dateTo);
     List<StatisticJson> result = new ArrayList<>();
 
-    CurrencyValues[] desiredCurrenciesInResponse = resolveDesiredCurrenciesInStatistic(filterCurrency);
+    List<CurrencyValues> desiredCurrenciesInResponse = resolveDesiredCurrenciesInStatistic(filterCurrency, statCurrency);
 
     for (CurrencyValues statisticCurrency : desiredCurrenciesInResponse) {
       StatisticJson enriched = calculateStatistic(statisticCurrency, username, statCurrency, spendEntities, dateTo);
@@ -248,6 +248,16 @@ public class StatService {
     return filterCurrency != null
         ? new CurrencyValues[]{filterCurrency}
         : CurrencyValues.values();
+  }
+
+  @Nonnull
+  List<CurrencyValues> resolveDesiredCurrenciesInStatistic(@Nullable CurrencyValues filterCurrency,
+                                                           CurrencyValues statCurrency) {
+    List<CurrencyValues> currencies = new ArrayList<>(List.of(resolveDesiredCurrenciesInStatistic(filterCurrency)));
+    if (filterCurrency == null && currencies.remove(statCurrency)) {
+      currencies.add(0, statCurrency);
+    }
+    return currencies;
   }
 
   @Nonnull

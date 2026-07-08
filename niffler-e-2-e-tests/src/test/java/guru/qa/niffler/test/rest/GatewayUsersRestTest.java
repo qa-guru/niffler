@@ -128,4 +128,23 @@ public class GatewayUsersRestTest extends BaseRestTest {
       assertEquals(outcomeInvitation.username(), foundedInvitation.username());
     });
   }
+
+  @Test
+  @DisplayName("REST: Поиск пользователя по имени возвращает только совпадающего пользователя")
+  @AllureId("200041")
+  @Tag("REST")
+  @ApiLogin(user = @GenerateUser(
+      outcomeInvitations = @OutcomeInvitations(count = 1)
+  ))
+  void allUsersWithSearchQueryTest(@User UserJson user, @Token String bearerToken) throws Exception {
+    final UserJson target = user.testData().outcomeInvitations().getFirst();
+    final List<UserJson> found = gatewayApiClient.allUsers(bearerToken, target.username());
+
+    step("Check that exactly one user is found", () ->
+        assertEquals(1, found.size())
+    );
+    step("Check that found user matches search query", () ->
+        assertEquals(target.username(), found.getFirst().username())
+    );
+  }
 }

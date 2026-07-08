@@ -29,6 +29,7 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @Epic("[REST][niffler-gateway]: Stat")
@@ -333,6 +334,91 @@ public class GatewayStatRestTest extends BaseRestTest {
     );
     step("Check spends in category `Азс` has size equal to user spends for category", () ->
         assertEquals(1, rubFuelStat.spends().size())
+    );
+  }
+
+  @Test
+  @AllureId("200038")
+  @DisplayName("REST: Статистика корректно конвертируется при указании statCurrency=USD")
+  @Tag("REST")
+  @ApiLogin(
+      user = @GenerateUser(
+          categories = @GenerateCategory(name = "Бар"),
+          spends = {
+              @GenerateSpend(name = "Коктейль", category = "Бар", amount = 650, currency = RUB),
+              @GenerateSpend(name = "Кофе", category = "Бар", amount = 200, currency = RUB),
+          }
+      )
+  )
+  void statWithStatCurrencyTest(@Token String bearerToken) throws Exception {
+    final List<StatisticJson> statistic = gatewayApiClient.totalStatFull(
+        bearerToken,
+        USD,
+        null,
+        null
+    );
+
+    step("Check that statistic is not empty", () ->
+        assertTrue(statistic != null && !statistic.isEmpty())
+    );
+    step("Check that statistic is returned in USD", () ->
+        assertEquals(CurrencyValues.USD, statistic.getFirst().currency())
+    );
+  }
+
+  @Test
+  @AllureId("200039")
+  @DisplayName("REST: Статистика за TODAY содержит только сегодняшние траты")
+  @Tag("REST")
+  @ApiLogin(
+      user = @GenerateUser(
+          categories = @GenerateCategory(name = "Бар"),
+          spends = {
+              @GenerateSpend(name = "Сегодня", category = "Бар", amount = 300, currency = RUB, addDaysToSpendDate = 0),
+              @GenerateSpend(name = "Вчера", category = "Бар", amount = 500, currency = RUB, addDaysToSpendDate = -1),
+          }
+      )
+  )
+  void statForTodayTest(@Token String bearerToken) throws Exception {
+    final List<StatisticJson> statistic = gatewayApiClient.totalStat(
+        bearerToken,
+        null,
+        DataFilterValues.TODAY
+    );
+
+    step("Check that statistic is not null", () ->
+        assertTrue(statistic != null && !statistic.isEmpty())
+    );
+    step("Check that total equals only today's spend", () ->
+        assertEquals(300.0, statistic.getFirst().total())
+    );
+  }
+
+  @Test
+  @AllureId("200040")
+  @DisplayName("REST: Статистика за MONTH не включает трату за пределами текущего месяца")
+  @Tag("REST")
+  @ApiLogin(
+      user = @GenerateUser(
+          categories = @GenerateCategory(name = "Бар"),
+          spends = {
+              @GenerateSpend(name = "Этот месяц", category = "Бар", amount = 400, currency = RUB, addDaysToSpendDate = -10),
+              @GenerateSpend(name = "Старая трата", category = "Бар", amount = 1000, currency = RUB, addDaysToSpendDate = -40),
+          }
+      )
+  )
+  void statForMonthTest(@Token String bearerToken) throws Exception {
+    final List<StatisticJson> statistic = gatewayApiClient.totalStat(
+        bearerToken,
+        null,
+        DataFilterValues.MONTH
+    );
+
+    step("Check that statistic is not null", () ->
+        assertTrue(statistic != null && !statistic.isEmpty())
+    );
+    step("Check that total equals only current month spend", () ->
+        assertEquals(400.0, statistic.getFirst().total())
     );
   }
 }

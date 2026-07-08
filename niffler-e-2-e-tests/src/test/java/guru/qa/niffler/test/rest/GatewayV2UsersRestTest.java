@@ -172,4 +172,54 @@ public class GatewayV2UsersRestTest extends BaseRestTest {
         assertEquals(FriendshipStatus.INVITE_SENT, firstPage.getContent().getFirst().friendshipStatus())
     );
   }
+
+  @Test
+  @AllureId("200052")
+  @DisplayName("REST V2: Поиск пользователей по searchQuery возвращает только совпадающих")
+  @Tag("REST")
+  @ApiLogin(user = @GenerateUser(
+      outcomeInvitations = @OutcomeInvitations(count = 1)
+  ))
+  void allUsersWithSearchQueryV2Test(@User UserJson user, @Token String bearerToken) throws Exception {
+    final UserJson target = user.testData().outcomeInvitations().getFirst();
+
+    final RestPage<UserJson> result = gatewayV2client.allUsersPageable(
+        bearerToken, target.username(), 0, 10, null
+    );
+
+    step("Check response is not null", () ->
+        assertNotNull(result)
+    );
+    step("Check that exactly one user is found", () ->
+        assertEquals(1L, result.getTotalElements())
+    );
+    step("Check that found user matches search query", () ->
+        assertEquals(target.username(), result.getContent().getFirst().username())
+    );
+  }
+
+  @Test
+  @AllureId("200053")
+  @DisplayName("REST V2: Поиск друзей по searchQuery возвращает только совпадающих")
+  @Tag("REST")
+  @ApiLogin(user = @GenerateUser(
+      friends = @Friends(count = 2)
+  ))
+  void allFriendsWithSearchQueryV2Test(@User UserJson user, @Token String bearerToken) throws Exception {
+    final UserJson targetFriend = user.testData().friends().getFirst();
+
+    final RestPage<UserJson> result = gatewayV2client.allFriendsPageable(
+        bearerToken, targetFriend.username(), 0, 10, null
+    );
+
+    step("Check response is not null", () ->
+        assertNotNull(result)
+    );
+    step("Check that exactly one friend is found", () ->
+        assertEquals(1L, result.getTotalElements())
+    );
+    step("Check that found friend matches search query", () ->
+        assertEquals(targetFriend.username(), result.getContent().getFirst().username())
+    );
+  }
 }

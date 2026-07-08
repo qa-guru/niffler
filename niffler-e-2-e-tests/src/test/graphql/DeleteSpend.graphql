@@ -1,0 +1,3 @@
+mutation DeleteSpend($ids: [ID!]!) {
+    deleteSpend(ids: $ids)
+}

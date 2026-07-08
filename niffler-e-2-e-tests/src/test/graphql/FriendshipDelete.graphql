@@ -1,0 +1,8 @@
+mutation FriendshipDelete($username: String!) {
+    friendship(input: {username: $username, action: DELETE}) {
+        id
+        username
+        fullname
+        friendshipStatus
+    }
+}

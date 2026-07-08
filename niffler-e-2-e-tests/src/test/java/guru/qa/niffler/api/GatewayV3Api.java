@@ -6,6 +6,7 @@ import guru.qa.niffler.model.rest.DataFilterValues;
 import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import retrofit2.Call;
+import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
@@ -21,7 +22,12 @@ public interface GatewayV3Api {
                                                     @Query("filterPeriod") @Nullable DataFilterValues filterPeriod,
                                                     @Query("page") @Nullable Integer page,
                                                     @Query("size") @Nullable Integer size,
-                                                    @Query("sort") @Nullable List<String> sort);
+                                                    @Query("sort") @Nullable List<String> sort,
+                                                    @Query("searchQuery") @Nullable String searchQuery,
+                                                    @Query("category") @Nullable String category);
+
+  @GET("api/v3/spends/export/csv")
+  Call<ResponseBody> exportSpendsCsv(@Header("Authorization") String bearerToken);
 
   @GET("api/v3/users/all")
   Call<PagedModelJson<UserJson>> allUsersPageable(@Header("Authorization") String bearerToken,

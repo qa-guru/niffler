@@ -1,0 +1,16 @@
+mutation EditSpend($input: SpendInput!) {
+    spend(input: $input) {
+        id
+        spendDate
+        currency
+        amount
+        description
+        category {
+            id
+            name
+            username
+            archived
+        }
+        username
+    }
+}
