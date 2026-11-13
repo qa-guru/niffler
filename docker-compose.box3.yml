@@ -1,0 +1,16 @@
+# Box3 collocation (same pattern as /opt/book-club/docker-compose.box3.yml).
+# Public :8000 is the book-club alias vhost. Stage frontend stays loopback-only.
+#
+#   docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml
+#
+# `ports: !override` replaces ci.yml `8000:80` (compose concatenates ports otherwise).
+services:
+  frontend.niffler.dc:
+    ports: !override
+      - "127.0.0.1:8200:80"
+
+  # Confluence owns host :8091 (Synchrony). Stage mirrors prod remap (18xxx->28xxx).
+  currency.niffler.dc:
+    ports: !override
+      - "28091:8091"
+      - "28092:8092"

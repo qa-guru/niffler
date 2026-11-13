@@ -148,6 +148,8 @@ jobs:
       USERDATA_KAFKA_URL: ${{ secrets.NIFFLER_USERDATA_STAGING_KAFKA_URL }}
       USERDATA_NIFFLER_USERDATA_URL: ${{ secrets.NIFFLER_USERDATA_STAGING_NIFFLER_USERDATA_URL }}
       USERDATA_FIREBASE_KEY: ${{ secrets.NIFFLER_USERDATA_STAGING_FIREBASE_KEY }}
+      SPRING_APPLICATION_JSON: '{"webauthn":{"enabled":false}}'
+      USERDATA_SPRING_JSON: '{"firebase":{"enabled":false},"webauthn":{"enabled":false}}'
     steps:
       - name: Push required props to GITHUB_ENV
         run: |
@@ -200,9 +202,9 @@ jobs:
         run: |
           pwd
           bash ./gradlew :niffler-auth:jib -x :niffler-e-2-e-tests:test
-          docker compose -f docker-compose.ci.yml pull auth.niffler.dc
-          docker compose -f docker-compose.ci.yml stop auth.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps auth.niffler.dc
-          docker system prune -a -f
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml pull auth.niffler.dc
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml stop auth.niffler.dc && docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml up -d --no-deps auth.niffler.dc
+          docker image prune -f
           echo "Deploy auth to staging done!"
 
       - name: build currency & deploy to staging
@@ -212,9 +214,9 @@ jobs:
         run: |
           pwd
           bash ./gradlew :niffler-currency:jib -x :niffler-e-2-e-tests:test
-          docker compose -f docker-compose.ci.yml pull currency.niffler.dc
-          docker compose -f docker-compose.ci.yml stop currency.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps currency.niffler.dc
-          docker system prune -a -f
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml pull currency.niffler.dc
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml stop currency.niffler.dc && docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml up -d --no-deps currency.niffler.dc
+          docker image prune -f
           echo "Deploy currency to staging done!"
 
       - name: build gateway & deploy to staging
@@ -224,9 +226,9 @@ jobs:
         run: |
           pwd
           bash ./gradlew :niffler-gateway:jib -x :niffler-e-2-e-tests:test
-          docker compose -f docker-compose.ci.yml pull gateway.niffler.dc
-          docker compose -f docker-compose.ci.yml stop gateway.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps gateway.niffler.dc
-          docker system prune -a -f
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml pull gateway.niffler.dc
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml stop gateway.niffler.dc && docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml up -d --no-deps gateway.niffler.dc
+          docker image prune -f
           echo "Deploy gateway to staging done!"
 
       - name: build spend & deploy to staging
@@ -236,9 +238,9 @@ jobs:
         run: |
           pwd
           bash ./gradlew :niffler-spend:jib -x :niffler-e-2-e-tests:test
-          docker compose -f docker-compose.ci.yml pull spend.niffler.dc
-          docker compose -f docker-compose.ci.yml stop spend.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps spend.niffler.dc
-          docker system prune -a -f
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml pull spend.niffler.dc
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml stop spend.niffler.dc && docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml up -d --no-deps spend.niffler.dc
+          docker image prune -f
           echo "Deploy spend to staging done!"
 
       - name: build userdata & deploy to staging
@@ -248,9 +250,9 @@ jobs:
         run: |
           pwd
           bash ./gradlew :niffler-userdata:jib -x :niffler-e-2-e-tests:test
-          docker compose -f docker-compose.ci.yml pull userdata.niffler.dc
-          docker compose -f docker-compose.ci.yml stop userdata.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps userdata.niffler.dc
-          docker system prune -a -f
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml pull userdata.niffler.dc
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml stop userdata.niffler.dc && docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml up -d --no-deps userdata.niffler.dc
+          docker image prune -f
           echo "Deploy userdata to staging done!"
 
       - name: build frontend & deploy to staging
@@ -264,7 +266,7 @@ jobs:
           docker push ${IMAGE_TAG}:${{ env.FRONT_VER }}
           docker push ${IMAGE_TAG}:latest
           cd ../ || exit 1
-          docker compose -f docker-compose.ci.yml pull frontend.niffler.dc
-          docker compose -f docker-compose.ci.yml stop frontend.niffler.dc && docker compose -f docker-compose.ci.yml up -d --no-deps frontend.niffler.dc
-          docker system prune -a -f
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml pull frontend.niffler.dc
+          docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml stop frontend.niffler.dc && docker compose -f docker-compose.ci.yml -f docker-compose.box3.yml up -d --no-deps frontend.niffler.dc
+          docker image prune -f
           echo "Deploy frontend to staging done!"
