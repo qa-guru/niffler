@@ -14,6 +14,7 @@ services:
       - AUTH_MOBILE_CLIENT_ID
       - AUTH_MOBILE_CUSTOM_SCHEME
       - AUTH_ANDROID_APP_URI
+      - SPRING_APPLICATION_JSON
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
@@ -105,6 +106,7 @@ services:
       - USERDATA_KAFKA_URL
       - USERDATA_NIFFLER_USERDATA_URL
       - USERDATA_FIREBASE_KEY
+      - SPRING_APPLICATION_JSON=${USERDATA_SPRING_JSON}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
